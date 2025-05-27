@@ -40,7 +40,7 @@ else:
     file_visura = st.file_uploader("Carica la Visura Camerale (PDF)", type="pdf", key="visura")
     file_bilancio = st.file_uploader("Carica il Bilancio (PDF)", type="pdf", key="bilancio")
 
-st.markdown("## 📊 Risorse ancora disponibili per la Tua Azienda")
+st.markdown("## Risorse ancora disponibili per la Tua Azienda")
 st.markdown("### Top 10 Bandi Disponibili")
 
 if not file_visura and not file_bilancio and not file_unico:
