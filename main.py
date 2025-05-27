@@ -63,3 +63,13 @@ for i, (label, value, color) in enumerate(zip(labels, values, colors)):
 fig.update_layout(height=300, margin=dict(t=30, b=0, l=0, r=0))
 
 st.plotly_chart(fig, use_container_width=True)
+
+# 🧾 Informazioni Anagrafiche Aziendali
+st.markdown("---")
+st.markdown("### 🧾 Informazioni Anagrafiche Aziendali")
+with st.container():
+    st.markdown("**Ragione Sociale:** ND")
+    st.markdown("**Partita IVA:** ND")
+    st.markdown("**Codice Fiscale:** ND")
+    st.markdown("**Sede Legale:** ND")
+    st.markdown("**Codice ATECO:** ND")
