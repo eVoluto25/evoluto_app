@@ -7,7 +7,7 @@ from claude_module import match_with_bandi
 from supabase_utils import fetch_bandi
 
 st.set_page_config(page_title="eVoluto – Dossier di Verifica Aziendale", layout="wide")
-st.title("📁 eVoluto – Dossier di Verifica Aziendale")
+st.title("Dossier di Verifica Aziendale")
 
 # Scelta modalità di caricamento
 modalità_unico_file = st.radio(
@@ -28,8 +28,8 @@ else:
     if uploaded_visura and uploaded_bilancio and st.button("📊 Avvia l'analisi"):
         azienda_data = extract_data_from_pdf(uploaded_visura, uploaded_bilancio)
 
-st.header("💰 Opportunità di Finanziamento")
-st.subheader("Top 5 Bandi Disponibili per la Tua Azienda")
+st.header("Risorse ancora disponibili per la Tua Azienda")
+st.subheader("Top 10 Bandi Disponibili")
 
 if azienda_data:
     bandi = [
