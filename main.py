@@ -22,7 +22,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Titolo e opzioni
-st.title("🎯 eVoluto – Dossier di Verifica Aziendale")
+st.title("Dossier di Verifica Aziendale")
 st.markdown("#### 📂 Scegli come vuoi caricare i documenti")
 
 caricamento = st.radio(
