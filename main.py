@@ -18,8 +18,8 @@ modalità_unico_file = st.radio(
 
 azienda_data = None
 
-if modalità_unico_file == "File unico (Visura + Bilancio)":
-    uploaded_unico = st.file_uploader("Carica un unico documento PDF (Visura + Bilancio)", type="pdf")
+if modalità_unico_file == "File unico (Visura + Bilancio formato XBRL)":
+    uploaded_unico = st.file_uploader("Carica un unico documento PDF", type="pdf")
     if uploaded_unico and st.button("📊 Avvia l'analisi"):
         azienda_data = extract_data_from_pdf(uploaded_unico, None)
 else:
