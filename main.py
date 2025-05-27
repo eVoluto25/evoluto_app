@@ -1,68 +1,70 @@
 import streamlit as st
-import plotly.express as px
-import pandas as pd
 from extractor import extract_data_from_pdf
 from gpt_module import run_gpt_analysis
 from claude_module import match_with_bandi
 from supabase_utils import fetch_bandi
 
-st.set_page_config(page_title="eVoluto – Dossier di Verifica Aziendale", layout="wide")
-st.title("Dossier di Verifica Aziendale")
+# Tema personalizzato
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #000000;
+            color: white;
+        }
+        .stButton>button {
+            background-color: white;
+            color: black;
+        }
+        .css-1cpxqw2, .css-1d391kg {
+            background-color: #f0f2f6;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# Scelta modalità di caricamento
-modalità_unico_file = st.radio(
-    "📂 Scegli come vuoi caricare i documenti",
-    ["File unico (Visura + Bilancio formato XBRL)", "Due file separati"],
-    horizontal=True
+# Titolo e opzioni
+st.title("🎯 eVoluto – Dossier di Verifica Aziendale")
+st.markdown("#### 📂 Scegli come vuoi caricare i documenti")
+
+caricamento = st.radio(
+    "",
+    ("📄 File unico (Visura + Bilancio formato XBRL)", "🔴 Due file separati")
 )
 
-azienda_data = None
+file_visura = None
+file_bilancio = None
+file_unico = None
 
-if modalità_unico_file == "File unico (Visura + Bilancio formato XBRL)":
-    uploaded_unico = st.file_uploader("Carica un unico documento PDF", type="pdf")
-    if uploaded_unico and st.button("Avvia l'analisi"):
-        azienda_data = extract_data_from_pdf(uploaded_unico, None)
+if caricamento == "📄 File unico (Visura + Bilancio formato XBRL)":
+    file_unico = st.file_uploader("Carica il Documento Unico (PDF)", type="pdf", key="unico")
 else:
-    uploaded_visura = st.file_uploader("Carica la Visura Camerale (PDF)", type="pdf")
-    uploaded_bilancio = st.file_uploader("Carica il Bilancio (PDF)", type="pdf")
-    if uploaded_visura and uploaded_bilancio and st.button("Avvia l'analisi"):
-        azienda_data = extract_data_from_pdf(uploaded_visura, uploaded_bilancio)
+    file_visura = st.file_uploader("Carica la Visura Camerale (PDF)", type="pdf", key="visura")
+    file_bilancio = st.file_uploader("Carica il Bilancio (PDF)", type="pdf", key="bilancio")
 
-st.header("Risorse ancora disponibili per la Tua Azienda")
-st.subheader("Top 10 Bandi Disponibili")
+st.markdown("## 📊 Risorse ancora disponibili per la Tua Azienda")
+st.markdown("### Top 10 Bandi Disponibili")
 
-if azienda_data:
-    bandi = [
-        {"nome": "Bando Innovazione", "importo": 50000},
-        {"nome": "Fondo Sviluppo PMI", "importo": 75000},
-        {"nome": "Incentivo Ricerca", "importo": 30000},
-        {"nome": "Credito Imposta", "importo": 45000},
-        {"nome": "Bando Digitalizzazione", "importo": 60000}
-    ]
-
-    df_bandi = pd.DataFrame(bandi)
-    df_bandi = df_bandi.sort_values(by="importo", ascending=True)
-
-    fig = px.bar(
-        df_bandi,
-        x="importo",
-        y="nome",
-        orientation='h',
-        labels={'importo': 'Importo (€)', 'nome': 'Bando'},
-        text="importo"
-    )
-
-    fig.update_traces(texttemplate='%{text:,.0f} €', textposition='outside')
-    fig.update_layout(
-        title="Top 5 Bandi Disponibili",
-        xaxis_title="Importo (€)",
-        yaxis_title="",
-        yaxis=dict(tickfont=dict(size=12)),
-        xaxis=dict(tickfont=dict(size=12)),
-        plot_bgcolor='rgba(0,0,0,0)',
-        height=400
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+if not file_visura and not file_bilancio and not file_unico:
+    st.info("⚠️ Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
 else:
-    st.info("🔔 Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
+    with st.spinner("🔍 Analisi in corso..."):
+        # Estrazione dati
+        if file_unico:
+            visura_data, bilancio_data = extract_data_from_pdf(file_unico, unico=True)
+        else:
+            visura_data = extract_data_from_pdf(file_visura) if file_visura else {}
+            bilancio_data = extract_data_from_pdf(file_bilancio) if file_bilancio else {}
+
+        dati_completi = {**visura_data, **bilancio_data}
+
+        # Analisi GPT + Claude + Recupero bandi
+        analisi = run_gpt_analysis(dati_completi)
+        bandi = fetch_bandi()
+        risultati = match_with_bandi(dati_completi, bandi)
+
+        # Output
+        for idx, risultato in enumerate(risultati[:10], 1):
+            st.markdown(f"### {idx}. {risultato['titolo']}")
+            st.markdown(f"**Compatibilità:** {risultato['grado']}")
+            st.markdown(f"**Motivazione:** {risultato['motivazione']}")
+            if risultato['criticità']:
+                st.warning(f"⚠️ Criticità: {risultato['criticità']}")
