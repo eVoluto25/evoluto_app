@@ -1,71 +1,57 @@
 
 import streamlit as st
-import base64
 from PIL import Image
-import os
 
-# Impostazioni pagina
-st.set_page_config(page_title="Dossier di Verifica Aziendale", layout="wide")
+st.set_page_config(
+    page_title="Dossier di Verifica Aziendale",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
 
-# Colori personalizzati con sfondo scuro
+# Reset tema scuro -> chiaro
 st.markdown("""
     <style>
-    body {
-        background-color: black;
-        color: white;
-    }
-    .stApp {
-        background-color: black;
-        color: white;
-    }
-    .css-1aumxhk {
-        background-color: black;
-        color: white;
-    }
-    .stButton>button {
-        background-color: white;
-        color: black;
-    }
+        body {
+            background-color: white;
+            color: black;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 st.title("📊 Dossier di Verifica Aziendale")
+st.markdown("🗂️ <strong>Scegli come vuoi caricare i documenti</strong>", unsafe_allow_html=True)
 
-# Opzione di caricamento file
-caricamento = st.radio("🗂️ Scegli come vuoi caricare i documenti",
-                       ["📄 File unico (Visura + Bilancio formato XBRL)", "🔴 Due file separati"])
+upload_mode = st.radio(
+    "",
+    ["📄 File unico (Visura + Bilancio formato XBRL)", "🔴 Due file separati"],
+    horizontal=True
+)
 
-# Condizionale per mostrare il caricamento corretto
-if caricamento == "📄 File unico (Visura + Bilancio formato XBRL)":
+if upload_mode == "📄 File unico (Visura + Bilancio formato XBRL)":
     st.subheader("Carica il Documento Unico (PDF)")
-    file_unico = st.file_uploader("Carica file", type=["pdf"])
+    uploaded_file = st.file_uploader("Carica file", type=["pdf"])
 else:
     st.subheader("Carica la Visura Camerale (PDF)")
-    file_visura = st.file_uploader("Carica Visura", type=["pdf"])
+    visura_file = st.file_uploader("Carica Visura", type=["pdf"], key="visura")
     st.subheader("Carica il Bilancio (PDF)")
-    file_bilancio = st.file_uploader("Carica Bilancio", type=["pdf"])
+    bilancio_file = st.file_uploader("Carica Bilancio", type=["pdf"], key="bilancio")
 
-# Spazio prima dell'analisi
-st.markdown("## Risorse ancora disponibili per la Tua Azienda")
+# Stato simulato di elaborazione
+elaborazione_in_corso = uploaded_file or (upload_mode == "🔴 Due file separati" and visura_file and bilancio_file)
 
-# Placeholder per box infografici
+if elaborazione_in_corso:
+    with st.spinner("Analisi in corso..."):
+        img = Image.open("immagini/loading.png")
+        st.image(img, width=300)
+        st.markdown("<p style='text-align:center;'>Analisi in corso... ⏳</p>", unsafe_allow_html=True)
+        # Qui inserire l'elaborazione vera e propria
+
+# Area risorse
+st.subheader("Risorse ancora disponibili per la Tua Azienda")
+
 col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric(label="Totale Fondi Attivi", value="€0", delta=None)
-with col2:
-    st.metric(label="Fondi Compatibili", value="€0", delta=None)
-with col3:
-    st.metric(label="Probabilità Media di Successo", value="ND", delta=None)
+col1.metric("Totale Fondi Attivi", "€0")
+col2.metric("Fondi Compatibili", "€0")
+col3.metric("Probabilità Media di Successo", "ND")
 
-# Avviso pre-analisi
-st.info("⚠️ Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
-
-# Barra di caricamento + immagine
-with st.spinner("Analisi in corso..."):
-    if os.path.exists("immagini/loading.png"):
-        image = Image.open("immagini/loading.png")
-        st.image(image, use_column_width=True)
-
-# Placeholder bandi
-st.subheader("Top 10 Bandi Disponibili")
-st.write("⚠️ I grafici e le informazioni verranno mostrati dopo il caricamento dei documenti.")
+st.info("⚠️ I grafici e le informazioni verranno mostrati dopo il caricamento dei documenti.")
