@@ -3,3 +3,4 @@ openai
 anthropic
 supabase
 PyPDF2
+plotly
