@@ -1,9 +1,8 @@
 
 import streamlit as st
 
-st.set_page_config(page_title="Dossier di Verifica Aziendale", layout="wide")
-st.title("📊 Dossier di Verifica Aziendale")
-st.markdown("Benvenuto nel cruscotto. Carica i documenti per iniziare l’analisi.")
+st.title("📂 Caricamento Documenti Aziendali")
+st.markdown("Carica i documenti necessari per avviare l’analisi.")
 
 
 import streamlit as st

@@ -1,9 +1,11 @@
 
 import streamlit as st
 
-st.set_page_config(page_title="Dossier di Verifica Aziendale", layout="wide")
-st.title("📊 Dossier di Verifica Aziendale")
-st.markdown("Benvenuto nel cruscotto. Carica i documenti per iniziare l’analisi.")
+st.title("🧠 Relazioni AI")
+st.subheader("Analisi GPT")
+st.write("Risultato sintetico generato da GPT.")
+st.subheader("Analisi Claude")
+st.write("Risultato sintetico generato da Claude.")
 
 
 import streamlit as st
