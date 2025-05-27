@@ -1,70 +1,71 @@
-import streamlit as st
-from extractor import extract_data_from_pdf
-from gpt_module import run_gpt_analysis
-from claude_module import match_with_bandi
-from supabase_utils import fetch_bandi
 
-# Tema personalizzato
+import streamlit as st
+import base64
+from PIL import Image
+import os
+
+# Impostazioni pagina
+st.set_page_config(page_title="Dossier di Verifica Aziendale", layout="wide")
+
+# Colori personalizzati con sfondo scuro
 st.markdown("""
     <style>
-        .stApp {
-            background-color: #000000;
-            color: white;
-        }
-        .stButton>button {
-            background-color: white;
-            color: black;
-        }
-        .css-1cpxqw2, .css-1d391kg {
-            background-color: #f0f2f6;
-        }
+    body {
+        background-color: black;
+        color: white;
+    }
+    .stApp {
+        background-color: black;
+        color: white;
+    }
+    .css-1aumxhk {
+        background-color: black;
+        color: white;
+    }
+    .stButton>button {
+        background-color: white;
+        color: black;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Titolo e opzioni
-st.title("Dossier di Verifica Aziendale")
-st.markdown("#### 📂 Scegli come vuoi caricare i documenti")
+st.title("📊 Dossier di Verifica Aziendale")
 
-caricamento = st.radio(
-    "",
-    ("📄 File unico (Visura + Bilancio formato XBRL)", "🔴 Due file separati")
-)
+# Opzione di caricamento file
+caricamento = st.radio("🗂️ Scegli come vuoi caricare i documenti",
+                       ["📄 File unico (Visura + Bilancio formato XBRL)", "🔴 Due file separati"])
 
-file_visura = None
-file_bilancio = None
-file_unico = None
-
+# Condizionale per mostrare il caricamento corretto
 if caricamento == "📄 File unico (Visura + Bilancio formato XBRL)":
-    file_unico = st.file_uploader("Carica il Documento Unico (PDF)", type="pdf", key="unico")
+    st.subheader("Carica il Documento Unico (PDF)")
+    file_unico = st.file_uploader("Carica file", type=["pdf"])
 else:
-    file_visura = st.file_uploader("Carica la Visura Camerale (PDF)", type="pdf", key="visura")
-    file_bilancio = st.file_uploader("Carica il Bilancio (PDF)", type="pdf", key="bilancio")
+    st.subheader("Carica la Visura Camerale (PDF)")
+    file_visura = st.file_uploader("Carica Visura", type=["pdf"])
+    st.subheader("Carica il Bilancio (PDF)")
+    file_bilancio = st.file_uploader("Carica Bilancio", type=["pdf"])
 
+# Spazio prima dell'analisi
 st.markdown("## Risorse ancora disponibili per la Tua Azienda")
-st.markdown("### Top 10 Bandi Disponibili")
 
-if not file_visura and not file_bilancio and not file_unico:
-    st.info("⚠️ Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
-else:
-    with st.spinner("🔍 Analisi in corso..."):
-        # Estrazione dati
-        if file_unico:
-            visura_data, bilancio_data = extract_data_from_pdf(file_unico, unico=True)
-        else:
-            visura_data = extract_data_from_pdf(file_visura) if file_visura else {}
-            bilancio_data = extract_data_from_pdf(file_bilancio) if file_bilancio else {}
+# Placeholder per box infografici
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric(label="Totale Fondi Attivi", value="€0", delta=None)
+with col2:
+    st.metric(label="Fondi Compatibili", value="€0", delta=None)
+with col3:
+    st.metric(label="Probabilità Media di Successo", value="ND", delta=None)
 
-        dati_completi = {**visura_data, **bilancio_data}
+# Avviso pre-analisi
+st.info("⚠️ Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
 
-        # Analisi GPT + Claude + Recupero bandi
-        analisi = run_gpt_analysis(dati_completi)
-        bandi = fetch_bandi()
-        risultati = match_with_bandi(dati_completi, bandi)
+# Barra di caricamento + immagine
+with st.spinner("Analisi in corso..."):
+    if os.path.exists("immagini/loading.png"):
+        image = Image.open("immagini/loading.png")
+        st.image(image, use_column_width=True)
 
-        # Output
-        for idx, risultato in enumerate(risultati[:10], 1):
-            st.markdown(f"### {idx}. {risultato['titolo']}")
-            st.markdown(f"**Compatibilità:** {risultato['grado']}")
-            st.markdown(f"**Motivazione:** {risultato['motivazione']}")
-            if risultato['criticità']:
-                st.warning(f"⚠️ Criticità: {risultato['criticità']}")
+# Placeholder bandi
+st.subheader("Top 10 Bandi Disponibili")
+st.write("⚠️ I grafici e le informazioni verranno mostrati dopo il caricamento dei documenti.")
