@@ -1,110 +1,75 @@
-import streamlit as st
-import plotly.graph_objects as go
-from PIL import Image
 
-# --- Configurazione pagina ---
+import streamlit as st
+from PIL import Image
+from gpt_module import run_gpt_analysis
+from claude_module import match_with_bandi
+from supabase_utils import fetch_bandi
+
 st.set_page_config(page_title="eVoluto - Dossier di Verifica Aziendale", layout="wide")
 
-# --- Funzione per gauge dinamico ---
-def gauge_chart(title, value, min_val, max_val, color):
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=value,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': title},
-        gauge={
-            'axis': {'range': [min_val, max_val]},
-            'bar': {'color': color},
-            'bgcolor': "lightgray"
-        }
-    ))
-    fig.update_layout(margin=dict(t=40, b=0, l=0, r=0), height=200)
-    return fig
-
-# --- Layout ---
 st.title("📊 Dossier di Verifica Aziendale")
-# Spostare 'Risorse disponibili' in alto
-st.markdown("""<div style='text-align: center; font-size: 26px; font-weight: bold;'>💰 Risorse ancora disponibili per la Tua Azienda</div>""", unsafe_allow_html=True)
+
+# Sezione 1 - Fondi disponibili
+st.markdown("## 💰 Risorse ancora disponibili per la Tua Azienda")
 col1, col2, col3 = st.columns(3)
-col1.metric("Totale Fondi Attivi", "€0")
-col2.metric("Fondi Compatibili", "€0")
-col3.metric("Probabilità Media di Successo", "ND")
+col1_val = "€0"
+col2_val = "€0"
+col3_val = "ND"
+col1.metric("Totale Fondi Attivi", col1_val)
+col2.metric("Fondi Compatibili", col2_val)
+col3.metric("Probabilità Media di Successo", col3_val)
 
-# Caricamento documento
-st.subheader("Carica il Documento Unico (PDF)")
-st.markdown("Carica il documento PDF contenente la Visura Camerale e il Bilancio.")
-uploaded_file = st.file_uploader("Carica file", type=["pdf"])
+# Sezione 2 - Fatturato e Totale Attivo
+st.markdown("### 📌 Dimensioni Economiche")
+c1, c2 = st.columns(2)
+fatturato = "€0"
+attivo = "€0"
+c1.metric("Fatturato Annuo", fatturato)
+c2.metric("Totale Attivo di Bilancio", attivo)
 
-if uploaded_file is not None:
+# Sezione 3 - Indicatori Finanziari
+st.markdown("### 📉 Indicatori Finanziari Chiave")
+from plotly_graphs import render_financial_gauges
+render_financial_gauges()
+
+# Sezione 4 - Caricamento documento
+st.markdown("### 📂 Caricamento Documenti Aziendali")
+uploaded_file = st.file_uploader("Carica il Documento Unico (PDF)", type=["pdf"])
+
+if uploaded_file:
     with st.spinner("Analisi in corso..."):
-        # Mostra immagine di caricamento
         img = Image.open("immagini/loading.png")
         st.image(img, use_column_width=True)
 
-# --- Impatto: Sezione Fondi Disponibili ---
-st.markdown("## 💰 Risorse ancora disponibili per la Tua Azienda")
-cols = st.columns(3)
-cols[0].metric("Totale Fondi Attivi", "€0")
-cols[1].metric("Fondi Compatibili", "€0")
-cols[2].metric("Probabilità Media di Successo", "ND")
+        # Estrazione + GPT
+        with open("temp_input.pdf", "wb") as f:
+            f.write(uploaded_file.read())
 
-# --- Grafici numerici per grandezze aziendali ---
-st.markdown("### 📌 Dimensioni Economiche")
-col1, col2 = st.columns(2)
-col1.metric("Fatturato Annuo", "€0")
-col2.metric("Totale Attivo di Bilancio", "€0")
+        indici = run_gpt_analysis("temp_input.pdf")
+        bandi = fetch_bandi()
+        bandi_compatibili, bandi_extra, fondi_totali, fondi_compatibili, probabilita = match_with_bandi(indici, bandi)
 
-# --- Indicatori Finanziari con Gauge ---
-st.markdown("### 📈 Indicatori Finanziari Chiave")
-ind1, ind2, ind3 = st.columns(3)
-ind4, ind5 = st.columns(2)
+        # Aggiorna dashboard
+        col1.metric("Totale Fondi Attivi", f"€{fondi_totali:,}")
+        col2.metric("Fondi Compatibili", f"€{fondi_compatibili:,}")
+        col3.metric("Probabilità Media di Successo", f"{probabilita}%")
+        c1.metric("Fatturato Annuo", f"€{indici.get('fatturato', 0):,}")
+        c2.metric("Totale Attivo di Bilancio", f"€{indici.get('attivo', 0):,}")
+        render_financial_gauges(indici)
 
-with ind1: st.plotly_chart(gauge_chart("Capacità di autofinanziamento", 0, 0, 100, "red"), use_container_width=True)
-with ind2: st.plotly_chart(gauge_chart("Disponibilità liquide", 0, 0, 100, "red"), use_container_width=True)
-with ind3: st.plotly_chart(gauge_chart("Indebitamento", 0, 0, 100, "red"), use_container_width=True)
-with ind4: st.plotly_chart(gauge_chart("Utile netto", 0, 0, 100, "red"), use_container_width=True)
-with ind5: st.plotly_chart(gauge_chart("EBITDA", 0, 0, 100, "red"), use_container_width=True)
+        # Mostra bandi compatibili
+        st.markdown("## 🧾 Bandi Compatibili con l’Azienda")
+        for i, bando in enumerate(bandi_compatibili):
+            st.markdown(f"**{i+1}. {bando['titolo']}**")
+            st.markdown(f"✔️ Compatibilità: {bando['compatibilità']}")
+            st.markdown(f"📌 Motivazione: {'; '.join(bando['motivazione'])}")
+            if bando['criticità']:
+                st.error(f"⚠️ Criticità: {'; '.join(bando['criticità'])}")
 
-# --- Placeholder finale ---
-st.warning("⚠️ I dati e i grafici verranno aggiornati automaticamente dopo il caricamento dei documenti.")
-
-
-import plotly.graph_objects as go
-
-def render_financial_gauges():
-    st.markdown("### 📉 Indicatori Finanziari Chiave")
-
-    metrics = {
-        "Capacità di autofinanziamento": 0,
-        "Disponibilità liquide": 0,
-        "Indebitamento": 0,
-        "Utile netto": 0,
-        "EBITDA": 0
-    }
-
-    fig = go.Figure()
-
-    for i, (title, value) in enumerate(metrics.items()):
-        fig.add_trace(go.Indicator(
-            mode="gauge+number",
-            value=value,
-            domain={'x': [(i % 3) * 0.33, (i % 3 + 1) * 0.33], 'y': [0.5 if i < 3 else 0.0, 1.0 if i < 3 else 0.5]},
-            title={'text': title, 'font': {'size': 14}},
-            gauge={
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
-                'bar': {'color': "gray"},
-                'bgcolor': "lightgray",
-                'borderwidth': 1,
-                'bordercolor': "gray"
-            },
-            number={'font': {'size': 36}}
-        ))
-
-    fig.update_layout(
-        grid={'rows': 2, 'columns': 3, 'pattern': "independent"},
-        height=400,
-        margin=dict(t=50, b=50, l=20, r=20)
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
+        with st.expander("🔎 Mostra altri 10 bandi compatibili"):
+            for bando in bandi_extra:
+                st.markdown(f"**{bando['titolo']}**")
+                st.markdown(f"✔️ Compatibilità: {bando['compatibilità']}")
+                st.markdown(f"📌 Motivazione: {'; '.join(bando['motivazione'])}")
+                if bando['criticità']:
+                    st.warning(f"⚠️ Criticità: {'; '.join(bando['criticità'])}")
