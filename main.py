@@ -24,6 +24,12 @@ def gauge_chart(title, value, min_val, max_val, color):
 
 # --- Layout ---
 st.title("📊 Dossier di Verifica Aziendale")
+# Spostare 'Risorse disponibili' in alto
+st.markdown("""<div style='text-align: center; font-size: 26px; font-weight: bold;'>💰 Risorse ancora disponibili per la Tua Azienda</div>""", unsafe_allow_html=True)
+col1, col2, col3 = st.columns(3)
+col1.metric("Totale Fondi Attivi", "€0")
+col2.metric("Fondi Compatibili", "€0")
+col3.metric("Probabilità Media di Successo", "ND")
 
 # Caricamento documento
 st.subheader("Carica il Documento Unico (PDF)")
