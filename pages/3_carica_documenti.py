@@ -1,8 +1,8 @@
 
 import streamlit as st
 
-st.title("📄 Elenco Bandi Disponibili")
-st.write("Qui sarà mostrato l’elenco dei bandi più rilevanti per l’azienda.")
+st.title("📂 Caricamento Documenti Aziendali")
+st.markdown("Carica i documenti necessari per avviare l’analisi.")
 
 
 import streamlit as st

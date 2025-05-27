@@ -1,8 +1,11 @@
 
 import streamlit as st
 
-st.title("📄 Elenco Bandi Disponibili")
-st.write("Qui sarà mostrato l’elenco dei bandi più rilevanti per l’azienda.")
+st.title("🧠 Relazioni AI")
+st.subheader("Analisi GPT")
+st.write("Risultato sintetico generato da GPT.")
+st.subheader("Analisi Claude")
+st.write("Risultato sintetico generato da Claude.")
 
 
 import streamlit as st
