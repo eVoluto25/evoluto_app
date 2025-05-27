@@ -1,65 +1,65 @@
 
 import streamlit as st
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
-# === Placeholder for analysis check ===
-analisi_completata = False
+# Imposta pagina
+st.set_page_config(page_title="eVoluto - Cruscotto Aziendale", layout="wide")
 
-# === Stile generale ===
-st.set_page_config(page_title="Cruscotto Aziendale", layout="wide")
+# HEADER
+st.markdown("<h1 style='text-align: center; color: #2c3e50;'>💼 Dossier di Verifica Aziendale</h1>", unsafe_allow_html=True)
+st.markdown("### Benvenuto nel cruscotto. Carica i documenti per iniziare l’analisi.")
 
-# === TITOLO ===
-st.title("💼 Dossier di Verifica Aziendale")
-st.write("Benvenuto nel cruscotto. Carica i documenti per iniziare l’analisi.")
+# LAYOUT SEZIONE TOP
+st.markdown("---")
+col1, col2, col3, col4, col5 = st.columns(5)
 
-# === NAVIGAZIONE ===
-with st.sidebar:
-    st.markdown("## Navigazione")
-    if st.button("Cruscotto"):
-        st.switch_page("main.py")
-    if st.button("Elenco Bandi"):
-        st.switch_page("pagine/1_elenco_bandi.py")
-    if st.button("Relazioni AI"):
-        st.switch_page("pagine/2_relazioni_ai.py")
-    if st.button("Carica Documenti"):
-        st.switch_page("pagine/3_carica_documenti.py")
+with col1:
+    st.markdown("**💰 Totale Fondi Attivi**")
+    st.markdown("<h2 style='color:#2980b9;'>€0</h2>", unsafe_allow_html=True)
 
-# === 1. FONDI DISPONIBILI ===
-st.markdown("## 💰 Risorse ancora disponibili per la Tua Azienda")
+with col2:
+    st.markdown("**📊 Fondi Compatibili**")
+    st.markdown("<h2 style='color:#27ae60;'>€0</h2>", unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Totale Fondi Attivi", "€0" if not analisi_completata else "€850M")
-col2.metric("Fondi Compatibili", "€0" if not analisi_completata else "€230K")
-col3.metric("Probabilità Media di Successo", "ND" if not analisi_completata else "78.3%")
+with col3:
+    st.markdown("**🎯 Probabilità Media di Successo**")
+    st.markdown("<h2 style='color:#f39c12;'>ND</h2>", unsafe_allow_html=True)
 
-st.info("⚠️ Carica i documenti per visualizzare l’analisi e i grafici relativi ai bandi disponibili.")
+with col4:
+    st.markdown("**🏢 Fatturato Annuo**")
+    st.markdown("<h2 style='color:#8e44ad;'>€0</h2>", unsafe_allow_html=True)
 
-# === 2. INDICATORI FINANZIARI CHIAVE ===
-st.markdown("## 📉 Indicatori Finanziari Chiave")
+with col5:
+    st.markdown("**📋 Totale Attivo di Bilancio**")
+    st.markdown("<h2 style='color:#34495e;'>€0</h2>", unsafe_allow_html=True)
 
-labels = [
-    "Capacità di autofinanziamento", "Disponibilità liquide", "Indebitamento",
-    "Utile netto", "EBITDA"
-]
-valori = [0, 0, 0, 0, 0] if not analisi_completata else [68, 54, 35, 70, 60]
+# INDICATORI FINANZIARI
+st.markdown("---")
+st.markdown("### 📈 Indicatori Finanziari Chiave")
 
-fig = make_subplots(
-    rows=2, cols=3,
-    specs=[[{'type':'indicator'}]*3, [{'type':'indicator'}]*3],
-    subplot_titles=labels
-)
+labels = ["Capacità di autofinanziamento", "Disponibilità liquide", "Indebitamento", "Utile netto", "EBITDA"]
+values = [0, 0, 0, 0, 0]
 
-for i, val in enumerate(valori):
-    row = i // 3 + 1
-    col = i % 3 + 1
+rows = 1
+cols = len(labels)
+
+fig = make_subplots(rows=1, cols=5, specs=[[{'type': 'indicator'}]*5])
+colors = ['#3498db', '#1abc9c', '#e74c3c', '#9b59b6', '#f1c40f']
+
+for i, (label, value, color) in enumerate(zip(labels, values, colors)):
     fig.add_trace(go.Indicator(
         mode="gauge+number",
-        value=val,
-        gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "gray"}},
-        number={'font': {'size': 28}},
-        domain={'row': row-1, 'column': col-1}
-    ), row=row, col=col)
+        value=value,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': label, 'font': {'size': 14}},
+        gauge={
+            'axis': {'range': [0, 100]},
+            'bar': {'color': color},
+            'bgcolor': "#ecf0f1"
+        }
+    ), row=1, col=i+1)
 
-fig.update_layout(height=450, margin=dict(t=30, b=10), showlegend=False)
+fig.update_layout(height=300, margin=dict(t=30, b=0, l=0, r=0))
+
 st.plotly_chart(fig, use_container_width=True)
