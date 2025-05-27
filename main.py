@@ -12,7 +12,7 @@ st.title("Dossier di Verifica Aziendale")
 # Scelta modalità di caricamento
 modalità_unico_file = st.radio(
     "📂 Scegli come vuoi caricare i documenti",
-    ["File unico (Visura + Bilancio)", "Due file separati"],
+    ["File unico (Visura + Bilancio formato XBRL)", "Due file separati"],
     horizontal=True
 )
 
@@ -20,12 +20,12 @@ azienda_data = None
 
 if modalità_unico_file == "File unico (Visura + Bilancio formato XBRL)":
     uploaded_unico = st.file_uploader("Carica un unico documento PDF", type="pdf")
-    if uploaded_unico and st.button("📊 Avvia l'analisi"):
+    if uploaded_unico and st.button("Avvia l'analisi"):
         azienda_data = extract_data_from_pdf(uploaded_unico, None)
 else:
     uploaded_visura = st.file_uploader("Carica la Visura Camerale (PDF)", type="pdf")
     uploaded_bilancio = st.file_uploader("Carica il Bilancio (PDF)", type="pdf")
-    if uploaded_visura and uploaded_bilancio and st.button("📊 Avvia l'analisi"):
+    if uploaded_visura and uploaded_bilancio and st.button("Avvia l'analisi"):
         azienda_data = extract_data_from_pdf(uploaded_visura, uploaded_bilancio)
 
 st.header("Risorse ancora disponibili per la Tua Azienda")
