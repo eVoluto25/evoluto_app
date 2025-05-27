@@ -1,19 +1,15 @@
-
 import streamlit as st
+
+st.set_page_config(page_title="Caricamento Documenti", page_icon="📂")
 
 st.title("📂 Caricamento Documenti Aziendali")
-st.markdown("Carica i documenti necessari per avviare l’analisi.")
+st.write("Carica i documenti necessari per avviare l’analisi.")
 
+tipo_upload = st.radio("📑 Scegli come vuoi caricare i documenti:", 
+                       ("File unico (Visura + Bilancio formato XBRL)", "Due file separati"))
 
-import streamlit as st
-
-st.sidebar.markdown("## Navigazione")
-if st.sidebar.button("Cruscotto"):
-    st.switch_page("main.py")
-if st.sidebar.button("Elenco Bandi"):
-    st.switch_page("pages/1_elenco_bandi.py")
-if st.sidebar.button("Relazioni AI"):
-    st.switch_page("pages/2_relazioni_ai.py")
-if st.sidebar.button("Carica Documenti"):
-    st.switch_page("pages/3_carica_documenti.py")
-
+if tipo_upload == "File unico (Visura + Bilancio formato XBRL)":
+    file_unico = st.file_uploader("📄 Carica il Documento Unico (PDF)", type=["pdf"])
+else:
+    visura = st.file_uploader("📄 Carica la Visura Camerale (PDF)", type=["pdf"])
+    bilancio = st.file_uploader("📄 Carica il Bilancio (PDF)", type=["pdf"])
