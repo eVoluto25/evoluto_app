@@ -1,4 +1,3 @@
-
 import streamlit as st
 import plotly.graph_objects as go
 from PIL import Image
@@ -68,3 +67,44 @@ with ind5: st.plotly_chart(gauge_chart("EBITDA", 0, 0, 100, "red"), use_containe
 
 # --- Placeholder finale ---
 st.warning("⚠️ I dati e i grafici verranno aggiornati automaticamente dopo il caricamento dei documenti.")
+
+
+import plotly.graph_objects as go
+
+def render_financial_gauges():
+    st.markdown("### 📉 Indicatori Finanziari Chiave")
+
+    metrics = {
+        "Capacità di autofinanziamento": 0,
+        "Disponibilità liquide": 0,
+        "Indebitamento": 0,
+        "Utile netto": 0,
+        "EBITDA": 0
+    }
+
+    fig = go.Figure()
+
+    for i, (title, value) in enumerate(metrics.items()):
+        fig.add_trace(go.Indicator(
+            mode="gauge+number",
+            value=value,
+            domain={'x': [(i % 3) * 0.33, (i % 3 + 1) * 0.33], 'y': [0.5 if i < 3 else 0.0, 1.0 if i < 3 else 0.5]},
+            title={'text': title, 'font': {'size': 14}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
+                'bar': {'color': "gray"},
+                'bgcolor': "lightgray",
+                'borderwidth': 1,
+                'bordercolor': "gray"
+            },
+            number={'font': {'size': 36}}
+        ))
+
+    fig.update_layout(
+        grid={'rows': 2, 'columns': 3, 'pattern': "independent"},
+        height=400,
+        margin=dict(t=50, b=50, l=20, r=20)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
