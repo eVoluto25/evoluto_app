@@ -14,6 +14,9 @@ JSON_PATH = "./data/2025-4-5_opendata-export.json"
 try:
     with open(JSON_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
+        if not isinstance(data, list):
+            print("❌ Errore: il JSON non è una lista di bandi.")
+            exit(1)
 except Exception as e:
     print("Errore durante la lettura del file locale JSON:", e)
     exit(1)
