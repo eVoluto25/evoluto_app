@@ -38,13 +38,8 @@ Richieste specifiche:
    - Analizza la redditività, la liquidità e la solidità finanziaria dell'azienda.
    - Identifica eventuali segnali di crisi o aree di rischio.
 
-3. Suggerimenti strategici:
-   - Proponi azioni correttive o strategie di miglioramento finanziario.
-   - Indica eventuali opportunità di investimento o ottimizzazione dei costi.
-
 Formato dell'output:
 - Una tabella con gli indici finanziari calcolati.
-- Un'analisi testuale dettagliata della situazione finanziaria.
 - Un elenco puntato con i suggerimenti strategici.
 
 Esempio di prompt:
@@ -53,3 +48,21 @@ Agisci come un CFO esperto in analisi di bilancio. Analizza i seguenti dati cont
 Calcola gli indici finanziari chiave, valuta la performance finanziaria e suggerisci strategie di miglioramento.
 Fornisci l'output in formato tabellare per gli indici e in formato testuale per l'analisi e i suggerimenti.
 """
+
+Fornisci il risultato della tua analisi esclusivamente in formato JSON, limitandoti ai dati finanziari. Usa questa struttura:
+
+{
+  "fatturato": ...,
+  "utile_netto": ...,
+  "ebitda": ...,
+  "current_ratio": ...,
+  "debt_equity": ...,
+  "interest_coverage": ...,
+  "immobilizzazioni_materiali": ...,
+  "r_d_investimenti": ...,
+  "costi_ambientali": ...
+}
+
+Assicurati che:
+- I valori siano numerici, senza simboli (€ o %).
+- Se un dato non è disponibile, imposta il valore su null.
