@@ -13,7 +13,8 @@ JSON_PATH = "./data/2025-4-5_opendata-export.json"
 
 try:
     with open(JSON_PATH, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        raw = json.load(f)
+        data = raw.get("response", {}).get("docs", [])
         if not isinstance(data, list):
             print("❌ Errore: il JSON non è una lista di bandi.")
             exit(1)
