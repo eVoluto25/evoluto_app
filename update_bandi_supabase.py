@@ -12,7 +12,16 @@ JSON_URL = "https://www.incentivi.gov.it/sites/default/files/open-data/2025-4-5_
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 response = requests.get(JSON_URL)
-data = response.json()
+
+if response.status_code == 200:
+    try:
+        data = response.json()
+    except Exception as e:
+        print("Errore durante il parsing del JSON:", e)
+        exit(1)
+else:
+    print(f"Errore nel recupero dei dati: {response.status_code}")
+    exit(1)
 
 oggi = datetime.today().date()
 bandi_aperti = []
