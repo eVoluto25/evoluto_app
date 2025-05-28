@@ -36,6 +36,7 @@ for bando in data:
 print(f"Bandi aperti trovati: {len(bandi_aperti)}")
 
 for record in bandi_aperti:
+    record["data_ultimo_aggiornamento"] = datetime.utcnow().isoformat() + "Z"
     supabase.table(TABLE_NAME).upsert(record, on_conflict=["ID_Incentivo"]).execute()
 
 print("Aggiornamento completato.")
