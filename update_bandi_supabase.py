@@ -7,21 +7,15 @@ import os
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://<tuo-progetto>.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "<tua-service-role-key>")
 TABLE_NAME = "bandi_disponibili"
-JSON_URL = "https://www.incentivi.gov.it/sites/default/files/open-data/2025-4-5_opendata-export.json"
+import json  # aggiungi se non c'è
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+JSON_PATH = "./data/2025-4-5_opendata-export.json"
 
-headers = {"User-Agent": "Mozilla/5.0"}
-response = requests.get(JSON_URL, headers=headers)
-
-if response.status_code == 200:
-    try:
-        data = response.json()
-    except Exception as e:
-        print("Errore durante il parsing del JSON:", e)
-        exit(1)
-else:
-    print(f"Errore nel recupero dei dati: {response.status_code}")
+try:
+    with open(JSON_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+except Exception as e:
+    print("Errore durante la lettura del file locale JSON:", e)
     exit(1)
 
 oggi = datetime.today().date()
