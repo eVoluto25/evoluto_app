@@ -1,6 +1,3 @@
-streamlit
-openai
-anthropic
+pandas
+requests
 supabase
-PyPDF2
-plotly
