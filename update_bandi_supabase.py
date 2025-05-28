@@ -6,6 +6,7 @@ import os
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://<tuo-progetto>.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "<tua-service-role-key>")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 TABLE_NAME = "bandi_disponibili"
 import json  # aggiungi se non c'è
 
