@@ -12,7 +12,7 @@ JSON_URL = "https://www.incentivi.gov.it/sites/default/files/open-data/2025-4-5_
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 headers = {"User-Agent": "Mozilla/5.0"}
-response = requests.get(CSV_URL, headers=headers)
+response = requests.get(JSON_URL, headers=headers)
 
 if response.status_code == 200:
     try:
