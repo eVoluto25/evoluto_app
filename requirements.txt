@@ -1,3 +1,40 @@
+# Core
+streamlit
 pandas
+numpy
 requests
+httpx
+
+# Claude (Anthropic)
+anthropic
+
+# OpenAI
+openai
+tiktoken
+
+# Supabase
 supabase
+
+# Visualizzazioni
+plotly
+altair
+matplotlib
+
+# Streamlit UI extras
+streamlit-aggrid
+streamlit-extras
+streamlit-option-menu
+
+# Parsing AI Output
+beautifulsoup4
+lxml
+markdown
+
+# Supporto JSON e API
+python-dotenv
+
+# Logging
+loguru
+
+# Badge HTML/JS
+jinja2
