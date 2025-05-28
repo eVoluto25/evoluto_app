@@ -21,9 +21,12 @@ except Exception as e:
 oggi = datetime.today().date()
 bandi_aperti = []
 for bando in data:
-    chiusura = bando.get("Data_chiusura")
-    if not chiusura or datetime.strptime(chiusura, "%Y-%m-%d").date() > oggi:
-        bandi_aperti.append(bando)
+    if isinstance(bando, dict):  # ✅ Verifica che sia un dizionario
+        chiusura = bando.get("Data_chiusura")
+        if not chiusura or datetime.strptime(chiusura, "%Y-%m-%d").date() > oggi:
+            bandi_aperti.append(bando)
+    else:
+        print("Elemento non valido (non è un dizionario):", bando)
 
 print(f"Bandi aperti trovati: {len(bandi_aperti)}")
 
