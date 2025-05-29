@@ -4,16 +4,17 @@ import yaml
 from yaml.loader import SafeLoader
 from datetime import datetime, timedelta
 
-# Configurazione utenti
+hashed_passwords = stauth.Hasher(["admin_password", "cliente_password"]).generate()
+
 users = {
     "admin": {
         "name": "Admin User",
-        "password": stauth.Hasher(["admin_password"]).generate()[0],
+        "password": hashed_passwords[0],
         "role": "admin"
     },
     "cliente1": {
         "name": "Cliente 1",
-        "password": stauth.Hasher(["cliente_password"]).generate()[0],
+        "password": hashed_passwords[1],
         "role": "cliente"
     }
 }
