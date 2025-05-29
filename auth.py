@@ -4,7 +4,10 @@ import yaml
 from yaml.loader import SafeLoader
 from datetime import datetime, timedelta
 
-hashed_passwords = stauth.Hasher(["admin_password", "cliente_password"]).generate()
+hashed_passwords = [
+    stauth.Hasher(["admin_password"]).generate()[0],
+    stauth.Hasher(["cliente_password"]).generate()[0]
+]
 
 users = {
     "admin": {
