@@ -1,7 +1,7 @@
 
 import streamlit as st
 import pandas as pd
-from parse_xbrl import estrai_dati_bilancio, estrai_anagrafica_visura
+from parse_xbrl import parse_xbrl
 from classificazione_macro_area import assegna_macroarea
 from export_streamlit_data import visualizza_anagrafica, visualizza_analisi_finanziaria, visualizza_risultati_bandi
 from scoring_bandi import calcola_scoring_bandi
