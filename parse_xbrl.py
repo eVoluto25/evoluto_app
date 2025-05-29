@@ -1,49 +1,22 @@
-import xml.etree.ElementTree as ET
 
-def parse_xbrl_file(file_path):
-    tree = ET.parse(file_path)
-    root = tree.getroot()
+"""
+Modulo per il parsing centralizzato dei documenti aziendali.
+Combina l'estrazione dei dati finanziari da XBRL e anagrafici dalla visura PDF.
+"""
 
-    ns = {
-        'xbrli': 'http://www.xbrl.org/2003/instance',
-        'itcc-ci': 'http://www.frc.org.uk/xbrl/itcc-ci/2005-12-01',
-        'itcc': 'http://www.frc.org.uk/xbrl/itcc/2005-12-01'
-    }
+from extractor import estrai_dati_bilancio, estrai_anagrafica_visura
 
-    data = {
-        "anagrafica": {},
-        "contabili": {}
-    }
+def parse_xbrl(uploaded_xbrl, uploaded_visura):
+    """
+    Estrae i dati di bilancio (da file XBRL) e i dati anagrafici (da PDF della visura camerale).
 
-    # Anagrafica
-    for tag, key in {
-        'DenominazioneImpresa': 'denominazione',
-        'ComuneSedeLegale': 'comune_sede_legale',
-        'ProvinciaSedeLegale': 'provincia_sede_legale',
-        'CodiceATECO': 'codice_ateco',
-        'DataCostituzione': 'data_costituzione'
-    }.items():
-        elem = root.find(f".//itcc-ci:{tag}", ns)
-        if elem is not None and elem.text:
-            data["anagrafica"][key] = elem.text
+    Args:
+        uploaded_xbrl: file XBRL caricato dall'utente.
+        uploaded_visura: file PDF della visura camerale.
 
-    # Contabili
-    for tag, key in {
-        'NumeroDipendenti': 'numero_dipendenti',
-        'RicaviVenditeNetti': 'fatturato',
-        'TotaleAttivo': 'totale_attivo',
-        'DisponibilitaLiquide': 'disponibilita_liquide',
-        'UtilePerditaEsercizio': 'utile_netto',
-        'ImmobilizzazioniMateriali': 'immobilizzazioni_materiali',
-        'ImmobilizzazioniImmateriali': 'immobilizzazioni_immateriali',
-        'SpeseRicercaSviluppo': 'spese_rs',
-        'Debiti': 'indebitamento'
-    }.items():
-        elem = root.find(f".//itcc:{tag}", ns)
-        if elem is not None and elem.text:
-            try:
-                data["contabili"][key] = float(elem.text.replace(',', '.'))
-            except ValueError:
-                data["contabili"][key] = elem.text
-
-    return data
+    Returns:
+        tuple: (dati_bilancio, anagrafica)
+    """
+    dati_bilancio = estrai_dati_bilancio(uploaded_xbrl)
+    anagrafica = estrai_anagrafica_visura(uploaded_visura)
+    return dati_bilancio, anagrafica
