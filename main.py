@@ -1,5 +1,8 @@
 import streamlit as st
-from evoluto_auth import login_user
+# from evoluto_auth import login_user
+user_authenticated = True
+username = "Admin"
+
 from data_extractor import estrai_tutti_i_dati as process_uploaded_files
 from streamlit_dashboard import render_dashboard
 from export_streamlit_data import export_results
