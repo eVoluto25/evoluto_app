@@ -1,7 +1,6 @@
-
 import streamlit as st
 from evoluto_auth import login_user
-from extractor import process_uploaded_files
+from data_extractor import estrai_tutti_i_dati as process_uploaded_files
 from streamlit_dashboard import render_dashboard
 from export_streamlit_data import export_results
 from config import DASHBOARD_TITLE
@@ -17,8 +16,10 @@ if user_authenticated:
 
     # Area di caricamento file
     st.sidebar.header("📁 Caricamento Documenti")
-    uploaded_balance = st.sidebar.file_uploader("Carica il bilancio in formato XBRL", type=["xbrl"])
-    uploaded_visura = st.sidebar.file_uploader("Carica la visura camerale (PDF)", type=["pdf"])
+    uploaded_balance = st.sidebar.file_uploader(
+        "Carica il bilancio in formato XBRL", type=["xbrl"])
+    uploaded_visura = st.sidebar.file_uploader(
+        "Carica la visura camerale (PDF)", type=["pdf"])
 
     start_analysis = st.sidebar.button("📊 Avvia Analisi")
 
@@ -28,7 +29,8 @@ if user_authenticated:
 
     if start_analysis and (uploaded_balance or uploaded_visura):
         with st.spinner("⏳ Elaborazione documenti in corso..."):
-            company_info, analysis_data = process_uploaded_files(uploaded_balance, uploaded_visura)
+            company_info, analysis_data = process_uploaded_files(
+                uploaded_balance, uploaded_visura)
 
     # Cruscotto
     render_dashboard(company_info, analysis_data)

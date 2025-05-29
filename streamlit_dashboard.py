@@ -127,3 +127,7 @@ with col4:
         }
     ))
     st.plotly_chart(fig_utile, use_container_width=True)
+
+def render_dashboard():
+    st.title("Dashboard Analisi Finanziaria")
+    st.write("Benvenuto nel cruscotto. I dati saranno visualizzati qui.")

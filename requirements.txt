@@ -4,6 +4,7 @@ pandas
 numpy
 requests
 httpx
+PyPDF2
 
 # Claude (Anthropic)
 anthropic
@@ -39,3 +40,5 @@ loguru
 
 # Badge HTML/JS
 jinja2
+cryptography
+extractor

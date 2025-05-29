@@ -1,6 +1,8 @@
 
 # config.py – Centralizzazione delle costanti per il progetto eVoluto
 
+DASHBOARD_TITLE = "il metodo eVoluto"
+
 # === Scoring e Classificazione Macro Aree ===
 THRESHOLDS = {
     "current_ratio": 1.0,

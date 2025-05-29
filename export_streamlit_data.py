@@ -17,3 +17,10 @@ def export_bandi_results(results: list, output_path: str = "data/bandi_results.c
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame(results)
     df.to_csv(output_path, index=False)
+
+import streamlit as st
+
+def export_results(bilancio, anagrafica):
+    st.write("Esportazione risultati...")
+    st.write("Bilancio:", bilancio)
+    st.write("Anagrafica:", anagrafica)
