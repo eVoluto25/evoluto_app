@@ -1,46 +1,42 @@
 
 import pandas as pd
+from config import (
+    SCORING_WEIGHTS,
+    SCORING_THRESHOLDS,
+    PROBABILITY_LABELS
+)
 
-def calcola_punteggio(row):
-    punteggio = 0
+def calcola_scoring_bandi(bandi_df, analisi_finanziaria):
+    risultati = []
+    for _, bando in bandi_df.iterrows():
+        punteggio = 0
+        max_punteggio = sum(SCORING_WEIGHTS.values())
 
-    # Peso per compatibilità macro area
-    if row['compatibilita_macro_area']:
-        punteggio += 30
+        if bando['macro_area'] == analisi_finanziaria['macro_area']:
+            punteggio += SCORING_WEIGHTS['compatibilita_macro_area']
 
-    # Peso per forma agevolazione
-    if row['forma_agevolazione'] in ['fondo perduto', 'credito d’imposta']:
-        punteggio += 25
-    elif row['forma_agevolazione'] in ['finanziamento agevolato', 'tasso zero']:
-        punteggio += 15
+        if bando['forma_agevolazione'] in SCORING_THRESHOLDS['forma_agevolazione']:
+            punteggio += SCORING_WEIGHTS['forma_agevolazione']
 
-    # Peso per dimensioni azienda
-    if row['dimensione_azienda'] == 'PMI':
-        punteggio += 20
-    elif row['dimensione_azienda'] == 'micro':
-        punteggio += 10
+        if bando['dimensione_azienda'] == analisi_finanziaria['dimensione_azienda']:
+            punteggio += SCORING_WEIGHTS['dimensione_azienda']
 
-    # Peso per settorialità (compatibilità con codice ATECO)
-    if row['settore_compatibile']:
-        punteggio += 15
+        if analisi_finanziaria['indice_solidita'] >= SCORING_THRESHOLDS['indice_solidita']:
+            punteggio += SCORING_WEIGHTS['indice_solidita']
 
-    # Peso per copertura geografica
-    if row['copertura_territoriale'] == 'regionale':
-        punteggio += 5
-    elif row['copertura_territoriale'] == 'nazionale':
-        punteggio += 10
+        probabilita = (
+            PROBABILITY_LABELS['Alta']
+            if punteggio >= 0.8 * max_punteggio else
+            PROBABILITY_LABELS['Media']
+            if punteggio >= 0.5 * max_punteggio else
+            PROBABILITY_LABELS['Bassa']
+        )
 
-    return punteggio
+        risultati.append({
+            'id_bando': bando['id_bando'],
+            'titolo': bando['titolo'],
+            'punteggio': punteggio,
+            'probabilita_aggiudicazione': probabilita
+        })
 
-def classifica_probabilita(punteggio):
-    if punteggio >= 80:
-        return 'Alta'
-    elif 50 <= punteggio < 80:
-        return 'Media'
-    else:
-        return 'Bassa'
-
-def applica_scoring(df):
-    df['punteggio'] = df.apply(calcola_punteggio, axis=1)
-    df['classificazione_probabilita'] = df['punteggio'].apply(classifica_probabilita)
-    return df
+    return pd.DataFrame(risultati)
