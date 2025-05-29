@@ -1,44 +1,39 @@
 
 import streamlit as st
-import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
-from config import CONFIG
-from datetime import timedelta
-from dashboard_components import render_dashboard
-from secure_file_handler import handle_uploaded_files
+from auth import login_user
+from extractor import process_uploaded_files
+from streamlit_dashboard import render_dashboard
+from export_streamlit_data import export_results
+from config import DASHBOARD_TITLE
 
-# --- Autenticazione ---
-with open('config_auth.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+# Titolo dell'applicazione
+st.set_page_config(page_title=DASHBOARD_TITLE, layout="wide")
 
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized']
-)
+# Login e autenticazione
+user_authenticated, username = login_user()
 
-name, authentication_status, username = authenticator.login('Login', 'main')
+if user_authenticated:
+    st.success(f"Benvenuto, {username}!")
 
-if authentication_status:
-    authenticator.logout('Logout', 'sidebar')
-    st.sidebar.write(f"Benvenuto **{name}** 👋")
+    # Area di caricamento file
+    st.sidebar.header("📁 Caricamento Documenti")
+    uploaded_balance = st.sidebar.file_uploader("Carica il bilancio in formato XBRL", type=["xbrl"])
+    uploaded_visura = st.sidebar.file_uploader("Carica la visura camerale (PDF)", type=["pdf"])
 
-    # Titolo Dashboard
-    st.title("🛡️ Cruscotto Analisi Aziendale – eVoluto")
+    start_analysis = st.sidebar.button("📊 Avvia Analisi")
 
-    # Upload file (solo admin)
-    if username == "admin":
-        uploaded_files = st.file_uploader("Carica documenti aziendali (PDF visura, XBRL bilancio)", type=['pdf', 'xbrl'], accept_multiple_files=True)
-        if uploaded_files:
-            handle_uploaded_files(uploaded_files)
+    # Mostra il cruscotto anche se non sono stati caricati documenti
+    analysis_data = None
+    company_info = None
 
-    # Layout dashboard
-    render_dashboard()
+    if start_analysis and (uploaded_balance or uploaded_visura):
+        with st.spinner("⏳ Elaborazione documenti in corso..."):
+            company_info, analysis_data = process_uploaded_files(uploaded_balance, uploaded_visura)
 
-elif authentication_status is False:
-    st.error("Username o password non corretti.")
-elif authentication_status is None:
-    st.warning("Inserisci le credenziali per accedere.")
+    # Cruscotto
+    render_dashboard(company_info, analysis_data)
+
+    # Esportazione risultati
+    export_results()
+else:
+    st.warning("🔒 Effettua il login per accedere al cruscotto.")
