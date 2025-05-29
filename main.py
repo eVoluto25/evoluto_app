@@ -1,55 +1,44 @@
 
 import streamlit as st
-import pandas as pd
-from parse_xbrl import parse_xbrl
-from classificazione_macro_area import assegna_macroarea
-from export_streamlit_data import visualizza_anagrafica, visualizza_analisi_finanziaria, visualizza_risultati_bandi
-from scoring_bandi import calcola_scoring_bandi
-from logs import log_evento
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+from config import CONFIG
+from datetime import timedelta
+from dashboard_components import render_dashboard
+from secure_file_handler import handle_uploaded_files
 
-# Titolo dashboard
-st.title("Analisi Finanziaria & Matching Bandi - eVoluto")
+# --- Autenticazione ---
+with open('config_auth.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
 
-# Caricamento documenti
-st.sidebar.header("Carica i documenti")
-uploaded_xbrl = st.sidebar.file_uploader("Bilancio XBRL (.xml)", type=["xml"])
-uploaded_visura = st.sidebar.file_uploader("Visura Camerale (.pdf)", type=["pdf"])
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
 
-if st.sidebar.button("Avvia Analisi"):
+name, authentication_status, username = authenticator.login('Login', 'main')
 
-    if not uploaded_xbrl or not uploaded_visura:
-        st.error("Carica sia il bilancio XBRL che la visura camerale per procedere.")
-    else:
-        # Log: caricamento file
-        log_evento("File caricati: avvio analisi")
+if authentication_status:
+    authenticator.logout('Logout', 'sidebar')
+    st.sidebar.write(f"Benvenuto **{name}** 👋")
 
-        # Estrazione dati
-        dati_bilancio = estrai_dati_bilancio(uploaded_xbrl)
-        anagrafica = estrai_anagrafica_visura(uploaded_visura)
+    # Titolo Dashboard
+    st.title("🛡️ Cruscotto Analisi Aziendale – eVoluto")
 
-        # Visualizzazione anagrafica
-        st.subheader("📌 Dati Anagrafici Azienda")
-        visualizza_anagrafica(anagrafica)
+    # Upload file (solo admin)
+    if username == "admin":
+        uploaded_files = st.file_uploader("Carica documenti aziendali (PDF visura, XBRL bilancio)", type=['pdf', 'xbrl'], accept_multiple_files=True)
+        if uploaded_files:
+            handle_uploaded_files(uploaded_files)
 
-        # Analisi finanziaria
-        st.subheader("📊 Analisi Finanziaria")
-        visualizza_analisi_finanziaria(dati_bilancio)
+    # Layout dashboard
+    render_dashboard()
 
-        # Macroarea
-        macroarea = assegna_macroarea(dati_bilancio)
-        st.success(f"📌 Macroarea Finanziaria Assegnata: {macroarea}")
-
-        # Invio GPT + Claude (automatizzato)
-        log_evento("Analisi inviata a GPT e Claude")
-
-        # Simulazione ricezione bandi (verranno da Claude prefiltrati + scoring)
-        df_bandi = pd.read_csv("data/bandi_filtrati.csv")
-        bandi_con_punteggio = calcola_scoring_bandi(df_bandi, dati_bilancio)
-
-        # Visualizzazione e filtro
-        st.subheader("🎯 Bandi Suggeriti")
-        visualizza_risultati_bandi(bandi_con_punteggio)
-
-        # Export
-        csv = bandi_con_punteggio.to_csv(index=False).encode("utf-8")
-        st.download_button("📥 Esporta in CSV", data=csv, file_name="bandi_suggeriti.csv", mime="text/csv")
+elif authentication_status is False:
+    st.error("Username o password non corretti.")
+elif authentication_status is None:
+    st.warning("Inserisci le credenziali per accedere.")
