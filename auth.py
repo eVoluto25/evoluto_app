@@ -1,72 +1,72 @@
-from config import AUTH_TIMEOUT, ADMIN_USER
-
 import streamlit as st
-from supabase import create_client, Client
-import datetime
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+from datetime import datetime, timedelta
 
-# Inizializzazione Supabase
-url = st.secrets["supabase"]["url"]
-key = st.secrets["supabase"]["key"]
-supabase: Client = create_client(url, key)
+# Configurazione utenti
+users = {
+    "admin": {
+        "name": "Admin User",
+        "password": stauth.Hasher(["admin_password"]).generate()[0],
+        "role": "admin"
+    },
+    "cliente1": {
+        "name": "Cliente 1",
+        "password": stauth.Hasher(["cliente_password"]).generate()[0],
+        "role": "cliente"
+    }
+}
 
-def admin_login():
-    st.subheader("Accesso Amministratore")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
-    if st.button("Login Admin"):
-        try:
-            user = supabase.auth.sign_in_with_password({"email": email, "password": password})
-            st.session_state["user"] = user
-            st.session_state["role"] = "admin"
-            st.session_state["last_activity"] = datetime.datetime.now()
-            st.success("Accesso effettuato come amministratore.")
-        except Exception as e:
-            st.error("Credenziali non valide.")
+# Config YAML simulato
+config = {
+    'credentials': {
+        'usernames': {
+            username: {
+                'name': data['name'],
+                'password': data['password']
+            } for username, data in users.items()
+        }
+    },
+    'cookie': {
+        'expiry_days': 0,
+        'key': 'random_cookie_key',
+        'name': 'streamlit_auth'
+    },
+    'preauthorized': {}
+}
 
-def client_login():
-    st.subheader("Accesso Cliente")
-    email = st.text_input("Email")
-    if st.button("Invia OTP"):
-        try:
-            supabase.auth.sign_in_with_otp({"email": email})
-            st.session_state["email"] = email
-            st.session_state["otp_sent"] = True
-            st.success("OTP inviato all'email fornita.")
-        except Exception as e:
-            st.error("Errore nell'invio dell'OTP.")
-    if st.session_state.get("otp_sent"):
-        otp = st.text_input("Inserisci OTP")
-        if st.button("Verifica OTP"):
-            try:
-                user = supabase.auth.verify_otp({"email": st.session_state["email"], "token": otp, "type": "email"})
-                st.session_state["user"] = user
-                st.session_state["role"] = "cliente"
-                st.session_state["last_activity"] = datetime.datetime.now()
-                st.success("Accesso effettuato come cliente.")
-            except Exception as e:
-                st.error("OTP non valido.")
+# Autenticazione
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days']
+)
 
-def check_session_timeout():
-    if "last_activity" in st.session_state and st.session_state.get("role") == "cliente":
-        now = datetime.datetime.now()
-        if (now - st.session_state["last_activity"]).seconds > 1800:
-            st.warning("Sessione scaduta. Effettua nuovamente l'accesso.")
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.experimental_rerun()
-        else:
-            st.session_state["last_activity"] = now
+name, authentication_status, username = authenticator.login("Login", "main")
 
-def main_auth():
-    if "user" not in st.session_state:
-        role = st.radio("Seleziona il tipo di accesso", ("Amministratore", "Cliente"))
-        if role == "Amministratore":
-            admin_login()
-        else:
-            client_login()
-    else:
-        check_session_timeout()
-        st.write(f"Benvenuto, {st.session_state['role']}")
+# Timeout della sessione
+if 'session_start_time' not in st.session_state:
+    st.session_state.session_start_time = datetime.now()
+else:
+    if datetime.now() - st.session_state.session_start_time > timedelta(minutes=30):
+        st.warning("Sessione scaduta. Effettua di nuovo il login.")
+        authenticator.logout("Logout", "sidebar")
+        st.stop()
 
-if __name__ == "__main__":
-    main_auth()
+# Autenticazione riuscita
+if authentication_status:
+    role = users[username]["role"]
+    st.session_state["username"] = username
+    st.session_state["role"] = role
+    authenticator.logout("Logout", "sidebar")
+    st.success(f"Benvenuto {name} ({role})")
+
+# Errore di login
+elif authentication_status is False:
+    st.error("Username o password errati")
+
+# In attesa di inserimento credenziali
+elif authentication_status is None:
+    st.info("Inserisci username e password")
