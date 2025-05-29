@@ -31,3 +31,9 @@ def extract_data_from_pdf(visura_file, bilancio_file):
     }
 
     return azienda_data
+
+
+def estrai_tutti_i_dati(xbrl_file, visura_file):
+    bilancio = estrai_dati_bilancio(xbrl_file)
+    anagrafica = estrai_anagrafica_visura(visura_file)
+    return bilancio, anagrafica
