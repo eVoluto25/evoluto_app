@@ -21,6 +21,7 @@ altair
 matplotlib
 
 # Streamlit UI extras
+streamlit-authenticator
 streamlit-aggrid
 streamlit-extras
 streamlit-option-menu
