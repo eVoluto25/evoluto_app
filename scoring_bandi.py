@@ -1,52 +1,46 @@
 
 import pandas as pd
 
-def calcola_scoring(bandi_df, analisi_finanziaria):
-    scoring_results = []
+def calcola_punteggio(row):
+    punteggio = 0
 
-    for _, bando in bandi_df.iterrows():
-        score = 5  # Punteggio base
+    # Peso per compatibilità macro area
+    if row['compatibilita_macro_area']:
+        punteggio += 30
 
-        # Esempio di incremento/decremento basato su indici di bilancio
-        if analisi_finanziaria['Current Ratio'] >= 1.5:
-            score += 1
-        elif analisi_finanziaria['Current Ratio'] < 1:
-            score -= 2
+    # Peso per forma agevolazione
+    if row['forma_agevolazione'] in ['fondo perduto', 'credito d’imposta']:
+        punteggio += 25
+    elif row['forma_agevolazione'] in ['finanziamento agevolato', 'tasso zero']:
+        punteggio += 15
 
-        if analisi_finanziaria['Debt/Equity'] <= 1:
-            score += 1
-        elif analisi_finanziaria['Debt/Equity'] > 2:
-            score -= 1
+    # Peso per dimensioni azienda
+    if row['dimensione_azienda'] == 'PMI':
+        punteggio += 20
+    elif row['dimensione_azienda'] == 'micro':
+        punteggio += 10
 
-        if analisi_finanziaria['EBITDA Margin'] >= 15:
-            score += 2
-        elif analisi_finanziaria['EBITDA Margin'] < 5:
-            score -= 2
+    # Peso per settorialità (compatibilità con codice ATECO)
+    if row['settore_compatibile']:
+        punteggio += 15
 
-        if analisi_finanziaria['Utile netto'] > 0:
-            score += 1
-        else:
-            score -= 1
+    # Peso per copertura geografica
+    if row['copertura_territoriale'] == 'regionale':
+        punteggio += 5
+    elif row['copertura_territoriale'] == 'nazionale':
+        punteggio += 10
 
-        # Filtro massimo e minimo
-        score = max(1, min(10, score))
+    return punteggio
 
-        scoring_results.append({
-            'ID_Incentivo': bando['ID_Incentivo'],
-            'Titolo': bando['Titolo'],
-            'Forma_agevolazione': bando['Forma_agevolazione'],
-            'Score': score
-        })
+def classifica_probabilita(punteggio):
+    if punteggio >= 80:
+        return 'Alta'
+    elif 50 <= punteggio < 80:
+        return 'Media'
+    else:
+        return 'Bassa'
 
-    return pd.DataFrame(scoring_results)
-
-if __name__ == "__main__":
-    bandi_df = pd.read_csv("data/bandi.csv")
-    analisi_finanziaria = {
-        'Current Ratio': 1.2,
-        'Debt/Equity': 1.1,
-        'EBITDA Margin': 12,
-        'Utile netto': 100000
-    }
-    risultati = calcola_scoring(bandi_df, analisi_finanziaria)
-    risultati.to_csv("data/risultati_scoring.csv", index=False)
+def applica_scoring(df):
+    df['punteggio'] = df.apply(calcola_punteggio, axis=1)
+    df['classificazione_probabilita'] = df['punteggio'].apply(classifica_probabilita)
+    return df
