@@ -1,6 +1,6 @@
 
 import streamlit as st
-from auth import login_user
+from auth_config import login_user
 from extractor import process_uploaded_files
 from streamlit_dashboard import render_dashboard
 from export_streamlit_data import export_results
