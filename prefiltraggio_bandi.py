@@ -1,3 +1,4 @@
+from config import MACRO_AREAS_KEYWORDS
 
 def prefiltra_bandi(bandi, azienda):
     bandi_filtrati = []

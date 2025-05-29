@@ -1,3 +1,4 @@
+from config import AUTH_TIMEOUT, ADMIN_USER
 
 import streamlit as st
 from supabase import create_client, Client
