@@ -5,7 +5,7 @@ from yaml.loader import SafeLoader
 from datetime import datetime, timedelta
 
 # Crea hash delle password in chiaro
-hashed_passwords = stauth.Hasher(["admin123", "cliente123"]).generate()
+hashed_passwords = stauth.Hasher("admin123", "cliente123").generate()
 
 # Definizione utenti
 users = {
