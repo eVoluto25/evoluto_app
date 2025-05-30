@@ -5,7 +5,7 @@ from claude_matcher import match_bandi_with_claude
 from sheets_writer import write_to_sheets
 from drive_utils import get_pdfs_from_drive
 from pdf_exporter import export_to_pdf
-from classificazione_macro_area import assegna_macroarea
+from classificazione_macroarea import assegna_macroarea
 
 app = FastAPI()
 
