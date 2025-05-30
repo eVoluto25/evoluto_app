@@ -1,44 +1,24 @@
-import streamlit as st
-# from evoluto_auth import login_user
-user_authenticated = True
-username = "Admin"
+from fastapi import FastAPI, Request
+from pdf_cleaner import clean_pdf_texts
+from gpt_handler import analyze_texts_with_gpt
+from claude_matcher import match_bandi_with_claude
+from sheets_writer import write_to_sheets
+from drive_utils import get_pdfs_from_drive
+from pdf_exporter import export_to_pdf
 
-from data_extractor import estrai_tutti_i_dati as process_uploaded_files
-from streamlit_dashboard import render_dashboard
-from export_streamlit_data import export_results
-from config import DASHBOARD_TITLE
+app = FastAPI()
 
-# Titolo dell'applicazione
-st.set_page_config(page_title=DASHBOARD_TITLE, layout="wide")
+@app.post("/process")
+async def process(request: Request):
+    data = await request.json()
+    folder_id = data["folder_id"]
+    azienda = data["azienda"]
 
-# Login e autenticazione
-user_authenticated, username = login_user()
+    pdfs = get_pdfs_from_drive(folder_id)
+    clean_texts = clean_pdf_texts(pdfs)
+    gpt_output = analyze_texts_with_gpt(clean_texts)
+    macro_area = write_to_sheets(gpt_output, azienda)
+    bandi = match_bandi_with_claude(gpt_output, macro_area)
+    export_to_pdf(azienda, bandi)
 
-if user_authenticated:
-    st.success(f"Benvenuto, {username}!")
-
-    # Area di caricamento file
-    st.sidebar.header("📁 Caricamento Documenti")
-    uploaded_balance = st.sidebar.file_uploader(
-        "Carica il bilancio in formato XBRL", type=["xbrl"])
-    uploaded_visura = st.sidebar.file_uploader(
-        "Carica la visura camerale (PDF)", type=["pdf"])
-
-    start_analysis = st.sidebar.button("📊 Avvia Analisi")
-
-    # Mostra il cruscotto anche se non sono stati caricati documenti
-    analysis_data = None
-    company_info = None
-
-    if start_analysis and (uploaded_balance or uploaded_visura):
-        with st.spinner("⏳ Elaborazione documenti in corso..."):
-            company_info, analysis_data = process_uploaded_files(
-                uploaded_balance, uploaded_visura)
-
-    # Cruscotto
-    render_dashboard(company_info, analysis_data)
-
-    # Esportazione risultati
-    export_results()
-else:
-    st.warning("🔒 Effettua il login per accedere al cruscotto.")
+    return {"status": "completato", "azienda": azienda}
