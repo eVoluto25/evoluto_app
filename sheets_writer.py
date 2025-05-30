@@ -1,18 +1,33 @@
 
-from config import SPREADSHEET_ID
 from googleapiclient.discovery import build
-from google.oauth2 import service_account
+from evoluto_auth import get_google_credentials
+
+SPREADSHEET_ID = "your_spreadsheet_id_here"  # Inserisci il tuo Spreadsheet ID
+SHEET_NAME = "Scheda Azienda"
+
+def scrivi_macroarea_in_scheda(sheet, macroarea):
+    mappa_righe = {
+        "Crisi o Risanamento Aziendale": 42,
+        "Crescita e Sviluppo (Start up, PMI, investimenti)": 43,
+        "Espansione, Mercati Esteri e Transizione Ecologica": 44
+    }
+
+    riga = mappa_righe.get(macroarea)
+    if riga:
+        range_x = f"B{riga}"
+        sheet.values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{SHEET_NAME}!{range_x}",
+            valueInputOption="RAW",
+            body={"values": [["X"]]}
+        ).execute()
 
 def write_to_sheets(analisi, azienda):
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-    SERVICE_ACCOUNT_FILE = 'keys/credentials.json'
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=creds)
+    creds = get_google_credentials()
+    service = build("sheets", "v4", credentials=creds)
     sheet = service.spreadsheets()
 
-    # Dati anagrafici
-    valori_base = [
+    valori_base1 = [
         azienda.get("denominazione", ""),
         azienda.get("forma_giuridica", ""),
         azienda.get("codice_ateco", ""),
@@ -24,44 +39,23 @@ def write_to_sheets(analisi, azienda):
         azienda.get("citta", ""),
         azienda.get("amministratore", "")
     ]
-    range_base = "B3:B12"
     sheet.values().update(
         spreadsheetId=SPREADSHEET_ID,
-        range=range_base,
+        range=f"{SHEET_NAME}!B2:B12",
         valueInputOption="RAW",
-        body={"values": [[v] for v in valori_base]}
+        body={"values": [[v] for v in valori_base1]}
     ).execute()
 
-    # Celle fisse per gli indici da B19 in giù (salti riga 25, 26, 34, 35 per spazi e intestazioni)
-    celle_valori = [
-        "B19", "B20", "B21", "B22", "B22", "B24",
-        "B27", "B28", "B29", "B30", "B31", "B32", "B33",
-        "B36", "B37"
-    ]
-    celle_commenti = [c.replace("B", "C") for c in celle_valori]
-    celle_valutazioni = [c.replace("B", "D") for c in celle_valori]
-
     indici = analisi.get("indici", [])
-    for i, cella in enumerate(celle_valori):
-        if i >= len(indici):
-            break
-        sheet.values().update(
-            spreadsheetId=SPREADSHEET_ID,
-            range=f"{cella}:{cella}",
-            valueInputOption="RAW",
-            body={"values": [[indici[i].get("valore", "")]]}
-        ).execute()
-        sheet.values().update(
-            spreadsheetId=SPREADSHEET_ID,
-            range=f"{celle_commenti[i]}:{celle_commenti[i]}",
-            valueInputOption="RAW",
-            body={"values": [[indici[i].get("commento", "")]]}
-        ).execute()
-        sheet.values().update(
-            spreadsheetId=SPREADSHEET_ID,
-            range=f"{celle_valutazioni[i]}:{celle_valutazioni[i]}",
-            valueInputOption="RAW",
-            body={"values": [[indici[i].get("valutazione", "")]]}
-        ).execute()
+    valori = [[i.get("valore", ""), i.get("commento", ""), i.get("valutazione", "")] for i in indici]
+    range_indici = f"{SHEET_NAME}!B18:D{18 + len(valori) - 1}"
+    sheet.values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_indici,
+        valueInputOption="RAW",
+        body={"values": valori}
+    ).execute()
+
+    scrivi_macroarea_in_scheda(sheet, analisi.get("macroarea"))
 
     return analisi.get("macroarea", "Non definita")
