@@ -59,6 +59,8 @@ Per ogni voce dell’area economico-finanziaria (da "Fatturato annuo" in poi), r
   ...
 }
 
+Se il documento contiene dati per più esercizi (es. 2022 e 2023), esegui le estrazioni solo sull’anno più recente. Tuttavia, formula i commenti e assegna la valutazione (🟢, 🟡, 🔴) confrontando l’indicatore con gli anni precedenti disponibili. Se è disponibile solo un anno, limita il commento alla valutazione semplice.
+
 ❌ Non aggiungere nessun dato extra.  
 ❗ Usa il nome delle chiavi esattamente come indicato, senza modificarlo.  
 ✅ Se un valore è assente o non disponibile, scrivi "ND".
