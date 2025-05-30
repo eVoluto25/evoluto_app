@@ -4,6 +4,10 @@ from google.oauth2.service_account import Credentials
 # ID del foglio Google Sheets
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
+EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_RECEIVER = os.environ.get("EMAIL_RECEIVER")
+
 # Funzione per ottenere le credenziali Google
 def get_google_credentials():
     credentials_info = {
