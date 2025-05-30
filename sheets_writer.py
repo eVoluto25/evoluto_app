@@ -1,32 +1,17 @@
 
-from google.oauth2 import service_account
+from config import SPREADSHEET_ID
 from googleapiclient.discovery import build
-import os
-
-# Autenticazione con Google Sheets API
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-SERVICE_ACCOUNT_INFO = {
-    "type": "service_account",
-    "project_id": os.getenv("GOOGLE_PROJECT_ID"),
-    "private_key_id": os.getenv("GOOGLE_PRIVATE_KEY_ID"),
-    "private_key": os.getenv("GOOGLE_PRIVATE_KEY").replace('\\n', '\n'),
-    "client_email": os.getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL"),
-    "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-    "auth_uri": os.getenv("GOOGLE_AUTH_URI", "https://accounts.google.com/o/oauth2/auth"),
-    "token_uri": os.getenv("GOOGLE_TOKEN_URI", "https://oauth2.googleapis.com/token"),
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": os.getenv("GOOGLE_CERT_URL", "")
-}
-
-credentials = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO, scopes=SCOPES)
-service = build('sheets', 'v4', credentials=credentials)
-
-# ID del foglio Google da aggiornare
-SPREADSHEET_ID = os.getenv("GOOGLE_SHEET_ID", "")
+from google.oauth2 import service_account
 
 def write_to_sheets(analisi, azienda):
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+    SERVICE_ACCOUNT_FILE = 'keys/credentials.json'
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=creds)
     sheet = service.spreadsheets()
 
+    # Dati anagrafici
     valori_base = [
         azienda.get("denominazione", ""),
         azienda.get("forma_giuridica", ""),
@@ -47,15 +32,36 @@ def write_to_sheets(analisi, azienda):
         body={"values": [[v] for v in valori_base]}
     ).execute()
 
-    # Scrittura indici
+    # Celle fisse per gli indici da B18 in giù (salti riga 25, 33, 42 per intestazioni)
+    celle_valori = [
+        "B18", "B19", "B20", "B21", "B22", "B23",
+        "B26", "B27", "B28", "B29", "B30", "B31", "B32",
+        "B35", "B36"
+    ]
+    celle_commenti = [c.replace("B", "C") for c in celle_valori]
+    celle_valutazioni = [c.replace("B", "D") for c in celle_valori]
+
     indici = analisi.get("indici", [])
-    valori = [[i.get("valore", ""), i.get("commento", "")] for i in indici]
-    range_indici = "B17:C" + str(17 + len(valori) - 1)
-    sheet.values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range=range_indici,
-        valueInputOption="RAW",
-        body={"values": valori}
-    ).execute()
+    for i, cella in enumerate(celle_valori):
+        if i >= len(indici):
+            break
+        sheet.values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{cella}:{cella}",
+            valueInputOption="RAW",
+            body={"values": [[indici[i].get("valore", "")]]}
+        ).execute()
+        sheet.values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{celle_commenti[i]}:{celle_commenti[i]}",
+            valueInputOption="RAW",
+            body={"values": [[indici[i].get("commento", "")]]}
+        ).execute()
+        sheet.values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{celle_valutazioni[i]}:{celle_valutazioni[i]}",
+            valueInputOption="RAW",
+            body={"values": [[indici[i].get("valutazione", "")]]}
+        ).execute()
 
     return analisi.get("macroarea", "Non definita")
