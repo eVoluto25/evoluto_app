@@ -17,7 +17,7 @@ async def process(request: Request):
     pdfs = get_pdfs_from_drive(folder_id)
     clean_texts = clean_pdf_texts(pdfs)
     gpt_output = analyze_texts_with_gpt(clean_texts)
-    macro_area = write_to_sheets(gpt_output, azienda)
+    macro_area = write_to_sheets(gpt_output, azienda)  # gpt_output include valore + commento + colore
     bandi = match_bandi_with_claude(gpt_output, macro_area)
     export_to_pdf(azienda, bandi)
 
