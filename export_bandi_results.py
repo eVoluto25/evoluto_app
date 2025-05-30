@@ -1,4 +1,4 @@
-from google.oauth2.service_account import Credentials
+from config import get_google_credentials, SPREADSHEET_ID
 import gspread
 
 # Costanti
@@ -9,7 +9,7 @@ FOGLIO_BANDI = "Bandi"
 
 # Connessione a Google Sheets
 def get_sheet():
-    creds = Credentials.from_service_account_file("path/to/credentials.json", scopes=SCOPES)
+    creds = get_google_credentials()
     client = gspread.authorize(creds)
     sheet = client.open_by_key(SPREADSHEET_ID)
     return sheet.worksheet("Bandi")
