@@ -5,6 +5,7 @@ from claude_matcher import match_bandi_with_claude
 from sheets_writer import write_to_sheets
 from drive_utils import get_pdfs_from_drive
 from pdf_exporter import export_to_pdf
+from classificazione_macro_area import assegna_macroarea
 
 app = FastAPI()
 
@@ -17,8 +18,9 @@ async def process(request: Request):
     pdfs = get_pdfs_from_drive(folder_id)
     clean_texts = clean_pdf_texts(pdfs)
     gpt_output = analyze_texts_with_gpt(clean_texts)
-    macro_area = write_to_sheets(gpt_output, azienda)  # gpt_output include valore + commento + colore
-    bandi = match_bandi_with_claude(gpt_output, macro_area)
+    macroarea = assegna_macroarea(gpt_output)
+    macro_area = write_to_sheets(gpt_output, azienda, macroarea)  # gpt_output include valore + commento + colore
+    bandi = match_bandi_with_claude(gpt_output, macroarea)
     export_to_pdf(azienda, bandi)
 
     return {"status": "completato", "azienda": azienda}
