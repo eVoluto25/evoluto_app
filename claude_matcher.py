@@ -1,70 +1,57 @@
-import openai
+import anthropic
 import os
+import json
 
-CLAUDE_API_KEY = os.getenv("CLAUDE_KEY")
+client = anthropic.Anthropic(
+    api_key=os.getenv("CLAUDE_KEY")
+)
 
-def match_bandi_with_claude(bandi_filtrati, analisi_azienda):
-    import openai
+def match_bandi_with_claude(analisi_gpt, bandi_filtrati):
+    prompt = f"""
+Hai a disposizione:
+- Un elenco di bandi già filtrati per macroarea
+- Un’analisi finanziaria dettagliata dell’azienda
 
-    prompt = f"""Seleziona e valuta i bandi in base ai seguenti criteri.
+Il tuo compito è associare ad ogni bando un punteggio da 0 a 100, basato su:
 
-🎯 1. Criteri di Scoring e Pesi
+🎯 Criteri:
+A. Compatibilità con la Macro Area – 30%
+B. Solidità Finanziaria (EBITDA, utile, debito) – 25%
+C. Forma dell’agevolazione (fondo perduto > credito d’imposta > prestito) – 15%
+D. Dimensione aziendale (PMI, startup) – 10%
+E. Capacità di co-finanziamento – 10%
+F. Coerenza con territorio e ATECO – 10%
 
-🔹 A. Compatibilità con la Macro Area – 30%
-• Se l’azienda appartiene alla stessa macro area del bando, punteggio pieno.
-• Se afferente ma non perfettamente allineata, punteggio parziale.
+🎯 Output:
+Rispondi solo con una lista di dizionari JSON, ognuno con:
+– titolo (nome_bando)
+– agevolazione
+– obiettivo
+– apertura
+– scadenza
+– punteggio (0–100)
+– valutazione (in stelle: 1, 3 o 5)
 
-🔹 B. Solidità Finanziaria – 25%
-• Valutazione basata su:
-    - EBITDA Margin > 10%
-    - Utile netto positivo
-    - Debt/Equity tra 0.5 e 2
-• Se uno o più indicatori sono critici, penalizzazione progressiva.
+Classifica i bandi in ordine decrescente di punteggio. Inserisci solo quelli con punteggio ≥ 50. Min. 5, Max 20.
 
-🔹 C. Forma dell’agevolazione – 15%
-• Fondo perduto: massimo punteggio
-• Credito d’imposta: medio
-• Finanziamento agevolato: basso
+Analisi azienda:
+{analisi_gpt}
 
-🔹 D. Dimensione Aziendale – 10%
-• Se il bando è per PMI e l’azienda è PMI → + punti
-• Se mismatch → penalità
-
-🔹 E. Capacità di co-finanziamento / Spesa ammessa – 10%
-• Se l’azienda ha capacità di sostenere la spesa ammessa → + punti
-
-🔹 F. Territorio e Settore ATECO – 10%
-• Coerenza tra bando e localizzazione / settore aziendale
-
-🧮 Output atteso:
-Per ogni bando restituisci un oggetto JSON così strutturato:
-[
-  {{
-    "titolo": "...",
-    "agevolazione": "...",
-    "obiettivo": "...",
-    "apertura": "...",
-    "scadenza": "...",
-    "punteggio": 87,
-    "valutazione": "Alta probabilità di aggiudicazione",
-    "importo": 150000
-  }},
-  ...
-]
-
-Bandi da valutare: {bandi_filtrati}
-Analisi azienda: {analisi_azienda}
+Bandi filtrati:
+{bandi_filtrati}
 """
 
-    response = openai.ChatCompletion.create(
+    response = client.messages.create(
         model="claude-3-sonnet-20240229",
-        messages=[{"role": "user", "content": prompt}],
-        api_key=CLAUDE_API_KEY
+        max_tokens=4096,
+        temperature=0.4,
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
     )
 
-    import json
-    result_text = response.choices[0].message["content"]
     try:
-        return json.loads(result_text)
-    except Exception:
+        return json.loads(response.content[0].text)
+    except Exception as e:
+        print("Errore nella conversione JSON:", e)
         return []
