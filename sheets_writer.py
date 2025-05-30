@@ -62,12 +62,12 @@ def write_to_sheets(analisi, azienda):
             body={"values": [[indici[i].get("valutazione", "")]]}
         ).execute()
 
-    # Scrittura macroarea con X nelle righe 42, 43, 44
+    # Scrittura macroarea con ✔️ nelle righe 42, 43, 44
     macroarea = analisi.get("macroarea", "Non definita")
     mappa_macro = {
-        "Crisi o Risanamento Aziendale": "C42",
-        "Crescita e Sviluppo": "C43",
-        "Espansione, Mercati Esteri e Transizione Ecologica": "C44"
+        "🔴 1. Crisi o Risanamento Aziendale": "C42",
+        "🟠 2. Crescita e Sviluppo (Start up, PMI, investimenti)": "C43",
+        "🟢 3. Espansione, Mercati Esteri e Transizione Ecologica": "C44"
     }
 
     cella_macro = mappa_macro.get(macroarea)
