@@ -13,9 +13,10 @@ def get_sheet():
 
 # Esporta bandi selezionati nella tabella
 def export_bandi_results(bandi):
-    MIN_BANDI = 3
-    MAX_BANDI = 10
+    MIN_BANDI = 5
+    MAX_BANDI = 20
 
+    bandi.sort(key=lambda x: x.get("punteggio", 0), reverse=True)
     bandi_selezionati = bandi[:MAX_BANDI]
     if len(bandi_selezionati) < MIN_BANDI:
         raise ValueError("Non ci sono abbastanza bandi idonei per procedere.")
