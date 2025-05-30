@@ -23,3 +23,6 @@ cryptography
 extractor
 uvicorn
 fastapi
+google-auth
+oauth2client
+email-validator
