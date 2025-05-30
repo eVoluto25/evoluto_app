@@ -22,7 +22,7 @@ async def process(request: Request):
     clean_texts = clean_pdf_texts(pdfs)
     gpt_output = analyze_texts_with_gpt(clean_texts)
     
-    macroarea = classifica_macro_area(gpt_output)
+    macroarea = assegna_macroarea(gpt_output)
     bandi = fetch_bandi()
     bandi_filtrati = filtra_bandi_per_macroarea(bandi, macroarea)
     
