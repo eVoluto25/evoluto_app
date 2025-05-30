@@ -1,44 +1,23 @@
+import os
+from google.oauth2.service_account import Credentials
 
-# config.py – Centralizzazione delle costanti per il progetto eVoluto
+# ID del foglio Google Sheets
+SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
-DASHBOARD_TITLE = "il metodo eVoluto"
+# Funzione per ottenere le credenziali Google
+def get_google_credentials():
+    credentials_info = {
+        "type": "service_account",
+        "project_id": os.environ.get("GOOGLE_PROJECT_ID"),
+        "private_key_id": os.environ.get("GOOGLE_PRIVATE_KEY_ID"),
+        "private_key": os.environ.get("GOOGLE_PRIVATE_KEY").replace("\\n", "\n"),
+        "client_email": os.environ.get("GOOGLE_SERVICE_ACCOUNT_EMAIL"),
+        "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+        "auth_uri": os.environ.get("GOOGLE_AUTH_URI", "https://accounts.google.com/o/oauth2/auth"),
+        "token_uri": os.environ.get("GOOGLE_TOKEN_URI"),
+        "auth_provider_x509_cert_url": os.environ.get("GOOGLE_AUTH_PROVIDER_CERT_URL", "https://www.googleapis.com/oauth2/v1/certs"),
+        "client_x509_cert_url": os.environ.get("GOOGLE_CLIENT_CERT_URL"),
+        "universe_domain": os.environ.get("GOOGLE_UNIVERSE_DOMAIN", "googleapis.com"),
+    }
 
-# === Scoring e Classificazione Macro Aree ===
-THRESHOLDS = {
-    "current_ratio": 1.0,
-    "debt_equity_high": 2.0,
-    "debt_equity_low": 0.5,
-    "ebitda_margin_low": 5.0,
-    "ebitda_margin_medium": 10.0,
-    "ebitda_margin_high": 15.0,
-}
-
-# === Scoring Bandi ===
-SCORING_WEIGHTS = {
-    "solidita_finanziaria": 0.4,
-    "compatibilita_macro_area": 0.3,
-    "dimensioni_impresa": 0.3
-}
-
-SCORING_CLASSIFICATION = {
-    "alta": 80,
-    "media": 50,
-    "bassa": 0
-}
-
-# === File e Sicurezza ===
-TEMP_STORAGE_PATH = "/tmp/evoluto_uploads"
-KEY_EXPIRATION_MINUTES = 10
-MAX_FILE_SIZE_MB = 10
-
-# === Cruscotto Streamlit ===
-DEFAULT_ANALYSIS_TIMEOUT_MIN = 30
-USER_SESSION_TIMEOUT_MIN = 30
-
-# === Supabase / Storage ===
-SUPABASE_ANALYSIS_FOLDER = "analisi_clienti"
-SUPABASE_KEY_FIELD = "user_id"
-
-# === Log e Audit ===
-LOG_LEVEL = "INFO"
-LOG_FILE_PATH = "logs/evoluto_audit.log"
+    return Credentials.from_service_account_info(credentials_info)
