@@ -24,7 +24,7 @@ def write_to_sheets(analisi, azienda):
         azienda.get("citta", ""),
         azienda.get("amministratore", "")
     ]
-    range_base = "B2:B11"
+    range_base = "B3:B12"
     sheet.values().update(
         spreadsheetId=SPREADSHEET_ID,
         range=range_base,
@@ -32,11 +32,11 @@ def write_to_sheets(analisi, azienda):
         body={"values": [[v] for v in valori_base]}
     ).execute()
 
-    # Celle fisse per gli indici da B18 in giù (salti riga 25, 33, 42 per intestazioni)
+    # Celle fisse per gli indici da B19 in giù (salti riga 25, 26, 34, 35 per spazi e intestazioni)
     celle_valori = [
-        "B18", "B19", "B20", "B21", "B22", "B23",
-        "B26", "B27", "B28", "B29", "B30", "B31", "B32",
-        "B35", "B36"
+        "B19", "B20", "B21", "B22", "B22", "B24",
+        "B27", "B28", "B29", "B30", "B31", "B32", "B33",
+        "B36", "B37"
     ]
     celle_commenti = [c.replace("B", "C") for c in celle_valori]
     celle_valutazioni = [c.replace("B", "D") for c in celle_valori]
