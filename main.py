@@ -9,6 +9,7 @@ from classificazione_macroarea import assegna_macroarea
 from supabase_connector import fetch_bandi
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
+from email_utils import send_analysis_email
 
 app = FastAPI()
 
@@ -30,7 +31,6 @@ async def process(request: Request):
     
     bandi = match_bandi_with_claude(gpt_output, bandi_filtrati)
 
-    return {"status": "completato", "azienda": azienda}
+    send_analysis_email(azienda)
 
-from email_utils import send_analysis_email
-send_analysis_email(azienda)
+    return {"status": "completato", "azienda": azienda}
