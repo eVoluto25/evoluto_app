@@ -1,5 +1,5 @@
 
-def classifica_macroarea(indici):
+def assegna_macroarea(indici):
     """
     Assegna una macroarea aziendale in base agli indici finanziari forniti.
     Gli indici devono essere passati come dizionario con i seguenti campi:
