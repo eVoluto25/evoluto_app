@@ -1,7 +1,7 @@
 
-def classifica_macro_area(indici):
+def classifica_macroarea(indici):
     """
-    Assegna una macro-area aziendale in base agli indici finanziari forniti.
+    Assegna una macroarea aziendale in base agli indici finanziari forniti.
     Gli indici devono essere passati come dizionario con i seguenti campi:
     - current_ratio
     - debt_equity
