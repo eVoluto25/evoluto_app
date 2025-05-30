@@ -8,5 +8,5 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 def fetch_bandi():
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    response = supabase.table("bandi").select("*").execute()
+    response = supabase.table("bandi_disponibili").select("*").execute()
     return response.data if response.data else []
