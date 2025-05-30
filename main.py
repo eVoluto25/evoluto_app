@@ -31,3 +31,6 @@ async def process(request: Request):
     bandi = match_bandi_with_claude(gpt_output, bandi_filtrati)
 
     return {"status": "completato", "azienda": azienda}
+
+from email_utils import send_analysis_email
+send_analysis_email(azienda)
