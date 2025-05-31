@@ -7,7 +7,7 @@ import re
 import logging
 from datetime import datetime
 from pydrive2.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+from pydrive2.drive import GoogleDrive
 
 # === CONFIGURAZIONE LOGGING ===
 logging.basicConfig(
