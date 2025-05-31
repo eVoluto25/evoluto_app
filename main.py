@@ -12,6 +12,7 @@ from supabase_connector import fetch_bandi
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
 from email_utils import send_analysis_email
+from config import SPREADSHEET_ID
 
 setup_logging()
 logger = logging.getLogger(__name__)
