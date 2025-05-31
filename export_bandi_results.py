@@ -31,20 +31,21 @@ def export_bandi_results(bandi):
     stanziamento = sum(b.get("importo", 0) for b in bandi_selezionati)
     sheet.update("A2", [[stanziamento]])
 
-    # Scrive i bandi da riga 6 in poi, colonne A-G
+    # Scrive i bandi da riga 6 in poi, colonne A-H
     for i, bando in enumerate(bandi_selezionati):
         riga = 6 + i
         punteggio = bando.get("punteggio", 0)
         stelle = "⭐️⭐️⭐️⭐️⭐️" if punteggio >= 80 else "⭐️⭐️⭐️" if punteggio >= 50 else "⭐️"
         valori = [
-            bando.get("titolo", ""),
-            bando.get("agevolazione", ""),
-            bando.get("obiettivo", ""),
-            bando.get("apertura", ""),
-            bando.get("scadenza", ""),
+            bando.get("Titolo", ""),
+            bando.get("Forma_agevolazione", ""),
+            bando.get("Obiettivo_Finalita", ""),
+            bando.get("Stanziamento_incentivo", 0),
+            bando.get("Data_apertura", ""),
+            bando.get("Data_chiusura", ""),
             bando.get("🔸 Punteggio 0 – 100", ""),
             bando.get("🔸 Classificazione qualitativa", "")
         ]
         cella_inizio = f"A{riga}"
-        cella_fine = f"G{riga}"
+        cella_fine = f"H{riga}"
         sheet.update(f"{cella_inizio}:{cella_fine}", [valori])
