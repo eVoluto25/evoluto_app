@@ -42,5 +42,5 @@ for record in bandi_aperti:
 
 print("Aggiornamento completato.")
 
-from notifica import invia_notifica_email
+from email_utils import invia_notifica_email
 invia_notifica_email()
