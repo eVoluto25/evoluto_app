@@ -4,7 +4,7 @@ import json
 url = "https://evoluto-app-wa89.onrender.com/process"
 
 data = {
-    "folder_id": "1EKqeDRdoVAk9S9tQyUwXQCsUkKkxnfB7",
+    "folder_id": "1EKqeDRdoVAk9S9tQyUwXQCsUkKkxnfb7",  # solo ID, non link
     "azienda": {
         "denominazione": "Test Srl"
     }
