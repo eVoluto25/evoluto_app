@@ -47,12 +47,11 @@ async def process(request: Request):
         bandi_filtrati = filtra_bandi_per_macroarea(bandi, macroarea)
         logger.info(f"🔍 Filtrati {len(bandi_filtrati)} bandi rilevanti 📊 per la macroarea")
     
-        write_to_sheets(gpt_output, azienda, macroarea)
-        logger.info("📑 Bandi trascritti nella tabella ⌨️ 🧮")
-        logger.info("📊 Scrittura dati 📊 completata") 
-    
-        bandi = match_bandi_with_claude(gpt_output, bandi_filtrati)
-        logger.info("🧠 🤼‍♂️ Matching bandi idonei 📚 completato")
+        bandi_idonei = match_bandi_with_claude(gpt_output, bandi_filtrati)
+        logger.info(f"🤖 ✅ Matching bandi idonei ✅ completato")
+
+        export_bandi_results(bandi_idonei, SPREADSHEET_ID)
+        logger.info("📊 ⌨️ Scrittura bandi idonei su foglio Google Sheets completata")
 
         send_analysis_email(azienda)
         logger.info(f"✅ Processo concluso ed email inviata al Team eVoluto {EMAIL_TO} per: {azienda}")
