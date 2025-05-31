@@ -46,6 +46,18 @@ def upload_to_drive(folder_name):
         gauth.LocalWebserverAuth()
         drive = GoogleDrive(gauth)
 
+        parent_id = os.getenv("DRIVE_PARENT_FOLDER_ID")
+
+        folder_metadata = {
+        'title': folder_name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': [{'id': parent_id}]
+        }
+
+        folder = drive.CreateFile(folder_metadata)
+        folder.Upload()
+        folder_id = folder['id']
+
         file_list = os.listdir(folder_name)
         for file_name in file_list:
             file_path = os.path.join(folder_name, file_name)
