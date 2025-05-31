@@ -1,8 +1,15 @@
-def write_to_sheets(dati, azienda, macroarea):
-    from googleapiclient.discovery import build
-    from evoluto_auth import get_google_credentials
-    from config import SPREADSHEET_ID
+import os
+import json
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from config import SPREADSHEET_ID
 
+def get_google_credentials():
+    creds_json = os.getenv("GOOGLE_SERVICE_ACCOUNT")
+    creds_info = json.loads(creds_json)
+    return service_account.Credentials.from_service_account_info(creds_info)
+
+def write_to_sheets(dati, azienda, macroarea):
     creds = get_google_credentials()
     service = build('sheets', 'v4', credentials=creds)
     sheet = service.spreadsheets()
