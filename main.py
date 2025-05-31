@@ -24,7 +24,7 @@ async def process(request: Request):
     folder_id = data["folder_id"]
     azienda = data["azienda"]
 
-    logger.info(f"🚀 Avviata Verifiaca aziendale per società: {azienda}")
+    logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
 
     pdfs = get_pdfs_from_drive(folder_id)
     logger.info("📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
@@ -33,6 +33,7 @@ async def process(request: Request):
     logger.info("🧹 Testi PDF puliti e filtrati")
     
     gpt_output = analyze_texts_with_gpt(clean_texts)
+    logger.info("studio 💻 ed elaborazione indici 📈 di bilancio")
     logger.info("🧠 📊 Analisi Finanziaria AI completata")
     
     macroarea = assegna_macroarea(gpt_output)
@@ -45,13 +46,13 @@ async def process(request: Request):
     logger.info(f"🔍 Filtrati {len(bandi_filtrati)} bandi rilevanti 📊 per la macroarea")
     
     write_to_sheets(gpt_output, azienda, macroarea)
-    logger.info("📑 Bandi trascritti nella tabella ⌨️ 💰")
-    logger.info("📊 Scrittura dati 📊 completata")il 
+    logger.info("📑 Bandi trascritti nella tabella ⌨️ 🧮")
+    logger.info("📊 Scrittura dati 📊 completata") 
     
     bandi = match_bandi_with_claude(gpt_output, bandi_filtrati)
     logger.info("🧠 🤼‍♂️ Matching bandi idonei 📚 completato")
 
     send_analysis_email(azienda)
-    logger.info(f"✅ Processo completato ed email inviata al Team eVoluto {EMAIL_TO} per: {azienda}")
+    logger.info(f"✅ Processo concluso ed email inviata al Team eVoluto {EMAIL_TO} per: {azienda}")
 
     return {"status": "completato", "azienda": azienda}
