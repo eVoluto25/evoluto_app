@@ -27,7 +27,7 @@ async def process(request: Request):
     logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
 
     pdfs = get_pdfs_from_drive(folder_id)
-    logger.info("📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
+    logger.info(f"📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
     
     clean_texts = clean_pdf_texts(pdfs)
     logger.info("🧹 Testi PDF puliti e filtrati")
