@@ -64,3 +64,5 @@ Se il documento contiene dati per più esercizi (es. 2022 e 2023), esegui le est
 ❌ Non aggiungere nessun dato extra.  
 ❗ Usa il nome delle chiavi esattamente come indicato, senza modificarlo.  
 ✅ Se un valore è assente o non disponibile, scrivi "ND".
+
+{text}
