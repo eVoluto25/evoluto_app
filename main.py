@@ -13,6 +13,8 @@ from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
 from email_utils import send_analysis_email
 from config import SPREADSHEET_ID
+from email_receiver import process_emails
+process_emails()
 
 setup_logging()
 logger = logging.getLogger(__name__)
