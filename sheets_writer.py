@@ -13,7 +13,7 @@ def write_to_sheets(dati, azienda, macroarea):
     creds = get_google_credentials()
     service = build('sheets', 'v4', credentials=creds)
     sheet = service.spreadsheets()
-    gpt_output = dai.get("gpt_output", {})
+    gpt_output = dati.get("gpt_output", {})
 
     # Scrittura dati aziendali
     valori_base = [
