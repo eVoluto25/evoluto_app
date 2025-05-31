@@ -32,6 +32,7 @@ async def process(request: Request):
     clean_texts = clean_pdf_texts(pdfs)
     logger.info("🧹 Testi PDF puliti e filtrati")
     
+    logger.info(f"📤 Invio testi per analisi finanziaria 📈, lunghezza: {len(clean_texts)} caratteri")
     gpt_output = analyze_texts_with_gpt(clean_texts)
     logger.info("studio 💻 ed elaborazione indici 📈 di bilancio")
     logger.info("🧠 📊 Analisi Finanziaria AI completata")
