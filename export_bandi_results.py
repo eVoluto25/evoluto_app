@@ -1,4 +1,4 @@
-from config import get_google_credentials, SPREADSHEET_ID
+from config import get_google_credentials
 import gspread
 
 # Costanti
@@ -11,11 +11,11 @@ FOGLIO_BANDI = "Bandi"
 def get_sheet():
     creds = get_google_credentials()
     client = gspread.authorize(creds)
-    sheet = client.open_by_key(SPREADSHEET_ID)
+    sheet = client.open_by_key(spreadsheet_id)
     return sheet.worksheet("Bandi")
 
 # Esporta bandi selezionati nella tabella
-def export_bandi_results(bandi):
+def export_bandi_results(bandi, spreadsheet_id):
     MIN_BANDI = 5
     MAX_BANDI = 20
 
