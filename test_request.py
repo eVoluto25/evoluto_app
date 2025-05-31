@@ -1,7 +1,7 @@
 import requests
 import json
 
-url = "https://evoluto-app-wa89.onrender.com"
+url = "https://evoluto-app-wa89.onrender.com/request"
 
 data = {
     "folder_id": "1EKqeDRdoVAk9S9tQyUwXQCsUkKkxnfB7",
