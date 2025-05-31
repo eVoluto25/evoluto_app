@@ -20,9 +20,10 @@ app = FastAPI()
 
 @app.post("/process")
 async def process(request: Request):
-    data = await request.json()
-    folder_id = data["folder_id"]
-    azienda = data["azienda"]
+    try:
+        data = await request.json()
+        folder_id = data["folder_id"]
+        azienda = data["azienda"]
 
     logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
 
@@ -57,3 +58,7 @@ async def process(request: Request):
     logger.info(f"✅ Processo concluso ed email inviata al Team eVoluto {EMAIL_TO} per: {azienda}")
 
     return {"status": "completato", "azienda": azienda}
+
+except Exception as e:
+    logger.exception("❌ Errore durante l'elaborazione della richiesta")
+    return {"status": "errore", "dettaglio": str(e)}
