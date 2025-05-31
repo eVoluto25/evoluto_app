@@ -3,84 +3,94 @@ import imaplib
 import email
 from email.header import decode_header
 import os
-import json
+import re
 import logging
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
+from datetime import datetime
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# === CONFIGURAZIONE LOGGING ===
+logging.basicConfig(
+    filename="email_processor.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-# ENV from Render
-EMAIL_SENDER = os.getenv("EMAIL_SENDER")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-GOOGLE_SERVICE_ACCOUNT = os.getenv("GOOGLE_SERVICE_ACCOUNT")
+# === VARIABILI ===
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
+IMAP_SERVER = "imap.gmail.com"
 
-# Google Drive setup
-SCOPES = ["https://www.googleapis.com/auth/drive"]
-creds_info = json.loads(GOOGLE_SERVICE_ACCOUNT)
-creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
-drive_service = build("drive", "v3", credentials=creds)
+# === FUNZIONI ===
 
-def create_drive_folder(folder_name):
-    file_metadata = {
-        "name": folder_name,
-        "mimeType": "application/vnd.google-apps.folder"
-    }
-    folder = drive_service.files().create(body=file_metadata, fields="id").execute()
-    logging.info(f"Created folder '{folder_name}' with ID: {folder.get('id')}")
-    return folder.get("id")
+def connect_email():
+    try:
+        mail = imaplib.IMAP4_SSL(IMAP_SERVER)
+        mail.login(EMAIL_USER, EMAIL_PASS)
+        mail.select("inbox")
+        logging.info("📥 Connessione email stabilita")
+        return mail
+    except Exception as e:
+        logging.error(f"❌ Errore connessione email: {e}")
+        return None
 
-def upload_to_drive(folder_id, filename, filepath):
-    file_metadata = {
-        "name": filename,
-        "parents": [folder_id]
-    }
-    media = MediaFileUpload(filepath, mimetype="application/pdf")
-    drive_service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-    logging.info(f"Uploaded '{filename}' to folder ID: {folder_id}")
+def clean_subject(subject):
+    subject = decode_header(subject)[0][0]
+    if isinstance(subject, bytes):
+        subject = subject.decode()
+    return re.sub(r"[^\w\s-]", "", subject).strip()
 
-def process_emails():
-    imap = imaplib.IMAP4_SSL("imap.gmail.com")
-    imap.login(EMAIL_SENDER, EMAIL_PASSWORD)
-    imap.select("inbox")
+def upload_to_drive(folder_name):
+    try:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
 
-    status, messages = imap.search(None, '(UNSEEN)')
-    if status != "OK":
-        logging.error("No messages found.")
-        return
+        file_list = os.listdir(folder_name)
+        for file_name in file_list:
+            file_path = os.path.join(folder_name, file_name)
+            gfile = drive.CreateFile({'title': file_name})
+            gfile.SetContentFile(file_path)
+            gfile.Upload()
+        logging.info(f"📤 Caricamento completato su Drive: {folder_name}")
+    except Exception as e:
+        logging.error(f"❌ Errore caricamento su Drive: {e}")
 
-    for num in messages[0].split():
-        res, msg_data = imap.fetch(num, "(RFC822)")
-        if res != "OK":
-            continue
+def process_emails(mail):
+    try:
+        _, messages = mail.search(None, "UNSEEN")
+        messages = messages[0].split()
 
-        msg = email.message_from_bytes(msg_data[0][1])
-        subject, encoding = decode_header(msg["Subject"])[0]
-        if isinstance(subject, bytes):
-            subject = subject.decode(encoding or "utf-8")
-        azienda = subject.strip()
+        for num in messages:
+            _, msg_data = mail.fetch(num, "(RFC822)")
+            raw_email = msg_data[0][1]
+            msg = email.message_from_bytes(raw_email)
 
-        logging.info(f"Processing email with subject: {azienda}")
+            subject = clean_subject(msg["Subject"])
+            logging.info(f"📌 Oggetto email: {subject}")
+            folder_name = f"{subject}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            os.makedirs(folder_name, exist_ok=True)
 
-        folder_id = create_drive_folder(azienda)
+            for part in msg.walk():
+                if part.get_content_maintype() == "multipart":
+                    continue
+                if part.get("Content-Disposition") is None:
+                    continue
 
-        for part in msg.walk():
-            if part.get_content_maintype() == "multipart" or part.get("Content-Disposition") is None:
-                continue
-            filename = part.get_filename()
-            if filename:
-                filename = decode_header(filename)[0][0]
-                if isinstance(filename, bytes):
-                    filename = filename.decode()
-                filepath = f"/tmp/{filename}"
-                with open(filepath, "wb") as f:
-                    f.write(part.get_payload(decode=True))
-                logging.info(f"Saved attachment: {filepath}")
-                upload_to_drive(folder_id, filename, filepath)
+                filename = part.get_filename()
+                if filename:
+                    filepath = os.path.join(folder_name, filename)
+                    with open(filepath, "wb") as f:
+                        f.write(part.get_payload(decode=True))
+                    logging.info(f"📎 Allegato salvato: {filepath}")
 
-    imap.logout()
+            upload_to_drive(folder_name)
 
+    except Exception as e:
+        logging.error(f"❌ Errore elaborazione email: {e}")
+
+# === MAIN ===
 if __name__ == "__main__":
-    process_emails()
+    mail = connect_email()
+    if mail:
+        process_emails(mail)
