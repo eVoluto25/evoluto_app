@@ -1,4 +1,4 @@
-def write_to_sheets(analisi, azienda):
+def write_to_sheets(dati, azienda, macroarea):
     from googleapiclient.discovery import build
     from evoluto_auth import get_google_credentials
     from config import SPREADSHEET_ID
