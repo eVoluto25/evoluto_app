@@ -58,7 +58,7 @@ async def process(request: Request):
         logger.info(f"✅ Processo concluso ed email inviata al Team eVoluto {EMAIL_TO} per: {azienda}")
 
         return {"status": "completato", "azienda": azienda}
-
-except Exception as e:
-    logger.exception("❌ Errore durante l'elaborazione della richiesta")
-    return {"status": "errore", "dettaglio": str(e)}
+    
+    except Exception as e:
+        logger.exception("❌ Errore durante l'elaborazione della richiesta")
+        return {"status": "errore", "dettaglio": str(e)}
