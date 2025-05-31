@@ -36,7 +36,7 @@ async def process(request: Request):
         logger.info(f"📤 Invio {len(clean_texts)} testi per analisi finanziaria 🧠 📊")
         gpt_output = analyze_texts_with_gpt("\n\n".join(clean_texts))
         logger.info("studio 💻 ed elaborazione indici 📈 di bilancio")
-        logger.info("🧠 📊 Analisi Finanziaria AI completata")
+        logger.info(f"🧠 📊 Analisi Finanziaria AI completata {gpt_output}")
     
         macroarea = assegna_macroarea(gpt_output)
         logger.info(f"📍 Macroarea assegnata a {azienda}: {macroarea}")
