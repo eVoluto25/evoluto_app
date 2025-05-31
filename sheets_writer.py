@@ -70,7 +70,7 @@ def write_to_sheets(dati, azienda, macroarea):
         ).execute()
 
     # Scrittura macroarea con ✔️ nelle righe 42, 43, 44
-    macroarea = analisi.get("macroarea", "Non definita")
+    macroarea = gpt_output.get("macroarea", "Non definita")
     mappa_macro = {
         "🔴 1. Crisi o Risanamento Aziendale": "C42",
         "🟠 2. Crescita e Sviluppo (Start up, PMI, investimenti)": "C43",
