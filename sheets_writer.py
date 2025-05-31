@@ -44,7 +44,7 @@ def write_to_sheets(dati, azienda, macroarea):
     celle_commenti = [c.replace("B", "C") for c in celle_valori]
     celle_valutazioni = [c.replace("B", "D") for c in celle_valori]
 
-    indici = analisi.get("indici", [])
+    indici = gpt_output.get("indici", [])
     for i, cella in enumerate(celle_valori):
         if i >= len(indici):
             break
