@@ -73,6 +73,10 @@ def upload_to_drive(folder_name):
 def process_emails(mail):
     try:
         logger.info("✅ Entrato in process_emails")
+        if mail is None:
+            print("❌ Connessione email fallita")
+            return
+        print("✅ Connessione email riuscita")
         
         _, messages = mail.search(None, "UNSEEN")
         logger.info(f"📨 Email non lette trovate: {len(messages[0].split())}")
