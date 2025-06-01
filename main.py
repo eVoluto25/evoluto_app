@@ -20,7 +20,8 @@ from email_receiver import connect_email, process_emails
 import logging
 import time
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
+logging.debug("Script avviato")
 
 if __name__ == "__main__":
     logging.info("⚙️ Avvio script main.py")
