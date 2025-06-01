@@ -26,11 +26,13 @@ def send_analysis_email(azienda):
 
 def invia_notifica_email():
     subject = "📢 Aggiornamento completato: Tabella bandi"
-    body = """Ciao,
+    body = f"""
+    
+    Ciao,
 
     La tabella dei bandi è stata aggiornata con i dati più recenti.
 
-    ✅ Puoi consultare subito il foglio Google Sheets.
+    ✅ Puoi consultare subito la tabella su Supabase.
 
     Saluti,
     il Team eVoluto
