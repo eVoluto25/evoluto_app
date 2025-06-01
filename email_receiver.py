@@ -9,12 +9,13 @@ from datetime import datetime
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 
-# === CONFIGURAZIONE LOGGING ===
-logging.basicConfig(
-    filename="email_processor.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.handlers = [handler]
 
 # === VARIABILI ===
 EMAIL_USER = os.getenv("EMAIL_USER")
