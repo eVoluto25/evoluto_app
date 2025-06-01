@@ -46,24 +46,24 @@ def upload_to_drive(folder_name):
         gauth.LocalWebserverAuth()
         drive = GoogleDrive(gauth)
 
-        parent_id = os.getenv("DRIVE_PARENT_FOLDER_ID")
-
         folder_metadata = {
         'title': folder_name,
         'mimeType': 'application/vnd.google-apps.folder',
-        'parents': [{'id': parent_id}]
+        'parents': [{"id": DRIVE_PARENT_FOLDER_ID}]
         }
-
-        folder = drive.CreateFile(folder_metadata)
-        folder.Upload()
-        folder_id = folder['id']
+        parent_folder = drive.CreateFile(folder_metadata)
+        parent_folder.Upload()
 
         file_list = os.listdir(folder_name)
         for file_name in file_list:
             file_path = os.path.join(folder_name, file_name)
             gfile = drive.CreateFile({'title': file_name})
+                'title': file_name,
+                'parents': [{"id": parent_folder['id']}]
+            })
             gfile.SetContentFile(file_path)
             gfile.Upload()
+            
         logging.info(f"📤 Caricamento completato su Drive: {folder_name}")
     except Exception as e:
         logging.error(f"❌ Errore caricamento su Drive: {e}")
@@ -100,9 +100,3 @@ def process_emails(mail):
 
     except Exception as e:
         logging.error(f"❌ Errore elaborazione email: {e}")
-
-# === MAIN ===
-if __name__ == "__main__":
-    mail = connect_email()
-    if mail:
-        process_emails(mail)
