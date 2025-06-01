@@ -15,10 +15,13 @@ from email_utils import send_analysis_email
 from config import SPREADSHEET_ID
 from email_receiver import connect_email
 from email_receiver import process_emails
-
 from email_receiver import connect_email, process_emails
-import logging
 import time
+
+setup_logging()
+logger = logging.getLogger(__name__)
+
+logger.info("⚙️ Avvio script main.py")
 
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
@@ -60,8 +63,10 @@ async def process(request: Request):
         folder_id = data["folder_id"]
         azienda = data["azienda"]
 
-        logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
+        if not folder_id or not azienda:
+            return {"error": "folder_id e azienda sono richiesti."}
 
+        logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
         pdfs = get_pdfs_from_drive(folder_id)
         logger.info(f"📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
     
@@ -97,3 +102,7 @@ async def process(request: Request):
         logging.error(f"❌ Errore connessione email: {e}")
         print(f"❌ Errore connessione email: {e}")
         return None
+
+# Esegui solo se runnato direttamente
+if __name__ == "__main__":
+    start_email_loop()
