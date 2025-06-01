@@ -18,6 +18,7 @@ from email_receiver import process_emails
 
 from email_receiver import connect_email, process_emails
 import logging
+import time
 
 logging.basicConfig(level=logging.INFO)
 
