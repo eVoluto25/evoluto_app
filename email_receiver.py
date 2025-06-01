@@ -19,8 +19,8 @@ logger.handlers = [handler]
 
 # === VARIABILI ===
 EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASS")
-IMAP_SERVER = "imap.gmail.com"
+EMAIL_PASS = os.getenv("EMAIL_PASSWORD")
+IMAP_SERVER = os.getenv("IMAP_SERVER")
 DRIVE_PARENT_FOLDER_ID = os.getenv("DRIVE_PARENT_FOLDER_ID")
 
 def connect_email():
