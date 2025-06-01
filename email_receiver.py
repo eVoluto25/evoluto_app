@@ -43,7 +43,11 @@ def clean_subject(subject):
 
 def upload_to_drive(folder_name):
     try:
+        import json
+        with open("client_secrets.json", "w") as f:
+            f.write(os.getenv("GOOGLE_SERVICE_ACCOUNT"))
         gauth = GoogleAuth()
+        gauth.LoadClientConfigFile("client_secrets.json")
         gauth.LocalWebserverAuth()
         drive = GoogleDrive(gauth)
 
