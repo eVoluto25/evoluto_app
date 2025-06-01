@@ -22,6 +22,7 @@ import time
 
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
+logging.info(f"Email ricevuta da: {msg['From']}, oggetto: {msg['Subject']}")
 
 if __name__ == "__main__":
     logging.info("⚙️ Avvio script main.py")
