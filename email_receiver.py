@@ -47,9 +47,9 @@ def upload_to_drive(folder_name):
         drive = GoogleDrive(gauth)
 
         folder_metadata = {
-        'title': folder_name,
-        'mimeType': 'application/vnd.google-apps.folder',
-        'parents': [{"id": DRIVE_PARENT_FOLDER_ID}]
+            'title': folder_name,
+            'mimeType': 'application/vnd.google-apps.folder',
+            'parents': [{"id": DRIVE_PARENT_FOLDER_ID}]
         }
         parent_folder = drive.CreateFile(folder_metadata)
         parent_folder.Upload()
