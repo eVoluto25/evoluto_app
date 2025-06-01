@@ -47,9 +47,8 @@ def upload_to_drive(folder_name):
         with open("client_secrets.json", "w") as f:
             f.write(os.getenv("GOOGLE_SERVICE_ACCOUNT"))
         gauth = GoogleAuth()
-        gauth.LoadClientConfigFile("client_secrets.json")
-        gauth.LocalWebserverAuth()
-        drive = GoogleDrive(gauth)
+        gauth.LoadServiceConfigFile("client_secrets.json")
+        gauth.ServiceAuth()
 
         # Crea la cartella principale per i file
         folder_metadata = {
