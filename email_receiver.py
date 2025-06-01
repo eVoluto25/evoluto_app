@@ -28,6 +28,7 @@ def connect_email():
         mail.login(EMAIL_USER, EMAIL_PASS)
         mail.select("inbox")
         logging.info("📬 Connessione email stabilita")
+        print("✅ Connessione email stabilita")
         return mail
     except Exception as e:
         logging.error(f"❌ Errore connessione email: {e}")
