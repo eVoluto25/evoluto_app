@@ -1,10 +1,16 @@
+from flask import Flask, request
 import subprocess
-import threading
+import os
+
+app = Flask(__name__)  
 
 @app.route("/trigger", methods=["POST"])
 def trigger_main():
-    def run_script():
-        subprocess.run(["python", "main.py"])
-    
-    threading.Thread(target=run_script).start()
-    return "✅ Script avviato in background", 200
+    try:
+        subprocess.run(["python", "main.py"], check=True)
+        return "✅ Script eseguito correttamente", 200
+    except subprocess.CalledProcessError as e:
+        return f"❌ Errore esecuzione: {str(e)}", 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
