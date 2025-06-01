@@ -71,7 +71,11 @@ def upload_to_drive(folder_name):
 
 def process_emails(mail):
     try:
+        logger.info("✅ Entrato in process_emails")
+        
         _, messages = mail.search(None, "UNSEEN")
+        logger.info(f"📨 Email non lette trovate: {len(messages[0].split())}")
+        
         messages = messages[0].split()
 
         for num in messages:
