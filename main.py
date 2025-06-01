@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Request
-import logging
 from logging_config import setup_logging
 from pdf_cleaner import clean_pdf_texts
 from gpt_handler import analyze_texts_with_gpt
@@ -13,11 +12,13 @@ from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
 from email_utils import send_analysis_email
 from config import SPREADSHEET_ID
-mail_username = os.getenv("MAIL_USERNAME")
 from email_receiver import connect_email
 from email_receiver import process_emails
 from email_receiver import connect_email, process_emails
+import logging
 import time
+import os
+mail_username = os.getenv("MAIL_USERNAME")
 
 setup_logging()
 logger = logging.getLogger(__name__)
