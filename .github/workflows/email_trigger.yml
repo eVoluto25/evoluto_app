@@ -6,9 +6,8 @@ on:
   workflow_dispatch:       # consente anche l’avvio manuale
 
 jobs:
-  ping:
+  trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: Call Render Endpoint
-        run: |
-          curl -X POST https://evoluto-app-wa89.onrender.com/trigger
+      - name: Send trigger to Render
+        run: curl -X POST https://evoluto-app-wa89.onrender.com/trigger
