@@ -16,8 +16,19 @@ from config import SPREADSHEET_ID
 from email_receiver import connect_email
 from email_receiver import process_emails
 
-import time
 from email_receiver import connect_email, process_emails
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+if __name__ == "__main__":
+    logging.info("⚙️ Avvio script main.py")
+    mail = connect_email()
+    if mail:
+        logging.info("📨 Connessione email OK, avvio lettura...")
+        process_emails(mail)
+    else:
+        logging.error("❌ Connessione email fallita.")
 
 def start_email_loop():
     while True:
