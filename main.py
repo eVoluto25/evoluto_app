@@ -25,7 +25,7 @@ logger.info("⚙️ Avvio script main.py")
 
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
-logging.info(f"Connesso alla mailbox: {mailbox}")
+logging.info(f"Connessione email stabilita con l'utente: {mail_username}")
 logging.info(f"Email trovate: {len(email_ids)}")
 logging.info(f"Allegato analizzato: {filename}")
 
