@@ -8,6 +8,8 @@ import logging
 from datetime import datetime
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 import logging
 logger = logging.getLogger()
@@ -47,8 +49,12 @@ def upload_to_drive(folder_name):
         with open("client_secrets.json", "w") as f:
             f.write(os.getenv("GOOGLE_SERVICE_ACCOUNT"))
         gauth = GoogleAuth()
-        gauth.ServiceAccountAuth("client_secrets.json")
-        gauth.ServiceAuth()
+        gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            'service_account.json',
+            scopes=['https://www.googleapis.com/auth/drive']
+        )
+
+        drive = GoogleDrive(gauth)    
 
         # Crea la cartella principale per i file
         folder_metadata = {
