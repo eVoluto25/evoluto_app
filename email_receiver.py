@@ -79,42 +79,39 @@ def upload_to_drive(folder_name):
     except Exception as e:
         logging.error(f"❌ Errore caricamento su Drive: {e}")
 
-def process_emails(mail):
+def process_emails():
     try:
-        logger.info("✅ Entrato in process_emails")
-        if mail is None:
-            print("❌ Connessione email fallita")
+        mail_server = os.environ.get("EMAIL_SERVER", "imap.gmail.com")
+        mail_user = os.environ["EMAIL_USERNAME"]
+        mail_pass = os.environ["EMAIL_PASSWORD"]
+
+        logging.info("▶ Avvio connessione email...")
+
+        mail = imaplib.IMAP4_SSL(mail_server)
+        mail.login(mail_user, mail_pass)
+        mail.select("inbox")
+
+        logging.info(f"✅ Connessione email stabilita con: {mail_user}")
+
+        result, data = mail.search(None, '(UNSEEN)')
+        if result != "OK":
+            logging.warning("⚠ Impossibile recuperare le email non lette.")
             return
-        print("✅ Connessione email riuscita")
-        
-        _, messages = mail.search(None, "UNSEEN")
-        logger.info(f"📨 Email non lette trovate: {len(messages[0].split())}")
-        
-        messages = messages[0].split()
 
-        for num in messages:
-            _, msg_data = mail.fetch(num, "(RFC822)")
-            raw_email = msg_data[0][1]
-            msg = email.message_from_bytes(raw_email)
+        email_ids = data[0].split()
+        logging.info(f"📥 Email non lette trovate: {len(email_ids)}")
 
-            subject = clean_subject(msg["Subject"])
-            logging.info(f"📨 Oggetto email: {subject}")
-            folder_name = f"{subject}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            os.makedirs(folder_name, exist_ok=True)
+        for eid in email_ids:
+            res, msg_data = mail.fetch(eid, "(RFC822)")
+            if res != "OK":
+                logging.warning(f"⚠ Errore nel recupero dell'email ID {eid}")
+                continue
 
-            for part in msg.walk():
-                if part.get_content_maintype() == "multipart":
-                    continue
-                if part.get("Content-Disposition") is None:
-                    continue
+            msg = email.message_from_bytes(msg_data[0][1])
+            subject = msg.get("Subject", "[Senza oggetto]")
+            sender = msg.get("From", "[Sconosciuto]")
+            logging.info(f"📧 Email da: {sender}, oggetto: {subject}")
+            # TODO: aggiungi qui il tuo parsing e logica
 
-                filename = part.get_filename()
-                if filename:
-                    file_path = os.path.join(folder_name, filename)
-                    with open(file_path, "wb") as f:
-                        f.write(part.get_payload(decode=True))
-                    logging.info(f"📎 Allegato salvato: {file_path}")
-
-            upload_to_drive(folder_name)
     except Exception as e:
-        logging.error(f"❌ Errore elaborazione email: {e}")
+        logging.error(f"❌ Errore in process_emails: {str(e)}")
