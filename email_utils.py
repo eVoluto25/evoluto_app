@@ -23,3 +23,24 @@ def send_analysis_email(azienda):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.send_message(msg)
+
+def invia_notifica_email():
+    subject = "📢 Aggiornamento completato: Tabella bandi"
+    body = """Ciao,
+
+    La tabella dei bandi è stata aggiornata con i dati più recenti.
+
+    ✅ Puoi consultare subito il foglio Google Sheets.
+
+    Saluti,
+    il Team eVoluto
+    """
+
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = EMAIL_SENDER
+    msg["To"] = EMAIL_RECEIVER
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+        server.send_message(msg)
