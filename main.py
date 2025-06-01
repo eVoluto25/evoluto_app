@@ -89,6 +89,6 @@ async def process(request: Request):
         return {"status": "completato", "azienda": azienda}
     
     except Exception as e:
-    logging.error(f"❌ Errore connessione email: {e}")
-    print(f"❌ Errore connessione email: {e}")
-    return None
+        logging.error(f"❌ Errore connessione email: {e}")
+        print(f"❌ Errore connessione email: {e}")
+        return None
