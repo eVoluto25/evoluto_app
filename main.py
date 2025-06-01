@@ -89,5 +89,6 @@ async def process(request: Request):
         return {"status": "completato", "azienda": azienda}
     
     except Exception as e:
-        logger.exception("❌ Errore durante l'elaborazione della richiesta")
-        return {"status": "errore", "dettaglio": str(e)}
+    logging.error(f"❌ Errore connessione email: {e}")
+    print(f"❌ Errore connessione email: {e}")
+    return None
