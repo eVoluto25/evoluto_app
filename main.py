@@ -16,8 +16,20 @@ from config import SPREADSHEET_ID
 from email_receiver import connect_email
 from email_receiver import process_emails
 
-mail = connect_email()  # funzione già presente in email_receiver
-process_emails(mail)
+import time
+from email_receiver import connect_email, process_emails
+
+def start_email_loop():
+    while True:
+        try:
+            mail = connect_email()
+            process_emails(mail)
+        except Exception as e:
+            print(f"Errore nel ciclo email: {e}")
+        time.sleep(60)
+
+if __name__ == "__main__":
+    start_email_loop()
 
 setup_logging()
 logger = logging.getLogger(__name__)
