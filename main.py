@@ -23,6 +23,9 @@ import time
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
 logging.info(f"Email ricevuta da: {msg['From']}, oggetto: {msg['Subject']}")
+logging.info(f"Connesso alla mailbox: {mailbox}")
+logging.info(f"Email trovate: {len(email_ids)}")
+logging.info(f"Allegato analizzato: {filename}")
 
 if __name__ == "__main__":
     logging.info("⚙️ Avvio script main.py")
