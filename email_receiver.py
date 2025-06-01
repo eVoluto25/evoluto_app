@@ -98,6 +98,5 @@ def process_emails(mail):
                     logging.info(f"📎 Allegato salvato: {file_path}")
 
             upload_to_drive(folder_name)
-
     except Exception as e:
         logging.error(f"❌ Errore elaborazione email: {e}")
