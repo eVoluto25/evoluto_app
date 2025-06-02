@@ -14,6 +14,7 @@ from supabase_connector import fetch_bandi
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
 from config import SPREADSHEET_ID
+from fastapi import File, UploadFile
 from drive_utils import upload_file_to_drive, create_drive_subfolder
 import logging
 import os
