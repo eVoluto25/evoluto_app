@@ -28,8 +28,6 @@ logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
 logging.info(f"📬 Connessione email stabilita con l'utente: {mail_username}")
 
-logging.info(f"Allegato analizzato: {filename}")
-
 if __name__ == "__main__":
     logging.info("⚙️ Avvio script main.py")
     mail = connect_email()
@@ -75,7 +73,6 @@ async def process(request: Request):
         clean_texts = clean_pdf_texts(pdfs)
         logger.info("🧹 Testi PDF puliti e filtrati")
         
-    
         logger.info(f"📤 Invio {len(clean_texts)} testi per analisi finanziaria 🧠 📊")
         gpt_output = analyze_texts_with_gpt("\n\n".join(clean_texts))
         logger.info("studio 💻 ed elaborazione indici 📈 di bilancio")
