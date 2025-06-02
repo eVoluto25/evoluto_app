@@ -73,6 +73,7 @@ async def process(request: Request):
     
         clean_texts = clean_pdf_texts(pdfs)
         logger.info("🧹 Testi PDF puliti e filtrati")
+        logger.info(f"📎 Allegati analizzati: {[pdf.name for pdf in pdfs]}")
     
         logger.info(f"📤 Invio {len(clean_texts)} testi per analisi finanziaria 🧠 📊")
         gpt_output = analyze_texts_with_gpt("\n\n".join(clean_texts))
