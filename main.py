@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from logging_config import setup_logging
 from pdf_cleaner import clean_pdf_texts
 from gpt_handler import analyze_texts_with_gpt
@@ -14,9 +15,6 @@ from config import SPREADSHEET_ID
 from drive_utils import upload_file_to_drive, create_drive_subfolder
 import logging
 import os
-
-setup_logging()
-logger = logging.getLogger(__name__)
 
 setup_logging()
 logger = logging.getLogger(__name__)
