@@ -21,9 +21,8 @@ import os
 setup_logging()
 logger = logging.getLogger(__name__)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
