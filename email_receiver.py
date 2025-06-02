@@ -21,14 +21,14 @@ logger.handlers = [handler]
 
 # === VARIABILI ===
 EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASSWORD")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 IMAP_SERVER = os.getenv("IMAP_SERVER")
 DRIVE_PARENT_FOLDER_ID = os.getenv("DRIVE_PARENT_FOLDER_ID")
 
 def connect_email():
     try:
         mail = imaplib.IMAP4_SSL(IMAP_SERVER)
-        mail.login(EMAIL_USER, EMAIL_PASSWORD)
+        mail.login(EMAIL_USER, EMAIL_PASS)
         mail.select("inbox")
 
         email_ids = mail.search(...)  # recuperi gli ID
