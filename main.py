@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+@app.post("/upload_pdf")
+async def upload_pdf(file: UploadFile = File(...)):
+    return await gestisci_upload_pdf(file)
+
 @app.get("/", response_class=HTMLResponse)
 async def index():
     with open("static/index.html") as f:
