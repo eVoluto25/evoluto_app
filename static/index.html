@@ -1,1 +1,75 @@
 
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>eVoluto Chat AI</title>
+    <style>
+        body { font-family: Arial, background: #f5f5f5; padding: 20px; }
+        .chatbox { background: white; padding: 20px; border-radius: 8px; max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .messages { height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background: #fff; }
+        .user, .bot { margin-bottom: 10px; }
+        .user { text-align: right; color: #333; }
+        .bot { text-align: left; color: #0074D9; }
+        .input-area { display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; border: none; border-radius: 4px; background: #0074D9; color: white; cursor: pointer; }
+        button:hover { background: #005fa3; }
+    </style>
+</head>
+<body>
+<div class="chatbox">
+    <h2>eVoluto AI Assistant</h2>
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Scrivi un messaggio...">
+        <button onclick="sendMessage()">Invia</button>
+    </div>
+    <br>
+    <input type="file" id="fileInput" />
+    <button onclick="uploadPDF()">Carica PDF</button>
+</div>
+
+<script>
+    async function sendMessage() {
+        const input = document.getElementById("userInput");
+        const message = input.value.trim();
+        if (!message) return;
+
+        appendMessage("user", message);
+        input.value = "";
+
+        const res = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await res.json();
+        appendMessage("bot", data.reply || "Errore nella risposta");
+    }
+
+    function appendMessage(role, text) {
+        const messages = document.getElementById("messages");
+        const div = document.createElement("div");
+        div.className = role;
+        div.textContent = text;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function uploadPDF() {
+        const fileInput = document.getElementById("fileInput");
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        await fetch("/process", {
+            method: "POST",
+            body: formData
+        });
+
+        appendMessage("bot", "📎 Documento caricato per analisi.");
+    }
+</script>
+</body>
+</html>
