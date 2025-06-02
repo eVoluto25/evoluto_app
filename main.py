@@ -69,11 +69,12 @@ async def process(request: Request):
 
         logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
         pdfs = get_pdfs_from_drive(folder_id)
+        logger.info(f"📎 Allegati analizzati: {[pdf.name for pdf in pdfs]}")
         logger.info(f"📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
     
         clean_texts = clean_pdf_texts(pdfs)
         logger.info("🧹 Testi PDF puliti e filtrati")
-        logger.info(f"📎 Allegati analizzati: {[pdf.name for pdf in pdfs]}")
+        
     
         logger.info(f"📤 Invio {len(clean_texts)} testi per analisi finanziaria 🧠 📊")
         gpt_output = analyze_texts_with_gpt("\n\n".join(clean_texts))
