@@ -43,7 +43,7 @@ if __name__ == "__main__":
 def start_email_loop():
     while True:
         try:
-            mail = connect_email()
+            mail, email_ids = connect_email()
             process_emails(mail)
         except Exception as e:
             print(f"Errore nel ciclo email: {e}")
