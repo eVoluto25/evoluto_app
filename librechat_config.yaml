@@ -1,7 +1,7 @@
 
-name: EvolutoBot
+name: Evoluto_AI
 description: Analizza bilanci aziendali e fornisce bandi compatibili.
-model: gpt-4
+model: gpt-3.5
 tools:
   - type: file_upload
     accept:
@@ -9,8 +9,8 @@ tools:
       - application/vnd.openxmlformats-officedocument.wordprocessingml.document
   - type: api
     method: POST
-    url: http://localhost:8000/process
-    name: Analisi Finanziaria
+    url: https://evoluto-app-wa89.onrender.com/process
+    name: Verifica Aziendale
     request:
       contentType: application/json
       fields:
