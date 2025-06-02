@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>eVoluto Chat</title>
-    <style>
+<meta charset="utf-8"/>
+<title>eVoluto Chat</title>
+<style>
         body {
             background-color: #f4f4f4;
             font-family: Arial, sans-serif;
@@ -11,6 +12,19 @@
             flex-direction: column;
             align-items: center;
             padding-top: 30px;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header img {
+            height: 32px;
         }
 
         .chat-container {
@@ -78,20 +92,19 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="messages" id="messages">
-            <p>Avvia una conversazione...</p>
-        </div>
-        <form id="chatForm">
-            <label class="file-upload">
-                <input type="file" id="pdfFile" name="file" accept="application/pdf">
-            </label>
-            <input type="text" id="userInput" placeholder="Fai una domanda..." required>
-            <button type="submit">Invia</button>
-        </form>
-    </div>
-
-    <script>
+<div class="chat-container">
+<div class="messages" id="messages">
+<p>Avvia una conversazione...</p>
+</div>
+<form id="chatForm">
+<label class="file-upload">
+<input accept="application/pdf" id="pdfFile" name="file" type="file"/>
+</label>
+<input id="userInput" placeholder="Fai una domanda..." required="" type="text"/>
+<button type="submit">Invia</button>
+</form>
+</div>
+<script>
         const form = document.getElementById('chatForm');
         const input = document.getElementById('userInput');
         const messages = document.getElementById('messages');
@@ -109,7 +122,7 @@
                     body: JSON.stringify({message: msg})
                 });
                 const data = await response.json();
-                messages.innerHTML += `<p><strong style="color:#28a745;">evoluto:</strong> ${data.reply}</p>`;
+                messages.innerHTML += `<p><strong>evoluto:</strong> ${data.reply}</p>`;
             } catch (error) {
                 messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
             }
