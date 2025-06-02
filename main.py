@@ -10,20 +10,12 @@ from classificazione_macroarea import assegna_macroarea
 from supabase_connector import fetch_bandi
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
-from email_utils import send_analysis_email
 from config import SPREADSHEET_ID
 import logging
-import time
 import os
-mail_username = os.getenv("MAIL_USERNAME")
 
 setup_logging()
 logger = logging.getLogger(__name__)
-
-logger.info("⚙️ Avvio script main.py")
-logging.basicConfig(level=logging.DEBUG)
-logging.debug("Script avviato")
-logging.info(f"📬 Connessione email stabilita con l'utente: {mail_username}")
 
 setup_logging()
 logger = logging.getLogger(__name__)
