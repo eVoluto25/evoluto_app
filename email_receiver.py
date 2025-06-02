@@ -29,7 +29,7 @@ def connect_email():
     try:
         mail = imaplib.IMAP4_SSL(IMAP_SERVER)
         email_ids = mail.search(...)  # recuperi gli ID
-        mail.login(EMAIL_USER, EMAIL_PASS)
+        mail.login(EMAIL_USER, EMAIL_PASSWORD)
         mail.select("inbox")
         logging.info("📬 Connessione email stabilita")
         print("✅ Connessione email stabilita")
