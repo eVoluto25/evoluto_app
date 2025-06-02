@@ -24,11 +24,10 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 logger.info("⚙️ Avvio script main.py")
-
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
 logging.info(f"📬 Connessione email stabilita con l'utente: {mail_username}")
-logging.info(f"Email trovate: {len(email_ids)}")
+
 logging.info(f"Allegato analizzato: {filename}")
 
 if __name__ == "__main__":
@@ -44,9 +43,10 @@ def start_email_loop():
     while True:
         try:
             mail, email_ids = connect_email()
+            logging.info(f"🟢 Email trovate: {len(email_ids)}")
             process_emails(mail)
         except Exception as e:
-            print(f"Errore nel ciclo email: {e}")
+            logging.error(f"❌ Errore nel ciclo email: {e}")
         time.sleep(60)
 
 if __name__ == "__main__":
