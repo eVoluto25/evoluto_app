@@ -1,5 +1,9 @@
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseDownload
+from google.oauth2 import service_account
+import io
 
 def upload_file_to_drive(filename, folder_id):
     gauth = GoogleAuth()
@@ -29,3 +33,28 @@ def create_drive_subfolder(folder_name, parent_folder_id):
     folder = drive.CreateFile(folder_metadata)
     folder.Upload()
     return folder['id']
+
+def get_pdfs_from_drive(folder_id):
+    creds = service_account.Credentials.from_service_account_file(
+        'credentials.json', scopes=['https://www.googleapis.com/auth/drive']
+    )
+    service = build('drive', 'v3', credentials=creds)
+
+    query = f"'{folder_id}' in parents and mimeType='application/pdf' and trashed=false"
+    results = service.files().list(q=query, fields="files(id, name)").execute()
+    items = results.get('files', [])
+
+    pdfs = []
+    for item in items:
+        file_id = item['id']
+        file_name = item['name']
+        request = service.files().get_media(fileId=file_id)
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+        fh.seek(0)
+        pdfs.append({'name': file_name, 'content': fh.read()})
+
+    return pdfs
