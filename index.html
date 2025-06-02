@@ -13,19 +13,6 @@
             padding-top: 30px;
         }
 
-        .header {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header img {
-            height: 32px;
-        }
-
         .chat-container {
             width: 90%;
             max-width: 700px;
@@ -91,11 +78,6 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="logo.png" alt="eVoluto Logo">
-        <strong>eVoluto AI</strong>
-    </div>
-
     <div class="chat-container">
         <div class="messages" id="messages">
             <p>Avvia una conversazione...</p>
@@ -127,7 +109,7 @@
                     body: JSON.stringify({message: msg})
                 });
                 const data = await response.json();
-                messages.innerHTML += `<p><strong>evoluto:</strong> ${data.reply}</p>`;
+                messages.innerHTML += `<p><strong style="color:#28a745;">evoluto:</strong> ${data.reply}</p>`;
             } catch (error) {
                 messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
             }
