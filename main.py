@@ -35,6 +35,8 @@ async def process(request: Request):
 
         logger.info(f"💻 Avviata Verifica Aziendale per società: {azienda}")
         pdfs = get_pdfs_from_drive(folder_id)
+        for pdf in pdfs:
+            upload_file_to_drive(pdf.name, DRIVE_PARENT_FOLDER_ID)
         logger.info(f"📎 Allegati analizzati: {[pdf.name for pdf in pdfs]}")
         logger.info(f"📥 Bilancio scaricato da Cartella {azienda} su Google Drive")
     
