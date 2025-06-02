@@ -2,43 +2,48 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>eVoluto AI X</title>
+  <title>eVoluto AI Assistant</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
     }
 
-    .chat-container {
+    .top-bar {
+      width: 100%;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      background-color: transparent;
+    }
+
+    .top-bar img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .chat-wrapper {
+      margin-top: 20px;
       background-color: #fff;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 600px;
       max-width: 90%;
       display: flex;
       flex-direction: column;
       padding: 24px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .header img {
-      height: 50px;
-      margin-bottom: 8px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: bold;
+      position: relative;
     }
 
     #chat {
@@ -79,10 +84,12 @@
     }
 
     .file-upload {
-      margin-top: 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+      width: 600px;
+      max-width: 90%;
     }
 
     input[type="file"] {
@@ -91,20 +98,23 @@
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="header">
-      <img src="https://via.placeholder.com/50x50?text=Logo" alt="eVoluto Logo">
-      <h1>eVoluto AI Assistant</h1>
-    </div>
+
+  <div class="top-bar">
+    <img src="https://via.placeholder.com/50x50?text=Logo" alt="eVoluto Logo">
+    <h1>eVoluto AI Assistant</h1>
+  </div>
+
+  <div class="chat-wrapper">
     <div id="chat">Avvia una conversazione...</div>
     <div class="input-row">
       <input type="text" id="message" placeholder="Scrivi un messaggio...">
       <button onclick="sendMessage()">Invia</button>
     </div>
-    <div class="file-upload">
-      <input type="file" id="pdf" />
-      <button onclick="uploadPDF()">Carica PDF</button>
-    </div>
+  </div>
+
+  <div class="file-upload">
+    <input type="file" id="pdf" />
+    <button onclick="uploadPDF()">Carica PDF</button>
   </div>
 
   <script>
