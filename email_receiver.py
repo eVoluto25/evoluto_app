@@ -28,7 +28,7 @@ DRIVE_PARENT_FOLDER_ID = os.getenv("DRIVE_PARENT_FOLDER_ID")
 def connect_email():
     try:
         mail = imaplib.IMAP4_SSL(IMAP_SERVER)
-        mail.login(EMAIL_USER, EMAIL_PASSWORD)
+        mail.login(EMAIL_USER, EMAIL_PASS)
         mail.select("inbox")
         email_ids = mail.search(None, 'ALL')  # recuperi gli ID
         logging.info("📬 Connessione email stabilita")
