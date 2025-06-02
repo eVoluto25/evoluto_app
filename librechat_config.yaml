@@ -1,0 +1,22 @@
+
+name: EvolutoBot
+description: Analizza bilanci aziendali e fornisce bandi compatibili.
+model: gpt-4
+tools:
+  - type: file_upload
+    accept:
+      - application/pdf
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  - type: api
+    method: POST
+    url: http://localhost:8000/process
+    name: Analisi Finanziaria
+    request:
+      contentType: application/json
+      fields:
+        - name: folder_id
+          type: string
+          required: true
+        - name: azienda
+          type: string
+          required: true
