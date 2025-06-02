@@ -12,9 +12,6 @@ from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
 from email_utils import send_analysis_email
 from config import SPREADSHEET_ID
-from email_receiver import connect_email
-from email_receiver import process_emails
-from email_receiver import connect_email, process_emails
 import logging
 import time
 import os
@@ -27,28 +24,6 @@ logger.info("⚙️ Avvio script main.py")
 logging.basicConfig(level=logging.DEBUG)
 logging.debug("Script avviato")
 logging.info(f"📬 Connessione email stabilita con l'utente: {mail_username}")
-
-if __name__ == "__main__":
-    logging.info("⚙️ Avvio script main.py")
-    mail = connect_email()
-    if mail:
-        logging.info("📨 Connessione email OK, avvio lettura...")
-        process_emails(mail)
-    else:
-        logging.error("❌ Connessione email fallita.")
-
-def start_email_loop():
-    while True:
-        try:
-            mail, email_ids = connect_email()
-            logging.info(f"🟢 Email trovate: {len(email_ids)}")
-            process_emails(mail)
-        except Exception as e:
-            logging.error(f"❌ Errore nel ciclo email: {e}")
-        time.sleep(60)
-
-if __name__ == "__main__":
-    start_email_loop()
 
 setup_logging()
 logger = logging.getLogger(__name__)
