@@ -117,7 +117,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = input.value;
-            messages.innerHTML += `<p><strong>Tu:</strong> ${msg}</p>`;
+            messages.innerHTML += `<p><strong style="color:#007bff;">Tu:</strong> ${msg}</p>`;
             input.value = "";
 
             try {
@@ -127,7 +127,7 @@
                     body: JSON.stringify({message: msg})
                 });
                 const data = await response.json();
-                messages.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+                messages.innerHTML += `<p><strong>evoluto:</strong> ${data.reply}</p>`;
             } catch (error) {
                 messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
             }
