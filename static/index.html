@@ -1,75 +1,164 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>eVoluto Chat AI</title>
-    <style>
-        body { font-family: Arial, background: #f5f5f5; padding: 20px; }
-        .chatbox { background: white; padding: 20px; border-radius: 8px; max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .messages { height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background: #fff; }
-        .user, .bot { margin-bottom: 10px; }
-        .user { text-align: right; color: #333; }
-        .bot { text-align: left; color: #0074D9; }
-        .input-area { display: flex; gap: 10px; }
-        input[type="text"] { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc; }
-        button { padding: 10px 15px; border: none; border-radius: 4px; background: #0074D9; color: white; cursor: pointer; }
-        button:hover { background: #005fa3; }
-    </style>
+  <meta charset="UTF-8">
+  <title>eVoluto AI X</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 600px;
+      max-width: 90%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .header img {
+      height: 50px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #chat {
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin-bottom: 16px;
+      background-color: #fafafa;
+      font-size: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    #message {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .file-upload {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    input[type="file"] {
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-<div class="chatbox">
-    <h2>eVoluto AI Assistant</h2>
-    <div class="messages" id="messages"></div>
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Scrivi un messaggio...">
-        <button onclick="sendMessage()">Invia</button>
+  <div class="chat-container">
+    <div class="header">
+      <img src="https://via.placeholder.com/50x50?text=Logo" alt="eVoluto Logo">
+      <h1>eVoluto AI Assistant</h1>
     </div>
-    <br>
-    <input type="file" id="fileInput" />
-    <button onclick="uploadPDF()">Carica PDF</button>
-</div>
+    <div id="chat">Avvia una conversazione...</div>
+    <div class="input-row">
+      <input type="text" id="message" placeholder="Scrivi un messaggio...">
+      <button onclick="sendMessage()">Invia</button>
+    </div>
+    <div class="file-upload">
+      <input type="file" id="pdf" />
+      <button onclick="uploadPDF()">Carica PDF</button>
+    </div>
+  </div>
 
-<script>
-    async function sendMessage() {
-        const input = document.getElementById("userInput");
-        const message = input.value.trim();
-        if (!message) return;
+  <script>
+    const chat = document.getElementById("chat");
+    const messageInput = document.getElementById("message");
 
-        appendMessage("user", message);
-        input.value = "";
-
-        const res = await fetch("/chat", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ message: message })
-        });
-
-        const data = await res.json();
-        appendMessage("bot", data.reply || "Errore nella risposta");
+    function appendMessage(content, isUser = false) {
+      const p = document.createElement("p");
+      p.style.margin = "8px 0";
+      p.style.color = isUser ? "#000" : "#007bff";
+      p.textContent = content;
+      chat.appendChild(p);
+      chat.scrollTop = chat.scrollHeight;
     }
 
-    function appendMessage(role, text) {
-        const messages = document.getElementById("messages");
-        const div = document.createElement("div");
-        div.className = role;
-        div.textContent = text;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
+    function sendMessage() {
+      const msg = messageInput.value.trim();
+      if (!msg) return;
+      appendMessage(msg, true);
+      messageInput.value = "";
+
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      })
+      .then(res => res.text())
+      .then(reply => appendMessage(reply))
+      .catch(() => appendMessage("Errore nella risposta"));
     }
 
-    async function uploadPDF() {
-        const fileInput = document.getElementById("fileInput");
-        const formData = new FormData();
-        formData.append("file", fileInput.files[0]);
+    function uploadPDF() {
+      const fileInput = document.getElementById("pdf");
+      const file = fileInput.files[0];
+      if (!file) return;
 
-        await fetch("/process", {
-            method: "POST",
-            body: formData
-        });
+      const formData = new FormData();
+      formData.append("pdf", file);
 
-        appendMessage("bot", "📎 Documento caricato per analisi.");
+      fetch("/upload_pdf", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => appendMessage(msg))
+      .catch(() => appendMessage("Errore nel caricamento del file"));
     }
-</script>
+
+    messageInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
 </body>
 </html>
