@@ -1,3 +1,5 @@
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from logging_config import setup_logging
@@ -19,7 +21,14 @@ import os
 setup_logging()
 logger = logging.getLogger(__name__)
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app = FastAPI()
+
+@app.get("/", response_class=HTMLResponse)
+async def index():
+    with open("static/index.html") as f:
+        return f.read()
 
 @app.post("/process")
 async def process(request: Request):
