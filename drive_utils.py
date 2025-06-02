@@ -58,3 +58,26 @@ def get_pdfs_from_drive(folder_id):
         pdfs.append({'name': file_name, 'content': fh.read()})
 
     return pdfs
+
+async def gestisci_upload_pdf(file):
+    try:
+        contents = await file.read()
+        pdf_reader = PdfReader(io.BytesIO(contents))
+        testo_pdf = "\n".join(page.extract_text() for page in pdf_reader.pages if page.extract_text())
+
+        # Estrazione nome azienda via GPT o fallback
+        azienda = estrai_nome_azienda(testo_pdf)  # o passalo manualmente
+        if not azienda:
+            return {"error": "Impossibile identificare il nome dell'azienda"}
+
+        # Crea sottocartella su Drive e carica il file
+        folder_id = create_drive_subfolder(azienda, DRIVE_PARENT_FOLDER_ID)
+        upload_file_to_drive(contents, file.filename, folder_id)
+
+        # Triggera analisi (modifica se diversa)
+        results = processa_documenti([contents], azienda)
+
+        return {"status": "ok", "azienda": azienda, "results": results}
+    
+    except Exception as e:
+        return {"error": str(e)}
