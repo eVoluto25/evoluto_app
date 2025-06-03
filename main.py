@@ -89,12 +89,16 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.post("/upload_pdf")
 async def upload_pdf(file: UploadFile = File(...)):
+    unique_id = str(uuid.uuid4())  # genera UUID univoco
     contents = await file.read()
-    file_path = f"./uploaded_files/{file.filename}"
+    
     os.makedirs("uploaded_files", exist_ok=True)
+    file_path = f"uploaded_files/{unique_id}_{file.filename}"  # salva con UUID
+    
     with open(file_path, "wb") as f:
         f.write(contents)
-    return {"filename": file.filename}
+        
+    return {"filename": file.filename, "uuid": unique_id}
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
