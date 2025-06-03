@@ -20,6 +20,9 @@ from drive_utils import upload_file_to_drive, create_drive_subfolder
 import logging
 import os
 
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
