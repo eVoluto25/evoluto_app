@@ -18,6 +18,7 @@ from export_bandi_results import export_bandi_results
 from config import SPREADSHEET_ID
 from fastapi import File, UploadFile
 from drive_utils import upload_file_to_drive, create_drive_subfolder
+import openai
 import logging
 import os
 
@@ -25,8 +26,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
-
-openai = OpenAI(api_key=openai_api_key)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -75,7 +74,7 @@ async def chat(request: Request):
 
     # Elabora la risposta del bot 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5",
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": CHAT_PROMPT},
             {"role": "user", "content": user_input}
