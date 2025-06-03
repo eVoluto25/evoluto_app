@@ -49,6 +49,26 @@ async def get_stats():
 setup_logging()
 logger = logging.getLogger(__name__)
 
+@app.post("/chat")
+async def chat(request: Request):
+    data = await request.json()
+    user_input = data.get("message", "")
+
+    if not user_input:
+        return JSONResponse(content={"error": "Messaggio mancante"}, status_code=400)
+
+    # Elabora la risposta del bot 
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5",
+        messages=[
+            {"role": "system", "content": "Sei un analista finanziario esperto."},
+            {"role": "user", "content": user_input}
+        ]
+    )
+
+    reply = response["choices"][0]["message"]["content"]
+    return {"response": reply}
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
