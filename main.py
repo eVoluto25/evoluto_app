@@ -1,4 +1,4 @@
-from prompt_gpt_user import CHAT_PROMPT
+from user_gpt_prompt import CHAT_PROMPT
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
