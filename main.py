@@ -1,3 +1,4 @@
+from prompt_gpt_user import CHAT_PROMPT
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
@@ -76,7 +77,7 @@ async def chat(request: Request):
     response = openai.ChatCompletion.create(
         model="gpt-3.5",
         messages=[
-            {"role": "system", "content": "Sei un analista finanziario esperto."},
+            {"role": "system", "content": CHAT_PROMPT},
             {"role": "user", "content": user_input}
         ]
     )
