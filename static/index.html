@@ -5,6 +5,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>eVoluto AI</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
     body {
         background-color: #f4f4f4;
@@ -15,7 +16,6 @@
         padding-top: 30px;
         margin: 0;
     }
-
     .chat-container {
         width: 90%;
         max-width: 700px;
@@ -23,10 +23,9 @@
         border-radius: 16px;
         padding: 20px;
         box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        margin-top: 80px;
+        margin-top: 20px;
         box-sizing: border-box;
     }
-
     .messages {
         height: 60vh;
         overflow-y: auto;
@@ -35,7 +34,6 @@
         padding: 10px;
         margin-bottom: 20px;
     }
-
     form {
         display: flex;
         align-items: center;
@@ -47,14 +45,12 @@
         width: 100%;
         box-sizing: border-box;
     }
-
     input[type="text"] {
         flex-grow: 1;
         border: none;
         outline: none;
         font-size: 16px;
     }
-
     button {
         background-color: #666;
         color: white;
@@ -63,75 +59,154 @@
         border-radius: 20px;
         cursor: pointer;
     }
-
     .file-upload {
         position: relative;
         width: 24px;
         height: 24px;
         cursor: pointer;
     }
-
     .file-upload input[type="file"] {
         display: none;
     }
-
     .file-upload::before {
         content: '+';
         font-size: 24px;
         color: #666;
     }
-
     @media (max-width: 480px) {
         button {
             width: 100%;
             margin-top: 10px;
         }
     }
+    .metrics-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 0;
+    }
+    .metric-box {
+        background: white;
+        border-radius: 20px;
+        padding: 10px 20px;
+        box-shadow: 0px 0px 8px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: inherit;
+    }
+    .metric-box .dot {
+        height: 10px;
+        width: 10px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+    }
 </style>
 </head>
 <body>
+<div class="metrics-container">
+    <div class="metric-box">
+        <span class="dot"></span>
+        <span>Incentivi attivi: <strong id="incentivi-count">0</strong></span>
+        <span style="margin-left: 20px;">Totale importo: <strong id="importo-count">€0</strong></span>
+    </div>
+</div>
 <div class="chat-container">
-<div class="messages" id="messages">
-<p>Parla con eVoluto...</p>
+    <div class="messages" id="messages"><p>Parla con eVoluto...</p></div>
+    <form id="chatForm">
+        <label class="file-upload">
+            <input accept="application/pdf" id="pdfFile" name="file" type="file"/>
+        </label>
+        <input id="userInput" placeholder="Fai una domanda..." required="" type="text"/>
+        <button type="submit">Invia</button>
+    </form>
 </div>
-<form id="chatForm">
-<label class="file-upload">
-<input accept="application/pdf" id="pdfFile" name="file" type="file"/>
-</label>
-<input id="userInput" placeholder="Fai una domanda..." required="" type="text"/>
-<button type="submit">Invia</button>
-</form>
-</div>
+
 <script>
-    const form = document.getElementById('chatForm');
-    const input = document.getElementById('userInput');
-    const messages = document.getElementById('messages');
+const supabaseUrl = window.SUPABASE_URL || '';
+const supabaseKey = window.SUPABASE_KEY || '';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const msg = input.value;
-        messages.innerHTML += `<p><strong style="color:#666;">Tu:</strong> ${msg}</p>`;
-        input.value = "";
+async function fetchMetrics() {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+        .from('bandi_disponibili')
+        .select('Stanziamento_incentivo, Data_chiusura');
 
-        try {
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({message: msg})
-            });
-            const data = await response.json();
-            messages.innerHTML += `<p><strong>eVoluto:</strong> ${data.reply}</p>`;
-        } catch (error) {
-            messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
+    if (error || !data) return;
+
+    const filtered = data.filter(row => row.Data_chiusura >= today);
+    const count = filtered.length;
+    const total = filtered.reduce((acc, curr) => acc + (curr.Stanziamento_incentivo || 0), 0);
+
+    countUp('incentivi-count', count, 1000); 
+    countUpMoney('importo-count', total, 1000);
+}
+
+const form = document.getElementById('chatForm');
+const input = document.getElementById('userInput');
+const messages = document.getElementById('messages');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = input.value;
+    messages.innerHTML += `<p><strong style="color:#666;">Tu:</strong> ${msg}</p>`;
+    input.value = "";
+
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: msg})
+        });
+
+        const data = await response.json();
+        if (!window.metricsUpdated) {
+            fetchMetrics();
+            window.metricsUpdated = true;
         }
-    });
 
-    input.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-            form.dispatchEvent(new Event("submit"));
-            event.preventDefault();
+        messages.innerHTML += `<p><strong>eVoluto:</strong> ${data.reply}</p>`;
+    } catch (error) {
+        messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
+    }
+});
+
+input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+        form.dispatchEvent(new Event("submit"));
+        event.preventDefault();
+    }
+});
+
+function countUp(id, end, duration) {
+    const el = document.getElementById(id);
+    let start = 0;
+    const increment = end / (duration / 10);
+    const interval = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+            el.innerText = Math.round(end);
+            clearInterval(interval);
+        } else {
+            el.innerText = Math.round(start);
         }
-    });
+    }, 10);
+}
+function countUpMoney(id, end, duration) {
+    const el = document.getElementById(id);
+    let start = 0;
+    const increment = end / (duration / 10);
+    const interval = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+            el.innerText = "€" + end.toLocaleString();
+            clearInterval(interval);
+        } else {
+            el.innerText = "€" + Math.round(start).toLocaleString();
+        }
+    }, 10);
+}
 </script>
 </body>
 </html>
