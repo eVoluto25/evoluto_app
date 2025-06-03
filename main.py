@@ -10,6 +10,7 @@ from sheets_writer import write_to_sheets
 from drive_utils import get_pdfs_from_drive
 from pdf_exporter import export_to_pdf
 from classificazione_macroarea import assegna_macroarea
+from supabase import create_client
 from supabase_connector import fetch_bandi
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from export_bandi_results import export_bandi_results
@@ -18,6 +19,29 @@ from fastapi import File, UploadFile
 from drive_utils import upload_file_to_drive, create_drive_subfolder
 import logging
 import os
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+@app.get("/stats")
+async def get_stats():
+    try:
+        response = supabase.table("bandi_disponibili").select("Stanziamento_incentivo, Data_chiusura").execute()
+        rows = response.data
+
+        from datetime import datetime
+        today = datetime.now().date()
+
+        attivi = [r for r in rows if r["Data_chiusura"] and datetime.strptime(r["Data_chiusura"], "%Y-%m-%d").date() >= today]
+        totale = sum(r["Stanziamento_incentivo"] for r in attivi if r["Stanziamento_incentivo"] is not None)
+
+        return {
+            "incentivi_attivi": len(attivi),
+            "totale_importo": totale
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 setup_logging()
 logger = logging.getLogger(__name__)
