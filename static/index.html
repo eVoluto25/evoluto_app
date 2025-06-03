@@ -1,161 +1,139 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>eVoluto AI</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
-      margin: 0;
-    }
+<meta charset="utf-8"/>
+<title>eVoluto Chat</title>
+<style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 30px;
+        }
 
-    .logo-title {
-      text-align: right;
-      width: 100%;
-      max-width: 800px;
-      margin-bottom: 20px;
-    }
+        .header {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .logo-title img {
-      height: 40px;
-      vertical-align: middle;
-    }
+        .header img {
+            height: 32px;
+        }
 
-    .logo-title h2 {
-      display: inline-block;
-      margin-left: 10px;
-      vertical-align: middle;
-    }
+        .chat-container {
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-top: 80px;
+        }
 
-    .chat-container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 800px;
-      height: 500px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 16px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
 
-    .chat-input-wrapper {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      max-width: 800px;
-    }
+        form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-    .chat-input {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ccc;
-      border-radius: 25px;
-      padding: 10px 15px;
-      width: 100%;
-      background: #fff;
-    }
+        input[type="text"] {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
 
-    .upload-icon {
-      font-size: 24px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
 
-    .chat-input input[type="text"] {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
+        .file-upload {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
 
-    #sendBtn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 15px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-  </style>
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload::before {
+            content: '+';
+            font-size: 24px;
+            color: #007bff;
+        }
+
+    </style>
 </head>
 <body>
+<div class="chat-container">
+<div class="messages" id="messages">
+<p>Avvia una conversazione...</p>
+</div>
+<form id="chatForm">
+<label class="file-upload">
+<input accept="application/pdf" id="pdfFile" name="file" type="file"/>
+</label>
+<input id="userInput" placeholder="Fai una domanda..." required="" type="text"/>
+<button type="submit">Invia</button>
+</form>
+</div>
+<script>
+        const form = document.getElementById('chatForm');
+        const input = document.getElementById('userInput');
+        const messages = document.getElementById('messages');
 
-  <div class="logo-title">
-    <img src="https://via.placeholder.com/40" alt="eVoluto Logo"/>
-    <h2>eVoluto AI</h2>
-  </div>
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = input.value;
+            messages.innerHTML += `<p><strong style="color:#007bff;">Tu:</strong> ${msg}</p>`;
+            input.value = "";
 
-  <div class="chat-container" id="chatBox">
-    Avvia una conversazione...
-  </div>
-
-  <div class="chat-input-wrapper">
-    <div class="chat-input">
-      <label for="pdfUpload" class="upload-icon">+</label>
-      <input type="file" id="pdfUpload" name="file" style="display:none" onchange="uploadPDF()">
-      <input type="text" id="messageInput" placeholder="Fai una domanda" onkeydown="if(event.key==='Enter'){sendMessage()}">
-      <button id="sendBtn" onclick="sendMessage()">Invia</button>
-    </div>
-  </div>
-
-  <script>
-    async function sendMessage() {
-      const input = document.getElementById("messageInput");
-      const message = input.value.trim();
-      if (!message) return;
-
-      const chatBox = document.getElementById("chatBox");
-      chatBox.innerHTML += `<p><strong>Tu:</strong> ${message}</p>`;
-      input.value = "";
-
-      try {
-        const response = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({message: msg})
+                });
+                const data = await response.json();
+                messages.innerHTML += `<p><strong>evoluto:</strong> ${data.reply}</p>`;
+            } catch (error) {
+                messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
+            }
         });
-        const data = await response.json();
-        chatBox.innerHTML += `<p><strong>AI:</strong> ${data.response}</p>`;
-      } catch (error) {
-        chatBox.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
-      }
 
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    async function uploadPDF() {
-      const fileInput = document.getElementById("pdfUpload");
-      const file = fileInput.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const chatBox = document.getElementById("chatBox");
-      chatBox.innerHTML += `<p><em>📄 ${file.name} in caricamento...</em></p>`;
-
-      try {
-        const response = await fetch("/upload_pdf", {
-          method: "POST",
-          body: formData
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                form.dispatchEvent(new Event("submit"));
+                event.preventDefault();
+            }
         });
-        const result = await response.json();
-        chatBox.innerHTML += `<p><em>${result.message || 'Documento caricato'}</em></p>`;
-      } catch {
-        chatBox.innerHTML += `<p style="color:red;">Errore durante il caricamento del PDF.</p>`;
-      }
-
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-  </script>
-
+    </script>
 </body>
 </html>
