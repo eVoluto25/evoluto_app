@@ -122,7 +122,7 @@
                     body: JSON.stringify({message: msg})
                 });
                 const data = await response.json();
-                messages.innerHTML += `<p><strong>evoluto:</strong> ${data.reply}</p>`;
+                messages.innerHTML += `<p><strong>eVoluto:</strong> ${data.reply}</p>`;
             } catch (error) {
                 messages.innerHTML += `<p style="color:red;">Errore nella risposta</p>`;
             }
