@@ -23,6 +23,10 @@ import os
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+openai = OpenAI(api_key=openai_api_key)
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
