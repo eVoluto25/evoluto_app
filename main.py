@@ -87,7 +87,3 @@ async def process(request: Request):
         logging.error(f"❌ Errore connessione email: {e}")
         print(f"❌ Errore connessione email: {e}")
         return None
-
-# Esegui solo se runnato direttamente
-if __name__ == "__main__":
-    start_email_loop()
