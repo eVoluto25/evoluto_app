@@ -27,6 +27,17 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Funzione per recuperare dati da 'verifica_aziendale'
+def recupera_dati_azienda(denominazione, partita_iva):
+    result = supabase.table("verifica_aziendale") \
+                     .select("*") \
+                     .eq("denominazione", denominazione) \
+                     .eq("partita_iva", partita_iva) \
+                     .execute()
+    if result.data:
+        return result.data[0]
+    return None
+
 @app.get("/stats")
 async def get_stats():
     try:
