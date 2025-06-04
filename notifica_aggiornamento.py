@@ -3,8 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 def invia_notifica_email():
-    mittente = os.getenv("EMAIL_FROM")
-    destinatario = os.getenv("EMAIL_TO")
+    mittente = os.getenv("EMAIL_SENDER")
+    destinatario = os.getenv("EMAIL_SENDER") 
     password = os.getenv("EMAIL_PASSWORD")
 
     msg = MIMEText("La tabella bandi_disponibili è stata aggiornata.")
