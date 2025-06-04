@@ -170,7 +170,15 @@ form.addEventListener('submit', async (e) => {
         });
         const uploadResult = await uploadResponse.json();
         console.log("File caricato:", uploadResult.path);
-        // puoi usare uploadResult.path per inviarlo al backend/chat
+
+        if (uploadResult.path) {
+          messages.innerHTML += `<p><strong>Analisi GPT:</strong> <a href="${uploadResult.path}" target="_blank">${uploadResult.path}</a></p>`;
+        }
+
+        if (uploadResult.claude) {
+          messages.innerHTML += `<p><strong>Matching bandi:</strong> <a href="${uploadResult.claude}" target="_blank">${uploadResult.claude}</a></p>`;
+        }
+        
       } catch (err) {
         console.error("Errore upload:", err);
       }
