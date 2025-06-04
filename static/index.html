@@ -255,8 +255,7 @@ form.addEventListener('submit', async (e) => {
 
         console.log("Risposta upload:", result);
 
-        console.log("Sto pensando se...");  
-        
+        console.log("Scrivo a eVoluto…", messages, file.name);
         messages.innerHTML += `<p><strong style="color:#666;">File caricato:</strong> ${file.name}</p>`;
       } catch (err) {
         messages.innerHTML += `<p style="color:red;">Errore upload file</p>`;
