@@ -280,25 +280,6 @@ function countUpMoney(id, end, duration) {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("chatForm");
-    const input = document.getElementById("userInput");
-    const messages = document.getElementById("messages");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const msg = input.value.trim();
-        if (!msg) return;
-
-        messages.innerHTML += `<p><strong style="color:#666;">Tu:</strong> ${msg}</p>`;
-        input.value = "";
-
-        try {
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: msg }),
-            });
 
             const data = await response.json();
             if (data.response) {
