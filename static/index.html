@@ -161,12 +161,32 @@ form.addEventListener('submit', async (e) => {
     messages.innerHTML += `<p><strong style="color:#666;">Tu:</strong> ${msg}</p>`;
     input.value = "";
 
+    if (file) {
+      try {
+        const uploadResponse = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const uploadResult = await uploadResponse.json();
+        console.log("File caricato:", uploadResult.path);
+        // puoi usare uploadResult.path per inviarlo al backend/chat
+      } catch (err) {
+        console.error("Errore upload:", err);
+      }
+    }
+
     try {
         const response = await fetch("/chat", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({message: msg})
         });
+        const data = await response.json();
+        console.log("Risposta chat:", data);
+      } catch (err) {
+        console.error("Errore chat:", err);
+      }
+    });
 
           try {
             const response = await fetch("/upload", {
