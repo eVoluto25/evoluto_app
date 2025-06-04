@@ -240,6 +240,8 @@ form.addEventListener('submit', async (e) => {
       const file = fileInput.files[0];
       if (!file) return;
 
+      console.log("File selezionato:", file.name);
+
       const formData = new FormData();
       formData.append('file', file);
 
@@ -249,6 +251,8 @@ form.addEventListener('submit', async (e) => {
           body: formData
         });
         const result = await response.json();
+
+        console.log("Risposta upload:", result);
 
         messages.innerHTML += `<p><strong style="color:#666;">File caricato:</strong> ${file.name}</p>`;
       } catch (err) {
