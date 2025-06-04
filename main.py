@@ -1,11 +1,9 @@
-
-import logging
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
-import uvicorn
+from estrazione import estrai_indici, assegna_macroarea
+from utils import supabase_query_esteso, supabase_insert
 import os
+import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,35 +13,54 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Serve la tua interfaccia da /static/index.html
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+@app.post("/match_bandi")
+async def match_bandi(req: Request):
+    data = await req.json()
+    logger.info(f"Richiesta ricevuta: {data}")
 
-@app.post("/chat")
-async def chat(payload: dict):
-    message = payload.get("message", "")
-    logger.info(f"Messaggio ricevuto: {message}")
     try:
-        risposta = f"Risposta generica a: {message}"
-        return JSONResponse(content={"response": risposta})
-    except Exception as e:
-        logger.error(f"Errore /chat: {e}")
-        return JSONResponse(status_code=500, content={"error": "Errore risposta"})
+        azienda = data.get("azienda", "ND")
+        anagrafica = {k: data.get(k, "") for k in [
+            "forma_giuridica", "codice_ateco", "partita_iva", "anno_fondazione",
+            "numero_dipendenti", "attivita_prevalente", "provincia", "citta", "amministratore"
+        ]}
 
-@app.post("/upload_pdf")
-async def upload_pdf(file: UploadFile = File(None), message: str = Form(None)):
-    logger.info(f"Upload ricevuto - file: {file.filename if file else 'nessuno'} - message: {message}")
-    try:
-        gpt_url = f"https://mock.supabase.io/gpt/{file.filename}.html" if file else ""
-        claude_url = f"https://mock.supabase.io/claude/{file.filename}.html" if file else ""
-        return JSONResponse(content={"path": gpt_url, "claude": claude_url})
-    except Exception as e:
-        logger.error(f"Errore /upload_pdf: {e}")
-        return JSONResponse(status_code=500, content={"error": "Errore upload"})
+        indici = estrai_indici(data)
+        macroarea = assegna_macroarea(indici)
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        filtro_bandi = {
+            "macroarea": macroarea,
+            "Tipologia_Soggetto": anagrafica["forma_giuridica"],
+            "Dimensioni": anagrafica["numero_dipendenti"],
+            "Settore_Attivita": anagrafica["attivita_prevalente"],
+            "Codici_ATECO": anagrafica["codice_ateco"],
+            "Regioni": anagrafica.get("provincia", ""),
+            "Comuni": anagrafica.get("citta", "")
+        }
+
+        bandi = supabase_query_esteso("bandi_disponibili", filtro_bandi)
+        id_bandi = [bando.get("ID_Incentivo") for bando in bandi if "ID_Incentivo" in bando]
+
+        verifica_data = {
+            "azienda": azienda,
+            "macroarea": macroarea,
+            "ID_Incentivo": id_bandi,
+            **indici,
+            **anagrafica
+        }
+
+        logger.info(f"Salvataggio su verifica_aziendale: {verifica_data}")
+        supabase_insert("verifica_aziendale", verifica_data)
+
+        return {
+            "azienda": azienda,
+            "macroarea": macroarea,
+            "bandi_compatibili": bandi
+        }
+    except Exception as e:
+        logger.error(f"Errore durante l'elaborazione: {e}")
+        return {"errore": str(e)}
