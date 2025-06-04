@@ -163,7 +163,7 @@ form.addEventListener('submit', async (e) => {
 
     if (file) {
       try {
-        const uploadResponse = await fetch("/upload", {
+        const uploadResponse = await fetch("/upload_pdf", {
           method: "POST",
           body: formData,
         });
