@@ -236,6 +236,27 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch("/upload_pdf", {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.json();
+
+        messages.innerHTML += `<p><strong style="color:#666;">File caricato:</strong> ${file.name}</p>`;
+      } catch (err) {
+        messages.innerHTML += `<p style="color:red;">Errore upload file</p>`;
+        console.error("Errore upload:", err);
+      }
+    });
+
 input.addEventListener("keydown", function (event) {
     if (event.key === "Enter" && !event.shiftKey) {
         form.dispatchEvent(new Event("submit"));
