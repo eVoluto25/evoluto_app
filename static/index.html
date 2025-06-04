@@ -126,6 +126,11 @@
 const supabaseUrl = window.SUPABASE_URL || '';
 const supabaseKey = window.SUPABASE_KEY || '';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const chatBox = document.getElementById("chat-box");
+const userInput = document.getElementById("user-input");
+const submitButton = document.getElementById("submit-button");
+const fileInput = document.getElementById("file-input");
+const placeholder = document.getElementById("placeholder");
 
 async function fetchMetrics() {
     const today = new Date().toISOString().split('T')[0];
