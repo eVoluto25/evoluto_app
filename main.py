@@ -2,6 +2,8 @@ from user_gpt_prompt import CHAT_PROMPT
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from logging_config import setup_logging
 from pdf_cleaner import clean_pdf_texts
@@ -91,6 +93,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def upload_pdf(file: UploadFile = File(...)):
     unique_id = str(uuid.uuid4())  # genera UUID univoco
     contents = await file.read()
+    # salva file
+    # avvia pipeline: extractor -> gpt_module 
+    # carica HTML su Supabase
+    return JSONResponse(content={
+        "path": "https://.../outputGPT.html",
+    })
     
     os.makedirs("uploaded_files", exist_ok=True)
     file_path = f"uploaded_files/{unique_id}_{file.filename}"  # salva con UUID
