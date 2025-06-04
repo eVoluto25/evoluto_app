@@ -1,3 +1,5 @@
+from classificaz_macroarea import popola_verifica_aziendale
+
 def estrai_indici(dati):
     try:
         fatturato = float(dati.get("fatturato_annuo", 0))
@@ -51,8 +53,13 @@ def assegna_macroarea(indici):
     )
 
     if crisi:
-        return "area_crisi_risanamento"
+        area = "area_crisi_risanamento"
     elif crescita:
-        return "area_crescita_sviluppo"
+        area = "area_crescita_sviluppo"
     else:
-        return "area_espansione_transizione"
+        area = "area_espansione_transizione"
+
+    # ⬇️ Registra la classificazione su Supabase
+    popola_verifica_aziendale(indici)
+
+    return area
