@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Upload File</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    #messages { background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 20px; min-height: 100px; }
+  </style>
+</head>
+<body>
+
+<h3>Test Upload PDF</h3>
+<input type="file" id="pdfFile" accept="application/pdf" />
+<div id="messages"><p>Pronto a ricevere file…</p></div>
+
+<script>
+const fileInput = document.getElementById("pdfFile");
+const messages = document.getElementById("messages");
+
+fileInput.addEventListener("change", async () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  console.log("File selezionato:", file.name);
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await fetch("/upload_pdf", {
+      method: "POST",
+      body: formData
+    });
+    const result = await response.json();
+
+    console.log("Risposta upload:", result);
+    console.log("Sto per scrivere in chat...");
+    console.log("Elemento messages:", messages);
+
+    messages.innerHTML += `<p><strong style="color:#666;">File caricato:</strong> ${file.name}</p>`;
+  } catch (err) {
+    console.error("Errore upload:", err);
+    messages.innerHTML += `<p style="color:red;">Errore upload file</p>`;
+  }
+});
+</script>
+
+</body>
+</html>
