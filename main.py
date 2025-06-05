@@ -40,12 +40,9 @@ async def analizza_pdf(file: UploadFile = File(...)):
         bandi_compatibili = matcha_bandi(id_verifica, macroarea, indici_finanziari)
         logger.info("✅ Matching bandi completato")
 
-        # Step 5: Generazione output leggibile
-        output = genera_output_finale(id_verifica)
-        logger.info("✅ Output finale generato")
+         # FASE E: Generazione HTML finale e salvataggio
+         logging.info("🧾 Genero output HTML finale per GPT/chat")
+         html_finale = genera_output_html(anagrafica=info, indici=indici, macroarea=risultato_macroarea, bandi=bandi_trovati)
 
-        return JSONResponse(content=output)
-
-    except Exception as e:
-        logger.error(f"❌ Errore nel processo: {e}")
-        return JSONResponse(content={"errore": str(e)}, status_code=500)
+         logging.info("💾 Salvataggio completato per ID: %s", id_analisi)
+         return {"id_analisi": id_analisi, "html": html_finale}
