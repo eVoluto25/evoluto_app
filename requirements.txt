@@ -1,6 +1,13 @@
 fastapi
 uvicorn
-python-dotenv
 supabase
 requests
-pandas
+pandas>=2.0.0
+openpyxl>=3.1.0
+python-dotenv>=1.0.0
+supabase>=1.0.3
+requests>=2.31.0
+email-validator>=2.1.0
+brevo>=0.0.3
+pdfminer.six>=20221105
+python-dateutil>=2.8.2
