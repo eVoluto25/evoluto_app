@@ -1,48 +1,52 @@
-from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse
-import uuid
+
 import logging
-
-from pdf_cleaner import pulisci_pdf
-from estrazione import estrai_indici, assegna_macroarea
-from classificazione_macroarea import popola_verifica_aziendale
+from bilancio import calcola_indici_bilancio
+from macroarea import assegna_macroarea
 from bandi_matcher import matcha_bandi
-from output_builder import genera_output_finale
+from ranking import calcola_ranking
+from output_gpt import genera_output_gpt
+from pdf_cleaner import estrai_dati_da_file
 
-# Configura logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/evoluto.log"),
+        logging.StreamHandler()
+    ]
+)
 
-app = FastAPI()
-
-@app.post("/analizza_pdf/")
-async def analizza_pdf(file: UploadFile = File(...)):
+def main(percorso_file):
     try:
-        logger.info("📥 Ricevuto file PDF da GPT")
+        logging.info("Inizio processo di analisi completa")
 
-        # Step 1: Pulizia PDF
-        contenuto_pulito = pulisci_pdf(await file.read())
-        logger.info("✅ Pulizia PDF completata")
+        logging.info("Estrazione dati dal file PDF o XBRL")
+        testo_estratto, nome_azienda = estrai_dati_da_file(percorso_file)
 
-        # Step 2: GPT riceve il testo pulito, calcola gli indici e li restituisce
-        # Qui si simula il dizionario di indici come se fosse la risposta GPT
-        # ⚠️ In produzione: GPT deve ricevere il testo pulito e restituire questi indici
-        indici_finanziari = estrai_indici(contenuto_pulito)
-        logger.info("✅ Indici finanziari calcolati da GPT")
+        logging.info("Calcolo indici di bilancio")
+        id_azienda = calcola_indici_bilancio(testo_estratto, nome_azienda)
 
-        # Step 3: Assegnazione Macroarea + Scrittura su Supabase
-        macroarea = assegna_macroarea(indici_finanziari)
-        id_verifica = str(uuid.uuid4())
-        popola_verifica_aziendale(id_verifica, indici_finanziari, macroarea)
-        logger.info(f"✅ Dati scritti in verifica_aziendale (ID: {id_verifica})")
+        logging.info("Assegnazione macroarea")
+        assegna_macroarea(id_azienda)
 
-        # Step 4: Matching bandi (con pesi e logica)
-        bandi_compatibili = matcha_bandi(id_verifica, macroarea, indici_finanziari)
-        logger.info("✅ Matching bandi completato")
+        logging.info("Matching con i bandi disponibili")
+        matcha_bandi(id_azienda)
 
-         # FASE E: Generazione HTML finale e salvataggio
-         logging.info("🧾 Genero output HTML finale per GPT/chat")
-         html_finale = genera_output_html(anagrafica=info, indici=indici, macroarea=risultato_macroarea, bandi=bandi_trovati)
+        logging.info("Calcolo ranking bandi")
+        calcola_ranking(id_azienda)
 
-         logging.info("💾 Salvataggio completato per ID: %s", id_analisi)
-         return {"id_analisi": id_analisi, "html": html_finale}
+        logging.info("Generazione output GPT")
+        genera_output_gpt(id_azienda)
+
+        logging.info("Processo completato con successo")
+
+    except Exception as e:
+        logging.error(f"Errore durante il processo: {e}", exc_info=True)
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        logging.error("Percorso al file XBRL o PDF mancante.")
+    else:
+        main(sys.argv[1])
