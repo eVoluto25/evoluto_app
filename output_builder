@@ -1,0 +1,94 @@
+import uuid
+import logging
+from datetime import datetime
+from utils import supabase_update
+
+logging.basicConfig(level=logging.INFO)
+
+def genera_output_finale(azienda_id, dati_azienda, bandi_compatibili):
+    try:
+        # 1. Genera ID analisi
+        id_analisi = str(uuid.uuid4())
+
+        # 2. Genera elenco HTML dei bandi compatibili con titolo e link
+        bandi_html = ""
+        for bando in bandi_compatibili:
+            titolo = bando.get("Titolo", "Titolo non disponibile")
+            link = bando.get("Link_istituzionale", "#")
+            bandi_html += f"<li><a href='{link}' target='_blank'>{titolo}</a></li>"
+
+        # 3. Genera contenuto HTML completo
+        html = f"""
+        <html>
+            <body>
+                <h2>Analisi aziendale – {dati_azienda.get('ragione_sociale', 'Impresa')}</h2>
+                <h3>Dati Identificativi</h3>
+                <p><strong>Partita IVA:</strong> {dati_azienda.get('partita_iva')}</p>
+                <p><strong>Forma Giuridica:</strong> {dati_azienda.get('forma_giuridica')}</p>
+                <p><strong>Codice ATECO:</strong> {dati_azienda.get('codice_ateco')}</p>
+                <p><strong>Attività prevalente:</strong> {dati_azienda.get('attivita_prevalente')}</p>
+                <p><strong>Provincia:</strong> {dati_azienda.get('provincia')}</p>
+                <p><strong>Città:</strong> {dati_azienda.get('citta')}</p>
+                <p><strong>Numero Dipendenti:</strong> {dati_azienda.get('numero_dipendenti')}</p>
+                <p><strong>Dimensione Impresa:</strong> {dati_azienda.get('dimensione_impresa')}</p>
+                <p><strong>Amministratore:</strong> {dati_azienda.get('amministratore')}</p>
+
+                <h3>Indicatori Finanziari</h3>
+                <p><strong>Fatturato:</strong> €{dati_azienda.get('fatturato')}</p>
+                <p><strong>Utile netto:</strong> €{dati_azienda.get('utile_netto')}</p>
+                <p><strong>EBITDA:</strong> €{dati_azienda.get('ebitda')}</p>
+                <p><strong>EBITDA Margin:</strong> {dati_azienda.get('ebitda_margin')}%</p>
+                <p><strong>Totale Attivo:</strong> €{dati_azienda.get('totale_attivo')}</p>
+                <p><strong>Liquidità:</strong> €{dati_azienda.get('liquidita')}</p>
+                <p><strong>Immobilizzazioni:</strong> €{dati_azienda.get('immobilizzazioni')}</p>
+                <p><strong>Indebitamento:</strong> €{dati_azienda.get('indebitamento')}</p>
+                <p><strong>Debt/Equity:</strong> {dati_azienda.get('debt_equity')}</p>
+                <p><strong>Current Ratio:</strong> {dati_azienda.get('current_ratio')}</p>
+                <p><strong>Interest Coverage Ratio:</strong> {dati_azienda.get('interest_coverage_ratio')}</p>
+                <p><strong>Capacità di autofinanziamento:</strong> €{dati_azienda.get('autofinanziamento')}</p>
+                <p><strong>Investimenti recenti:</strong> €{dati_azienda.get('investimenti_recenti')}</p>
+                <p><strong>Spese R&S:</strong> €{dati_azienda.get('spese_r_s')}</p>
+                <p><strong>Costi ambientali presenti:</strong> {dati_azienda.get('costi_ambientali_presenti')}</p>
+
+                <h3>Macroarea Assegnata</h3>
+                <p><strong>Macroarea:</strong> {
+                    'Crisi' if dati_azienda.get('area_crisi_risanamento') else
+                    'Crescita' if dati_azienda.get('area_crescita_sviluppo') else
+                    'Espansione'
+                }</p>
+
+                <h3>Bandi Compatibili</h3>
+                <ul>{bandi_html}</ul>
+
+                <p><em>Data generazione: {datetime.now().strftime('%d/%m/%Y')}</em></p>
+            </body>
+        </html>
+        """
+
+        # 4. Aggiorna Supabase
+        supabase_update("verifica_aziendale", azienda_id, {
+            "id_analisi": id_analisi,
+            "verifica_finale_html": html
+        })
+
+        # 5. Restituisce tutto a GPT o frontend
+        return {
+            "id_analisi": id_analisi,
+            "html": html,
+            "bandi": [
+                {
+                    "id": b.get("id_incentivo"),
+                    "titolo": b.get("Titolo"),
+                    "link": b.get("Link_istituzionale")
+                } for b in bandi_compatibili
+            ],
+            "macroarea": (
+                "crisi" if dati_azienda.get("area_crisi_risanamento") else
+                "crescita" if dati_azienda.get("area_crescita_sviluppo") else
+                "espansione"
+            )
+        }
+
+    except Exception as e:
+        logging.error(f"Errore generazione output finale: {e}")
+        return None
