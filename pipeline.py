@@ -1,6 +1,6 @@
 
 import os
-from extract_clean import extract_and_clean_text
+from pdf_cleaner import extract_and_clean_text
 from bilancio import calcola_indici_e_scrivi
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
