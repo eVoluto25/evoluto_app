@@ -2,6 +2,7 @@ import uuid
 import logging
 from datetime import datetime
 from utils import supabase_update
+from scoring_engine import calcola_punteggio_finale
 
 logging.basicConfig(level=logging.INFO)
 
@@ -10,14 +11,17 @@ def genera_output_finale(azienda_id, dati_azienda, bandi_compatibili):
         # 1. Genera ID analisi
         id_analisi = str(uuid.uuid4())
 
-        # 2. Genera elenco HTML dei bandi compatibili con titolo e link
+        # 2. Calcola punteggio finale e classe
+        punteggio, classe = calcola_punteggio_finale(dati_azienda, bandi_compatibili)
+
+        # 3. Genera elenco HTML dei bandi compatibili con titolo e link
         bandi_html = ""
         for bando in bandi_compatibili:
             titolo = bando.get("Titolo", "Titolo non disponibile")
             link = bando.get("Link_istituzionale", "#")
             bandi_html += f"<li><a href='{link}' target='_blank'>{titolo}</a></li>"
 
-        # 3. Genera contenuto HTML completo
+        # 4. Genera contenuto HTML completo
         html = f"""
         <html>
             <body>
@@ -57,6 +61,10 @@ def genera_output_finale(azienda_id, dati_azienda, bandi_compatibili):
                     'Espansione'
                 }</p>
 
+                <h3>Punteggio Finale</h3>
+                <p><strong>Punteggio:</strong> {punteggio} / 100</p>
+                <p><strong>Classe:</strong> {classe}</p>
+
                 <h3>Bandi Compatibili</h3>
                 <ul>{bandi_html}</ul>
 
@@ -65,16 +73,20 @@ def genera_output_finale(azienda_id, dati_azienda, bandi_compatibili):
         </html>
         """
 
-        # 4. Aggiorna Supabase
+        # 5. Aggiorna Supabase
         supabase_update("verifica_aziendale", azienda_id, {
             "id_analisi": id_analisi,
-            "verifica_finale_html": html
+            "verifica_finale_html": html,
+            "punteggio_totale": punteggio,
+            "classe_valutazione": classe
         })
 
-        # 5. Restituisce tutto a GPT o frontend
+        # 6. Restituisce tutto
         return {
             "id_analisi": id_analisi,
             "html": html,
+            "punteggio": punteggio,
+            "classe": classe,
             "bandi": [
                 {
                     "id": b.get("id_incentivo"),
