@@ -2,8 +2,8 @@
 import logging
 from bilancio import calcola_indici_bilancio
 from macroarea import assegna_macroarea
-from bandi_matcher import matcha_bandi
-from ranking import calcola_ranking
+from bandi_matcher import match_bandi
+from valutazione_punteggio import calcola_ranking
 from output_gpt import genera_output_gpt
 from pdf_cleaner import estrai_dati_da_file
 
@@ -31,7 +31,7 @@ def main(percorso_file):
         assegna_macroarea(id_azienda)
 
         logging.info("Matching con i bandi disponibili")
-        matcha_bandi(id_azienda)
+        match_bandi(id_azienda)
 
         logging.info("Calcolo ranking bandi")
         calcola_ranking(id_azienda)
