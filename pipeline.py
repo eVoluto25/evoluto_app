@@ -4,7 +4,7 @@ from pdf_cleaner import extract_and_clean_text
 from bilancio import calcola_indici_e_scrivi
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
-from bandi_scorer import calcola_punteggi_bandi
+from valutazione_punteggio import calcola_punteggi_bandi
 from gpt_output import genera_output_gpt
 
 def esegui_pipeline(nome_file, percorso_file):
