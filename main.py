@@ -1,66 +1,51 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from estrazione import estrai_indici, assegna_macroarea
-from utils import supabase_query_esteso, supabase_insert
-import os
+from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import JSONResponse
+import uuid
 import logging
 
+from pdf_cleaner import pulisci_pdf
+from estrazione import estrai_indici, assegna_macroarea
+from classificazione_macroarea import popola_verifica_aziendale
+from bandi_matcher import matcha_bandi
+from output_builder import genera_output_finale
+
+# Configura logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.post("/match_bandi")
-async def match_bandi(req: Request):
-    data = await req.json()
-    logger.info(f"Richiesta ricevuta: {data}")
-
+@app.post("/analizza_pdf/")
+async def analizza_pdf(file: UploadFile = File(...)):
     try:
-        azienda = data.get("azienda", "ND")
-        anagrafica = {k: data.get(k, "") for k in [
-            "forma_giuridica", "codice_ateco", "partita_iva", "anno_fondazione",
-            "numero_dipendenti", "attivita_prevalente", "provincia", "citta", "amministratore"
-        ]}
+        logger.info("📥 Ricevuto file PDF da GPT")
 
-        indici = estrai_indici(data)
-        macroarea = assegna_macroarea(indici)
+        # Step 1: Pulizia PDF
+        contenuto_pulito = pulisci_pdf(await file.read())
+        logger.info("✅ Pulizia PDF completata")
 
-        filtro_bandi = {
-            "macroarea": macroarea,
-            "Tipologia_Soggetto": anagrafica["forma_giuridica"],
-            "Dimensioni": anagrafica["numero_dipendenti"],
-            "Settore_Attivita": anagrafica["attivita_prevalente"],
-            "Codici_ATECO": anagrafica["codice_ateco"],
-            "Regioni": anagrafica.get("provincia", ""),
-            "Comuni": anagrafica.get("citta", "")
-        }
+        # Step 2: GPT riceve il testo pulito, calcola gli indici e li restituisce
+        # Qui si simula il dizionario di indici come se fosse la risposta GPT
+        # ⚠️ In produzione: GPT deve ricevere il testo pulito e restituire questi indici
+        indici_finanziari = estrai_indici(contenuto_pulito)
+        logger.info("✅ Indici finanziari calcolati da GPT")
 
-        bandi = supabase_query_esteso("bandi_disponibili", filtro_bandi)
-        id_bandi = [bando.get("ID_Incentivo") for bando in bandi if "ID_Incentivo" in bando]
+        # Step 3: Assegnazione Macroarea + Scrittura su Supabase
+        macroarea = assegna_macroarea(indici_finanziari)
+        id_verifica = str(uuid.uuid4())
+        popola_verifica_aziendale(id_verifica, indici_finanziari, macroarea)
+        logger.info(f"✅ Dati scritti in verifica_aziendale (ID: {id_verifica})")
 
-        verifica_data = {
-            "azienda": azienda,
-            "macroarea": macroarea,
-            "ID_Incentivo": id_bandi,
-            **indici,
-            **anagrafica
-        }
+        # Step 4: Matching bandi (con pesi e logica)
+        bandi_compatibili = matcha_bandi(id_verifica, macroarea, indici_finanziari)
+        logger.info("✅ Matching bandi completato")
 
-        logger.info(f"Salvataggio su verifica_aziendale: {verifica_data}")
-        supabase_insert("verifica_aziendale", verifica_data)
+        # Step 5: Generazione output leggibile
+        output = genera_output_finale(id_verifica)
+        logger.info("✅ Output finale generato")
 
-        return {
-            "azienda": azienda,
-            "macroarea": macroarea,
-            "bandi_compatibili": bandi
-        }
+        return JSONResponse(content=output)
+
     except Exception as e:
-        logger.error(f"Errore durante l'elaborazione: {e}")
-        return {"errore": str(e)}
+        logger.error(f"❌ Errore nel processo: {e}")
+        return JSONResponse(content={"errore": str(e)}, status_code=500)
