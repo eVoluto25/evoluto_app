@@ -92,6 +92,30 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
         risultati = top5
         return risultati
 
+        # Filtro Top 5 bandi con punteggio >= 80 e ordinamento decrescente
+        top5 = sorted(
+            [b for b in risultati_match if b.get('punteggio', 0) >= 80],
+            key=lambda x: x.get('beneficio_stimato', 0),
+            reverse=True
+        )[:5]
+
+        # Serializza solo i dati rilevanti
+        top5_serializzati = [
+            {
+               "id": b.get("id"),
+               "titolo": b.get("titolo"),
+               "punteggio": b.get("punteggio"),
+               "beneficio_stimato": b.get("beneficio_stimato"),
+               "forma_agevolazione": b.get("forma_agevolazione"),
+               "data_chiusura": b.get("data_chiusura"),
+            } for b in top5
+        ]
+
+        # Aggiorna la tabella Supabase
+        supabase_client.table("verifica_aziendale").update({
+            "top5_bandi": top5_serializzati
+        }).eq("id", id_verifica).execute()
+
 def aggiorna_tabella_verifica(supabase_client, id_verifica: str, risultati_match: list):
     if not risultati_match:
         return
