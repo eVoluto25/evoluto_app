@@ -1,5 +1,5 @@
-
 import os
+from gpt_formatter import genera_snippet_analisi
 from pdf_cleaner import pulisci_pdf
 from bilancio import calcola_indici_finanziari
 from macroarea import assegna_macroarea
