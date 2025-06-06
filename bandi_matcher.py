@@ -23,7 +23,7 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
         }
     return None
 
-def esegui_matching(bandi: list, macroarea: str) -> list:
+def trova_bandi_compatibili(bandi: list, macroarea: str) -> list:
     risultati = []
     for bando in bandi:
         match = calcola_match_bando(bando, macroarea)
