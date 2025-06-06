@@ -58,7 +58,7 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
 
     return None
 
-def trova_bandi_compatibili(bandi: list, macroarea: str) -> list:
+def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
     risultati = []
     for bando in bandi:
         # Filtro di sostenibilità economica: esclude bandi non sostenibili per l'azienda
