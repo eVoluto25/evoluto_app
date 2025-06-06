@@ -1,7 +1,7 @@
 
 import os
 from pdf_cleaner import pulisci_pdf
-from bilancio import calcola_indici_bilancio
+from bilancio import calcola_indici_finanziari
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_punteggi_bandi
