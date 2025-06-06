@@ -61,6 +61,24 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
 def trova_bandi_compatibili(bandi: list, macroarea: str) -> list:
     risultati = []
     for bando in bandi:
+        # Filtro di sostenibilità economica: esclude bandi non sostenibili per l'azienda
+        try:
+            spesa_min = float(bando.get("spesa_ammessa_min", 0))
+            fatturato = float(azienda.get("fatturato", 1))
+            liquidita = float(azienda.get("liquidita", 0))
+            utile = float(azienda.get("utile_netto", 0))
+            
+            # Calcolo soglia massima sostenibile (20% del fatturato)
+            soglia_massima = fatturato * 0.20
+            capacita_finanziaria = liquidita + utile
+
+            # Se non è in crisi e non ha forza per sostenere la spesa minima, scarta
+            if "crisi" not in macroarea and spesa_min > 0:
+            if spesa_min > soglia_massima and capacita_finanziaria < spesa_min:
+                continue  # Salta questo bando
+        except Exception as e:
+            print(f"[Filtro Spesa Ammessa] Errore: {e}")
+     
         match = calcola_match_bando(bando, macroarea)
         if match:
             risultati.append(match)
