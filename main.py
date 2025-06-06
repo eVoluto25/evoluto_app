@@ -6,6 +6,19 @@ from bandi_matcher import esegui_matching
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
+from fastapi import FastAPI, UploadFile
+from pipeline import esegui_pipeline
+
+app = FastAPI()
+
+@app.post("/upload")
+async def upload(file: UploadFile):
+    contenuto = await file.read()
+    nome_file = file.filename
+    with open(nome_file, "wb") as f:
+        f.write(contenuto)
+    output = esegui_pipeline(nome_file, nome_file)
+    return {"risultato": output}
 
 logging.basicConfig(
     level=logging.INFO,
