@@ -18,12 +18,15 @@ def esegui_pipeline(nome_file, percorso_file):
     azienda_id = calcola_indici_e_scrivi(nome_file, testo_pulito)
     print(f"✅ Calcolo indici completato per azienda ID: {azienda_id}")
 
+    # Recupero dati finanziari per logiche avanzate
+    dati_azienda = supabase.table("verifica_aziendale").select("utile_netto,liquidita,fatturato").eq("id", azienda_id).execute().data[0]
+
     # Step 3: Assegnazione macro area
     assegna_macroarea(azienda_id)
     print("✅ Macroarea assegnata")
 
     # Step 4: Ricerca bandi compatibili
-    trova_bandi_compatibili(azienda_id)
+    trova_bandi_compatibili(azienda_id, dati_azienda)
     print("✅ Bandi compatibili salvati")
 
     # Step 5: Calcolo punteggi bandi
