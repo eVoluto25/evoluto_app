@@ -36,6 +36,9 @@ def esegui_pipeline(nome_file, percorso_file):
     # Step 6: Generazione output GPT
     output = genera_output_gpt(azienda_id)
     print("✅ Output GPT generato")
+    top5 = dati_azienda.get("top5_bandi", [])
+    commenti = genera_commento_bandi(top5)
+    output += "\n\n🧠 Opportunità selezionate:\n" + commenti
 
     # Step 7: Salvataggio HTML finale nella colonna verifica_html
     dati_analisi = supabase.table("verifica_aziendale").select("*").eq("id", azienda_id).execute().data[0]
