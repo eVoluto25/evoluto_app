@@ -109,6 +109,7 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
                "beneficio_stimato": b.get("beneficio_stimato"),
                "forma_agevolazione": b.get("forma_agevolazione"),
                "data_chiusura": b.get("data_chiusura"),
+               "motivazione": genera_motivazione(b)
             } for b in top5
         ]
 
