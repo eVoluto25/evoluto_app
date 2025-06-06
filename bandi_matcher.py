@@ -1,4 +1,5 @@
 from datetime import datetime
+from motivazione_bando import genera_motivazione
 
 def calcola_match_bando(bando: dict, macroarea: str) -> dict:
     finalita = bando.get("obiettivo_finalita", "").lower()
