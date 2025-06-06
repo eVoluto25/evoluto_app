@@ -25,6 +25,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s"
     handlers=[
         logging.StreamHandler()
+    ]
 )
 
 def main(percorso_file):
