@@ -1,4 +1,5 @@
 from datetime import datetime
+from simulatore_impatto import simula_beneficio
 from motivazione_bando import genera_motivazione
 
 def calcola_match_bando(bando: dict, macroarea: str) -> dict:
@@ -82,6 +83,11 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
      
         match = calcola_match_bando(bando, macroarea)
         if match:
+            # ⬇️ Simulazione dell'impatto economico
+            beneficio = simula_beneficio(bando, azienda)
+            match["commento_impatto"] = beneficio.get("commento", "")
+            match["roi_stimato"] = beneficio.get("roi_stimato", 0)
+            
             risultati.append(match)
 
         # Filtro per punteggio minimo e selezione Top 5
