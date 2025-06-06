@@ -82,7 +82,15 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
         match = calcola_match_bando(bando, macroarea)
         if match:
             risultati.append(match)
-    return risultati
+
+        # Filtro per punteggio minimo e selezione Top 5
+        bandi_filtrati = [r for r in risultati if r.get("punteggio_compatibilità", 0) >= 80]
+        bandi_ordinati = sorted(bandi_filtrati, key=lambda x: x.get("punteggio_compatibilità", 0), reverse=True)
+        top5 = bandi_ordinati[:5]
+
+        # Sovrascrive i risultati con i top5 selezionati
+        risultati = top5
+        return risultati
 
 def aggiorna_tabella_verifica(supabase_client, id_verifica: str, risultati_match: list):
     if not risultati_match:
