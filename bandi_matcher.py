@@ -17,9 +17,9 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
             try:
                 data_chiusura = datetime.strptime(data_chiusura_str, "%Y-%m-%dT%H:%M:%S")
                 if data_chiusura < datetime.today():
-                   return None  # Bando chiuso
+                    return None  # Bando chiuso
         except ValueError:
-               pass  # formato errato, ignora filtro
+                pass  # formato errato, ignora filtro
 
     # ✅ Filtro su Codici ATECO
     codici = bando.get("Codici_ATECO", "")
