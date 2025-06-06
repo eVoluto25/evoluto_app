@@ -2,7 +2,7 @@
 import logging
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
-from bandi_matcher import esegui_matching
+from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
