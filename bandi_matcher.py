@@ -19,6 +19,25 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
         except ValueError:
             pass  # formato errato, ignora filtro
 
+    # ✅ Filtro su Codici ATECO
+    codici = bando.get("Codici_ATECO", "")
+    if "tutti i settori economici ammissibili" not in codici.lower():
+        if codice_ateco_azienda not in codici.replace(" ", "").split(";"):
+            return None
+
+    # ✅ Filtro su Settore Attività
+    settore_bando = bando.get("Settore_Attivita", "").lower()
+    if settore_bando and settore_attivita_azienda.lower() not in settore_bando:
+        return None
+
+    # ✅ Filtro su Regione
+    regioni_bando = bando.get("Regioni", "").lower()
+    if regioni_bando:
+        regione_azienda = regione_azienda.lower()
+        if regione_azienda not in regioni_bando:
+            return None
+            
+    # ✅ Filtro su parole chiave della macroarea
     if any(kw in finalita for kw in parole_chiave):
         return {
             "Titolo": bando.get("titolo", ""),
