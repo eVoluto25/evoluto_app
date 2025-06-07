@@ -1,10 +1,9 @@
 def simula_beneficio(bando, bilancio):
-    risultato = {
+    risultato = {}
         "bando": bando.get("titolo"),
         "tipo_agevolazione": bando.get("forma_agevolazione"),
         "investimento": bando.get("spesa_ammessa"),
-    }
-
+    
     investimento = bando.get("spesa_ammessa", 0)
     fondo_perduto = 0
     credito_imposta = 0
