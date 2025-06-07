@@ -41,6 +41,3 @@ for record in bandi_aperti:
     supabase.table(TABLE_NAME).upsert(record, on_conflict=["ID_Incentivo"]).execute()
 
 print("Aggiornamento completato.")
-
-from email_utils import invia_notifica_email
-invia_notifica_email()
