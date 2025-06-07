@@ -1,4 +1,5 @@
 import os
+from simulatore_impatto import simula_impatto_totale
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
 from pdf_cleaner import pulisci_pdf
@@ -58,6 +59,10 @@ def esegui_pipeline(nome_file, percorso_file):
  
     snippet_gpt = genera_snippet_analisi(dati_azienda, indici, macroarea, top5_bandi)
     print(snippet)  # 🔁 GPT lo legge in chat
+    
+    # Aggiunta simulazione impatto totale
+    simulazione = simula_impatto_totale(dati_azienda, top5_bandi)
+    snippet_gpt += f"\n\n{simulazione}"
 
     # Passa questo snippet alla funzione GPT (ad es. output_gpt)
     output = genera_output_gpt(snippet_gpt)
