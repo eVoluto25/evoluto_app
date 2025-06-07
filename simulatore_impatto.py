@@ -34,23 +34,23 @@ def simula_beneficio(bando, bilancio):
         risultato["risparmio_fiscale"] = f"{risparmio_fiscale:,.0f} €"
 
     # Finanziamento agevolato
-    elif "finanziamento" in forma_agevolazione:
+    elif "finanziamento agevolato" in forma_agevolazione:
         tasso = 0.01
-        durata = 5
+        durata = 5  # anni
         finanziamento = investimento
-        try:
-            rata = (finanziamento * (tasso * (1 + tasso)**durata)) / (((1 + tasso)**durata) - 1)
-        except ZeroDivisionError:
-            rata = 0
+        rata = (finanziamento * (tasso * (1 + tasso)**durata)) / (((1 + tasso)**durata) - 1)
         cashflow_post = ebitda - rata
         risultato["rata_annua"] = round(rata, 2)
         risultato["cashflow_post_intervento"] = f"{cashflow_post:,.0f} €"
 
     # Redditività simulata
-    incremento_fatturato = investimento * 0.2  # ipotesi
-    incremento_costi = investimento * 0.05
-    utile_post = utile_attuale + incremento_fatturato - incremento_costi
-    risultato["utile_atteso_post"] = f"+{utile_post:,.0f} €"
+    incremento_fatturato = investimento * 0.2  # ipotesi 20%
+    incremento_ebitda = investimento * 0.1     # ipotesi 10%
+    incremento_utile = investimento * 0.05     # ipotesi 5%
+
+    risultato["fatturato_potenziale"] = f"{fatturato_attuale + incremento_fatturato:,.0f} €"
+    risultato["ebitda_potenziale"] = f"{ebitda + incremento_ebitda:,.0f} €"
+    risultato["utile_potenziale"] = f"{utile_attuale + incremento_utile:,.0f} €"
 
     # ROI
     roi = (incremento_fatturato - incremento_costi) / investimento if investimento else 0
