@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI(
+app = FastAPI()
     # ✅ CORS: per permettere connessione da domini esterni (come OpenAI)
 app.add_middleware(
     CORSMiddleware,
