@@ -75,3 +75,5 @@ def esegui_pipeline(nome_file, percorso_file):
     print("✅ HTML salvato nella colonna verifica_html")
 
     return output
+
+    processa_analisi_pdf = esegui_pipeline
