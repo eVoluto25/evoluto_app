@@ -17,8 +17,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI()
-    # ✅ CORS: per permettere connessione da domini esterni (come OpenAI)
+app = FastAPI(
+    title="eVoluto API",
+    description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
+    version="1.0.0"
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # oppure specifica dominio GPT
@@ -29,12 +33,13 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    contenuto = await file.read()
-    nome_file = file.filename
-
-try:
+   try:
+        contenuto = await file.read()
+        nome_file = file.filename
+       
     with open(nome_file, "wb") as f:
-        f.write(contenuto)
+        f.write(contenuto
+               
         logging.info(f"✅ File ricevuto: {nome_file}")
         output = esegui_pipeline(nome_file, nome_file)
         return {"risultato": output}
