@@ -12,52 +12,51 @@ def simula_beneficio(bando, bilancio):
     aliquota = 0.27  # ipotesi fissa
 
     utile_attuale = bilancio.get("utile_netto", 0) or 0
-    liquidita_attuale = bilancio.get("liquidita", 0) or 0
+    liquidità_attuale = bilancio.get("liquidità", 0) or 0
     fatturato_attuale = bilancio.get("fatturato", 0) or 0
     ebitda = bilancio.get("ebitda", 0) or 0
-    patrimonio_netto = bilancio.get("patrimonio_netto", 1) or 1  # mai zero
+    patrimonio_netto = bilancio.get("patrimonio_netto", 1) or 1
     debiti = bilancio.get("debiti", 0) or 0
 
     forma_agevolazione = bando.get("forma_agevolazione", "").lower()
 
     # Fondo perduto
     if "fondo perduto" in forma_agevolazione:
-        fondo_perduto = investimento * 0.5  # ipotesi
+        fondo_perduto = investimento * 0.5
         risultato["agevolazione_ottenibile"] = round(fondo_perduto, 2)
-        risultato["liquidita_migliorata"] = f"+{fondo_perduto:,.0f} €"
+        risultato["liquidità_migliorata"] = f"{fondo_perduto:,.0f} €"
 
     # Credito d’imposta
-    elif "credito imposta" in forma_agevolazione or "credito d’imposta" in forma_agevolazione:
-        credito_imposta = investimento * 0.4  # ipotesi
+    elif "credito imposta" in forma_agevolazione:
+        credito_imposta = investimento * 0.4
         risparmio_fiscale = credito_imposta * aliquota
         risultato["agevolazione_ottenibile"] = round(credito_imposta, 2)
         risultato["risparmio_fiscale"] = f"{risparmio_fiscale:,.0f} €"
 
     # Finanziamento agevolato
-    elif "finanziamento agevolato" in forma_agevolazione:
+    elif "finanziamento" in forma_agevolazione:
         tasso = 0.01
-        durata = 5  # anni
+        durata = 5
         finanziamento = investimento
         rata = (finanziamento * (tasso * (1 + tasso)**durata)) / (((1 + tasso)**durata) - 1)
         cashflow_post = ebitda - rata
         risultato["rata_annua"] = round(rata, 2)
         risultato["cashflow_post_intervento"] = f"{cashflow_post:,.0f} €"
 
-    # Redditività simulata
-    incremento_fatturato = investimento * 0.2  # ipotesi 20%
-    incremento_ebitda = investimento * 0.1     # ipotesi 10%
-    incremento_utile = investimento * 0.05     # ipotesi 5%
+    # Redditività
+    incremento_fatturato = investimento * 0.2
+    incremento_ebitda = incremento_fatturato * 0.3
+    nuova_redditività = ebitda + incremento_ebitda
+    risultato["redditività_potenziale"] = f"{nuova_redditività:,.0f} €"
 
-    risultato["fatturato_potenziale"] = f"{fatturato_attuale + incremento_fatturato:,.0f} €"
-    risultato["ebitda_potenziale"] = f"{ebitda + incremento_ebitda:,.0f} €"
-    risultato["utile_potenziale"] = f"{utile_attuale + incremento_utile:,.0f} €"
+    # Copertura finanziaria
+    autofinanziamento = liquidità_attuale + utile_attuale
+    sostenibilità = autofinanziamento >= investimento
+    risultato["copertura"] = "autonoma" if sostenibilità else "richiede supporto"
 
-    # ROI
-    roi = (incremento_fatturato - incremento_costi) / investimento if investimento else 0
-    risultato["ROI"] = f"{roi*100:.1f}%"
-
-    # Debt/Equity post
-    nuovo_debito = debiti + finanziamento
-    risultato["nuovo_debt_equity"] = round(nuovo_debito / patrimonio_netto, 2) if patrimonio_netto else "N/A"
+    # Debt/Equity post intervento
+    debito_totale = debiti + finanziamento
+    nuovo_ratio = debito_totale / patrimonio_netto if patrimonio_netto else 0
+    risultato["debt_equity_post"] = round(nuovo_ratio, 2)
 
     return risultato
