@@ -13,6 +13,7 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
 
     # ✅ FILTRO sulla data di chiusura (solo se non ci sono note positive)
     data_chiusura_str = bando.get("Data_chiusura", "")
+    if data_chiusura_str:
     note = bando.get("Note_di_apertura_chiusura", "").lower()
     if "a sportello" not in note and "fino ad esaurimento" not in note and "prorogato" not in note:
         if data_chiusura_str:
@@ -20,7 +21,7 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
                 data_chiusura = datetime.strptime(data_chiusura_str, "%Y-%m-%dT%H:%M:%S")
                 if data_chiusura < datetime.today():
                     return None  # Bando chiuso
-        except ValueError:
+            except ValueError:
                 pass  # formato errato, ignora filtro
 
     # ✅ Filtro su Codici ATECO
