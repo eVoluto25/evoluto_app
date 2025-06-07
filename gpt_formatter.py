@@ -39,7 +39,7 @@ def genera_snippet_analisi(data_azienda, indici, macroarea, top_bandi):
 🎯 TOP 5 BANDI CONSIGLIATI
 
 {"".join([
-f"""———————————————
+f"""- 
 📌 *{i+1}. {b['titolo']}*
 📎 Agevolazione: {b['forma_agevolazione']}
 💰 Spesa Minima Ammessa: €{b['spesa_ammessa']:,}
