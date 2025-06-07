@@ -14,15 +14,12 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
     # ✅ FILTRO sulla data di chiusura (solo se non ci sono note positive)
     data_chiusura_str = bando.get("Data_chiusura", "")
     if data_chiusura_str:
-    note = bando.get("Note_di_apertura_chiusura", "").lower()
-    if "a sportello" not in note and "fino ad esaurimento" not in note and "prorogato" not in note:
-        if data_chiusura_str:
-            try:
-                data_chiusura = datetime.strptime(data_chiusura_str, "%Y-%m-%dT%H:%M:%S")
-                if data_chiusura < datetime.today():
-                    return None  # Bando chiuso
-            except ValueError:
-                pass  # formato errato, ignora filtro
+        try:
+            data_chiusura = datetime.strptime(data_chiusura_str, "%Y-%m-%dT%H:%M:%S")
+            if data_chiusura < datetime.today():
+                return None  # Bando chiuso
+        except ValueError:
+            pass  # formato errato, ignora filtro
 
     # ✅ Filtro su Codici ATECO
     codici = bando.get("Codici_ATECO", "")
@@ -63,6 +60,10 @@ def calcola_match_bando(bando: dict, macroarea: str) -> dict:
 
 def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
     risultati = []
+    from supabase_connector import get_all_bandi
+    bandi = get_all_bandi()
+    macroarea = azienda.get("macroarea", "")
+    
     for bando in bandi:
         # Filtro di sostenibilità economica: esclude bandi non sostenibili per l'azienda
         try:
@@ -77,18 +78,17 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
 
             # Se non è in crisi e non ha forza per sostenere la spesa minima, scarta
             if "crisi" not in macroarea and spesa_min > 0:
-            if spesa_min > soglia_massima and capacita_finanziaria < spesa_min:
-                continue  # Salta questo bando
+                if spesa_min > soglia_massima and capacita_finanziaria < spesa_min:
+                   continue  # Salta questo bando
         except Exception as e:
             print(f"[Filtro Spesa Ammessa] Errore: {e}")
      
         match = calcola_match_bando(bando, macroarea)
         if match:
             # ⬇️ Simulazione dell'impatto economico
-            beneficio = simula_beneficio(bando, azienda)
+            match["beneficio"] = simula_beneficio(azienda, bando)
             match["commento_impatto"] = beneficio.get("commento", "")
             match["roi_stimato"] = beneficio.get("roi_stimato", 0)
-            
             risultati.append(match)
 
         # Filtro per punteggio minimo e selezione Top 5
@@ -96,9 +96,14 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
         bandi_ordinati = sorted(bandi_filtrati, key=lambda x: x.get("punteggio_compatibilità", 0), reverse=True)
         top5 = bandi_ordinati[:5]
 
-        # Sovrascrive i risultati con i top5 selezionati
-        risultati = top5
-        return risultati
+        # Sovrascrive i risultati con i top5 selezionati in Supabase per GPT
+        from supabase_connector import supabase
+        supabase.table("verifica_aziendale").update({"top5_bandi": top5}).eq("id", azienda_id).execute()
+        print("✅ Top 5 bandi aggiornati")
+
+    def aggiorna_tabella_verifica(supabase_client, id_verifica: str, risultati_match: list):
+        if not risultati_match:
+            return
 
         # Filtro Top 5 bandi con punteggio >= 80 e ordinamento decrescente
         top5 = sorted(
@@ -119,15 +124,6 @@ def trova_bandi_compatibili(azienda_id: str, azienda: dict) -> None:
                "motivazione": genera_motivazione(b)
             } for b in top5
         ]
-
-        # Aggiorna la tabella Supabase
-        supabase_client.table("verifica_aziendale").update({
-            "top5_bandi": top5_serializzati
-        }).eq("id", id_verifica).execute()
-
-def aggiorna_tabella_verifica(supabase_client, id_verifica: str, risultati_match: list):
-    if not risultati_match:
-        return
 
     # 1. Cancella righe precedenti
     supabase_client.table("verifica_aziendale").delete().eq("id_verifica", id_verifica).execute()
