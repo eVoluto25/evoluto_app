@@ -1,6 +1,7 @@
 import logging
 import uvicorn
 import os
+import shutil
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
@@ -24,11 +25,15 @@ app = FastAPI(
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     try:
-        contenuto = await file.read()
+        # Validazione estensione PDF
+        if not file.filename.lower().endswith(".pdf"):
+            raise HTTPException(status_code=400, detail="Il file deve essere un PDF.")
+
         nome_file = file.filename
-        
-        with open(nome_file, "wb") as f:
-            f.write(contenuto)
+
+        # Salvataggio file in modo sicuro
+        with open(nome_file, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
         output = esegui_pipeline(nome_file, nome_file)
         return {"risultato": output}
