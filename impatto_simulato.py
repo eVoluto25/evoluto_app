@@ -20,4 +20,11 @@ def calcola_impatto_simulato(bando: dict, azienda: dict) -> str:
         utile_imp = ((utile_post - utile_attuale) / utile_attuale * 100) if utile_attuale else 0
 
         # Report sintetico
-        return f"""
+        return (
+            f"💡 IMPATTO SIMULATO\n"
+            f"- Indebitamento post: {indebitamento_post:,.0f} €\n"
+            f"- EBITDA post: {ebitda_post:,.0f} €\n"
+            f"- Utile netto post: {utile_post:,.0f} €\n"
+            f"- Variazione EBITDA: {ebitda_imp:.1f}%\n"
+            f"- Variazione utile netto: {utile_imp:.1f}%"
+        )
