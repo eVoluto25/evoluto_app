@@ -31,9 +31,10 @@ app.add_middleware(
 async def upload(file: UploadFile = File(...)):
     contenuto = await file.read()
     nome_file = file.filename
+
+try:
     with open(nome_file, "wb") as f:
         f.write(contenuto)
-
         logging.info(f"✅ File ricevuto: {nome_file}")
         output = esegui_pipeline(nome_file, nome_file)
         return {"risultato": output}
