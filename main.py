@@ -9,7 +9,7 @@ from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-from pipeline import processa_analisi_pdf, match_bandi_json # La funzione che esegue l'intero flusso
+from pipeline import esegui_pipeline as processa_analisi_pdf
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
