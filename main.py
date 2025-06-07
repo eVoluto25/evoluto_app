@@ -2,6 +2,7 @@ import logging
 import uvicorn
 import os
 import shutil
+import uuid
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
@@ -33,13 +34,15 @@ logging.basicConfig(
 async def upload(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        nome_file = file.filename
+        cartella_tmp = "/tmp"
+        nome_file = str(uuid.uuid4()) + ".pdf"
+        percorso_file = os.path.join(cartella_tmp, nome_file)
         
         with open(nome_file, "wb") as f:
              f.write(contents)
 
         logging.info(f"✅ File ricevuto: {nome_file}")
-        output = esegui_pipeline(nome_file, nome_file)
+        output = esegui_pipeline(nome_file, percorso_file)
 
         return JSONResponse(content={"risultato": output})
 
