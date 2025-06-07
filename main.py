@@ -25,18 +25,14 @@ app = FastAPI(
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     try:
-        # Validazione estensione PDF
-        if not file.filename.lower().endswith(".pdf"):
-            raise HTTPException(status_code=400, detail="Il file deve essere un PDF.")
-
+        contents = await file.read()
         nome_file = file.filename
-
-        # Salvataggio file in modo sicuro
-        with open(nome_file, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        
+        with open(nome_file, "wb") as f:
+             f.write(contents)
 
         output = esegui_pipeline(nome_file, nome_file)
-        return {"risultato": output}
+        return JSONResponse(content={"risultato": output})
 
     except Exception as e:
         logging.error(f"Errore nel caricamento: {str(e)}")
