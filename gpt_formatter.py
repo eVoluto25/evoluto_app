@@ -34,15 +34,19 @@ def genera_snippet_analisi(data_azienda, indici, macroarea, top_bandi):
 • Autofinanziamento: €{indici['autofinanziamento']}
 • Investimenti recenti: {indici['investimenti']}
 
-🏁 MACROAREA ASSEGNATA: {macroarea}
+🏷️ MACROAREA ASSEGNATA: {macroarea}
 
-🎯 TOP 5 BANDI CONSIGLIATI:
-""" + '\n'.join([
-    f"""{i+1}. {b['titolo']}
-   • Agevolazione: {b['forma_agevolazione']}
-   • Spesa Minima Ammessa: €{b['spesa_ammessa']}
-   • Beneficio Stimato: {b['impatto_stimato']}
-   • Impatto Simulato: {b['impatto_simulato']}
-   • Motivazione: {b['motivazione']}"""
-    for i, b in enumerate(top_bandi)
-])
+🎯 TOP 5 BANDI CONSIGLIATI
+
+{"".join([
+f"""———————————————
+📌 *{i+1}. {b['titolo']}*
+📎 Agevolazione: {b['forma_agevolazione']}
+💰 Spesa Minima Ammessa: €{b['spesa_ammessa']:,}
+📈 Beneficio Stimato: {b['impatto_stimato']}
+📊 Impatto Simulato: {b['impatto_simulato']}
+🧠 Motivazione: {b['motivazione']}
+
+"""
+for i, b in enumerate(top_bandi)])}"""
+
