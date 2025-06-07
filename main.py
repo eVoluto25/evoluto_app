@@ -1,15 +1,23 @@
-
 import logging
+import uvicorn
+import os
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
-from fastapi import FastAPI, UploadFile
-from pipeline import esegui_pipeline
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse
+from pipeline import processa_analisi_pdf, match_bandi_json # La funzione che esegue l'intero flusso
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
 
 app = FastAPI()
+    title="eVoluto API",
+    description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
+    version="1.0.0"
 
 @app.post("/upload")
 async def upload(file: UploadFile):
