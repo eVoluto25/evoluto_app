@@ -22,11 +22,13 @@ app = FastAPI(
 )
 
 @app.post("/upload")
-async def upload(file: UploadFile):
-    contenuto = await file.read()
-    nome_file = file.filename
-    with open(nome_file, "wb") as f:
-        f.write(contenuto)
+async def upload(file: UploadFile = File(...)):
+    try:
+        contenuto = await file.read()
+        nome_file = file.filename
+        
+        with open(nome_file, "wb") as f:
+            f.write(contenuto)
 
         output = esegui_pipeline(nome_file, nome_file)
         return {"risultato": output}
