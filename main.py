@@ -14,10 +14,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI()
+app = FastAPI(
     title="eVoluto API",
     description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
     version="1.0.0"
+)
 
 @app.post("/upload")
 async def upload(file: UploadFile):
