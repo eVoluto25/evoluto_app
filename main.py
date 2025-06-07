@@ -33,7 +33,7 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
-   try:
+    try:
         contenuto = await file.read()
         nome_file = file.filename
        
