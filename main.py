@@ -38,7 +38,7 @@ async def upload(file: UploadFile = File(...)):
         nome_file = file.filename
        
         with open(nome_file, "wb") as f:
-            f.write(contenuto
+            f.write(contenuto)
                
         logging.info(f"✅ File ricevuto: {nome_file}")
         output = esegui_pipeline(nome_file, nome_file)
