@@ -12,8 +12,6 @@ from output_gpt import genera_output_gpt
 def esegui_pipeline(nome_file, percorso_file):
     print(f"🔍 Inizio analisi per: {nome_file}")
 
-processa_analisi_pdf = esegui_pipeline
-
     # Step 1: Estrazione e pulizia del file (XBRL, PDF, DOCX)
     testo_pulito = extract_and_clean_text(percorso_file)
     print("✅ Estrazione e pulizia completata")
