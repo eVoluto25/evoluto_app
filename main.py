@@ -20,7 +20,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.post("/upload")
+@app.post("/match_bandi")
 async def upload(file: UploadFile):
     contenuto = await file.read()
     nome_file = file.filename
