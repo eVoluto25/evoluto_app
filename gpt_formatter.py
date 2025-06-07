@@ -41,8 +41,8 @@ def genera_snippet_analisi(data_azienda, indici, macroarea, top_bandi):
     f"""{i+1}. {b['titolo']}
    • Agevolazione: {b['forma_agevolazione']}
    • Spesa Minima Ammessa: €{b['spesa_ammessa']}
-   • Punteggio: {b['punteggio']}
-   • ROI Stimato: €{b['roi_stimato']}
+   • Beneficio Stimato: {b['impatto_stimato']}
+   • Impatto Simulato: {b['impatto_simulato']}
    • Motivazione: {b['motivazione']}"""
     for i, b in enumerate(top_bandi)
 ])
