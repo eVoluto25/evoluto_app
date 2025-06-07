@@ -21,6 +21,8 @@ def send_analysis_email(azienda):
     msg["To"] = EMAIL_RECEIVER
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        EMAIL_SENDER = str(EMAIL_SENDER).replace('\xa0', ' ').encode('utf-8').decode('utf-8')
+        EMAIL_PASSWORD = str(EMAIL_PASSWORD).replace('\xa0', ' ').encode('utf-8').decode('utf-8')
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.send_message(msg)
 
