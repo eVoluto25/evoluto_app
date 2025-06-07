@@ -22,6 +22,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Configura i log
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     try:
@@ -31,12 +38,22 @@ async def upload(file: UploadFile = File(...)):
         with open(nome_file, "wb") as f:
              f.write(contents)
 
+        logging.info(f"✅ File ricevuto: {nome_file}")
         output = esegui_pipeline(nome_file, nome_file)
+
         return JSONResponse(content={"risultato": output})
 
     except Exception as e:
         logging.error(f"Errore nel caricamento: {str(e)}")
         raise HTTPException(status_code=400, detail="Errore nel caricamento. Riprova inviando un file PDF valido.")
+
+# Avvio manuale da terminale se necessario
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        logging.error("❌ Percorso al file XBRL o PDF mancante.")
+    else:
+        main(sys.argv[1])
 
 logging.basicConfig(
     level=logging.INFO,
