@@ -18,33 +18,25 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 app = FastAPI(
-    title="eVoluto API",
-    description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
-    version="1.0.0"
-)
-
-# Configura i log
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()]
+    # ✅ CORS: per permettere connessione da domini esterni (come OpenAI)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # oppure specifica dominio GPT
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-        cartella_tmp = "/tmp"
-        nome_file = str(uuid.uuid4()) + ".pdf"
-        percorso_file = os.path.join(cartella_tmp, nome_file)
-        
-        with open(nome_file, "wb") as f:
-             f.write(contents)
+    contenuto = await file.read()
+    nome_file = file.filename
+    with open(nome_file, "wb") as f:
+        f.write(contenuto)
 
         logging.info(f"✅ File ricevuto: {nome_file}")
-        output = esegui_pipeline(nome_file, percorso_file)
-
-        return JSONResponse(content={"risultato": output})
+        output = esegui_pipeline(nome_file, nome_file)
+        return {"risultato": output}
 
     except Exception as e:
         logging.error(f"Errore nel caricamento: {str(e)}")
