@@ -69,9 +69,9 @@ def main(percorso_file):
 
         logging.info("Processo completato con successo")
 
-    try:
         with open(nome_file, "wb") as f:
             f.write(contenuto)
+            
         output = esegui_pipeline(nome_file, nome_file)
         return {"risultato": output}
 
