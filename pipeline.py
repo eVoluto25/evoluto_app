@@ -1,5 +1,5 @@
 import os
-from simulatore_impatto import simula_impatto_totale
+from simulatore_impatto import simula_beneficio
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
 from pdf_cleaner import pulisci_pdf
@@ -42,17 +42,19 @@ def esegui_pipeline(nome_file, percorso_file):
     commenti = genera_commento_bandi(top5)
     output += "\n\n🧠 Opportunità selezionate:\n" + commenti
     # Dopo il calcolo dei top 5 bandi e dei punteggi (dati_azienda e indici già esistenti)
-    motivazione = genera_motivazione_bando(bando, dati_azienda)  # se l'hai già definita
+    motivazione = genera_motivazione_bando(bando, dati_azienda) 
     impatto = calcola_impatto_simulato(bando, dati_azienda)
     bando["motivazione"] = motivazione
+    beneficio = simula_beneficio(bando, dati_azienda)
     bando["impatto_stimato"] = impatto
     top5_bandi_finali.append(bando)
 
     # Aggiunge impatto stimato e motivazione sintetica ai top 5
     top5_bandi_finali = []
     for bando in top5_bandi:
-        motivazione = genera_motivazione_bando(bando, dati_azienda)  # se l'hai già definita
+        motivazione = genera_motivazione_bando(bando, dati_azienda)  
         impatto = calcola_impatto_simulato(bando, dati_azienda)
+        beneficio = simula_beneficio(bando, dati_azienda)
         bando["motivazione"] = motivazione
         bando["impatto_stimato"] = impatto
         top5_bandi_finali.append(bando)
