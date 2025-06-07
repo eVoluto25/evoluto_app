@@ -67,8 +67,15 @@ def main(percorso_file):
 
         logging.info("Processo completato con successo")
 
+    try:
+        with open(nome_file, "wb") as f:
+            f.write(contenuto)
+        output = esegui_pipeline(nome_file, nome_file)
+        return {"risultato": output}
+
     except Exception as e:
-        logging.error(f"Errore durante il processo: {e}", exc_info=True)
+        logging.error(f"Errore nel caricamento: {str(e)}")
+        raise HTTPException(status_code=400, detail="Errore nel file")
 
 if __name__ == "__main__":
     import sys
