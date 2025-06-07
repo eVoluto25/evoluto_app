@@ -28,3 +28,5 @@ def calcola_impatto_simulato(bando: dict, azienda: dict) -> str:
             f"- Variazione EBITDA: {ebitda_imp:.1f}%\n"
             f"- Variazione utile netto: {utile_imp:.1f}%"
         )
+    except Exception as e:
+        return f"❌ Errore durante il calcolo dell'impatto simulato: {e}"
