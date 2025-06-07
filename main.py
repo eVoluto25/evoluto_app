@@ -7,27 +7,40 @@ from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse
 from pipeline import esegui_pipeline as processa_analisi_pdf
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI(
-    title="eVoluto API",
-    description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
-    version="1.0.0"
-)
+app = FastAPI()
 
-@app.post("/match_bandi")
-async def match_bandi(file: UploadFile):
-    contenuto = await file.read()
-    nome_file = file.filename
-    with open(nome_file, "wb") as f:
-        f.write(contenuto)
-    output = esegui_pipeline(nome_file, nome_file)
-    return {"risultato": output}
+# Logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.post("/upload/")
+async def upload(request: Request):
+    body = await request.json()
+    
+    comando = body.get("comando")
+    nome_file = body.get("nome_file")
+    contenuto = body.get("contenuto")  # deve essere base64 o testo
+    logger.info(f"Ricevuto comando: {comando}, file: {nome_file}")
+
+    if comando.strip().lower() != "esegui analisi aziendale":
+        logger.warning("Comando non valido.")
+        return JSONResponse(content={"errore": "Comando non valido"}, status_code=400)
+
+    try:
+        risultato = avvia_analisi_completa(nome_file, contenuto)
+        logger.info("Analisi completata.")
+        return {"risultato": risultato}
+    except Exception as e:
+        logger.error(f"Errore durante analisi: {e}")
+        return JSONResponse(content={"errore": str(e)}, status_code=500)
 
 logging.basicConfig(
     level=logging.INFO,
