@@ -18,8 +18,10 @@ def genera_snippet_analisi(data_azienda, indici, macroarea, top_bandi):
 • Fatturato: €{indici['fatturato']}
 • Utile Netto: €{indici['utile_netto']}
 • EBITDA: €{indici['ebitda']} (EBITDA Margin: {indici['ebitda_margin']}%)
+
+🧪 RICERCA & SOSTENIBILITÀ
 • Ricerca e Sviluppo: €{indici['ricerca_sviluppo']}
-• Costi Ambientali: {indici['costi_ambientali']}
+• Costi Ambientali: €{indici['costi_ambientali']}
 
 📈 INDICATORI PATRIMONIALI
 • Totale Attivo: €{indici['totale_attivo']}
@@ -36,16 +38,13 @@ def genera_snippet_analisi(data_azienda, indici, macroarea, top_bandi):
 
 🏷️ MACROAREA ASSEGNATA: {macroarea}
 
-🎯 TOP 5 BANDI CONSIGLIATI
-
-{"".join([
-f"""- 
-f"📎 Agevolazione: {b['forma_agevolazione']}"
-f"💰 Spesa Minima Ammessa: €{b['spesa_ammessa']:,}"
-f"📈 Beneficio Stimato: {b['impatto_stimato']}"
-f"🇮🇹 Impatto Simulato: {b['impatto_simulato']}"
-f"🧠 Motivazione: {b['motivazione']}"
-
-"""
-for i, b in enumerate(top_bandi)])}"""
-
+📌 TOP 5 BANDI CONSIGLIATI
+""" + "\n\n".join([
+        f"""🔹 *{i+1}. {b['titolo']}*
+• 💼 Agevolazione: {b['forma_agevolazione']}"
+• 💰 Spesa Minima Ammessa: €{b['spesa_ammessa']:,}"
+• 📈 Beneficio Stimato: {b['impatto_stimato']}"
+• 📉 Impatto Simulato: {b['impatto_simulato']}"
+• 🧠 Motivazione: {b['motivazione']}"""
+       for i, b in enumerate(top_bandi)
+    ])
