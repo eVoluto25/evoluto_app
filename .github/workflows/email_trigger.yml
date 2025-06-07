@@ -1,8 +1,8 @@
-name: Trigger Render every 5 minutes
+name: Trigger Render every 60 minutes
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # ogni 5 minuti
+  - cron: '0 * * * *'  # ogni ora
   workflow_dispatch:       # consente anche l’avvio manuale
 
 jobs:
