@@ -10,7 +10,7 @@ from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import estrai_testo_pymupdf
 from estrazione import esegui_pipeline_intermediario as esegui_pipeline
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from pipeline import esegui_pipeline as processa_analisi_pdf
@@ -33,11 +33,9 @@ app.add_middleware(
 )
 
 @app.post("/upload_file")
-async def upload_file(request: Request):
+async def upload_file(file: UploadFile = File(...)):
     try:
-        file_bytes = await request.body()
-
-        # Salvataggio per debug
+        file_bytes = await file.read()
         with open("/tmp/input_file.pdf", "wb") as f:
             f.write(file_bytes)
             
