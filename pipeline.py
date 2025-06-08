@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 from simulatore_impatto import simula_beneficio
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
@@ -20,7 +21,8 @@ def esegui_pipeline(nome_file, percorso_file):
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
-    dati_bilancio = estrai_dati_bilancio_completo(testo_pulito)  # ✅ CONVERSIONE TESTO IN DIZIONARIO
+    dati_dict = json.loads(testo_pulito)  # converte la stringa in dizionario
+    dati_bilancio = estrai_dati_bilancio_completo(dati_dict)
     azienda_id = calcola_indici_finanziari(nome_file, dati_bilancio)
 
     # Recupero dati finanziari per logiche avanzate
