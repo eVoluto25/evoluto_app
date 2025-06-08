@@ -1,3 +1,5 @@
+import re
+import logging
 
 def estrai_dati_identificativi(dati_visura: dict) -> dict:
     return {
@@ -70,4 +72,20 @@ def calcola_indici_finanziari(dati_bilancio: dict, nome_file: str) -> dict:
         # Indicatori Derivati / Strategici
         "capacita_autofinanziamento": utile_netto + ammortamenti,
         "investimenti_recenti": investimenti_beni_strumentali + spese_rs
+    }
+
+def estrai_dati_bilancio_completo(dati_visura: dict) -> dict:
+    identificativi = estrai_dati_identificativi(dati_visura)
+    indici = calcola_indici_finanziari(dati_visura)
+
+    fatturato = indici.get("fatturato", 0)
+    dipendenti = identificativi.get("numero_dipendenti", 0) or 0
+    totale_attivo = dati_visura.get("totale_attivo", 0)
+
+    dimensione = calcola_dimensione_impresa(fatturato, dipendenti, totale_attivo)
+
+    return {
+        **identificativi,
+        **indici,
+        "dimensione_impresa": dimensione,
     }
