@@ -37,6 +37,7 @@ async def upload_text(request: Request):
     try:
         data = await request.json()
         contenuto = data.get("contenuto", "")
+        print(f"⚙️  Dati grezzi ricevuti: {data}")
     
         print(f"📄 Testo ricevuto: {contenuto[:100]}...")
         logging.info("📄 Ricevuto testo via JSON")
