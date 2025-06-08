@@ -18,7 +18,16 @@ def esegui_pipeline(nome_file, percorso_file):
     logging.info(f"📄 Step 0: Input ricevuto per file: {nome_file}")
     print("📄 Contenuto ricevuto:", percorso_file)  
     logging.info(f"📄 Contenuto ricevuto: {percorso_file}")  
-    testo_pulito = json.loads(percorso_file)  
+
+    if isinstance(percorso_file, str) and percorso_file.strip():
+        try:
+            testo_pulito = json.loads(percorso_file)
+        except json.JSONDecodeError:
+            raise ValueError("❌ Errore: la stringa JSON ricevuta è malformata.")
+    elif isinstance(percorso_file, dict):
+        testo_pulito = percorso_file
+    else:
+        raise ValueError("❌ Errore: input vuoto o in formato non valido.")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
