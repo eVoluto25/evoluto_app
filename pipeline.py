@@ -23,9 +23,9 @@ def esegui_pipeline(nome_file, percorso_file):
     from pdf_cleaner import estrai_testo_pymupdf  # assicurati che sia definita
 
     if isinstance(percorso_file, bytes):
-    testo_pulito = estrai_testo_pymupdf(percorso_file)
+        testo_pulito = estrai_testo_pymupdf(percorso_file)
     else:
-    raise ValueError("❌ Errore: atteso un file binario PDF (bytes)")
+        raise ValueError("❌ Errore: atteso un file binario PDF (bytes)")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
