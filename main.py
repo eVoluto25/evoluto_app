@@ -33,19 +33,27 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    content = await file.read()
-    print(f"File: {file.filename}, size: {len(content)} bytes")
-    return {"filename": file.filename}
+    try:
+        content = await file.read()
+    
+        print(f"📥 File: {file.filename}, size: {len(content)} bytes")
+        logging.info(f"📥 File ricevuto: {file.filename}")
+        logging.info(f"📦 Dimensione contenuto: {len(content)} bytes")
                
-    logging.info(f"✅ File ricevuto: {nome_file}")
-    print(f"📦 Dimensione contenuto: {len(content)} bytes")
-    logging.info(f"📦 Dimensione contenuto: {len(content)} bytes")
-    output = esegui_pipeline(nome_file, nome_file)
-    return {"risultato": output}
+        if len(content) == 0:
+            print("⚠️ File vuoto ricevuto.")
+            logging.warning("⚠️ File vuoto ricevuto.")
+            raise HTTPException(status_code=400, detail="File vuoto o danneggiato.")
+            
+        nome_file = file.filename
+        logging.info(f"▶️ Avvio pipeline per: {nome_file}")
+        output = esegui_pipeline(nome_file, nome_file)
+        logging.info("✅ Pipeline completata.")
+        return {"risultato": output}
 
     except Exception as e:
-        logging.error(f"Errore nel caricamento: {str(e)}")
-        logging.warning("⚠️ File vuoto ricevuto.")
+        print(f"❌ Errore nel caricamento: {str(e)}")
+        logging.error(f"❌ Errore nel caricamento: {str(e)}")
         raise HTTPException(status_code=400, detail="Errore nel caricamento. Riprova inviando un file PDF valido.")
 
 # Avvio manuale da terminale se necessario
