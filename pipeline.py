@@ -13,7 +13,7 @@ def esegui_pipeline(nome_file, percorso_file):
     print(f"🔍 Inizio analisi per: {nome_file}")
 
     # Step 1: Estrazione e pulizia del file (XBRL, PDF, DOCX)
-    testo_pulito = extract_and_clean_text(percorso_file)
+    testo_pulito = percorso_file  # perché hai già ricevuto il testo pulito da GPT via API
     print("✅ Estrazione e pulizia completata")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
