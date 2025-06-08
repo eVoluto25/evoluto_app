@@ -10,7 +10,7 @@ from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import estrai_testo_pymupdf
 from estrazione import esegui_pipeline_intermediario as esegui_pipeline
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from pipeline import esegui_pipeline as processa_analisi_pdf
@@ -36,16 +36,20 @@ app.add_middleware(
 async def upload_file(file: UploadFile = File(...)):
     try:
         file_bytes = await file.read()
+        if not file_bytes:
+            raise ValueError("File vuoto o non leggibile.")
+
+        # Salvataggio temporaneo
         with open("/tmp/input_file.pdf", "wb") as f:
             f.write(file_bytes)
-            
+        
         logging.info("📥 File ricevuto, avvio pipeline")
         output = esegui_pipeline("input_file.pdf", "/tmp/input_file.pdf")
         return {"risultato": output}
 
     except Exception as e:
         logging.error(f"❌ Errore upload_file: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore durante la ricezione del file.")
+        raise HTTPException(status_code=400, detail="Errore durante la ricezione o la lettura del file.")
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
