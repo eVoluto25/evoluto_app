@@ -3,6 +3,7 @@ import uvicorn
 import os
 import shutil
 import uuid
+from fastapi import Request
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
