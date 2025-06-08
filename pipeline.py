@@ -16,7 +16,7 @@ def esegui_pipeline(nome_file, percorso_file):
 
     # Step 1: Estrazione e pulizia del file (XBRL, PDF, DOCX)
     logging.info(f"🏁 Step 0: Input ricevuto per file: {nome_file}")
-    testo_pulito = percorso_file  # perché hai già ricevuto il testo pulito da GPT via API
+    testo_pulito = json.loads(testo_pulito)
     print("✅ Estrazione e pulizia completata")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
