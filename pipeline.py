@@ -14,10 +14,11 @@ from output_gpt import genera_output_gpt
 def esegui_pipeline(nome_file, percorso_file):
     print(f"🔍 Inizio analisi per: {nome_file}")
 
-    # Step 1: Estrazione e pulizia del file (XBRL, PDF, DOCX)
-    logging.info(f"🏁 Step 0: Input ricevuto per file: {nome_file}")
-    testo_pulito = json.loads(testo_pulito)
-    print("✅ Estrazione e pulizia completata")
+    # Step 1
+    logging.info(f"📄 Step 0: Input ricevuto per file: {nome_file}")
+    print("📄 Contenuto ricevuto:", percorso_file)  
+    logging.info(f"📄 Contenuto ricevuto: {percorso_file}")  
+    testo_pulito = json.loads(percorso_file)  
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
