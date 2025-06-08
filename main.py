@@ -38,18 +38,18 @@ async def ricevi_file_da_make(request: Request):
     try:
         file_bytes = await request.body()
 
-        # Salva per debug
+        # Salvataggio temporaneo del file PDF
+        file_path = "/tmp/input_file.pdf"
         with open("/tmp/file_make.pdf", "wb") as f:
             f.write(file_bytes)
         
-        logging.info("📥 File ricevuto da Make, avvio pipeline")
-        output = esegui_pipeline("file_make.pdf", "/tmp/file_make.pdf")
-        
+        logging.info("\U0001F4C4 File ricevuto da Make, avvio pipeline")
+        output = esegui_pipeline("file_make.pdf", file_path)
         return {"risultato": output}
 
     except Exception as e:
         logging.error(f"❌ Errore ricezione file da Make: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore nella ricezione del file")
+        return {"errore": str(e)}
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
