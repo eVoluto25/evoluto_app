@@ -32,32 +32,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/upload_text")
-async def upload_text(request: Request):
+@app.post("/upload_file")
+async def upload_file(request: Request):
     try:
-        data = await request.json()
-        contenuto = data.get("contenuto", "")
-        print(f"⚙️  Dati grezzi ricevuti: {data}")
-    
-        print(f"📄 Testo ricevuto: {contenuto[:100]}...")
-        logging.info("📄 Ricevuto testo via JSON")
-               
-        if not contenuto.strip():
-            logging.warning("⚠️ Testo vuoto ricevuto.")
-            raise HTTPException(status_code=400, detail="Testo mancante o vuoto.")
+        file_bytes = await request.body()
 
-        # Salvataggio temporaneo per debug
-        with open("/tmp/testo_pdf.txt", "w") as f:
-            f.write(contenuto)
+        # Salvataggio per debug
+        with open("/tmp/input_file.pdf", "wb") as f:
+            f.write(file_bytes)
             
-        logging.info("🚀 Avvio pipeline con testo")
-        output = esegui_pipeline(contenuto, contenuto)
-        logging.info("✅ Pipeline completata con testo")
+        logging.info("📥 File ricevuto, avvio pipeline")
+        output = esegui_pipeline("input_file.pdf", "/tmp/input_file.pdf")
         return {"risultato": output}
 
     except Exception as e:
-        logging.error(f"❌ Errore upload_text: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore nell’elaborazione del testo.")
+        logging.error(f"❌ Errore upload_file: {str(e)}")
+        raise HTTPException(status_code=400, detail="Errore durante la ricezione del file.")
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
