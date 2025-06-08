@@ -1,3 +1,8 @@
+from pipeline import avvia_pipeline
+
+def esegui_pipeline(nome_file, contenuto):
+    return avvia_pipeline(nome_file, contenuto)
+    
 def detect_file_type(file_path):
     ext = Path(file_path).suffix.lower()
     return ext
