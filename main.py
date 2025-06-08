@@ -36,6 +36,7 @@ async def upload(file: UploadFile = File(...)):
     try:
         contenuto = await file.read()
         nome_file = file.filename
+        print("File length:", len(content))
        
         with open(nome_file, "wb") as f:
             f.write(contenuto)
