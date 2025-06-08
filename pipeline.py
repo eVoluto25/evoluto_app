@@ -1,4 +1,5 @@
 import os
+import logging
 from simulatore_impatto import simula_beneficio
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
