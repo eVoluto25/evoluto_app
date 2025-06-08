@@ -8,7 +8,7 @@ from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
-from pdf_cleaner import pulisci_pdf
+from pdf_cleaner import estrai_testo_pymupdf
 from estrazione import esegui_pipeline_intermediario as esegui_pipeline
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
