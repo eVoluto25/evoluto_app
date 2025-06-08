@@ -22,7 +22,13 @@ def calcola_dimensione_impresa(fatturato: float, dipendenti: int, totale_attivo:
     else:
         return "Grande"
 
-def calcola_indici_finanziari(dati_bilancio: dict) -> dict:
+def calcola_indici_finanziari(dati_bilancio: dict, nome_file: str) -> dict:
+    from supabase import create_client
+    import os
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_KEY")
+    supabase = create_client(url, key)
+    
     fatturato = dati_bilancio.get("fatturato", 0)
     utile_netto = dati_bilancio.get("utile_netto", 0)
     ebitda = dati_bilancio.get("ebitda", 0)
@@ -44,6 +50,7 @@ def calcola_indici_finanziari(dati_bilancio: dict) -> dict:
 
     return {
         # Conto Economico
+        "nome_file": nome_file,
         "fatturato_annuo": fatturato,
         "utile_netto": utile_netto,
         "ebitda": ebitda,
