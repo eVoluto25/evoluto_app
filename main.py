@@ -33,20 +33,19 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    try:
-        contenuto = await file.read()
-        nome_file = file.filename
-        print("File length:", len(content))
-       
-        with open(nome_file, "wb") as f:
-            f.write(contenuto)
+    content = await file.read()
+    print(f"File: {file.filename}, size: {len(content)} bytes")
+    return {"filename": file.filename}
                
-        logging.info(f"✅ File ricevuto: {nome_file}")
-        output = esegui_pipeline(nome_file, nome_file)
-        return {"risultato": output}
+    logging.info(f"✅ File ricevuto: {nome_file}")
+    print(f"📦 Dimensione contenuto: {len(content)} bytes")
+    logging.info(f"📦 Dimensione contenuto: {len(content)} bytes")
+    output = esegui_pipeline(nome_file, nome_file)
+    return {"risultato": output}
 
     except Exception as e:
         logging.error(f"Errore nel caricamento: {str(e)}")
+        logging.warning("⚠️ File vuoto ricevuto.")
         raise HTTPException(status_code=400, detail="Errore nel caricamento. Riprova inviando un file PDF valido.")
 
 # Avvio manuale da terminale se necessario
