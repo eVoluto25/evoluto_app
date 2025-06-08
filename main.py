@@ -32,24 +32,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/upload_file")
-async def upload_file(file: UploadFile = File(...)):
+@app.post("/ricevi_file")
+async def ricevi_file_da_make(request: Request):
     try:
-        file_bytes = await file.read()
-        if not file_bytes:
-            raise ValueError("File vuoto o non leggibile.")
+        file_bytes = await request.body()
 
-        # Salvataggio temporaneo
-        with open("/tmp/input_file.pdf", "wb") as f:
+        # Salva per debug
+        with open("/tmp/file_make.pdf", "wb") as f:
             f.write(file_bytes)
         
-        logging.info("📥 File ricevuto, avvio pipeline")
-        output = esegui_pipeline("input_file.pdf", "/tmp/input_file.pdf")
+        logging.info("📥 File ricevuto da Make, avvio pipeline")
+        output = esegui_pipeline("file_make.pdf", "/tmp/file_make.pdf")
+        
         return {"risultato": output}
 
     except Exception as e:
-        logging.error(f"❌ Errore upload_file: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore durante la ricezione o la lettura del file.")
+        logging.error(f"❌ Errore ricezione file da Make: {str(e)}")
+        raise HTTPException(status_code=400, detail="Errore nella ricezione del file")
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
