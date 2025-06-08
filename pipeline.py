@@ -19,15 +19,13 @@ def esegui_pipeline(nome_file, percorso_file):
     print("📄 Contenuto ricevuto:", percorso_file)  
     logging.info(f"📄 Contenuto ricevuto: {percorso_file}")  
 
-    if isinstance(percorso_file, str) and percorso_file.strip():
-        try:
-            testo_pulito = json.loads(percorso_file)
-        except json.JSONDecodeError:
-            raise ValueError("❌ Errore: la stringa JSON ricevuta è malformata.")
-    elif isinstance(percorso_file, dict):
-        testo_pulito = percorso_file
+    # Nuovo flusso: ricevo direttamente un file PDF, lo pulisco con PyMuPDF
+    from pdf_cleaner import estrai_testo_pymupdf  # assicurati che sia definita
+
+    if isinstance(percorso_file, bytes):
+    testo_pulito = estrai_testo_pymupdf(percorso_file)
     else:
-        raise ValueError("❌ Errore: input vuoto o in formato non valido.")
+    raise ValueError("❌ Errore: atteso un file binario PDF (bytes)")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
