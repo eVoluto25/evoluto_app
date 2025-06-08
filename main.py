@@ -9,7 +9,7 @@ from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import pulisci_pdf
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from pipeline import esegui_pipeline as processa_analisi_pdf
@@ -31,30 +31,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/upload")
-async def upload(file: UploadFile = File(...)):
+@app.post("/upload_text")
+async def upload_text(request: Request):
     try:
-        content = await file.read()
+        data = await request.json()
+        contenuto = data.get("contenuto", "")
     
-        print(f"📥 File: {file.filename}, size: {len(content)} bytes")
-        logging.info(f"📥 File ricevuto: {file.filename}")
-        logging.info(f"📦 Dimensione contenuto: {len(content)} bytes")
+        print(f"📄 Testo ricevuto: {contenuto[:100]}...")
+        logging.info("📄 Ricevuto testo via JSON")
                
-        if len(content) == 0:
-            print("⚠️ File vuoto ricevuto.")
-            logging.warning("⚠️ File vuoto ricevuto.")
-            raise HTTPException(status_code=400, detail="File vuoto o danneggiato.")
+        if not contenuto.strip():
+            logging.warning("⚠️ Testo vuoto ricevuto.")
+            raise HTTPException(status_code=400, detail="Testo mancante o vuoto.")
+
+        # Salvataggio temporaneo per debug
+        with open("/tmp/testo_pdf.txt", "w") as f:
+            f.write(contenuto)
             
-        nome_file = file.filename
-        logging.info(f"▶️ Avvio pipeline per: {nome_file}")
-        output = esegui_pipeline(nome_file, nome_file)
-        logging.info("✅ Pipeline completata.")
+        logging.info("🚀 Avvio pipeline con testo")
+        output = esegui_pipeline(contenuto, contenuto)
+        logging.info("✅ Pipeline completata con testo")
         return {"risultato": output}
 
     except Exception as e:
-        print(f"❌ Errore nel caricamento: {str(e)}")
-        logging.error(f"❌ Errore nel caricamento: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore nel caricamento. Riprova inviando un file PDF valido.")
+        logging.error(f"❌ Errore upload_text: {str(e)}")
+        raise HTTPException(status_code=400, detail="Errore nell’elaborazione del testo.")
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
