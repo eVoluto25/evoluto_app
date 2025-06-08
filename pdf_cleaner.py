@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def pulisci_pdf(file_bytes: bytes) -> str:
+def estrai_testo_pymupdf(file_bytes: bytes) -> str:
     try:
         logger.info("🔍 Inizio pulizia PDF")
 
