@@ -4,7 +4,7 @@ import json
 from simulatore_impatto import simula_beneficio
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
-from pdf_cleaner import pulisci_pdf
+from pdf_cleaner import estrai_testo_pymupdf
 from bilancio import estrai_dati_bilancio_completo
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
