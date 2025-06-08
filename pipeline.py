@@ -20,7 +20,7 @@ def esegui_pipeline(nome_file, percorso_file):
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
-    dati_bilancio = estrai_dati_bilancio(testo_pulito)  # ✅ CONVERSIONE TESTO IN DIZIONARIO
+    dati_bilancio = estrai_dati_bilancio_completo(testo_pulito)  # ✅ CONVERSIONE TESTO IN DIZIONARIO
     azienda_id = calcola_indici_finanziari(nome_file, dati_bilancio)
 
     # Recupero dati finanziari per logiche avanzate
