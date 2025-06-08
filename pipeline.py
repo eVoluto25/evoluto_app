@@ -9,26 +9,6 @@ from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt 
 
-def estrai_testo_da_base64(base64_pdf: str) -> str:
-    """
-    Decodifica un PDF base64, lo salva temporaneamente e ne estrae il testo.
-    """
-    try:
-        path_temp = "/tmp/temp_input.pdf"
-        pdf_bytes = base64.b64decode(base64_pdf)
-
-        with open(path_temp, "wb") as f:
-            f.write(pdf_bytes)
-
-        testo = ""
-        with fitz.open(path_temp) as doc:
-            for pagina in doc:
-                testo += pagina.get_text()
-
-        return testo.strip()
-    except Exception as e:
-        return f"❌ Errore estrazione testo PDF: {str(e)}"
-
 def esegui_pipeline(nome_file, percorso_file):
     print(f"🔍 Inizio analisi per: {nome_file}")
 
