@@ -4,7 +4,7 @@ from simulatore_impatto import simula_beneficio
 from gpt_formatter import genera_snippet_analisi
 from impatto_simulato import calcola_impatto_simulato
 from pdf_cleaner import pulisci_pdf
-from bilancio import calcola_indici_finanziari
+from bilancio import estrai_dati_bilancio
 from macroarea import assegna_macroarea
 from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
@@ -19,9 +19,9 @@ def esegui_pipeline(nome_file, percorso_file):
     print("✅ Estrazione e pulizia completata")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
-    logging.info("🔢 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
-    azienda_id = calcola_indici_finanziari(nome_file, testo_pulito)
-    print(f"✅ Calcolo indici completato per azienda ID: {azienda_id}")
+    logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
+    dati_bilancio = estrai_dati_bilancio(testo_pulito)  # ✅ CONVERSIONE TESTO IN DIZIONARIO
+    azienda_id = calcola_indici_finanziari(nome_file, dati_bilancio)
 
     # Recupero dati finanziari per logiche avanzate
     logging.info("📦 Step 2: Recupero dati aziendali da Supabase")
