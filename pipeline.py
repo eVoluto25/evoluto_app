@@ -13,29 +13,35 @@ def esegui_pipeline(nome_file, percorso_file):
     print(f"🔍 Inizio analisi per: {nome_file}")
 
     # Step 1: Estrazione e pulizia del file (XBRL, PDF, DOCX)
+    logging.info(f"🏁 Step 0: Input ricevuto per file: {nome_file}")
     testo_pulito = percorso_file  # perché hai già ricevuto il testo pulito da GPT via API
     print("✅ Estrazione e pulizia completata")
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
+    logging.info("🔢 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
     azienda_id = calcola_indici_e_scrivi(nome_file, testo_pulito)
     print(f"✅ Calcolo indici completato per azienda ID: {azienda_id}")
 
     # Recupero dati finanziari per logiche avanzate
-    dati_azienda = supabase.table("verifica_aziendale").select("utile_netto,liquidita,fatturato").eq("id", azienda_id).execute().data[0]
+    logging.info("📦 Step 2: Recupero dati aziendali da Supabase")
 
     # Step 3: Assegnazione macro area
+    logging.info("📊 Step 3: Assegnazione macroarea")
     assegna_macroarea(azienda_id)
     print("✅ Macroarea assegnata")
 
     # Step 4: Ricerca bandi compatibili
+    logging.info("🎯 Step 4: Ricerca bandi compatibili")
     trova_bandi_compatibili(azienda_id, dati_azienda)
     print("✅ Bandi compatibili salvati")
 
     # Step 5: Calcolo punteggi bandi
+    logging.info("📈 Step 5: Calcolo punteggi bandi")
     calcola_punteggi_bandi(azienda_id)
     print("✅ Punteggi calcolati")
 
     # Step 6: Generazione output GPT
+    logging.info("💬 Step 6: Generazione output GPT")
     output = genera_output_gpt(azienda_id)
     print("✅ Output GPT generato")
     top5 = dati_azienda.get("top5_bandi", [])
