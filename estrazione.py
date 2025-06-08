@@ -1,4 +1,4 @@
-from pipeline import avvia_pipeline
+from pipeline import esegui_pipeline
 
 def esegui_pipeline(nome_file, contenuto):
     """
@@ -6,4 +6,4 @@ def esegui_pipeline(nome_file, contenuto):
     Non filtra, non analizza, non modifica nulla.
     Passa tutto il contenuto a pipeline.avvia_pipeline per l'elaborazione.
     """
-    return avvia_pipeline(nome_file, contenuto)
+    return esegui_pipeline(nome_file, contenuto)
