@@ -30,3 +30,24 @@ def calcola_impatto_simulato(bando: dict, azienda: dict) -> str:
         )
     except Exception as e:
         return f"❌ Errore durante il calcolo dell'impatto simulato: {e}"
+
+def simula_impatto_totale(dati_azienda: dict, top5_bandi: list) -> str:
+    totale_contributo = 0
+    totale_beneficio = 0
+    for b in top5_bandi:
+        try:
+            spesa = float(b.get("spesa_ammessa_min", 0))
+            intensita = float(b.get("intensita_aiuto", 0)) / 100
+            contributo = spesa * intensita
+            beneficio = contributo  # Placeholder: puoi raffinarlo
+            totale_contributo += contributo
+            totale_beneficio += beneficio
+        except Exception as e:
+            print(f"Errore nel calcolo impatto totale: {e}")
+            continue
+
+    return (
+        f"📊 IMPATTO TOTALE SIMULATO\n"
+        f"- Totale contributo ottenibile: {totale_contributo:,.2f} €\n"
+        f"- Beneficio economico complessivo stimato: {totale_beneficio:,.2f} €"
+    )
