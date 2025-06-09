@@ -1,10 +1,18 @@
 from supabase import create_client, Client
 import os
+import json
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+def carica_dati_azienda(contenuto_email: str) -> dict:
+    try:
+        return json.loads(contenuto_email)
+    except Exception as e:
+        print(f"Errore nel parsing JSON: {e}")
+        return {}
 
 def supabase_insert(tabella, dati):
     return supabase.table(tabella).insert(dati).execute()
