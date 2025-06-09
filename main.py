@@ -3,6 +3,7 @@ import uvicorn
 import os
 import shutil
 import uuid
+import tempfile
 from fastapi import Request
 from bilancio import calcola_indici_finanziari  
 from macroarea import assegna_macroarea
@@ -11,7 +12,7 @@ from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt
 from pdf_cleaner import estrai_testo_pymupdf
 from estrazione import esegui_pipeline_intermediario as esegui_pipeline
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from pipeline import esegui_pipeline as processa_analisi_pdf
@@ -19,11 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI(
-    title="eVoluto API",
-    description="API per analisi aziendale, assegnazione macroarea e selezione bandi.",
-    version="1.0.0"
-)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,20 +33,19 @@ app.add_middleware(
 @app.post("/ricevi_file")
 async def ricevi_file_da_make(request: Request):
     try:
-        file_bytes = await request.body()
-
-        # Salvataggio temporaneo del file PDF
-        file_path = "/tmp/input_file.pdf"
-        with open("/tmp/file_make.pdf", "wb") as f:
-            f.write(file_bytes)
+        body = await request.body()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(body)
+            temp_file_path = temp_file.name
         
-        logging.info("\U0001F4C4 File ricevuto da Make, avvio pipeline")
-        output = esegui_pipeline("file_make.pdf", file_path)
-        return {"risultato": output}
+        # Lancia la pipeline
+        output = esegui_pipeline(temp_file_path)
+
+        return JSONResponse(content={"esito": "successo", "output": output})
 
     except Exception as e:
         logging.error(f"❌ Errore ricezione file da Make: {str(e)}")
-        return {"errore": str(e)}
+        return JSONResponse(status_code=500, content={"errore": str(e)})
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
