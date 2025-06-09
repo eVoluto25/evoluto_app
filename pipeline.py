@@ -1,75 +1,48 @@
-import json
+
 import logging
-import smtplib
-from email.mime.text import MIMEText
-from bandi_matcher import trova_bandi_compatibili
-from scoring_engine_ready import macroarea_match
-from output_gpt import genera_output_gpt
-from gpt_formatter import genera_commento_bandi
-from impatto_simulato import calcola_impatto_simulato, simula_beneficio, simula_impatto_totale
-from motivazione_bando import genera_motivazione_bando
+import json
+from email_output import invia_email_output
+from scoring_bandi import calcola_punteggi_bandi
+from motivazione_bando import genera_motivazione
+from impatto_simulato import calcola_impatto_simulato
+from output_gpt import genera_snippet_analisi
+from simulatore_impatto import simula_beneficio, simula_impatto_totale
+from estrazione import carica_bandi_csv
 
-logging.basicConfig(level=logging.INFO)
+def esegui_pipeline_intermedia(dati_azienda: dict, indici: dict, macroarea: str):
+    logging.info("🚀 Avvio analisi Python per selezione bandi compatibili")
 
-def invia_email(destinatario, oggetto, contenuto):
-    mittente = "info@capitaleaziendale.it"  
-    msg = MIMEText(contenuto)
-    msg['Subject'] = oggetto
-    msg['From'] = mittente
-    msg['To'] = destinatario
+    # Step 1: Carica i bandi aperti da Supabase o CSV locale
+    logging.info("📥 Step 1: Caricamento bandi aperti")
+    bandi_disponibili = carica_bandi_csv()
 
-    try:
-        with smtplib.SMTP('localhost') as server:
-            server.sendmail(mittente, [destinatario], msg.as_string())
-        print(f"📩 Email inviata a {destinatario}")
-    except Exception as e:
-        logging.error(f"Errore invio email: {e}")
+    # Step 2: Calcolo punteggi per ciascun bando
+    logging.info("📊 Step 2: Calcolo punteggi bandi")
+    bandi_con_punteggio = calcola_punteggi_bandi(bandi_disponibili, dati_azienda)
 
-def esegui_pipeline_intermedio(analisi_json):
-    try:
-        dati_azienda = json.loads(analisi_json)
-        azienda_id = dati_azienda.get("partita_iva", "00000000000")
-        logging.info(f"📥 Avvio pipeline per azienda {azienda_id}")
+    # Ordina per punteggio decrescente
+    bandi_ordinati = sorted(bandi_con_punteggio, key=lambda x: x.get("punteggio", 0), reverse=True)
+    top5_bandi = bandi_ordinati[:5]
 
-        # Step 4: Ricerca bandi
-        logging.info("🎯 Step 4: Ricerca bandi compatibili")
-        trova_bandi_compatibili(azienda_id, dati_azienda)
-        print("✅ Bandi compatibili salvati")
+    # Step 3: Aggiunge motivazione, impatto e beneficio per ciascun bando
+    logging.info("🧠 Step 3: Motivazione e simulazioni economiche")
+    top5_bandi_finali = []
+    for bando in top5_bandi:
+        bando["motivazione"] = genera_motivazione(bando)
+        bando["impatto_stimato"] = calcola_impatto_simulato(bando, dati_azienda)
+        bando["beneficio"] = simula_beneficio(bando, dati_azienda)
+        top5_bandi_finali.append(bando)
 
-        # Step 5: Calcolo punteggi
-        logging.info("📈 Step 5: Calcolo punteggi bandi")
-        calcola_punteggi_bandi(azienda_id)
-        print("✅ Punteggi calcolati")
+    # Step 4: Simulazione impatto totale
+    logging.info("📈 Step 4: Simulazione impatto totale")
+    simulazione = simula_impatto_totale(dati_azienda, top5_bandi_finali)
 
-        # Step 6: Generazione output GPT
-        logging.info("💬 Step 6: Generazione output GPT")
-        output = genera_output_gpt(azienda_id)
-        print("✅ Output GPT generato")
+    # Step 5: Generazione snippet GPT
+    logging.info("📝 Step 5: Generazione snippet")
+    snippet = genera_snippet_analisi(dati_azienda, indici, macroarea, top5_bandi_finali)
+    snippet += f"\n\n{simulazione}"
 
-        top5_bandi = dati_azienda.get("top5_bandi", [])
-        top5_bandi_finali = []
-
-        for bando in top5_bandi:
-            motivazione = genera_motivazione_bando(bando, dati_azienda)
-            impatto = calcola_impatto_simulato(bando, dati_azienda)
-            beneficio = simula_beneficio(bando, dati_azienda)
-            bando["motivazione"] = motivazione
-            bando["impatto_stimato"] = impatto
-            bando["beneficio"] = beneficio
-            top5_bandi_finali.append(bando)
-
-        snippet = genera_snippet_analisi(dati_azienda, {}, dati_azienda.get("macroarea"), top5_bandi_finali)
-        commenti = genera_commento_bandi(top5_bandi_finali)
-        snippet += "\n\n🧠 Opportunità selezionate:\n" + commenti
-
-        simulazione = simula_impatto_totale(dati_azienda, top5_bandi_finali)
-        snippet += f"\n\n{simulazione}"
-
-        print(snippet)
-
-        # Invio email
-        destinatario = dati_azienda.get("email", "info@capitaleaziendale.it")
-        invia_email(destinatario, "📊 Report Verifica Aziendale", snippet)
-
-    except Exception as e:
-        logging.error(f"Errore in pipeline: {e}")
+    # Step 6: Invio via email
+    logging.info("📧 Step 6: Invio email")
+    invia_email_output(snippet)
+    logging.info("✅ Analisi completata e inviata.")
