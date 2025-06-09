@@ -39,7 +39,7 @@ async def ricevi_file_da_make(request: Request):
             temp_file_path = temp_file.name
         
         # Lancia la pipeline
-        output = esegui_pipeline(temp_file_path)
+        output = esegui_pipeline(temp_file_path, file_bytes)
 
         return JSONResponse(content={"esito": "successo", "output": output})
 
