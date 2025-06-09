@@ -8,3 +8,9 @@ SCORING_WEIGHTS = {
     "cofinanziamento": 0.10,
     "territorio_settore": 0.10
 }
+
+SCORING_THRESHOLDS = {
+    "alta": 80,
+    "media": 50,
+    "bassa": 0
+}
