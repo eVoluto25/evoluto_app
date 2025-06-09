@@ -1,8 +1,11 @@
-
 import logging
 from bandi_matcher import calcola_match_bando
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
-from output_generator import genera_motivazione_bando, calcola_impatto_simulato, simula_beneficio, simula_impatto_totale, genera_snippet_analisi
+from motivazione_bando import genera_motivazione_bando
+from impatto_simulato import calcola_impatto_simulato
+from scoring_bandi import simula_beneficio
+from impatto_simulato import simula_impatto_totale
+from gpt_formatter import genera_snippet_analisi
 from utils import carica_dati_azienda, salva_top5_bandi
 
 def pipeline(dati_azienda, azienda_id, email_destinatario):
