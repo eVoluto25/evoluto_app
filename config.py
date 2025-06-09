@@ -14,3 +14,9 @@ SCORING_THRESHOLDS = {
     "media": 50,
     "bassa": 0
 }
+
+PROBABILITY_LABELS = {
+    "alta": "✅ Alta probabilità di aggiudicazione",
+    "media": "⚠️ Probabilità media",
+    "bassa": "❌ Bassa probabilità o inadeguato"
+}
