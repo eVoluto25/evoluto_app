@@ -30,24 +30,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/ricevi_file")
-async def ricevi_dati_gpt(request: Request):
+@app.post("/ricevi_dati")
+async def ricevi_dati(payload: dict):
     try:
-        data = await request.json()
-        
-        # Log e validazione base
-        logging.info(f"✅ Dati ricevuti da GPT: {data}")
-        
-        # TODO: Inserisci qui eventuali validazioni su chiavi e struttura
-        
-        # Avvia pipeline con i dati
-        output = esegui_pipeline_intermediario_json(data)
-        
-        return JSONResponse(content={"esito": "successo", "output": output})
+        # Log per conferma ricezione
+        logging.info("📩 Dati ricevuti da GPT:")
+        logging.info(payload)
 
+        # Chiamata alla pipeline
+        output = esegui_pipeline(payload)
+
+        return {"esito": "successo", "output": output}
     except Exception as e:
-        logging.error(f"❌ Errore ricezione dati da GPT: {str(e)}")
-        return JSONResponse(status_code=500, content={"errore": str(e)})
+        logging.error(f"❌ Errore ricezione dati: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Avvio manuale da terminale se necessario
 if __name__ == "__main__":
