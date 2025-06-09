@@ -11,21 +11,35 @@ from bandi_matcher import trova_bandi_compatibili
 from valutazione_punteggio import calcola_valutazione
 from output_gpt import genera_output_gpt 
 
-def esegui_pipeline(nome_file, percorso_file):
-    print(f"🔍 Inizio analisi per: {nome_file}")
+def esegui_pipeline_intermediario_json(data: dict) -> str:
+    logging.info("🚀 Avvio pipeline da GPT con dati strutturati")
 
-    # Step 1
-    logging.info(f"📄 Step 0: Input ricevuto per file: {nome_file}")
-    print("📄 Contenuto ricevuto:", percorso_file)  
-    logging.info(f"📄 Contenuto ricevuto: {percorso_file}")  
+    # Step 1: Validazione dati minimi
+    richiesti = [
+        "ragione_sociale", "codice_ateco", "forma_giuridica", "partita_iva", 
+        "attivita_prevalente", "provincia", "citta", "data_costituzione", 
+        "dipendenti", "dimensione", "amministratore", "fatturato", "utile_netto",
+        "ebitda", "ebitda_margin", "ricerca_sviluppo", "costi_ambientali", 
+        "totale_attivo", "liquidita", "immobilizzazioni", "indebitamento", 
+        "debt_equity", "current_ratio", "interest_coverage", "autofinanziamento", 
+        "investimenti"
+    ]
+    for campo in richiesti:
+        if campo not in data:
+            raise ValueError(f"❌ Campo mancante: {campo}")
 
-    # Nuovo flusso: ricevo direttamente un file PDF, lo pulisco con PyMuPDF
-    from pdf_cleaner import estrai_testo_pymupdf  # assicurati che sia definita
+    # Step 2: Scrittura su Supabase e assegnazione macroarea
+    azienda_id = scrivi_dati_completi_su_supabase(data)  # da creare
 
-    if isinstance(percorso_file, bytes):
-        testo_pulito = estrai_testo_pymupdf(percorso_file)
-    else:
-        raise ValueError("❌ Errore: atteso un file binario PDF (bytes)")
+    logging.info("📌 ID azienda generato: %s", azienda_id)
+
+    assegna_macroarea(azienda_id)
+
+    # Step 3: Trova bandi e genera output
+    bandi = trova_bandi_compatibili(azienda_id)
+    output = genera_output_gpt(azienda_id, bandi)
+
+    return output
 
     # Step 2: Calcolo indici finanziari e scrittura su Supabase
     logging.info("📘 Step 1: Calcolo indici finanziari e salvataggio su Supabase")
