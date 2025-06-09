@@ -1,103 +1,68 @@
-import logging
-import uvicorn
 import os
-import shutil
-import uuid
-import tempfile
-from fastapi import Request
-from bilancio import calcola_indici_finanziari  
-from macroarea import assegna_macroarea
-from bandi_matcher import trova_bandi_compatibili
-from valutazione_punteggio import calcola_valutazione
-from output_gpt import genera_output_gpt
-from pdf_cleaner import estrai_testo_pymupdf
-from estrazione import esegui_pipeline_intermediario as esegui_pipeline
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.responses import HTMLResponse
-from pipeline import esegui_pipeline as processa_analisi_pdf
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
+import json
+import logging
+import email
+from email import policy
+from email.parser import BytesParser
+import imaplib
+from pipeline import esegui_pipeline
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # oppure specifica dominio GPT
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.post("/ricevi_dati")
-async def ricevi_dati(payload: dict):
-    try:
-        # Log per conferma ricezione
-        logging.info("📩 Dati ricevuti da GPT:")
-        logging.info(payload)
-
-        # Chiamata alla pipeline
-        output = esegui_pipeline(payload)
-
-        return {"esito": "successo", "output": output}
-    except Exception as e:
-        logging.error(f"❌ Errore ricezione dati: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Avvio manuale da terminale se necessario
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        logging.error("❌ Percorso al file XBRL o PDF mancante.")
-    else:
-        main(sys.argv[1])
-
+# === CONFIGURAZIONE LOG ===
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s — %(levelname)s — %(message)s",
 )
 
-def main(percorso_file):
+# === VARIABILI AMBIENTE (Render) ===
+EMAIL_ACCOUNT = os.getenv('EMAIL_ACCOUNT')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+IMAP_SERVER = 'imap.gmail.com'
+IMAP_FOLDER = 'INBOX'
+
+def recupera_json_dal_corpo():
     try:
-        logging.info("Inizio processo di analisi completa")
+        conn = imaplib.IMAP4_SSL(IMAP_SERVER)
+        conn.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+        conn.select(IMAP_FOLDER)
+        logging.info("📬 Connessione IMAP riuscita.")
 
-        logging.info("Estrazione dati dal file PDF o XBRL")
-        testo_estratto, nome_azienda = estrai_dati_da_file(percorso_file)
+        result, data = conn.search(None, 'UNSEEN')
+        if result != 'OK' or not data[0]:
+            logging.warning("📭 Nessuna email non letta trovata.")
+            return None
 
-        logging.info("Calcolo indici di bilancio")
-        id_azienda = calcola_indici_bilancio(testo_estratto, nome_azienda)
+        for num in data[0].split():
+            result, msg_data = conn.fetch(num, '(RFC822)')
+            if result != 'OK':
+                continue
 
-        logging.info("Assegnazione macroarea")
-        assegna_macroarea(id_azienda)
+            msg = BytesParser(policy=policy.default).parsebytes(msg_data[0][1])
+            corpo = msg.get_body(preferencelist=('plain')).get_content()
 
-        logging.info("Matching con i bandi disponibili")
-        match_bandi(id_azienda)
+            try:
+                dati = json.loads(corpo)
+                logging.info("✅ JSON correttamente estratto dal corpo dell’email.")
+                return dati
+            except json.JSONDecodeError:
+                logging.warning("⚠️ Email trovata, ma il corpo non è un JSON valido.")
+                continue
 
-        logging.info("Calcolo ranking bandi")
-        calcola_ranking(id_azienda)
-
-        logging.info("Generazione output GPT")
-        genera_output_gpt(id_azienda)
-
-        logging.info("Processo completato con successo")
-
-        with open(nome_file, "wb") as f:
-            f.write(contenuto)
-            
-        output = esegui_pipeline(nome_file, nome_file)
-        return {"risultato": output}
+        logging.error("❌ Nessuna email con JSON valido.")
+        return None
 
     except Exception as e:
-        logging.error(f"Errore nel caricamento: {str(e)}")
-        raise HTTPException(status_code=400, detail="Errore nel file")
+        logging.error(f"Errore nella connessione IMAP: {e}")
+        return None
+
+def main():
+    dati_azienda = recupera_json_dal_corpo()
+    if dati_azienda:
+        logging.info("🚀 Avvio dell'analisi tramite pipeline.")
+        risultato = esegui_pipeline(dati_azienda)
+        logging.info("📦 Analisi completata. Risultato:")
+        logging.info(json.dumps(risultato, indent=2, ensure_ascii=False))
+    else:
+        logging.info("🛑 Nessun dato disponibile per l’analisi.")
 
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        logging.error("Percorso al file XBRL o PDF mancante.")
-    else:
-        main(sys.argv[1])
+    main()
