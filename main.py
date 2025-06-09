@@ -22,6 +22,21 @@ IMAP_FOLDER = 'INBOX'
 
 app = FastAPI()
 
+@app.post("/ricevi_file")
+async def ricevi_file(request: Request):
+    body = await request.json()
+    filename = body.get("filename")
+    content = body.get("content")
+
+    try:
+        dati_azienda = json.loads(content)
+        azienda_id = dati_azienda.get("ragione_sociale", "X")
+        email_destinatario = "info@capitaleaziendale.it"
+        pipeline(dati_azienda, azienda_id, email_destinatario)
+        return {"status": "ok", "message": "Analisi avviata"}
+    except Exception as e:
+        return {"status": "errore", "message": str(e)}
+
 def recupera_json_dal_corpo():
     try:
         conn = imaplib.IMAP4_SSL(IMAP_SERVER)
