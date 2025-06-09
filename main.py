@@ -37,6 +37,7 @@ async def ricevi_file_da_make(request: Request):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(body)
             temp_file_path = temp_file.name
+            file_bytes = body
         
         # Lancia la pipeline
         output = esegui_pipeline(temp_file_path, file_bytes)
