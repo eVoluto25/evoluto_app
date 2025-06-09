@@ -12,7 +12,7 @@ from motivazione_bando import genera_motivazione_bando
 logging.basicConfig(level=logging.INFO)
 
 def invia_email(destinatario, oggetto, contenuto):
-    mittente = "render-output@evoluto.system"  # Fittizio o reale SMTP se configurato
+    mittente = "info@capitaleaziendale.it"  
     msg = MIMEText(contenuto)
     msg['Subject'] = oggetto
     msg['From'] = mittente
@@ -68,7 +68,7 @@ def esegui_pipeline_intermedio(analisi_json):
         print(snippet)
 
         # Invio email
-        destinatario = dati_azienda.get("email", "info@azienda.it")
+        destinatario = dati_azienda.get("email", "info@capitaleaziendale.it")
         invia_email(destinatario, "📊 Report Verifica Aziendale", snippet)
 
     except Exception as e:
