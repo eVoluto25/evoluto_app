@@ -4,7 +4,7 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 from bandi_matcher import trova_bandi_compatibili
-from scoring_engine_ready import calcola_punteggi_bandi
+from scoring_engine_ready import macroarea_match
 from output_gpt import genera_output_gpt, genera_snippet_analisi, genera_commento_bandi
 from impatto_simulato import calcola_impatto_simulato, simula_beneficio, simula_impatto_totale
 from motivazione_bando import genera_motivazione_bando
