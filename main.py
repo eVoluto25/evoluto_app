@@ -5,6 +5,7 @@ import email
 from email import policy
 from email.parser import BytesParser
 import imaplib
+from fastapi import FastAPI
 from pipeline import pipeline as esegui_pipeline
 
 # === CONFIGURAZIONE LOG ===
@@ -18,6 +19,8 @@ EMAIL_ACCOUNT = os.getenv('EMAIL_ACCOUNT')
 EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 IMAP_SERVER = 'imap.gmail.com'
 IMAP_FOLDER = 'INBOX'
+
+app = FastAPI()
 
 def recupera_json_dal_corpo():
     try:
