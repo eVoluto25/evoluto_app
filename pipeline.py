@@ -1,6 +1,5 @@
 
 import logging
-from email_sender import invia_email
 from bandi_matcher import calcola_match_bando
 from prefiltraggio_bandi import filtra_bandi_per_macroarea
 from output_generator import genera_motivazione_bando, calcola_impatto_simulato, simula_beneficio, simula_impatto_totale, genera_snippet_analisi
