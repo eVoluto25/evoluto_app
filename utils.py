@@ -14,6 +14,9 @@ def carica_dati_azienda(contenuto_email: str) -> dict:
         print(f"Errore nel parsing JSON: {e}")
         return {}
 
+def salva_top5_bandi(dati_azienda: dict, top5_bandi: list) -> None:
+    dati_azienda["top5_bandi"] = top5_bandi
+
 def supabase_insert(tabella, dati):
     return supabase.table(tabella).insert(dati).execute()
 
