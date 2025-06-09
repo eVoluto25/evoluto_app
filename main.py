@@ -5,7 +5,7 @@ import email
 from email import policy
 from email.parser import BytesParser
 import imaplib
-from pipeline import esegui_pipeline
+from pipeline import pipeline as esegui_pipeline
 
 # === CONFIGURAZIONE LOG ===
 logging.basicConfig(
