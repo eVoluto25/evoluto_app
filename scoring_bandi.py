@@ -1,4 +1,3 @@
-
 import pandas as pd
 from config import (
     SCORING_WEIGHTS,
@@ -38,5 +37,17 @@ def calcola_scoring_bandi(bandi_df, analisi_finanziaria):
             'punteggio': punteggio,
             'probabilita_aggiudicazione': probabilita
         })
+
+    # scoring_bandi.py
+
+def simula_beneficio(bando: dict, azienda: dict) -> float:
+    try:
+        spesa = float(bando.get("spesa_ammessa_min", 0))
+        intensita = float(bando.get("intensita_aiuto", 0)) / 100
+        beneficio = spesa * intensita
+        return beneficio
+    except Exception as e:
+        print(f"Errore nella simulazione del beneficio: {e}")
+        return 0.0
 
     return pd.DataFrame(risultati)
