@@ -31,21 +31,22 @@ app.add_middleware(
 )
 
 @app.post("/ricevi_file")
-async def ricevi_file_da_make(request: Request):
+async def ricevi_dati_gpt(request: Request):
     try:
-        body = await request.body()
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            temp_file.write(body)
-            temp_file_path = temp_file.name
-            file_bytes = body
+        data = await request.json()
         
-        # Lancia la pipeline
-        output = esegui_pipeline(temp_file_path, file_bytes)
-
+        # Log e validazione base
+        logging.info(f"✅ Dati ricevuti da GPT: {data}")
+        
+        # TODO: Inserisci qui eventuali validazioni su chiavi e struttura
+        
+        # Avvia pipeline con i dati
+        output = esegui_pipeline_intermediario_json(data)
+        
         return JSONResponse(content={"esito": "successo", "output": output})
 
     except Exception as e:
-        logging.error(f"❌ Errore ricezione file da Make: {str(e)}")
+        logging.error(f"❌ Errore ricezione dati da GPT: {str(e)}")
         return JSONResponse(status_code=500, content={"errore": str(e)})
 
 # Avvio manuale da terminale se necessario
