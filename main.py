@@ -14,23 +14,23 @@ logging.basicConfig(
     format="%(asctime)s — %(levelname)s — %(message)s",
 )
 
-# === VARIABILI AMBIENTE (Render) ===
-EMAIL_ACCOUNT = os.getenv('EMAIL_ACCOUNT')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-IMAP_SERVER = 'imap.gmail.com'
-IMAP_FOLDER = 'INBOX'
-
 app = FastAPI()
 
-@app.post("/ricevi_file")
-async def ricevi_analisi(request: Request):
-    body = await request.json()
-    filename = dati.get("filename")
-    content = dati.get("content")
+@app.post("/ricevi_analisi")
+async def ricevi_analisi(dati: dict):
+    try:
+        filename = dati.get("filename", "output_gpt.json")
+        content = dati.get("content", "{}")
 
-    # Esegui l'analisi Python
-    with open(f"/tmp/{filename}", "w") as f:
-        f.write(contenuto)
+        # Salvataggio del file JSON ricevuto
+        with open(f"/app/output/{filename}", "w") as f:
+            f.write(content)
+
+        logging.info(f"✅ JSON ricevuto e salvato come {filename}")
+        return {"status": "success", "filename": filename}
+    except Exception as e:
+        logging.error(f"❌ Errore durante il salvataggio del JSON: {e}")
+        return {"status": "error", "message": str(e)}
 
 def main():
     dati_azienda = recupera_json_dal_corpo()
