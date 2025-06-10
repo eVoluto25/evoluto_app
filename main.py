@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import email
+import requests
 from email import policy
 from email.parser import BytesParser
 import imaplib
@@ -50,10 +51,17 @@ def main():
 if __name__ == "__main__":
     main()
 
-def invia_email_output(email_destinatario, filename, content):
-    ...
-    msg = MIMEMultipart()
-    msg['From'] = EMAIL_ACCOUNT
-    msg['To'] = email_destinatario
-    msg['Subject'] = "Analisi aziendale e bandi"
-    ...
+def invia_output_a_gpt(risultato_testuale):
+    url_zapier = https://hooks.zapier.com/hooks/catch/23304548/uym5iwm/
+    payload = {
+        "messages": [
+            {
+                "role": "assistant",
+                "content": risultato_testuale
+            }
+        ]
+    }
+
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(url_zapier, data=json.dumps(payload), headers=headers)
+    print("Risposta Zapier:", response.status_code, response.text)
