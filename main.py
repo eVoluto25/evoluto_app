@@ -8,6 +8,11 @@ import imaplib
 from fastapi import FastAPI
 from pipeline import pipeline as esegui_pipeline
 
+EMAIL_ACCOUNT = os.getenv("EMAIL_ACCOUNT")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+
 # === CONFIGURAZIONE LOG ===
 logging.basicConfig(
     level=logging.INFO,
@@ -44,3 +49,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def invia_email_output(email_destinatario, filename, content):
+    ...
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_ACCOUNT
+    msg['To'] = email_destinatario
+    msg['Subject'] = "Analisi aziendale e bandi"
+    ...
