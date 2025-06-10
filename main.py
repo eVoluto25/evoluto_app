@@ -22,11 +22,15 @@ logging.basicConfig(
 
 app = FastAPI()
 
-@app.post("/ricevi_analisi")
-async def ricevi_analisi(dati: dict):
+@app.post("/ricevi_file")
+async def ricevi_file(request: Request):
     try:
-        filename = dati.get("filename", "analisi_gpt.json")
-        content = dati.get("content", "{}")
+        contenuto = await request.json()
+        print("✅ Ricevuto da Zapier:", contenuto)
+        return {"status": "ricevuto", "ok": True}
+    except Exception as e:
+        print("❌ Errore ricezione:", str(e))
+        return {"status": "errore", "ok": False}
 
         # Salvataggio del file JSON ricevuto
         with open(f"/tmp/{filename}", "w") as f:
