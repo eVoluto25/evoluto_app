@@ -52,7 +52,7 @@ if __name__ == "__main__":
     main()
 
 def invia_output_a_gpt(risultato_testuale):
-    url_zapier = https://hooks.zapier.com/hooks/catch/23304548/uym5iwm/
+    url_zapier = "https://hooks.zapier.com/hooks/catch/23304548/uym5iwm/"
     payload = {
         "messages": [
             {
