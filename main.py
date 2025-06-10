@@ -23,7 +23,7 @@ async def ricevi_analisi(dati: dict):
         content = dati.get("content", "{}")
 
         # Salvataggio del file JSON ricevuto
-        with open(f"/app/output/{filename}", "w") as f:
+        with open(f"/tmp/{filename}", "w") as f:
             f.write(content)
 
         logging.info(f"✅ JSON ricevuto e salvato come {filename}")
