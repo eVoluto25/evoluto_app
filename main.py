@@ -19,7 +19,7 @@ app = FastAPI()
 @app.post("/ricevi_analisi")
 async def ricevi_analisi(dati: dict):
     try:
-        filename = dati.get("filename", "output_gpt.json")
+        filename = dati.get("filename", "analisi_gpt.json")
         content = dati.get("content", "{}")
 
         # Salvataggio del file JSON ricevuto
