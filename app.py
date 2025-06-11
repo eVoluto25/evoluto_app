@@ -165,7 +165,7 @@ def genera_pdf(bandi):
     for b in bandi:
         pdf.multi_cell(0, 8, f"{b['Titolo']}\nScore: {b['score']}\n{b['valutazione']}\n---")
     pdf_path = "/tmp/bandi_filtrati.pdf"
-    pdf.output(pdf_path)
+    pdf.output(pdf_path, encoding='utf-8')
     return pdf_path
 
 def pipeline(pdf):
