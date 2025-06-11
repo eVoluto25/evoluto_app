@@ -15,6 +15,9 @@ def build_interface(main_fn):
         color: #202123;
         margin-bottom: 1rem;
     }
+    input[type='file'] + div {
+        display: none !important;
+    }
     """
 
     theme = gr.themes.Soft(
@@ -26,11 +29,11 @@ def build_interface(main_fn):
     )
 
     with gr.Blocks(css=css, theme=theme) as demo:
-        gr.Markdown("<div class='custom-title'>\u2728 eVoluto</div>")
+        gr.Markdown("<div class='custom-title'>\u2728 Ricerca Bandi su Misura</div>")
 
         with gr.Row():
             with gr.Column(scale=1):
-                file = gr.File(file_types=[".pdf"], label=None, show_label=False)
+                file = gr.File(label="Carica il documento", file_types=[".pdf"], type="file")
                 analyze_btn = gr.Button("Avvia Analisi", variant="primary")
 
             with gr.Column(scale=2):
@@ -38,7 +41,7 @@ def build_interface(main_fn):
                 scores = gr.Textbox(label="Punteggi macroaree (Crisi / Crescita / Espansione)", lines=2, interactive=False)
                 indices = gr.Textbox(label="25 Indici Finanziari", lines=8, interactive=False)
                 top_bandi = gr.Dataframe(
-                    headers=["Titolo", "Punteggio", "Scadenza", "Regione"],
+                    headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"],
                     label="Top 10 Bandi Consigliati"
                 )
                 csv_file = gr.File(label="Scarica risultati in CSV")
