@@ -25,7 +25,7 @@ def build_interface(main_fn):
         text_size="lg"
     )
 
-    with gr.Blocks(css=css, theme=theme) as demo:
+    with gr.Blocks(css=css, theme=theme, show_api=False) as demo:
         with gr.Row():
             with gr.Column(scale=2):
                 macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
