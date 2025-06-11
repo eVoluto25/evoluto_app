@@ -26,7 +26,7 @@ def build_interface(main_fn):
     )
 
     with gr.Blocks(css=css, theme=theme) as demo:
-        gr.Markdown("<div class='custom-title'>\u2728 Analisi Finanziaria e Ricerca Bandi</div>")
+        gr.Markdown("<div class='custom-title'>\u2728 eVoluto</div>")
 
         with gr.Row():
             with gr.Column(scale=1):
