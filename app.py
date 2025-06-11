@@ -20,9 +20,23 @@ def step1_analisi(pdf_file):
     try:
         logging.info("Step 1: Ricevuto file PDF per analisi.")
         global dati_azienda
-        dati_azienda = analizza_pdf(pdf_file.name)
+
+        indici = calcola_indici(pdf_file.name)
+        macroarea = assegna_macro_area(indici)
+
+        dati_azienda = {
+            "output_indici": indici,
+            "macroarea": macroarea,
+            "codice_ateco": indici.get("Codice ATECO", ""),
+            "regione": indici.get("Regione", ""),
+            "dimensione": indici.get("Dimensione", ""),
+            "EBITDA Margin": indici.get("EBITDA Margin", None),
+            "Utile Netto": indici.get("Utile Netto", None),
+            "Debt/Equity": indici.get("Debt/Equity", None),
+        }
+
         logging.info("Analisi finanziaria completata con successo.")
-        return dati_azienda['output_indici'], dati_azienda['macroarea']
+        return indici, macroarea
     except Exception as e:
         logging.error(f"Errore nell'analisi del file PDF: {str(e)}")
         return "Errore nell'analisi del bilancio.", ""
