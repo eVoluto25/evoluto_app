@@ -7,6 +7,7 @@ import re
 import csv
 import io
 import pandas as pd
+from logger import log_info, log_error
 from datetime import datetime, timedelta
 from supabase import create_client, Client
 
@@ -210,7 +211,7 @@ interface = gr.Interface(
     fn=pipeline,
     inputs=gr.File(label="Carica PDF Bilancio", file_types=[".pdf"]),
     outputs=[
-        gr.Textbox(label="Top 5 Bandi Consigliati"),
+        gr.Textbox(label="Top 10 Bandi Consigliati"),
         gr.File(label="Scarica CSV"),
         gr.File(label="Scarica PDF")
     ],
