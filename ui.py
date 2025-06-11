@@ -18,9 +18,9 @@ def build_interface(main_fn):
     """
 
     theme = gr.themes.Soft(
-        primary_hue="blue",
-        secondary_hue="green",
-        neutral_hue="gray",
+        primary_hue="gray",
+        secondary_hue="blue",
+        neutral_hue="slate",
         radius_size="lg",
         text_size="lg"
     )
