@@ -145,11 +145,11 @@ def valuta_bando(b, macroarea, indici, azienda):
 
 def classifica(score):
     if score >= 80:
-        return "✅ Alta probabilità"
+        return "Alta probabilità"
     elif score >= 50:
-        return "⚠️ Media probabilità"
+        return "⚠Media probabilità"
     else:
-        return "❌ Bassa probabilità"
+        return "Bassa probabilità"
 
 def genera_csv(bandi):
     df = pd.DataFrame(bandi)
