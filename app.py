@@ -163,8 +163,14 @@ def genera_pdf(bandi):
     pdf.add_page()
     pdf.set_font("Arial", size=10)
     pdf.cell(200, 10, txt="Bandi Consigliati", ln=True)
+    
     for b in bandi:
-        pdf.multi_cell(0, 8, f"{b['Titolo']}\nScore: {b['score']}\n{b['valutazione']}\n---")
+        titolo = b.get("Titolo", "").replace("’", "'").encode("latin-1", "ignore").decode("latin-1")
+        score = b.get("score", "")
+        valutazione = b.get("valutazione", "")
+        testo = f"{titolo}\nScore: {score}\nValutazione: {valutazione}\n---"
+        pdf.multi_cell(0, 8, txt=testo)
+        
     pdf_path = "/tmp/bandi_filtrati.pdf"
     pdf.output(pdf_path)
     return pdf_path
