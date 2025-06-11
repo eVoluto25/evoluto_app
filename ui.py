@@ -33,8 +33,8 @@ def build_interface(main_fn):
 
         with gr.Row():
             with gr.Column(scale=1):
-                file = gr.File(label="Carica il documento", file_types=[".pdf"], type="file")
-                analyze_btn = gr.Button("Avvia Analisi", variant="primary")
+                file = gr.File(label="Carica il documento", file_types=[".pdf"], type="filepath")
+                analyze_btn = gr.Button("Avvia eVoluto", variant="primary")
 
             with gr.Column(scale=2):
                 macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
