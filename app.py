@@ -182,7 +182,7 @@ def pipeline(pdf):
     limite = oggi + timedelta(days=30)
 
     # Query da Supabase
-    bandi_raw = supabase.table("bandi").select("*").execute().data
+    bandi_raw = supabase.table("bandi_disponibili").select("*").execute().data
 
     # Filtro bandi
     bandi_validi = []
