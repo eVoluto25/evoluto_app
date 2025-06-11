@@ -5,7 +5,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-def calcola_punteggi_matching(df_bandi, azienda_codice_ateco, azienda_dimensione, azienda_regione):
+def calcola_punteggi_bandi(df_bandi, azienda_codice_ateco, azienda_dimensione, azienda_regione):
     try:
         df = df_bandi.copy()
 
