@@ -12,6 +12,9 @@ from datetime import datetime, timedelta
 from supabase import create_client, Client
 from logger import log_info, log_error
 
+user = os.getenv("AUTH_USER")
+pwd = os.getenv("AUTH_PASS")
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 TABLE_NAME = os.getenv("SUPABASE_TABLE_NAME", "bandi_disponibili_rows")
@@ -224,4 +227,9 @@ interface = gr.Interface(
 )
 
 interface = build_interface(main_fn)
-interface.launch(server_name="0.0.0.0", server_port=8080, inbrowser=False)
+interface.launch(
+    server_name="0.0.0.0",
+    server_port=8080,
+    inbrowser=False,
+    auth=("AUTH_USER", "AUTH_PASS")
+)
