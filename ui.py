@@ -16,6 +16,11 @@ def build_interface(main_fn):
         display: none !important;
     }
     """
+    
+css = """
+footer.svelte-1ipelgc {
+    display: none !important;
+    }
 
     theme = gr.themes.Soft(
         primary_hue="gray",
@@ -25,7 +30,7 @@ def build_interface(main_fn):
         text_size="lg"
     )
 
-    with gr.Blocks(css=css, theme=theme, show_api=False) as demo:
+    with gr.Blocks(css=css, theme=theme) as demo:
         with gr.Row():
             with gr.Column(scale=2):
                 macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
