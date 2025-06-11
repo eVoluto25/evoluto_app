@@ -231,5 +231,5 @@ interface.launch(
     server_name="0.0.0.0",
     server_port=8080,
     inbrowser=False,
-    auth=("AUTH_USER", "AUTH_PASS")
+    auth=(user, pwd)
 )
