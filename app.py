@@ -147,7 +147,7 @@ def classifica(score):
     if score >= 80:
         return "Alta probabilità"
     elif score >= 50:
-        return "⚠Media probabilità"
+        return "Media probabilità"
     else:
         return "Bassa probabilità"
 
@@ -223,7 +223,7 @@ interface = gr.Interface(
         gr.File(label="Scarica PDF")
     ],
     title="eVoluto",
-    description="Analisi bilancio → macroarea → bandi di finanza agevolata filtrati."
+    description="Analisi bilancio -> macroarea -> bandi di finanza agevolata filtrati."
 )
 
 interface = build_interface(pipeline)
