@@ -218,8 +218,8 @@ interface = gr.Interface(
         gr.File(label="Scarica CSV"),
         gr.File(label="Scarica PDF")
     ],
-    title="Ricerca Bandi su Misura",
-    description="Analisi bilancio → macroarea → bandi filtrati da Supabase con scoring."
+    title="eVoluto",
+    description="Analisi bilancio → macroarea → bandi di finanza agevolata filtrati."
 )
 
-interface.launch(server_name="0.0.0.0", server_port=8080)
+interface.launch(server_name="0.0.0.0", server_port=8080, inbrowser=False)
