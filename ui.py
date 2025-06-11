@@ -54,5 +54,12 @@ def build_interface(main_fn):
             inputs=file,
             outputs=[macroarea, scores, indices, top_bandi, csv_file, pdf_file]
         )
+        gr.Markdown(
+            \"\"\"<div style='text-align: center; font-size: 14px; color: #6b7280; padding-top: 20px;'>
+            ⚪️ <strong>Trattamento dei dati</strong> ⚪️<br>
+            I file caricati vengono elaborati automaticamente e non vengono memorizzati.<br>
+            Nessun dato personale viene condiviso o archiviato.
+            </div>\"\"\"
+        )
 
-    return demo
+        return demo
