@@ -7,6 +7,7 @@ import re
 import csv
 import io
 import pandas as pd
+from ui import build_interface
 from datetime import datetime, timedelta
 from supabase import create_client, Client
 from logger import log_info, log_error
@@ -222,4 +223,5 @@ interface = gr.Interface(
     description="Analisi bilancio → macroarea → bandi di finanza agevolata filtrati."
 )
 
+interface = build_interface(main_fn)
 interface.launch(server_name="0.0.0.0", server_port=8080, inbrowser=False)
