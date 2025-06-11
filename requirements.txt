@@ -14,3 +14,7 @@ python-dateutil>=2.8.2
 google-auth>=2.0.0
 pymupdf>=1.23.0
 python-multipart
+gradio
+openai
+pdfplumber
+fpdf
