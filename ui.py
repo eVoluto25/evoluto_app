@@ -32,15 +32,13 @@ def build_interface(main_fn):
         text_size="lg"
     )
 
-    with gr.Blocks(css=css, theme=theme) as demo:
-        gr.Markdown("<div class='custom-title'>\u2728 Analisi Finanziaria e Ricerca Bandi</div>")
-        with gr.Row():
-            with gr.Column(scale=1):
-                with gr.Box(elem_classes="section-box"):
+        with gr.Blocks(css=css, theme=theme) as demo:
+            gr.Markdown("<div class='custom-title'>\u2728 Analisi Finanziaria e Ricerca Bandi</div>")
+            with gr.Row():
+                with gr.Column(scale=1):
                     file = gr.File(label="Carica il PDF del bilancio", file_types=[".pdf"])
                     analyze_btn = gr.Button("Avvia Analisi", variant="primary")
-            with gr.Column(scale=2):
-                with gr.Box(elem_classes="section-box"):
+                with gr.Column(scale=2):
                     macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
                     scores = gr.Textbox(label="Punteggi macroaree (Crisi / Crescita / Espansione)", lines=2, interactive=False)
                     indices = gr.Textbox(label="25 Indici Finanziari", lines=8, interactive=False)
