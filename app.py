@@ -204,7 +204,7 @@ def pipeline(pdf):
     csv_path = genera_csv(bandi_validi)
     pdf_path = genera_pdf(bandi_validi)
 
-    output_testuale = "\n\n".join([f"{b['titolo']}\nScore: {b['score']}\n{b['valutazione']}" for b in bandi_validi[:5]])
+    output_testuale = "\n\n".join([f"{b['titolo']}\nScore: {b['score']}\n{b['valutazione']}" for b in bandi_validi[:10]])
     return output_testuale, csv_path, pdf_path
 
 interface = gr.Interface(
