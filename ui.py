@@ -21,6 +21,7 @@ css = """
 footer.svelte-1ipelgc {
     display: none !important;
     }
+    """
 
     theme = gr.themes.Soft(
         primary_hue="gray",
