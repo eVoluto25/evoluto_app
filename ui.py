@@ -30,7 +30,7 @@ def build_interface(main_fn):
 
         with gr.Row():
             with gr.Column(scale=1):
-                file = gr.File(label="Carica il PDF del bilancio", file_types=[".pdf"])
+                file = gr.File(file_types=[".pdf"], label=None, show_label=False)
                 analyze_btn = gr.Button("Avvia Analisi", variant="primary")
 
             with gr.Column(scale=2):
