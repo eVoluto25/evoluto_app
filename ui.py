@@ -9,12 +9,6 @@ def build_interface(main_fn):
     .gradio-container {
         padding: 20px !important;
     }
-    .custom-title {
-        font-size: 24px;
-        font-weight: 600;
-        color: #202123;
-        margin-bottom: 1rem;
-    }
     input[type='file'] + div {
         display: none !important;
     }
@@ -29,28 +23,21 @@ def build_interface(main_fn):
     )
 
     with gr.Blocks(css=css, theme=theme) as demo:
-        gr.Markdown("<div class='custom-title'>\u2728 Ricerca Bandi su Misura</div>")
-
         with gr.Row():
             with gr.Column(scale=1):
-                file = gr.File(label="Carica il documento", file_types=[".pdf"], type="filepath")
+                file = gr.File(label="Carica il documento", file_types=[".pdf"])
                 analyze_btn = gr.Button("Avvia eVoluto", variant="primary")
 
             with gr.Column(scale=2):
                 macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
-                scores = gr.Textbox(label="Punteggi macroaree (Crisi / Crescita / Espansione)", lines=2, interactive=False)
                 indices = gr.Textbox(label="25 Indici Finanziari", lines=8, interactive=False)
-                top_bandi = gr.Dataframe(
-                    headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"],
-                    label="Top 10 Bandi Consigliati"
-                )
                 csv_file = gr.File(label="Scarica risultati in CSV")
                 pdf_file = gr.File(label="Scarica report in PDF")
 
         analyze_btn.click(
             fn=main_fn,
             inputs=file,
-            outputs=[macroarea, scores, indices, top_bandi, csv_file, pdf_file]
+            outputs=[macroarea, indices, csv_file, pdf_file]
         )
 
         gr.Markdown(
