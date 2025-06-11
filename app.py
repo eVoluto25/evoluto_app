@@ -7,6 +7,7 @@ import re
 import csv
 import io
 import pandas as pd
+from secure_pdf_builder import genera_pdf
 from ui import build_interface
 from datetime import datetime, timedelta
 from supabase import create_client, Client
