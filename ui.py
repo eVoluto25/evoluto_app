@@ -12,6 +12,9 @@ def build_interface(main_fn):
     input[type='file'] + div {
         display: none !important;
     }
+    .gr-file .file-preview {
+        display: none !important;
+    }
     """
 
     theme = gr.themes.Soft(
@@ -24,15 +27,13 @@ def build_interface(main_fn):
 
     with gr.Blocks(css=css, theme=theme) as demo:
         with gr.Row():
-            with gr.Column(scale=1):
-                file = gr.File(label="Carica il documento", file_types=[".pdf"])
-                analyze_btn = gr.Button("Avvia eVoluto", variant="primary")
-
             with gr.Column(scale=2):
                 macroarea = gr.Textbox(label="Macroarea assegnata", interactive=False)
                 indices = gr.Textbox(label="25 Indici Finanziari", lines=8, interactive=False)
-                csv_file = gr.File(label="Scarica risultati in CSV")
-                pdf_file = gr.File(label="Scarica report in PDF")
+                csv_file = gr.File(label="Scarica risultati in CSV", interactive=False)
+                pdf_file = gr.File(label="Scarica report in PDF", interactive=False)
+                file = gr.File(label="", file_types=[".pdf"])
+                analyze_btn = gr.Button("Avvia eVoluto", variant="primary")
 
         analyze_btn.click(
             fn=main_fn,
