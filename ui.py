@@ -28,7 +28,7 @@ def build_interface(main_fn):
         primary_hue="blue",
         secondary_hue="green",
         neutral_hue="gray",
-        radius_size="xl",
+        radius_size="lg",        
         text_size="lg"
     )
 
