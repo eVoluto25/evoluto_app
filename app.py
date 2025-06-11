@@ -226,7 +226,7 @@ interface = gr.Interface(
     description="Analisi bilancio → macroarea → bandi di finanza agevolata filtrati."
 )
 
-interface = build_interface(main_fn)
+interface = build_interface(pipeline)
 interface.launch(
     server_name="0.0.0.0",
     server_port=8080,
