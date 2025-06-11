@@ -2,7 +2,7 @@
 import gradio as gr
 import logging
 from datetime import datetime
-from modulo_analisi_finanziaria import analizza_pdf
+from analisi_indici_macroarea import analizza_pdf
 from modulo_punteggio import calcola_punteggi_bandi
 
 # Configura il logging
