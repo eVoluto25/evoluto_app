@@ -112,7 +112,7 @@ def valuta_bando(bando, azienda):
         logger.error(f"Errore valutazione bando {bando.get('Titolo', '')}: {e}")
         return 0, "Errore"
 
-def filtra_e_valuta_bandi(bandi, azienda):
+def filtra_e_valuta_bandi(macroarea, indici, azienda):
     risultati = []
     oggi = datetime.today().date()
     for bando in bandi:
