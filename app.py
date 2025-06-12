@@ -1,9 +1,14 @@
 
 import gradio as gr
 import logging
+import os
 from datetime import datetime
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from modulo_punteggio import calcola_punteggi_bandi
+
+port = int(os.environ.get("PORT", 7860))
+
+gr.Interface(...).launch(server_name="0.0.0.0", server_port=port)
 
 # Configura il logging
 logging.basicConfig(
