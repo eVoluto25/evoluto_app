@@ -1,7 +1,3 @@
-# ============================================================
-# STEP 0 – IMPORTAZIONI
-# ============================================================
-
 import gradio as gr
 import logging
 import os
@@ -9,11 +5,6 @@ from datetime import datetime
 
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from modulo_punteggio import calcola_punteggi_bandi
-
-
-# ============================================================
-# STEP 1 – CONFIGURAZIONE SISTEMA
-# ============================================================
 
 port = int(os.environ.get("PORT", 7860))  # Porta gestita da Render
 
@@ -23,18 +14,8 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-
-# ============================================================
-# STEP 2 – VARIABILI GLOBALI
-# ============================================================
-
 dati_azienda = {}
 output_analisi = {}
-
-
-# ============================================================
-# STEP 3 – ANALISI FINANZIARIA E MACROAREA
-# ============================================================
 
 def step1_analisi(pdf_file):
     try:
@@ -85,11 +66,6 @@ Indici calcolati:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
 
-
-# ============================================================
-# STEP 4 – INTERFACCIA GRADIO
-# ============================================================
-
 interfaccia = gr.Interface(
     fn=step1_analisi,
     inputs=gr.File(label="Carica il bilancio in PDF"),
@@ -97,11 +73,6 @@ interfaccia = gr.Interface(
     title="eVoluto – Analisi Finanziaria Automatica",
     description="Carica un bilancio PDF. eVoluto eseguirà l'analisi completa e assegnerà la macroarea di intervento."
 )
-
-
-# ============================================================
-# STEP 5 – AVVIO
-# ============================================================
 
 print("Gradio pronto all'avvio")
 interfaccia.launch(server_name="0.0.0.0", server_port=port)
