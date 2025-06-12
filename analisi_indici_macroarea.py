@@ -1,50 +1,51 @@
 import logging
+from formule_indici import (
+    calcola_roe, calcola_roi, calcola_ros, calcola_roic, calcola_rot,
+    calcola_leverage, calcola_pfnpn, calcola_ebit_of, calcola_current_ratio,
+    calcola_quick_ratio, calcola_indipendenza_fin, calcola_margine_tesoreria,
+    calcola_copertura_imm, calcola_margine_struttura, calcola_ccn
+)
 
 def calcola_indici(dati):
     indici = {}
 
-    def safe_div(num, den):
-        try:
-            return round(num / den, 6) if num is not None and den not in (None, 0) else "ND"
-        except:
-            return "ND"
-
-    ricavi = dati.get("Ricavi")
+    # Estrazione variabili base
     utile = dati.get("Risultato Netto")
+    ricavi = dati.get("Ricavi")
     patrimonio = dati.get("Patrimonio Netto")
-    debiti = dati.get("Debiti")
     attivo = dati.get("Totale Attivo")
     passivo = dati.get("Totale Passivo")
     liquidita = dati.get("Disponibilità liquide")
+    debiti = dati.get("Debiti")
     rimanenze = dati.get("Rimanenze")
-    ebitda = dati.get("EBITDA")
     immobilizzazioni = dati.get("Immobilizzazioni")
     oneri_fin = dati.get("Oneri Finanziari")
+    ebit = dati.get("EBIT") or dati.get("EBITDA")  # fallback proxy
+    attivo_corr = dati.get("Attivo Corrente")
+    passivo_corr = dati.get("Passivo Corrente")
 
-    indici["ROE"] = safe_div(utile, patrimonio)
-    indici["Leverage"] = safe_div(passivo, patrimonio)
-    indici["Margine di Struttura"] = safe_div(patrimonio, immobilizzazioni)
-    indici["Indipendenza Finanziaria"] = safe_div(patrimonio, attivo)
-    indici["PFN/PN"] = safe_div((debiti or 0) - (liquidita or 0), patrimonio)
-    indici["EBIT/OF"] = safe_div(ebitda, oneri_fin)
-    indici["Capitale Circolante Netto"] = round((liquidita or 0) + (rimanenze or 0) - (debiti or 0), 2)
-
-    # Indici placeholder
-    for k in [
-        "ROI", "ROS", "ROT", "ROIC", "Copertura Immobilizzazioni", "Current Ratio", "Quick Ratio",
-        "Margine di Tesoreria", "MOL/PFN", "Flusso di Cassa / OF", "PFN/MOL", "PFN/Ricavi",
-        "Cash Wallet Risk Index", "Collateral Distortion Index", "Sconfinamento Medio",
-        "Tensione Finanziaria", "Cash Wallet Management Index", "Duration"
-    ]:
-        indici[k] = "ND"
+    # Calcolo indici reali
+    indici["ROE"] = calcola_roe(utile, patrimonio)
+    indici["ROI"] = calcola_roi(ebit, attivo)
+    indici["ROS"] = calcola_ros(ebit, ricavi)
+    indici["ROIC"] = calcola_roic(ebit, debiti, patrimonio)
+    indici["ROT"] = calcola_rot(ricavi, attivo)
+    indici["Leverage"] = calcola_leverage(passivo, patrimonio)
+    indici["PFN/PN"] = calcola_pfnpn(debiti, liquidita, patrimonio)
+    indici["EBIT/OF"] = calcola_ebit_of(ebit, oneri_fin)
+    indici["Current Ratio"] = calcola_current_ratio(attivo_corr, passivo_corr)
+    indici["Quick Ratio"] = calcola_quick_ratio(attivo_corr, rimanenze, passivo_corr)
+    indici["Indipendenza Finanziaria"] = calcola_indipendenza_fin(patrimonio, attivo)
+    indici["Margine di Tesoreria"] = calcola_margine_tesoreria(liquidita, passivo_corr)
+    indici["Copertura Immobilizzazioni"] = calcola_copertura_imm(patrimonio, immobilizzazioni)
+    indici["Margine di Struttura"] = calcola_margine_struttura(patrimonio, immobilizzazioni)
+    indici["Capitale Circolante Netto"] = calcola_ccn(attivo_corr, passivo_corr)
 
     return indici
 
 def assegna_macro_area(indici):
     try:
-        crisi = 0
-        crescita = 0
-        espansione = 0
+        crisi = crescita = espansione = 0
 
         roe = indici.get("ROE")
         leverage = indici.get("Leverage")
