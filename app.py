@@ -1,37 +1,55 @@
-
 import logging
+import re
+from pdfminer.high_level import extract_text
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
 
-# Configura logging
 logging.basicConfig(level=logging.INFO)
 
+
+def estrai_dati_da_pdf(path):
+    text = extract_text(path)
+    mappa = {}
+
+    for riga in text.splitlines():
+        match = re.match(r"(.+?):\s+([-+]?[0-9]*[.,]?[0-9]+)", riga)
+        if match:
+            chiave = match.group(1).strip()
+            valore = match.group(2).replace(",", ".")
+            try:
+                mappa[chiave] = float(valore)
+            except:
+                pass
+
+    return mappa
+
+
 def step1_analisi(pdf_file):
-    """Step 1: Analisi del bilancio PDF e assegnazione macroarea"""
     try:
         logging.info("Step 1: Ricevuto file PDF per analisi")
 
         global dati_azienda, output_analisi
 
-        # Calcolo indici
-        indici = calcola_indici(pdf_file.name)
+        dati = estrai_dati_da_pdf(pdf_file.name)
+        logging.info(f"Dati grezzi estratti: {list(dati.keys())}")
+
+        indici = calcola_indici(dati)
         logging.info(f"Indici calcolati: {indici}")
 
-        # Assegna macroarea
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
 
-        # Estrai dati anagrafici
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
             "codice_ateco": indici.get("Codice ATECO", "ND"),
             "attivita_prevalente": indici.get("Attività Prevalente", "ND"),
             "regione": indici.get("Regione", "ND"),
             "dimensione": indici.get("Dimensione", "ND"),
-            "addetti": indici.get("Addetti", "ND")
+            "addetti": indici.get("Addetti", "ND"),
+            "macroarea": macroarea,
+            "indici": indici
         }
 
-        # Output analisi completo
         output_analisi = {
             "Macroarea": macroarea,
             "Indici calcolati": indici
@@ -51,7 +69,7 @@ Macroarea assegnata: {macroarea}
 Indici calcolati:
 """ + "\n".join([f"{k}: {v}" for k, v in indici.items()])
 
-        return output_analisi, [], "", ""  # Bandi, csv, pdf verranno riempiti dopo
+        return output_analisi, [], "", ""
 
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
@@ -59,9 +77,8 @@ Indici calcolati:
 
 
 def step2_matching(macroarea, dati_azienda, indici):
-    """Step 2: Matching con i bandi da Supabase e calcolo punteggio"""
     try:
-        bandi_trovati = filtra_e_valuta_bandi(bandi, azienda)
+        bandi_trovati = filtra_e_valuta_bandi(bandi, dati_azienda)
         logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
         return bandi_trovati
     except Exception as e:
