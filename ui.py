@@ -6,7 +6,7 @@ def run_analisi(pdf_file):
     if pdf_file is None:
         return "Nessun file caricato."
 
-    output_analisi, bandi_trovati, csv_path, pdf_path = step1_analisi(pdf_file.name)
+    output_analisi, bandi_trovati, csv_path, pdf_path = step1_analisi(pdf)
     
     testo_bandi = "\n\nTOP 10 BANDI SUGGERITI:\n"
     for b in bandi_trovati[:10]:
