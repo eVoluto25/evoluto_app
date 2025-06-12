@@ -1,7 +1,7 @@
 
 import logging
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
-from scoring_bandi import calcola_punteggi_bandi
+from scoring_bandi import filtra_e_valuta_bandi
 
 # Configura logging
 logging.basicConfig(level=logging.INFO)
@@ -61,7 +61,7 @@ Indici calcolati:
 def step2_matching(macroarea, dati_azienda, indici):
     """Step 2: Matching con i bandi da Supabase e calcolo punteggio"""
     try:
-        bandi_trovati = calcola_punteggi_bandi(macroarea, dati_azienda, indici)
+        bandi_trovati = filtra_e_valuta_bandi(bandi, azienda)
         logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
         return bandi_trovati
     except Exception as e:
