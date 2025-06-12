@@ -47,13 +47,13 @@ button, input, textarea {
 """) as demo:
 
     with gr.Column(visible=True, elem_id="login-panel") as login_panel:
-    gr.Markdown("<h2 style='text-align:center;'>Login eVoluto</h2>")
+    gr.Markdown('<h2 style="text-align:center;">Login eVoluto</h2>')
     user_input = gr.Textbox(label="Username")
     pass_input = gr.Textbox(label="Password", type="password")
     login_button = gr.Button("Avvia eVoluto")
 
 with gr.Column(visible=False, elem_id="main-panel") as main_panel:
-    gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria Automatica</h2>")
+    gr.Markdown('<h2 style="text-align:center;">eVoluto – Analisi Finanziaria Automatica</h2>')
     gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
 
     file_input = gr.File(label="", file_types=[".pdf"])
