@@ -40,7 +40,7 @@ body { background-color: #000000; }
     with gr.Column(visible=False) as main_interface:
         logout_btn = gr.Button("Logout", elem_id="logout")
         pdf_input = gr.File(label="Carica il bilancio in PDF", type="file")
-        analizza_btn = gr.Button("Esegui Analisi Finanziaria")
+        analizza_btn = gr.File(label="Carica il bilancio in PDF", type="filepath", file_types=[".pdf"])
 
         output_analisi = gr.Textbox(label="Anagrafica e Indici Finanziari", lines=12)
         macroarea_output = gr.Textbox(label="Macro-area Assegnata")
