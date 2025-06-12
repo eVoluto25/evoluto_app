@@ -95,7 +95,7 @@ def step1_analisi(pdf_file):
 
 def step2_matching(macroarea, dati_azienda, indici):
     try:
-        bandi_trovati = filtra_e_valuta_bandi(bandi, dati_azienda)
+        bandi_trovati = filtra_e_valuta_bandi(macroarea, indici, dati_azienda)
         logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
         return bandi_trovati
     except Exception as e:
