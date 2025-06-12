@@ -1,117 +1,86 @@
 import gradio as gr
-import pandas as pd
-import os
-from app import step1_analisi
+import logging
+import base64
+from app import step1_analisi, step2_matching
 
-USERNAME = os.getenv("EVOLUTO_USERNAME")
-PASSWORD = os.getenv("EVOLUTO_PASSWORD")
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Placeholder dati iniziali
-anagrafica_placeholder = "Dati anagrafici azienda non ancora disponibili."
-indici_placeholder = "Indici non calcolati. Caricare un bilancio."
-macroarea_placeholder = "Macro-area non ancora assegnata."
-bandi_placeholder = pd.DataFrame(columns=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"])
+# ID e Password (caricate su Render)
+USER_ID = "admin"
+PASSWORD = "secure_password"
 
-with gr.Blocks(css="""
-body {
-    background-color: #121212;
-    color: #D3D3D3;
-    font-family: 'Segoe UI', sans-serif;
-}
-.gr-button {
-    background-color: rgba(50, 50, 50, 0.8);
-    border-radius: 12px;
-    color: white;
-}
-.gr-textbox, .gr-text, .gr-file, .gr-dataframe {
-    background-color: rgba(40, 40, 40, 0.6);
-    border-radius: 12px;
-    color: white;
-}
-.gr-box {
-    background-color: rgba(60, 60, 60, 0.5);
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid #333;
-    color: white;
-}
-footer {
-    text-align: center;
-    font-size: 0.8em;
-    margin-top: 30px;
-    color: gray;
-}
-.logout-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
+authenticated = False
+
+with gr.Blocks(theme=gr.themes.Base(), css="""
+body { background-color: #000000; }
+.gr-box { background: rgba(50, 50, 50, 0.3); border-radius: 10px; padding: 20px; color: #ccc; }
+.gr-button { background-color: #333; color: #fff; border-radius: 8px; }
+.gr-textbox, .gr-file { background-color: #222; color: #eee; border-radius: 6px; }
+#footer { font-size: 12px; color: #777; text-align: center; margin-top: 20px; }
+.copy-btn { float: right; font-size: 12px; }
 """) as ui:
 
-    # Pulsante Logout
-    with gr.Row():
-        gr.Button("Logout", elem_classes="logout-button")
+    with gr.Column():
+        login_id = gr.Textbox(label="ID", type="password")
+        login_pw = gr.Textbox(label="Password", type="password")
+        login_btn = gr.Button("Login")
+        login_out = gr.Textbox(label="Status Login", interactive=False)
 
-    # Step 1: Analisi Finanziaria
-    with gr.Row():
-        with gr.Column():
-            with gr.Group():
-                anagrafica = gr.Textbox(label="Anagrafica Azienda", value=anagrafica_placeholder, lines=5, interactive=False, show_copy_button=True)
-            with gr.Group():
-                indici = gr.Textbox(label="25 Indici Finanziari", value=indici_placeholder, lines=15, interactive=False, show_copy_button=True)
-        with gr.Column():
-            with gr.Group():
-                macroarea = gr.Textbox(label="Macro Area Assegnata", value=macroarea_placeholder, interactive=False, show_copy_button=True)
-            with gr.Row():
-                btn_csv = gr.Button("Scarica risultati in CSV")
-                btn_pdf = gr.Button("Scarica report in PDF")
+    def check_login(user, pwd):
+        global authenticated
+        if user == USER_ID and pwd == PASSWORD:
+            authenticated = True
+            return "Accesso riuscito"
+        else:
+            return "Credenziali non valide"
 
-    # Step 2: Matching Bandi
-    with gr.Group():
-        btn_matching = gr.Button("Avvia Matching Bandi")
-        tabella_bandi = gr.Dataframe(value=bandi_placeholder, headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], interactive=False, label="Top 10 Bandi Ordinati per Punteggio")
+    login_btn.click(check_login, [login_id, login_pw], login_out)
 
-    # Upload documento
-    with gr.Group():
-        file_input = gr.File(label="Carica il bilancio in PDF", file_types=['.pdf'])
+    with gr.Column(visible=False) as main_interface:
+        logout_btn = gr.Button("Logout", elem_id="logout")
+        pdf_input = gr.File(label="Carica il bilancio in PDF", type="file")
+        analizza_btn = gr.Button("Esegui Analisi Finanziaria")
 
-    # Avvio interfaccia
-    demo = gr.Blocks(theme=gr.themes.Base())
-    with demo:
-        with gr.Column():
-            with gr.Row():
-                logout_btn = gr.Button("Logout", elem_id="logout-btn")
+        output_analisi = gr.Textbox(label="Anagrafica e Indici Finanziari", lines=12)
+        macroarea_output = gr.Textbox(label="Macro-area Assegnata")
 
-            with gr.Group():
-                anagrafica = gr.Textbox(label="Anagrafica Azienda", value=anagrafica_placeholder, lines=5, interactive=False, show_copy_button=True)
+        csv_download = gr.File(label="Scarica risultati in CSV")
+        pdf_download = gr.File(label="Scarica report in PDF")
 
-            with gr.Group():
-                indici = gr.Textbox(label="25 Indici Finanziari", value=indici_placeholder, lines=15, interactive=False, show_copy_button=True)
+        matching_btn = gr.Button("Avvia Matching Bandi")
+        matching_output = gr.Dataframe(headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], label="Top 10 bandi suggeriti")
 
-            with gr.Group():
-                macroarea = gr.Textbox(label="Macro Area Assegnata", value=macroarea_placeholder, interactive=False, show_copy_button=True)
+        footer = gr.Markdown("""
+        <div id='footer'>
+        Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. Nessun dato personale viene condiviso o archiviato.
+        </div>
+        """)
 
-            with gr.Row():
-                btn_csv = gr.Button("Scarica risultati in CSV")
-                btn_pdf = gr.Button("Scarica report in PDF")
+    def run_analisi(pdf):
+        try:
+            out_txt, macroarea, csv_path, pdf_path = step1_analisi(pdf.name)
+            return out_txt, macroarea, csv_path, pdf_path
+        except Exception as e:
+            logging.error("Errore nell'analisi finanziaria: %s", e)
+            return "Errore", "Errore", None, None
 
-            with gr.Group():
-                btn_matching = gr.Button("Avvia Matching Bandi")
-                tabella_bandi = gr.Dataframe(
-                value=bandi_placeholder,
-                headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"],
-                interactive=False
-            )
+    def run_matching():
+        try:
+            bandi_df = step2_matching()
+            top_bandi = bandi_df.head(10)
+            return top_bandi
+        except Exception as e:
+            logging.error("Errore nel matching dei bandi: %s", e)
+            return []
 
-            with gr.Group():
-                file_input = gr.File(label="Carica il bilancio in PDF", file_types=['.pdf'])
+    analizza_btn.click(fn=run_analisi, inputs=[pdf_input], outputs=[output_analisi, macroarea_output, csv_download, pdf_download])
+    matching_btn.click(fn=run_matching, inputs=[], outputs=[matching_output])
 
-            with gr.Group():
-                gr.Markdown("""
-                <footer>
-                Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. 
-                Nessun dato personale viene condiviso o archiviato.
-                </footer>
-                """)
+    def show_main_interface():
+        return gr.update(visible=True)
 
-    ui.launch(server_name="0.0.0.0", server_port=7860)
+    login_btn.click(fn=show_main_interface, inputs=[], outputs=[main_interface])
+    logout_btn.click(fn=lambda: gr.update(visible=False), inputs=[], outputs=[main_interface])
+
+ui.launch(server_name="0.0.0.0", server_port=7860)
