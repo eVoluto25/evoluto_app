@@ -1,4 +1,3 @@
-
 import gradio as gr
 import os
 from app import step1_analisi
@@ -6,58 +5,80 @@ from app import step1_analisi
 USERNAME = os.getenv("EVOLUTO_USERNAME")
 PASSWORD = os.getenv("EVOLUTO_PASSWORD")
 
-def login(user, pwd):
-    if user == USERNAME and pwd == PASSWORD:
-        return gr.update(visible=False), gr.update(visible=True)
-    return gr.update(value="", visible=True), gr.update(visible=False)
-
-def avvia_processamento(file):
-    if file is None:
-        return "Nessun file caricato.", "", "", "", "", ""
-    output = step1_analisi(file)
-    return output, "", "", "", "", ""
+# Placeholder dati iniziali
+anagrafica_placeholder = "Dati anagrafici azienda non ancora disponibili."
+indici_placeholder = "Indici non calcolati. Caricare un bilancio."
+macroarea_placeholder = "Macro-area non ancora assegnata."
+bandi_placeholder = pd.DataFrame(columns=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"])
 
 with gr.Blocks(css="""
-body { background-color: #f1f1f1; font-family: 'Arial', sans-serif; }
-.gr-button { background-color: #333 !important; color: white !important; border: none; padding: 10px 20px; font-size: 14px; }
-.gr-button:hover { background-color: #4b4b4b !important; }
-footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
-""") as demo:
+body {
+    background-color: #121212;
+    color: #D3D3D3;
+    font-family: 'Segoe UI', sans-serif;
+}
+.gr-button {
+    background-color: rgba(50, 50, 50, 0.8);
+    border-radius: 12px;
+    color: white;
+}
+.gr-textbox, .gr-text, .gr-file, .gr-dataframe {
+    background-color: rgba(40, 40, 40, 0.6);
+    border-radius: 12px;
+    color: white;
+}
+.gr-box {
+    background-color: rgba(60, 60, 60, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #333;
+    color: white;
+}
+footer {
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: 30px;
+    color: gray;
+}
+.logout-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+""") as ui:
 
-    with gr.Column(visible=True, elem_id="login-panel") as login_panel:
-        user_input = gr.Textbox(label="Username")
-        pass_input = gr.Textbox(label="Password", type="password")
-        login_button = gr.Button("Avvia eVoluto")
+    # Pulsante Logout
+    with gr.Row():
+        gr.Button("Logout", elem_classes="logout-button")
 
-    with gr.Column(visible=False, elem_id="main-panel") as main_panel:
+    # Step 1: Analisi Finanziaria
+    with gr.Row():
+        with gr.Column():
+            with gr.Box():
+                anagrafica = gr.Textbox(label="Anagrafica Azienda", value=anagrafica_placeholder, lines=5, interactive=False, show_copy_button=True)
+            with gr.Box():
+                indici = gr.Textbox(label="25 Indici Finanziari", value=indici_placeholder, lines=15, interactive=False, show_copy_button=True)
+        with gr.Column():
+            with gr.Box():
+                macroarea = gr.Textbox(label="Macro Area Assegnata", value=macroarea_placeholder, interactive=False, show_copy_button=True)
+            with gr.Row():
+                btn_csv = gr.Button("Scarica risultati in CSV")
+                btn_pdf = gr.Button("Scarica report in PDF")
 
-        file_input = gr.File(label="Carica bilancio", file_types=[".pdf"])
+    # Step 2: Matching Bandi
+    with gr.Box():
+        btn_matching = gr.Button("Avvia Matching Bandi")
+        tabella_bandi = gr.Dataframe(value=bandi_placeholder, headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], interactive=False, label="Top 10 Bandi Ordinati per Punteggio")
 
-        # Finestra anagrafica
-        anagrafica = gr.Textbox(label="Anagrafica azienda", lines=3)
+    # Upload documento (spostato in basso)
+    with gr.Box():
+        file_input = gr.File(label="Carica il bilancio in PDF", file_types=['.pdf'])
 
-        # Analisi finanziaria completa con indici
-        analisi_finanziaria = gr.Textbox(label="Analisi finanziaria", lines=25, show_copy_button=True)
+    # Footer trattamento dati
+    gr.Markdown("""
+        <footer>
+            Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. Nessun dato personale viene condiviso o archiviato.
+        </footer>
+    """)
 
-        # Macro area
-        macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2, show_copy_button=True)
-        match_button = gr.Button("Trova bandi")
-
-        # Bandi selezionati
-        bandi_box = gr.Textbox(label="Bandi selezionati", lines=8, show_copy_button=True)
-
-        # Relazione analitica e predittiva
-        commento_box = gr.Textbox(label="Relazione analista", lines=6, show_copy_button=True)
-
-        file_input.change(fn=avvia_processamento, inputs=file_input,
-                          outputs=[analisi_finanziaria, anagrafica, macroarea_box, bandi_box, commento_box])
-
-        match_button.click(fn=step2_bandi, inputs=[], outputs=bandi_box)
-
-        gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
-
-    login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, main_panel])
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-    demo.launch(server_name="0.0.0.0", server_port=port)
+ui.launch()
