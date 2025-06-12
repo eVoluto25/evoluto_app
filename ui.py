@@ -24,7 +24,7 @@ body { background-color: #000000; }
     with gr.Column():
         login_id = gr.Textbox(label="ID", type="password")
         login_pw = gr.Textbox(label="Password", type="password")
-        login_btn = gr.Button("Login")
+        login_btn = gr.Button("entra")
         login_out = gr.Textbox(label="Status Login", interactive=False)
 
     def check_login(user, pwd):
@@ -40,7 +40,7 @@ body { background-color: #000000; }
     with gr.Column(visible=False) as main_interface:
         logout_btn = gr.Button("Logout", elem_id="logout")
         analizza_btn = gr.Button("Avvia eVoluto")
-        pdf_input = gr.File(label="Carica il bilancio in PDF", type="filepath", file_types=[".pdf"])
+        pdf_input = gr.File(label="carica il bilancio", type="filepath", file_types=[".pdf"])
         
         output_analisi = gr.Textbox(label="Anagrafica e Indici Finanziari", lines=12)
         macroarea_output = gr.Textbox(label="Macro-area Assegnata")
@@ -48,7 +48,7 @@ body { background-color: #000000; }
         csv_download = gr.File(label="Scarica risultati in CSV")
         pdf_download = gr.File(label="Scarica report in PDF")
 
-        matching_btn = gr.Button("Avvia Matching Bandi")
+        matching_btn = gr.Button("ricerca bandi")
         matching_output = gr.Dataframe(headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], label="Top 10 bandi suggeriti")
 
         footer = gr.Markdown("""
