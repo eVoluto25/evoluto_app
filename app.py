@@ -1,37 +1,34 @@
-import gradio as gr
 import logging
-import os
-from ui import demo
-from datetime import datetime
-
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from modulo_punteggio import calcola_punteggi_bandi
 
-port = int(os.environ.get("PORT", 7860))  # Porta gestita da Render
-
+# Configura logging
 logging.basicConfig(
     filename="log_app.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+# Variabili globali temporanee
 dati_azienda = {}
 output_analisi = {}
 
+# Funzione principale di analisi
 def step1_analisi(pdf_file):
     try:
         logging.info("Step 1: Ricevuto file PDF per analisi")
+
         global dati_azienda, output_analisi
 
-        # Step 3A – Calcolo indici
+        # Calcolo indici
         indici = calcola_indici(pdf_file.name)
         logging.info(f"Indici calcolati: {indici}")
 
-        # Step 3B – Assegnazione macroarea
+        # Assegna macroarea
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
 
-        # Step 3C – Dati aziendali identificativi
+        # Estrai dati anagrafici
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
             "codice_ateco": indici.get("Codice ATECO", "ND"),
@@ -41,12 +38,12 @@ def step1_analisi(pdf_file):
             "addetti": indici.get("Addetti", "ND")
         }
 
+        # Output analisi completo
         output_analisi = {
             "Macroarea": macroarea,
             "Indici calcolati": indici
         }
 
-        # Step 3D – Output formattato
         output_text = f"""Analisi Aziendale
 
 Nome azienda: {dati_azienda['nome_azienda']}
@@ -66,8 +63,3 @@ Indici calcolati:
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
-
-if __name__ == "__main__":
-    from ui import demo
-    port = int(os.environ.get("PORT", 7860))
-    demo.launch(server_name="0.0.0.0", server_port=port)
