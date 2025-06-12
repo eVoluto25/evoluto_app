@@ -1,3 +1,4 @@
+
 import gradio as gr
 import os
 from app import step1_analisi
@@ -12,67 +13,46 @@ def login(user, pwd):
 
 def avvia_processamento(file):
     if file is None:
-        return "Nessun file caricato.", "", "", "", ""
+        return "Nessun file caricato.", "", "", "", "", ""
     output = step1_analisi(file)
-    # Placeholder parsing (da adattare al tuo formato)
-    anagrafica = output.split("Macroarea")[0]
-    macroarea = output.split("Macroarea assegnata:")[1].split("Indici")[0].strip()
-    bandi = "Bandi suggeriti (da implementare)"
-    return output, anagrafica, macroarea, bandi, ""
+    return output, "", "", "", "", ""
 
 with gr.Blocks(css="""
-body {
-    background-color: #f9f9f9;
-    font-family: 'Segoe UI', sans-serif;
-    color: #111;
-    margin: 0;
-}
-button, input, textarea {
-    border-radius: 8px !important;
-    font-size: 15px !important;
-}
-#login-panel, #main-panel {
-    max-width: 760px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.04);
-}
-#footer {
-    text-align: center;
-    font-size: 12px;
-    color: #888;
-    margin-top: 40px;
-}
+body { background-color: #f1f1f1; font-family: 'Arial', sans-serif; }
+.gr-button { background-color: #333 !important; color: white !important; border: none; padding: 10px 20px; font-size: 14px; }
+.gr-button:hover { background-color: #4b4b4b !important; }
+footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
 """) as demo:
 
     with gr.Column(visible=True, elem_id="login-panel") as login_panel:
-        gr.Markdown('<h2 style="text-align:center;">Login eVoluto</h2>')
+        gr.Markdown("<h2 style='text-align:center;'>Login eVoluto</h2>")
         user_input = gr.Textbox(label="Username")
         pass_input = gr.Textbox(label="Password", type="password")
         login_button = gr.Button("Avvia eVoluto")
 
     with gr.Column(visible=False, elem_id="main-panel") as main_panel:
-        gr.Markdown('<h2 style="text-align:center;">eVoluto – Analisi Finanziaria Automatica</h2>')
+        gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria Automatica</h2>")
         gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
-        file_input = gr.File(label="", file_types=[".pdf"])
 
-        output_box = gr.Textbox(label="Analisi completa", lines=20, show_copy_button=True)
-        anagrafica_box = gr.Textbox(label="Anagrafica azienda e principali indici", lines=5)
-        macroarea_box = gr.Textbox(label="Macro-area assegnata", lines=2)
-        bandi_box = gr.Textbox(label="Bandi suggeriti", lines=4)
-        commento_box = gr.Textbox(label="Commento analista (Claude-ready)", lines=3)
+        file_input = gr.File(label="Carica bilancio", file_types=[".pdf"])
 
-        with gr.Row():
-            btn_csv = gr.Button("Scarica CSV", variant="secondary")
-            btn_pdf = gr.Button("Scarica PDF", variant="secondary")
+        # Finestra anagrafica
+        anagrafica = gr.Textbox(label="Anagrafica azienda", lines=3)
 
-        file_input.change(
-            fn=avvia_processamento,
-            inputs=file_input,
-            outputs=[output_box, anagrafica_box, macroarea_box, bandi_box, commento_box]
-        )
+        # Analisi finanziaria completa con indici
+        analisi_finanziaria = gr.Textbox(label="Analisi finanziaria", lines=25, show_copy_button=True)
+
+        # Macro area
+        macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2)
+
+        # Bandi selezionati
+        bandi_box = gr.Textbox(label="Bandi selezionati", lines=8)
+
+        # Relazione analista
+        commento_box = gr.Textbox(label="Relazione analista", lines=6)
+
+        file_input.change(fn=avvia_processamento, inputs=file_input,
+                          outputs=[analisi_finanziaria, anagrafica, macroarea_box, bandi_box, commento_box])
 
         gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
 
