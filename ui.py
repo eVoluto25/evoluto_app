@@ -46,7 +46,7 @@ button, input, textarea {
 }
 """) as demo:
 
-    with gr.Column(visible=True, elem_id="login-panel") as login_panel:
+with gr.Column(visible=True, elem_id="login-panel") as login_panel:
     gr.Markdown('<h2 style="text-align:center;">Login eVoluto</h2>')
     user_input = gr.Textbox(label="Username")
     pass_input = gr.Textbox(label="Password", type="password")
