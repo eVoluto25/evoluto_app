@@ -3,12 +3,21 @@ from app import step1_analisi
 
 def run_analisi(file):
     try:
-        if hasattr(file, 'tempfile'):
-            class FileMock:
-                name = file.tempfile
-            result = step1_analisi(FileMock())
-        else:
+        file_path = None
+
+        # Compatibilità Gradio Web e CLI
+        if hasattr(file, 'name') and isinstance(file.name, str):
+            file_path = file.name
+        elif hasattr(file, 'tempfile'):
+            file_path = file.tempfile
+
+        if not file_path:
             return "Formato file non valido"
+
+        class FileMock:
+            name = file_path
+
+        result = step1_analisi(FileMock())
 
         if isinstance(result, str):
             return result
