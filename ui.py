@@ -15,7 +15,7 @@ authenticated = False
 with gr.Blocks(theme=gr.themes.Base(), css="""
 body { background-color: #000000; }
 .gr-box { background: rgba(50, 50, 50, 0.3); border-radius: 10px; padding: 20px; color: #ccc; }
-.gr-button { background-color: #333; color: #fff; border-radius: 8px; }
+.gr-button { background-color: #333; color: #ccc; border-radius: 8px; }
 .gr-textbox, .gr-file { background-color: #222; color: #eee; border-radius: 6px; }
 #footer { font-size: 12px; color: #777; text-align: center; margin-top: 20px; }
 .copy-btn { float: right; font-size: 12px; }
@@ -31,25 +31,25 @@ body { background-color: #000000; }
         global authenticated
         if user == USER_ID and pwd == PASSWORD:
             authenticated = True
-            return "Accesso riuscito"
+            return "accesso riuscito"
         else:
-            return "Credenziali non valide"
+            return "credenziali non valide"
 
     login_btn.click(check_login, [login_id, login_pw], login_out)
 
     with gr.Column(visible=False) as main_interface:
-        logout_btn = gr.Button("Logout", elem_id="logout")
-        analizza_btn = gr.Button("Avvia eVoluto")
+        logout_btn = gr.Button("logout", elem_id="logout")
+        analizza_btn = gr.Button("avvia eVoluto")
         pdf_input = gr.File(label="carica il bilancio", type="filepath", file_types=[".pdf"])
         
-        output_analisi = gr.Textbox(label="Anagrafica e Indici Finanziari", lines=12)
-        macroarea_output = gr.Textbox(label="Macro-area Assegnata")
+        output_analisi = gr.Textbox(label="anagrafica e indici finanziari", lines=12)
+        macroarea_output = gr.Textbox(label="macro-area assegnata")
 
-        csv_download = gr.File(label="Scarica risultati in CSV")
-        pdf_download = gr.File(label="Scarica report in PDF")
+        csv_download = gr.File(label="scarica risultati in CSV")
+        pdf_download = gr.File(label="scarica risultati in PDF")
 
         matching_btn = gr.Button("ricerca bandi")
-        matching_output = gr.Dataframe(headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], label="Top 10 bandi suggeriti")
+        matching_output = gr.Dataframe(headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], label="10 bandi idonei")
 
         footer = gr.Markdown("""
         <div id='footer'>
