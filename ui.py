@@ -27,7 +27,7 @@ def run_analisi(file):
         macroarea = output.get("Macroarea", "ND")
 
         out = f"✅ Macroarea assegnata: {macroarea}\n\n📊 Indici calcolati:\n"
-        out += "\n".join([f"- {k}: {v}" for k, v in indici.items()])
+        out += "\n".join([f"- {k}: {v if v not in [None, ''] else 'ND'}" for k, v in indici.items()])
         return out
 
     except Exception as e:
