@@ -1,24 +1,13 @@
-"""
-Modulo: scoring_bandi.py
-
-Questo modulo riceve:
-- una macroarea assegnata
-- gli indici finanziari calcolati
-- le informazioni dell’azienda (dimensione, codice ATECO, ecc.)
-
-...e restituisce:
-- una lista dei bandi filtrati da Supabase
-- il punteggio per ciascun bando (0-100)
-- una classificazione qualitativa (“Alta”, “Media”, “Bassa”)
-
-Autore: eVoluto
-Ultima modifica: 2025-06-12
-"""
-
+import os
 import logging
-import json
 from datetime import datetime
+from supabase import create_client
 from dateutil.parser import parse
+
+# Setup Supabase client
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Setup logger
 logging.basicConfig(level=logging.INFO)
