@@ -1,6 +1,7 @@
 import logging
 import re
 import pdfplumber
+from supabase_connector import supabase
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
 from scoring_bandi import filtra_e_valuta_bandi
