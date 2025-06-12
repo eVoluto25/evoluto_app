@@ -10,9 +10,15 @@ def estrai_dati_da_pdf(path):
     text = extract_text(path)
     mappa = {}
 
-    def estrai_valore(riga):
+    # Identifica l'anno più recente nel testo (es. 2024)
+    match_anni = re.findall(r"20[0-9]{2}", text)
+    anni = sorted(set(int(a) for a in match_anni if 2020 <= int(a) <= 2099), reverse=True)
+    anno_riferimento = str(anni[0]) if anni else None
+    logging.info(f"Anno identificato nel documento: {anno_riferimento}")
+
+    def estrai_valore_per_anno(riga):
         numeri = re.findall(r"[-+]?[0-9]{1,3}(?:\.[0-9]{3})*(?:,[0-9]+)?", riga)
-        if numeri:
+        if len(numeri) >= 1:
             return float(numeri[0].replace(".", "").replace(",", "."))
         return None
 
@@ -25,18 +31,20 @@ def estrai_dati_da_pdf(path):
         "Passività a breve": "esigibili entro l'esercizio successivo",
         "Passività a lungo": "esigibili oltre l'esercizio successivo",
         "Totale Attivo": "Totale attivo",
-        "Totale Passivo": "Totale passivo",
         "Ricavi": "ricavi delle vendite e delle prestazioni",
         "Risultato Netto": "Utile (perdita) dell'esercizio",
         "Oneri Finanziari": "interessi e altri oneri finanziari",
         "Risultato Operativo": "Differenza tra valore e costi della produzione",
         "Margine Operativo Lordo": "Differenza tra valore e costi della produzione",
+        "EBITDA": "Differenza tra valore e costi della produzione",
+        "NOPAT": "Utile (perdita) dell'esercizio"
     }
 
+    righe = text.splitlines()
     for campo, label in mappatura.items():
-        for riga in text.splitlines():
+        for riga in righe:
             if label.lower() in riga.lower():
-                val = estrai_valore(riga)
+                val = estrai_valore_per_anno(riga)
                 if val is not None:
                     mappa[campo] = val
                     break
