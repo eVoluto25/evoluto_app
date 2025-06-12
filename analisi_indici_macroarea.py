@@ -1,101 +1,81 @@
 import logging
 
-# Configura il logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-
-def safe_divide(numerator, denominator):
-    try:
-        result = numerator / denominator if denominator != 0 else "ND"
-        return result
-    except Exception as e:
-        logging.warning(f"Errore nel calcolo: {e}")
-        return "ND"
-
 def calcola_indici(dati):
-    logging.info("Inizio calcolo dei 25 indici finanziari.")
-    try:
-        indici = {
-            "ROE": safe_divide(dati.get("Risultato Netto", 0), dati.get("Patrimonio Netto", 0)),
-            "ROI": safe_divide(dati.get("Risultato Operativo", 0), dati.get("Capitale Investito Netto Operativo", 0)),
-            "ROS": safe_divide(dati.get("Risultato Operativo", 0), dati.get("Vendite", 0)),
-            "ROT": safe_divide(dati.get("Vendite", 0), dati.get("Capitale Investito Netto Operativo", 0)),
-            "ROIC": safe_divide(dati.get("NOPAT", 0), dati.get("Media Capitale Investito Netto Operativo", 0)),
+    indici = {}
 
-            "Copertura Immobilizzazioni": safe_divide(dati.get("Patrimonio Netto", 0) + dati.get("Passività a lungo", 0), dati.get("Attivo Immobilizzato", 0)),
-            "Indipendenza Finanziaria": safe_divide(dati.get("Patrimonio Netto", 0), dati.get("Totale Attivo", 0)),
-            "Leverage": safe_divide(dati.get("Totale Attivo", 0), dati.get("Patrimonio Netto", 0)),
-            "PFN/PN": safe_divide(dati.get("Posizione Finanziaria Netta", 0), dati.get("Patrimonio Netto", 0)),
+    def safe_div(num, den):
+        try:
+            return round(num / den, 6) if num is not None and den not in (None, 0) else "ND"
+        except:
+            return "ND"
 
-            "Current Ratio": safe_divide(dati.get("Attività a breve", 0), dati.get("Passività a breve", 0)),
-            "Quick Ratio": safe_divide(dati.get("Attività a breve", 0) - dati.get("Rimanenze", 0), dati.get("Passività a breve", 0)),
-            "Margine di Tesoreria": safe_divide(dati.get("Attività liquide", 0), dati.get("Passività correnti", 0)),
-            "Margine di Struttura": safe_divide(dati.get("Patrimonio Netto", 0), dati.get("Totale Attivo", 0)),
-            "Capitale Circolante Netto": dati.get("Attività a breve", 0) - dati.get("Passività a breve", 0),
+    ricavi = dati.get("Ricavi")
+    utile = dati.get("Risultato Netto")
+    patrimonio = dati.get("Patrimonio Netto")
+    debiti = dati.get("Debiti")
+    attivo = dati.get("Totale Attivo")
+    passivo = dati.get("Totale Passivo")
+    liquidita = dati.get("Disponibilità liquide")
+    rimanenze = dati.get("Rimanenze")
+    ebitda = dati.get("EBITDA")
+    immobilizzazioni = dati.get("Immobilizzazioni")
+    oneri_fin = dati.get("Oneri Finanziari")
 
-            "EBIT/OF": safe_divide(dati.get("Risultato Operativo", 0), dati.get("Oneri Finanziari", 0)),
-            "MOL/PFN": safe_divide(dati.get("Margine Operativo Lordo", 0), dati.get("Posizione Finanziaria Netta", 0)),
-            "Flusso di Cassa / OF": safe_divide(dati.get("Flusso di Cassa operativo", 0), dati.get("Oneri Finanziari", 0)),
-            "PFN/MOL": safe_divide(dati.get("Posizione Finanziaria Netta", 0), dati.get("Margine Operativo Lordo", 0)),
-            "PFN/Ricavi": safe_divide(dati.get("Posizione Finanziaria Netta", 0), dati.get("Ricavi", 0)),
+    indici["ROE"] = safe_div(utile, patrimonio)
+    indici["Leverage"] = safe_div(passivo, patrimonio)
+    indici["Margine di Struttura"] = safe_div(patrimonio, immobilizzazioni)
+    indici["Indipendenza Finanziaria"] = safe_div(patrimonio, attivo)
+    indici["PFN/PN"] = safe_div((debiti or 0) - (liquidita or 0), patrimonio)
+    indici["EBIT/OF"] = safe_div(ebitda, oneri_fin)
+    indici["Capitale Circolante Netto"] = round((liquidita or 0) + (rimanenze or 0) - (debiti or 0), 2)
 
-            "Cash Wallet Risk Index": dati.get("Cash Wallet Risk Index", "ND"),
-            "Collateral Distortion Index": dati.get("Collateral Distortion Index", "ND"),
-            "Sconfinamento Medio": dati.get("Sconfinamento Medio", "ND"),
-            "Tensione Finanziaria": dati.get("Tensione Finanziaria", "ND"),
-            "Cash Wallet Management Index": dati.get("Cash Wallet Management Index", "ND"),
-            "Duration": dati.get("Duration", "ND")
-        }
+    # Indici placeholder
+    for k in [
+        "ROI", "ROS", "ROT", "ROIC", "Copertura Immobilizzazioni", "Current Ratio", "Quick Ratio",
+        "Margine di Tesoreria", "MOL/PFN", "Flusso di Cassa / OF", "PFN/MOL", "PFN/Ricavi",
+        "Cash Wallet Risk Index", "Collateral Distortion Index", "Sconfinamento Medio",
+        "Tensione Finanziaria", "Cash Wallet Management Index", "Duration"
+    ]:
+        indici[k] = "ND"
 
-        logging.info("Indici calcolati con successo.")
-        return indici
-    except Exception as e:
-        logging.error(f"Errore durante il calcolo degli indici: {e}")
-        return {}
+    return indici
 
 def assegna_macro_area(indici):
-    logging.info("Inizio assegnazione della macro area.")
     try:
-        punti_crisi = 0
-        punti_crescita = 0
-        punti_espansione = 0
+        crisi = 0
+        crescita = 0
+        espansione = 0
 
-        #  Crisi
-        if isinstance(indici["Current Ratio"], (int, float)) and indici["Current Ratio"] <= 1:
-            punti_crisi += 1
-        if isinstance(indici["PFN/PN"], (int, float)) and 0.5 <= indici["PFN/PN"] <= 2:
-            punti_crisi += 1
-        if isinstance(indici["EBIT/OF"], (int, float)) and indici["EBIT/OF"] < 1:
-            punti_crisi += 1
-        if isinstance(indici["MOL/PFN"], (int, float)) and indici["MOL/PFN"] > 0:
-            punti_crisi += 1
-        if isinstance(indici["ROE"], (int, float)) and indici["ROE"] > 0:
-            punti_crisi += 1
+        roe = indici.get("ROE")
+        leverage = indici.get("Leverage")
+        struttura = indici.get("Margine di Struttura")
 
-        #  Crescita
-        if isinstance(indici["Capitale Circolante Netto"], (int, float)) and indici["Capitale Circolante Netto"] > 0:
-            punti_crescita += 1
-        if isinstance(indici["Indipendenza Finanziaria"], (int, float)) and indici["Indipendenza Finanziaria"] > 0.2:
-            punti_crescita += 1
-        if isinstance(indici["Copertura Immobilizzazioni"], (int, float)) and indici["Copertura Immobilizzazioni"] > 1:
-            punti_crescita += 1
+        if isinstance(roe, float) and roe < 0.01:
+            crisi += 1
+        if isinstance(leverage, float) and leverage > 4:
+            crisi += 1
+        if isinstance(struttura, float) and struttura < 0.8:
+            crisi += 1
 
-        #  Espansione
-        if isinstance(indici["ROS"], (int, float)) and indici["ROS"] > 0.05:
-            punti_espansione += 1
-        if isinstance(indici["MOL/PFN"], (int, float)) and indici["MOL/PFN"] > 0.1:
-            punti_espansione += 1
-        if isinstance(indici["ROIC"], (int, float)) and indici["ROIC"] > 0.05:
-            punti_espansione += 1
+        if isinstance(roe, float) and roe > 0.05:
+            crescita += 1
+        if isinstance(struttura, float) and struttura > 1:
+            crescita += 1
 
-        logging.info(f"Punteggi: Crisi={punti_crisi}, Crescita={punti_crescita}, Espansione={punti_espansione}")
+        if isinstance(roe, float) and roe > 0.1:
+            espansione += 1
+        if isinstance(leverage, float) and leverage < 2:
+            espansione += 1
 
-        if punti_espansione >= max(punti_crisi, punti_crescita):
+        logging.info(f"Punteggi: Crisi={crisi}, Crescita={crescita}, Espansione={espansione}")
+
+        if espansione >= 2:
             return "Espansione"
-        elif punti_crescita >= max(punti_crisi, punti_espansione):
+        elif crescita >= 2:
             return "Crescita"
         else:
             return "Crisi"
+
     except Exception as e:
         logging.error(f"Errore durante l'assegnazione della macro area: {e}")
         return "ND"
