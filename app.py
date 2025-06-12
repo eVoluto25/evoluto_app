@@ -1,3 +1,7 @@
+# ============================================================
+# STEP 0 – IMPORTAZIONI
+# ============================================================
+
 import gradio as gr
 import logging
 import os
@@ -6,19 +10,12 @@ from datetime import datetime
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from modulo_punteggio import calcola_punteggi_bandi
 
-port = int(os.environ.get("PORT", 7860))
 
-interfaccia = gr.Interface(
-    fn=step1_analisi,
-    inputs=gr.File(label="Carica il bilancio in PDF"),
-    outputs=gr.Textbox(label="Risultato Analisi Finanziaria"),
-    title="eVoluto – Analisi Finanziaria Automatica",
-    description="Carica un bilancio PDF. eVoluto eseguirà l'analisi completa e assegnerà la macroarea di intervento."
-)
+# ============================================================
+# STEP 1 – CONFIGURAZIONE SISTEMA
+# ============================================================
 
-print("✅ Gradio pronto all'avvio")
-interfaccia.launch(server_name="0.0.0.0", server_port=port)
-print("✅ Interfaccia lanciata")
+port = int(os.environ.get("PORT", 7860))  # Porta gestita da Render
 
 logging.basicConfig(
     filename="log_app.log",
@@ -26,20 +23,33 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+
+# ============================================================
+# STEP 2 – VARIABILI GLOBALI
+# ============================================================
+
 dati_azienda = {}
 output_analisi = {}
+
+
+# ============================================================
+# STEP 3 – ANALISI FINANZIARIA E MACROAREA
+# ============================================================
 
 def step1_analisi(pdf_file):
     try:
         logging.info("Step 1: Ricevuto file PDF per analisi")
         global dati_azienda, output_analisi
-        
+
+        # Step 3A – Calcolo indici
         indici = calcola_indici(pdf_file.name)
-        logging.info(f" Indici calcolati: {indici}")
+        logging.info(f"Indici calcolati: {indici}")
 
+        # Step 3B – Assegnazione macroarea
         macroarea = assegna_macro_area(indici)
-        logging.info(f" Macroarea assegnata: {macroarea}")
+        logging.info(f"Macroarea assegnata: {macroarea}")
 
+        # Step 3C – Dati aziendali identificativi
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
             "codice_ateco": indici.get("Codice ATECO", "ND"),
@@ -54,22 +64,45 @@ def step1_analisi(pdf_file):
             "Indici calcolati": indici
         }
 
-        output_text = f"""📄 **Analisi Aziendale**
+        # Step 3D – Output formattato
+        output_text = f"""Analisi Aziendale
 
-  Nome azienda: {dati_azienda['nome_azienda']}
-  Attività prevalente: {dati_azienda['attivita_prevalente']}
-  Addetti: {dati_azienda['addetti']}
-  Regione: {dati_azienda['regione']}
-  Dimensione: {dati_azienda['dimensione']}
-  Codice ATECO: {dati_azienda['codice_ateco']}
+Nome azienda: {dati_azienda['nome_azienda']}
+Attività prevalente: {dati_azienda['attivita_prevalente']}
+Addetti: {dati_azienda['addetti']}
+Regione: {dati_azienda['regione']}
+Dimensione: {dati_azienda['dimensione']}
+Codice ATECO: {dati_azienda['codice_ateco']}
 
-  Macroarea assegnata: {macroarea}
+Macroarea assegnata: {macroarea}
 
-  Tutti gli indici calcolati:
+Indici calcolati:
 """ + "\n".join([f"- {k}: {v}" for k, v in indici.items()])
 
         return output_text
 
     except Exception as e:
-        logging.error(f"❌ Errore durante l'analisi: {str(e)}")
-        return f"❌ Errore durante l'analisi: {str(e)}"
+        logging.error(f"Errore durante l'analisi: {str(e)}")
+        return f"Errore durante l'analisi: {str(e)}"
+
+
+# ============================================================
+# STEP 4 – INTERFACCIA GRADIO
+# ============================================================
+
+interfaccia = gr.Interface(
+    fn=step1_analisi,
+    inputs=gr.File(label="Carica il bilancio in PDF"),
+    outputs=gr.Textbox(label="Risultato Analisi Finanziaria"),
+    title="eVoluto – Analisi Finanziaria Automatica",
+    description="Carica un bilancio PDF. eVoluto eseguirà l'analisi completa e assegnerà la macroarea di intervento."
+)
+
+
+# ============================================================
+# STEP 5 – AVVIO
+# ============================================================
+
+print("Gradio pronto all'avvio")
+interfaccia.launch(server_name="0.0.0.0", server_port=port)
+print("Interfaccia lanciata")
