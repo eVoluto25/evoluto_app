@@ -1,6 +1,6 @@
-
 import gradio as gr
 import os
+from app import step1_analisi
 
 # Preleva le credenziali da Render (variabili d'ambiente)
 USERNAME = os.getenv("EVOLUTO_USERNAME")
@@ -16,8 +16,7 @@ def login(user, pwd):
 def avvia_processamento(file):
     if file is None:
         return "Nessun file caricato."
-    # Simulazione output
-    return f"Analisi completata per: {file.name}"
+    return step1_analisi(file)
 
 with gr.Blocks(css="""
 body { background-color: #1e1e1e; color: #f0f0f0; font-family: 'Arial', sans-serif; }
