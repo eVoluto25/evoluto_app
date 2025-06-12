@@ -42,6 +42,9 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
         # Macro area
         macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2, show_copy_button=True)
 
+        match_button = gr.Button("Trova bandi")
+        bandi_output = gr.Textbox(label="Bandi selezionati", lines=10)
+
         # Bandi selezionati
         bandi_box = gr.Textbox(label="Bandi selezionati", lines=8, show_copy_button=True)
 
