@@ -1,48 +1,34 @@
 import gradio as gr
-from analisi_indici_macroarea import estrai_dati_bilancio
-from scoring_bandi import assegna_macroarea
-from app import trova_bandi_rilevanti
+from app import step1_analisi
 from pdfminer.high_level import extract_text
-
-def carica_pdf(file):
-    try:
-        if hasattr(file, 'name'):
-            file_path = file.name
-        elif isinstance(file, str):
-            file_path = file
-        else:
-            raise ValueError("Formato file non valido")
-
-        text = extract_text(file_path)
-        return text
-    except Exception as e:
-        return f"Errore durante l'analisi: {e}"
+import tempfile
+import os
 
 def run_analisi(file):
     try:
-        testo = carica_pdf(file)
-        if not isinstance(testo, str) or testo.startswith("Errore"):
-            return testo
+        # Scrive temporaneamente il file per poter usare .name
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            tmp.write(file.read())
+            tmp_path = tmp.name
 
-        dati = estrai_dati_bilancio(testo)
-        risultato = assegna_macroarea(dati)
-        bandi_trovati = trova_bandi_rilevanti(risultato["macroarea"])
+        class FileMock:
+            name = tmp_path
 
-        testo_output = f"""
-📊 Dati di bilancio rilevati:
-{dati}
+        result = step1_analisi(FileMock())
 
-🏆 Punteggi macroaree:
-{risultato['punteggi']}
+        os.unlink(tmp_path)
 
-✅ Macroarea assegnata:
-{risultato['macroarea']}
+        if isinstance(result, str):
+            return result
 
-Bandi suggeriti (Top 10):\n"""
-        for bando in bandi_trovati[:10]:
-            testo_output += f"- {bando['Titolo']} ({bando['Punteggio']})\n"
+        output, *_ = result
+        dati = output.get("Indici calcolati", {})
+        macroarea = output.get("Macroarea", "ND")
+        azienda = output.get("Nome Azienda", "ND")
 
-        return testo_output
+        out = f"✅ Macroarea assegnata: {macroarea}\n\n📊 Indici:\n"
+        out += "\n".join([f"- {k}: {v}" for k, v in dati.items()])
+        return out
 
     except Exception as e:
         return f"Errore durante l'analisi: {str(e)}"
@@ -52,7 +38,7 @@ with gr.Blocks() as ui:
         pdf_input = gr.File(label="Carica il bilancio PDF", file_types=[".pdf"])
 
     with gr.Row():
-        output_box = gr.Textbox(label="Analisi completa", lines=30, interactive=False, show_copy_button=True)
+        output_box = gr.Textbox(label="Analisi completata", lines=30, interactive=False, show_copy_button=True)
 
     with gr.Row():
         analizza_btn = gr.Button("Avvia Analisi")
