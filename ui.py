@@ -1,5 +1,5 @@
 import gradio as gr
-from app_final import step1_analisi
+from app import step1_analisi
 
 
 def run_analisi(pdf_file):
