@@ -31,8 +31,8 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
         login_button = gr.Button("Avvia eVoluto")
 
     with gr.Column(visible=False, elem_id="main-panel") as main_panel:
-        gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria Automatica</h2>")
-        gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
+        gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria di eVoluto</h2>")
+        gr.Markdown("Carica un bilancio PDF")
 
         file_input = gr.File(label="Carica bilancio", file_types=[".pdf"])
 
