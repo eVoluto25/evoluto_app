@@ -74,3 +74,14 @@ Indici calcolati:
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
+
+    def step2_matching(macroarea, dati_azienda, indici):
+        """
+        Step 2: Matching con i bandi da Supabase e calcolo punteggio
+        """
+        try:
+            bandi_trovati = calcola_punteggi_bandi(macroarea, dati_azienda, indici)
+            return bandi_trovati
+        except Exception as e:
+            logging.error(f"Errore nel matching bandi: {e}")
+            return []
