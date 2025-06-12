@@ -6,23 +6,42 @@ from scoring_bandi import filtra_e_valuta_bandi
 
 logging.basicConfig(level=logging.INFO)
 
-
 def estrai_dati_da_pdf(path):
     text = extract_text(path)
     mappa = {}
 
-    for riga in text.splitlines():
-        match = re.match(r"(.+?):\s+([-+]?[0-9]*[.,]?[0-9]+)", riga)
-        if match:
-            chiave = match.group(1).strip()
-            valore = match.group(2).replace(",", ".")
-            try:
-                mappa[chiave] = float(valore)
-            except:
-                pass
+    def estrai_valore(riga):
+        numeri = re.findall(r"[-+]?[0-9]{1,3}(?:\.[0-9]{3})*(?:,[0-9]+)?", riga)
+        if numeri:
+            return float(numeri[0].replace(".", "").replace(",", "."))
+        return None
+
+    mappatura = {
+        "Patrimonio Netto": "Totale patrimonio netto",
+        "Debiti": "Totale debiti",
+        "Attività a breve": "Totale attivo circolante",
+        "Attività liquide": "Disponibilità liquide",
+        "Rimanenze": "Rimanenze",
+        "Passività a breve": "esigibili entro l'esercizio successivo",
+        "Passività a lungo": "esigibili oltre l'esercizio successivo",
+        "Totale Attivo": "Totale attivo",
+        "Totale Passivo": "Totale passivo",
+        "Ricavi": "ricavi delle vendite e delle prestazioni",
+        "Risultato Netto": "Utile (perdita) dell'esercizio",
+        "Oneri Finanziari": "interessi e altri oneri finanziari",
+        "Risultato Operativo": "Differenza tra valore e costi della produzione",
+        "Margine Operativo Lordo": "Differenza tra valore e costi della produzione",
+    }
+
+    for campo, label in mappatura.items():
+        for riga in text.splitlines():
+            if label.lower() in riga.lower():
+                val = estrai_valore(riga)
+                if val is not None:
+                    mappa[campo] = val
+                    break
 
     return mappa
-
 
 def step1_analisi(pdf_file):
     try:
@@ -55,26 +74,11 @@ def step1_analisi(pdf_file):
             "Indici calcolati": indici
         }
 
-        output_text = f"""Analisi Aziendale
-
-Nome azienda: {dati_azienda['nome_azienda']}
-Attività prevalente: {dati_azienda['attivita_prevalente']}
-Addetti: {dati_azienda['addetti']}
-Regione: {dati_azienda['regione']}
-Dimensione: {dati_azienda['dimensione']}
-Codice ATECO: {dati_azienda['codice_ateco']}
-
-Macroarea assegnata: {macroarea}
-
-Indici calcolati:
-""" + "\n".join([f"{k}: {v}" for k, v in indici.items()])
-
         return output_analisi, [], "", ""
 
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
-
 
 def step2_matching(macroarea, dati_azienda, indici):
     try:
