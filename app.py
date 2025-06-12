@@ -1,87 +1,63 @@
-
 import gradio as gr
 import logging
 import os
 from datetime import datetime
+
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from modulo_punteggio import calcola_punteggi_bandi
 
 port = int(os.environ.get("PORT", 7860))
 
-gr.Interface(...).launch(server_name="0.0.0.0", server_port=port)
-
-# Configura il logging
 logging.basicConfig(
     filename="log_app.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Variabili globali temporanee
 dati_azienda = {}
 output_analisi = {}
 
 def step1_analisi(pdf_file):
     try:
-        logging.info("Step 1: Ricevuto file PDF per analisi.")
-        global dati_azienda
-
+        logging.info("Step 1: Ricevuto file PDF per analisi")
+        global dati_azienda, output_analisi
+        
         indici = calcola_indici(pdf_file.name)
+        logging.info(f" Indici calcolati: {indici}")
+
         macroarea = assegna_macro_area(indici)
+        logging.info(f" Macroarea assegnata: {macroarea}")
 
         dati_azienda = {
-            "output_indici": indici,
-            "macroarea": macroarea,
-            "codice_ateco": indici.get("Codice ATECO", ""),
-            "regione": indici.get("Regione", ""),
-            "dimensione": indici.get("Dimensione", ""),
-            "EBITDA Margin": indici.get("EBITDA Margin", None),
-            "Utile Netto": indici.get("Utile Netto", None),
-            "Debt/Equity": indici.get("Debt/Equity", None),
+            "nome_azienda": indici.get("Nome Azienda", "ND"),
+            "codice_ateco": indici.get("Codice ATECO", "ND"),
+            "attivita_prevalente": indici.get("Attività Prevalente", "ND"),
+            "regione": indici.get("Regione", "ND"),
+            "dimensione": indici.get("Dimensione", "ND"),
+            "addetti": indici.get("Addetti", "ND")
         }
 
-        logging.info("Analisi finanziaria completata con successo.")
-        return indici, macroarea
+        output_analisi = {
+            "Macroarea": macroarea,
+            "Indici calcolati": indici
+        }
+
+        output_text = f"""📄 **Analisi Aziendale**
+
+  Nome azienda: {dati_azienda['nome_azienda']}
+  Attività prevalente: {dati_azienda['attivita_prevalente']}
+  Addetti: {dati_azienda['addetti']}
+  Regione: {dati_azienda['regione']}
+  Dimensione: {dati_azienda['dimensione']}
+  Codice ATECO: {dati_azienda['codice_ateco']}
+
+  Macroarea assegnata: {macroarea}
+
+  Tutti gli indici calcolati:
+""" + "\n".join([f"- {k}: {v}" for k, v in indici.items()])
+
+        return output_text
+
     except Exception as e:
-        logging.error(f"Errore nell'analisi del file PDF: {str(e)}")
-        return "Errore nell'analisi del bilancio.", ""
-
-def step2_matching_bandi():
-    try:
-        if not dati_azienda:
-            logging.warning("Nessun dato aziendale disponibile per il matching.")
-            return "Errore: Nessuna analisi disponibile. Carica prima il PDF."
-
-        logging.info("Step 2: Avvio ricerca bandi con Supabase.")
-        bandi_trovati = calcola_punteggi_bandi(
-            macroarea=dati_azienda['macroarea'],
-            ateco=dati_azienda['codice_ateco'],
-            regione=dati_azienda['regione'],
-            dimensione=dati_azienda['dimensione'],
-            ebitda_margin=dati_azienda.get('EBITDA Margin', None),
-            utile_netto=dati_azienda.get('Utile Netto', None),
-            debt_to_equity=dati_azienda.get('Debt/Equity', None)
-        )
-        logging.info(f"Trovati {len(bandi_trovati)} bandi compatibili.")
-        return bandi_trovati
-    except Exception as e:
-        logging.error(f"Errore nella fase di matching bandi: {str(e)}")
-        return f"Errore nel matching dei bandi: {str(e)}"
-
-with gr.Blocks(title="Analisi Bilancio & Ricerca Bandi") as demo:
-    gr.Markdown("## Step 1: Carica il Bilancio in PDF")
-    file_input = gr.File(label="Carica PDF Bilancio", file_types=[".pdf"])
-    output_indici = gr.Textbox(label="25 Indici Finanziari", lines=10)
-    output_macroarea = gr.Textbox(label="Macroarea Assegnata")
-
-    esegui_analisi_btn = gr.Button("Esegui Analisi")
-    esegui_analisi_btn.click(fn=step1_analisi, inputs=[file_input], outputs=[output_indici, output_macroarea])
-
-    gr.Markdown("---")
-    gr.Markdown("## Step 2: Matching con i Bandi")
-    avvia_matching_btn = gr.Button("Avvia Ricerca Bandi")
-    bandi_output = gr.Dataframe(label="Top 10 Bandi Compatibili")
-    avvia_matching_btn.click(fn=step2_matching_bandi, outputs=bandi_output)
-
-if __name__ == "__main__":
-    demo.launch()
+        logging.error(f"❌ Errore durante l'analisi: {str(e)}")
+        return f"❌ Errore durante l'analisi: {str(e)}"
