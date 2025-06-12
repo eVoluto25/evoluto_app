@@ -1,13 +1,12 @@
 import logging
 import re
 import pdfplumber
-from supabase_connector import supabase
+from supabase_connector import fetch_bandi
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
 from scoring_bandi import filtra_e_valuta_bandi
 
-bandi_response = supabase.table("bandi_semplificata").select("*").execute()
-bandi = bandi_response.data if bandi_response.data else []
+bandi = fetch_bandi()
 
 logging.basicConfig(level=logging.INFO)
 
