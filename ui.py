@@ -51,7 +51,7 @@ button, input, textarea {
         user_input = gr.Textbox(label="Username")
         pass_input = gr.Textbox(label="Password", type="password")
         login_button = gr.Button("Avvia eVoluto")
-        login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, gr.Column()])
+        login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, main_panel])
 
     with gr.Column(visible=False, elem_id="main-panel") as main_panel:
         gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria Automatica</h2>")
