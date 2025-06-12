@@ -28,6 +28,17 @@ def step1_analisi(pdf_file):
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
 
+        # Calcolo punteggi bandi da Supabase
+        try:
+            bandi_trovati, csv_path, pdf_path = calcola_punteggi_bandi(
+            macroarea=macroarea,
+            azienda=dati_azienda
+        )
+        logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
+    except Exception as e:
+        logging.error(f"Errore nel calcolo punteggi bandi: {e}")
+        bandi_trovati, csv_path, pdf_path = [], "", ""
+
         # Estrai dati anagrafici
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
@@ -58,7 +69,7 @@ Macroarea assegnata: {macroarea}
 Indici calcolati:
 """ + "\n".join([f"- {k}: {v}" for k, v in indici.items()])
 
-        return output_text
+        return output_analisi, bandi_trovati, csv_path, pdf_path
 
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
