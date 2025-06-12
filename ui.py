@@ -25,14 +25,11 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
 """) as demo:
 
     with gr.Column(visible=True, elem_id="login-panel") as login_panel:
-        gr.Markdown("<h2 style='text-align:center;'>Login eVoluto</h2>")
         user_input = gr.Textbox(label="Username")
         pass_input = gr.Textbox(label="Password", type="password")
         login_button = gr.Button("Avvia eVoluto")
 
     with gr.Column(visible=False, elem_id="main-panel") as main_panel:
-        gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria di eVoluto</h2>")
-        gr.Markdown("Carica un bilancio PDF")
 
         file_input = gr.File(label="Carica bilancio", file_types=[".pdf"])
 
@@ -43,13 +40,13 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
         analisi_finanziaria = gr.Textbox(label="Analisi finanziaria", lines=25, show_copy_button=True)
 
         # Macro area
-        macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2)
+        macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2, show_copy_button=True)
 
         # Bandi selezionati
-        bandi_box = gr.Textbox(label="Bandi selezionati", lines=8)
+        bandi_box = gr.Textbox(label="Bandi selezionati", lines=8, show_copy_button=True)
 
-        # Relazione analista
-        commento_box = gr.Textbox(label="Relazione analista", lines=6)
+        # Relazione analitica e predittiva
+        commento_box = gr.Textbox(label="Relazione analista", lines=6, show_copy_button=True)
 
         file_input.change(fn=avvia_processamento, inputs=file_input,
                           outputs=[analisi_finanziaria, anagrafica, macroarea_box, bandi_box, commento_box])
