@@ -1,20 +1,13 @@
+
 import logging
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import calcola_punteggi_bandi
 
 # Configura logging
-logging.basicConfig(
-    filename="log_app.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO)
 
-# Variabili globali temporanee
-dati_azienda = {}
-output_analisi = {}
-
-# Funzione principale di analisi
 def step1_analisi(pdf_file):
+    """Step 1: Analisi del bilancio PDF e assegnazione macroarea"""
     try:
         logging.info("Step 1: Ricevuto file PDF per analisi")
 
@@ -27,17 +20,6 @@ def step1_analisi(pdf_file):
         # Assegna macroarea
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
-
-        # Calcolo punteggi bandi da Supabase
-        try:
-            bandi_trovati, csv_path, pdf_path = calcola_punteggi_bandi(
-            macroarea=macroarea,
-            azienda=dati_azienda
-        )
-        logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
-    except Exception as e:
-        logging.error(f"Errore nel calcolo punteggi bandi: {e}")
-        bandi_trovati, csv_path, pdf_path = [], "", ""
 
         # Estrai dati anagrafici
         dati_azienda = {
@@ -67,21 +49,21 @@ Codice ATECO: {dati_azienda['codice_ateco']}
 Macroarea assegnata: {macroarea}
 
 Indici calcolati:
-""" + "\n".join([f"- {k}: {v}" for k, v in indici.items()])
+""" + "\n".join([f"{k}: {v}" for k, v in indici.items()])
 
-        return output_analisi, bandi_trovati, csv_path, pdf_path
+        return output_analisi, [], "", ""  # Bandi, csv, pdf verranno riempiti dopo
 
     except Exception as e:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
 
-    def step2_matching(macroarea, dati_azienda, indici):
-        """
-        Step 2: Matching con i bandi da Supabase e calcolo punteggio
-        """
-        try:
-            bandi_trovati = calcola_punteggi_bandi(macroarea, dati_azienda, indici)
-            return bandi_trovati
-        except Exception as e:
-            logging.error(f"Errore nel matching bandi: {e}")
-            return []
+
+def step2_matching(macroarea, dati_azienda, indici):
+    """Step 2: Matching con i bandi da Supabase e calcolo punteggio"""
+    try:
+        bandi_trovati = calcola_punteggi_bandi(macroarea, dati_azienda, indici)
+        logging.info(f"Bandi selezionati: {len(bandi_trovati)}")
+        return bandi_trovati
+    except Exception as e:
+        logging.error(f"Errore nel matching bandi: {e}")
+        return []
