@@ -6,6 +6,9 @@ from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
 from scoring_bandi import filtra_e_valuta_bandi
 
+bandi_response = supabase.table("bandi_semplificata").select("*").execute()
+bandi = bandi_response.data if bandi_response.data else []
+
 logging.basicConfig(level=logging.INFO)
 
 def estrai_dati_da_pdf(path):
