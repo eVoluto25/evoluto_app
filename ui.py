@@ -23,12 +23,10 @@ body {
     margin: 0;
     padding: 0;
 }
-
 button, input, textarea {
     border-radius: 12px !important;
     font-size: 16px !important;
 }
-
 #login-panel, #main-panel {
     max-width: 600px;
     margin: 80px auto;
@@ -37,7 +35,6 @@ button, input, textarea {
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
-
 #footer {
     text-align: center;
     font-size: 12px;
@@ -46,22 +43,22 @@ button, input, textarea {
 }
 """) as demo:
 
-with gr.Column(visible=True, elem_id="login-panel") as login_panel:
-    gr.Markdown('<h2 style="text-align:center;">Login eVoluto</h2>')
-    user_input = gr.Textbox(label="Username")
-    pass_input = gr.Textbox(label="Password", type="password")
-    login_button = gr.Button("Avvia eVoluto")
+    with gr.Column(visible=True, elem_id="login-panel") as login_panel:
+        gr.Markdown('<h2 style="text-align:center;">Login eVoluto</h2>')
+        user_input = gr.Textbox(label="Username")
+        pass_input = gr.Textbox(label="Password", type="password")
+        login_button = gr.Button("Avvia eVoluto")
 
-with gr.Column(visible=False, elem_id="main-panel") as main_panel:
-    gr.Markdown('<h2 style="text-align:center;">eVoluto – Analisi Finanziaria Automatica</h2>')
-    gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
+    with gr.Column(visible=False, elem_id="main-panel") as main_panel:
+        gr.Markdown('<h2 style="text-align:center;">eVoluto – Analisi Finanziaria Automatica</h2>')
+        gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
+        file_input = gr.File(label="", file_types=[".pdf"])
+        output_box = gr.Textbox(label="", lines=28, show_copy_button=True)
+        file_input.change(fn=avvia_processamento, inputs=file_input, outputs=output_box)
+        gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
 
-    file_input = gr.File(label="", file_types=[".pdf"])
-    output_box = gr.Textbox(label="", lines=28, show_copy_button=True)
+    login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, main_panel])
 
-    file_input.change(fn=avvia_processamento, inputs=file_input, outputs=output_box)
-
-    gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
-
-# La callback va messa qui, quando main_panel è già definito
-login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, main_panel])
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="0.0.0.0", server_port=port)
