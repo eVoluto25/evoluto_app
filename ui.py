@@ -1,4 +1,5 @@
 import gradio as gr
+import pandas as pd
 import os
 from app import step1_analisi
 
