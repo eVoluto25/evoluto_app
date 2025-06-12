@@ -3,6 +3,7 @@ import re
 import pdfplumber
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
+from scoring_bandi import filtra_e_valuta_bandi
 
 logging.basicConfig(level=logging.INFO)
 
@@ -65,6 +66,7 @@ def step1_analisi(pdf_file):
 
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
+        bandi = filtra_e_valuta_bandi(macroarea, indici, dati)
 
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
