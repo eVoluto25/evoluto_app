@@ -71,15 +71,58 @@ footer {
         btn_matching = gr.Button("Avvia Matching Bandi")
         tabella_bandi = gr.Dataframe(value=bandi_placeholder, headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"], interactive=False, label="Top 10 Bandi Ordinati per Punteggio")
 
-    # Upload documento (spostato in basso)
+    # Upload documento
     with gr.Group():
         file_input = gr.File(label="Carica il bilancio in PDF", file_types=['.pdf'])
 
     # Footer trattamento dati
+    with gr.Group():
     gr.Markdown("""
-        <footer>
-            Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. Nessun dato personale viene condiviso o archiviato.
-        </footer>
+    <footer>
+    Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. 
+    Nessun dato personale viene condiviso o archiviato.
+    </footer>
     """)
 
-ui.launch()
+# Avvio interfaccia
+demo = gr.Blocks(theme=gr.themes.Base())
+with demo:
+    with gr.Column():
+        with gr.Row():
+            logout_btn = gr.Button("Logout", elem_id="logout-btn")
+
+        with gr.Group():
+            anagrafica = gr.Textbox(label="Anagrafica Azienda", value=anagrafica_placeholder, lines=5, interactive=False, show_copy_button=True)
+
+        with gr.Group():
+            indici = gr.Textbox(label="25 Indici Finanziari", value=indici_placeholder, lines=15, interactive=False, show_copy_button=True)
+
+        with gr.Group():
+            macroarea = gr.Textbox(label="Macro Area Assegnata", value=macroarea_placeholder, interactive=False, show_copy_button=True)
+
+        with gr.Row():
+            btn_csv = gr.Button("Scarica risultati in CSV")
+            btn_pdf = gr.Button("Scarica report in PDF")
+
+        with gr.Group():
+            btn_matching = gr.Button("Avvia Matching Bandi")
+            tabella_bandi = gr.Dataframe(
+                value=bandi_placeholder,
+                headers=["Titolo", "Obiettivo_Finalita", "Forma_agevolazione", "Punteggio"],
+                interactive=False
+            )
+
+        with gr.Group():
+            file_input = gr.File(label="Carica il bilancio in PDF", file_types=['.pdf'])
+
+        with gr.Group():
+            gr.Markdown("""
+            <footer>
+            Trattamento dei dati – I file caricati vengono elaborati automaticamente e non vengono memorizzati. 
+            Nessun dato personale viene condiviso o archiviato.
+            </footer>
+            """)
+
+demo.launch(server_name="0.0.0.0", server_port=7860)
+
+
