@@ -1,6 +1,6 @@
 import logging
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
-from modulo_punteggio import calcola_punteggi_bandi
+from scoring_bandi import calcola_punteggi_bandi
 
 # Configura logging
 logging.basicConfig(
