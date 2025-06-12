@@ -1,55 +1,55 @@
 import logging
 import re
-from pdfminer.high_level import extract_text
+import pdfplumber
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
 
 logging.basicConfig(level=logging.INFO)
 
 def estrai_dati_da_pdf(path):
-    text = extract_text(path)
     mappa = {}
 
-    # Identifica l'anno più recente nel testo (es. 2024)
-    match_anni = re.findall(r"20[0-9]{2}", text)
-    anni = sorted(set(int(a) for a in match_anni if 2020 <= int(a) <= 2099), reverse=True)
-    anno_riferimento = str(anni[0]) if anni else None
-    logging.info(f"Anno identificato nel documento: {anno_riferimento}")
+    def normalizza_label(label):
+        return str(label).strip().lower().replace("€", "").replace(":", "")
 
-    def estrai_valore_per_anno(riga):
-        numeri = re.findall(r"[-+]?[0-9]{1,3}(?:\.[0-9]{3})*(?:,[0-9]+)?", riga)
-        if len(numeri) >= 1:
-            return float(numeri[0].replace(".", "").replace(",", "."))
-        return None
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            tables = page.extract_tables()
+            for table in tables:
+                for row in table:
+                    if not row or len(row) < 2:
+                        continue
+                    label = normalizza_label(row[0])
+                    val_raw = str(row[1]).strip().replace(".", "").replace(",", ".")
+                    try:
+                        val = float(val_raw)
+                        mappa[label] = val
+                    except:
+                        continue
 
-    mappatura = {
-        "Patrimonio Netto": "Totale patrimonio netto",
-        "Debiti": "Totale debiti",
-        "Attività a breve": "Totale attivo circolante",
-        "Attività liquide": "Disponibilità liquide",
-        "Rimanenze": "Rimanenze",
-        "Passività a breve": "esigibili entro l'esercizio successivo",
-        "Passività a lungo": "esigibili oltre l'esercizio successivo",
-        "Totale Attivo": "Totale attivo",
+    # Mappatura logica: etichette cercate → label reali nel documento
+    chiavi = {
         "Ricavi": "ricavi delle vendite e delle prestazioni",
-        "Risultato Netto": "Utile (perdita) dell'esercizio",
+        "Risultato Netto": "utile (perdita) dell'esercizio",
         "Oneri Finanziari": "interessi e altri oneri finanziari",
-        "Risultato Operativo": "Differenza tra valore e costi della produzione",
-        "Margine Operativo Lordo": "Differenza tra valore e costi della produzione",
-        "EBITDA": "Differenza tra valore e costi della produzione",
-        "NOPAT": "Utile (perdita) dell'esercizio"
+        "EBITDA": "differenza tra valore e costi della produzione",
+        "Totale Attivo": "totale attivo",
+        "Totale Passivo": "totale passivo",
+        "Patrimonio Netto": "totale patrimonio netto",
+        "Disponibilità liquide": "disponibilità liquide",
+        "Rimanenze": "rimanenze",
+        "Debiti": "totale debiti"
     }
 
-    righe = text.splitlines()
-    for campo, label in mappatura.items():
-        for riga in righe:
-            if label.lower() in riga.lower():
-                val = estrai_valore_per_anno(riga)
-                if val is not None:
-                    mappa[campo] = val
-                    break
+    estratti = {}
+    for campo, chiave_mappa in chiavi.items():
+        for key in mappa:
+            if chiave_mappa in key:
+                estratti[campo] = mappa[key]
+                break
 
-    return mappa
+    logging.info(f"Valori estratti da PDF: {estratti}")
+    return estratti
 
 def step1_analisi(pdf_file):
     try:
