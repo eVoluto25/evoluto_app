@@ -1,6 +1,7 @@
 import gradio as gr
 import logging
 import os
+from ui import demo
 from datetime import datetime
 
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
@@ -66,14 +67,7 @@ Indici calcolati:
         logging.error(f"Errore durante l'analisi: {str(e)}")
         return f"Errore durante l'analisi: {str(e)}"
 
-interfaccia = gr.Interface(
-    fn=step1_analisi,
-    inputs=gr.File(label="Carica il bilancio in PDF"),
-    outputs=gr.Textbox(label="Risultato Analisi Finanziaria"),
-    title="eVoluto – Analisi Finanziaria Automatica",
-    description="Carica un bilancio PDF. eVoluto eseguirà l'analisi completa e assegnerà la macroarea di intervento."
-)
-
-print("Gradio pronto all'avvio")
-interfaccia.launch(server_name="0.0.0.0", server_port=port)
-print("Interfaccia lanciata")
+if __name__ == "__main__":
+    from ui import demo
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="0.0.0.0", server_port=port)
