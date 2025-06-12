@@ -41,7 +41,7 @@ footer { color: #999999; font-size: 12px; text-align: center; margin-top: 20px; 
         start_btn.click(fn=avvia_processamento, inputs=upload, outputs=output)
 
         # Footer per trattamento dati
-        gr.Markdown("**Trattamento dei dati**  
+        gr.Markdown("**Trattamento dei dati**")
 I file caricati vengono elaborati automaticamente e non vengono memorizzati. Nessun dato personale viene condiviso o archiviato.")
 
 demo.launch()
