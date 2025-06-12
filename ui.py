@@ -2,48 +2,68 @@ import gradio as gr
 import os
 from app import step1_analisi
 
-# Preleva le credenziali da Render (variabili d'ambiente)
 USERNAME = os.getenv("EVOLUTO_USERNAME")
 PASSWORD = os.getenv("EVOLUTO_PASSWORD")
 
-# Funzione di autenticazione
 def login(user, pwd):
     if user == USERNAME and pwd == PASSWORD:
         return gr.update(visible=False), gr.update(visible=True)
     return gr.update(value="", visible=True), gr.update(visible=False)
 
-# Placeholder per la funzione di avvio processo
 def avvia_processamento(file):
     if file is None:
         return "Nessun file caricato."
     return step1_analisi(file)
 
 with gr.Blocks(css="""
-body { background-color: #1e1e1e; color: #f0f0f0; font-family: 'Arial', sans-serif; }
-button, input, textarea { border-radius: 12px !important; }
-.gr-button { background-color: #333333 !important; color: white; border: none; padding: 12px 24px; font-size: 16px; }
-.gr-button:hover { background-color: #4b4b4b !important; }
-footer { color: #999999; font-size: 12px; text-align: center; margin-top: 20px; }
+body {
+    background-color: #f9f9f9;
+    font-family: 'Segoe UI', sans-serif;
+    color: #111;
+    margin: 0;
+    padding: 0;
+}
+
+button, input, textarea {
+    border-radius: 12px !important;
+    font-size: 16px !important;
+}
+
+#login-panel, #main-panel {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+#footer {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 40px;
+}
 """) as demo:
 
-    # Login
-    with gr.Column(visible=True) as login_area:
-        user = gr.Textbox(label=None, placeholder="ID utente", type="password")
-        pwd = gr.Textbox(label=None, placeholder="Password", type="password")
-        login_btn = gr.Button("Login")
-        login_btn.click(fn=login, inputs=[user, pwd], outputs=[login_area, "main_ui"])
+    with gr.Column(visible=True, elem_id="login-panel") as login_panel:
+        gr.Markdown("<h2 style='text-align:center;'>Login eVoluto</h2>")
+        user_input = gr.Textbox(label="Username")
+        pass_input = gr.Textbox(label="Password", type="password")
+        login_button = gr.Button("Avvia eVoluto")
+        login_button.click(fn=login, inputs=[user_input, pass_input], outputs=[login_panel, gr.Column()])
 
-    # UI principale
-    with gr.Column(visible=False, elem_id="main_ui") as main_ui:
-        upload = gr.File(label=None, file_types=[".pdf"], type="file")
-        start_btn = gr.Button("Avvia eVoluto")
-        output = gr.Textbox(label=None, interactive=False)
-        start_btn.click(fn=avvia_processamento, inputs=upload, outputs=output)
+    with gr.Column(visible=False, elem_id="main-panel") as main_panel:
+        gr.Markdown("<h2 style='text-align:center;'>eVoluto – Analisi Finanziaria Automatica</h2>")
+        gr.Markdown("Carica un bilancio PDF per ricevere l'analisi automatica dell’azienda.")
 
-        # Footer per trattamento dati
-        gr.Markdown("""
-        I dati caricati vengono elaborati automaticamente e non vengono memorizzati.
-        Nessun dato personale viene condiviso o archiviato.
-        """)
+        file_input = gr.File(label="", file_types=[".pdf"])
+        output_box = gr.Textbox(label="", lines=28, show_copy_button=True)
 
-demo.launch()
+        file_input.change(fn=avvia_processamento, inputs=file_input, outputs=output_box)
+
+        gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="0.0.0.0", server_port=port)
