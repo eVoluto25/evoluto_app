@@ -41,9 +41,7 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
 
         # Macro area
         macroarea_box = gr.Textbox(label="Macro area assegnata", lines=2, show_copy_button=True)
-
         match_button = gr.Button("Trova bandi")
-        bandi_output = gr.Textbox(label="Bandi selezionati", lines=10)
 
         # Bandi selezionati
         bandi_box = gr.Textbox(label="Bandi selezionati", lines=8, show_copy_button=True)
@@ -53,6 +51,8 @@ footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
 
         file_input.change(fn=avvia_processamento, inputs=file_input,
                           outputs=[analisi_finanziaria, anagrafica, macroarea_box, bandi_box, commento_box])
+
+        match_button.click(fn=step2_bandi, inputs=[], outputs=bandi_box)
 
         gr.Markdown("Trattamento dei dati: i file caricati vengono elaborati automaticamente e non vengono memorizzati.", elem_id="footer")
 
