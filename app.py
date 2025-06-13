@@ -65,7 +65,10 @@ def step1_analisi(pdf_file):
         dati = estrai_dati_da_pdf(pdf_file.name)
         dati = normalizza_dati(dati)
         logging.info(f"Dati grezzi estratti: {list(dati.keys())}")
-
+        
+        print("CHIAVI DISPONIBILI:", list(dati.keys()))
+        print("DATI ESTRATTI:", dati)
+        
         indici = calcola_indici(dati)
         logging.info(f"Indici calcolati: {indici}")
 
