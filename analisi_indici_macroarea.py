@@ -10,7 +10,7 @@ def valuta_indice(nome_funzione, valore):
     soglia = SOGLIE_INDICI.get(nome_funzione)
     if valore is None:
         return PUNTEGGI_INDICI["mancante"]
-    if isinstance(soglia, tuple):  # Intervallo
+    if isinstance(soglia, tuple):
         if soglia[0] <= valore <= soglia[1]:
             return PUNTEGGI_INDICI["superata"]
         return PUNTEGGI_INDICI["critica"]
@@ -48,9 +48,9 @@ def analizza_macroarea(dati):
             dati_incompleti = True
 
     macroarea_primaria = max(punteggi, key=punteggi.get)
-    score_values = list(punteggi.values())
+    punteggi_values = list(punteggi.values())
     macroarea_alternativa = None
-    if score_values.count(punteggi[macroarea_primaria]) > 1:
+    if punteggi_values.count(punteggi[macroarea_primaria]) > 1:
         macroarea_alternativa = "parità"
         dati_incompleti = True
 

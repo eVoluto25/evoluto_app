@@ -64,7 +64,7 @@ def calcola_score(bando, azienda):
     if dim_bando == dim_azienda:
         score += 10
     elif dim_bando and dim_azienda:
-        score += 6  # vicinanza
+        score += 6
     else:
         nd_counter += 1
         log.append("Dimensione non definita")

@@ -1,18 +1,27 @@
 # claude_fallback.py
 
 import requests
+import os
+import logging
 
-RENDER_CLAUDE_URL = "https://render-claude.example.com/fallback"
-RENDER_API_KEY = "Bearer ${RENDER_CLAUDE_API_KEY}"  # salvata su Render
+CLAUDE_API_URL = os.getenv("RENDER_CLAUDE_URL", "https://render-claude.example.com/fallback")
+CLAUDE_API_KEY = os.getenv("RENDER_CLAUDE_API_KEY")
 
-def invia_a_claude(payload: dict):
+def invia_a_claude(payload: dict) -> dict:
     headers = {
-        "Authorization": RENDER_API_KEY,
+        "Authorization": f"Bearer {CLAUDE_API_KEY}",
         "Content-Type": "application/json"
     }
     try:
-        response = requests.post(RENDER_CLAUDE_URL, json=payload, headers=headers)
+        response = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=15)
         response.raise_for_status()
-        return response.json()  # {"macroarea_validata": ..., "motivazione": ...}
+        risultato = response.json()
+        if "macroarea_validata" not in risultato:
+            return {"errore": "Claude non ha restituito macroarea_validata"}
+        return {
+            "macroarea_validata": risultato.get("macroarea_validata"),
+            "motivazione": risultato.get("motivazione", "N/D")
+        }
     except Exception as e:
-        return {"error": f"Errore chiamata Claude: {str(e)}"}
+        logging.error(f"Errore Claude fallback: {e}")
+        return {"errore": str(e), "macroarea_validata": None, "motivazione": None}

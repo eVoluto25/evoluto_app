@@ -5,23 +5,24 @@ import re
 def normalizza_ateco(codice):
     if not codice:
         return None
-    return re.sub(r"[^\d]", "", codice)[:2]  # Es: "68.10.00" → "68"
+    return re.sub(r"[^\d]", "", codice)[:2]
 
 def normalizza_regione(regione):
+    if not regione:
+        return None
     regione = regione.lower().strip()
     mapping = {
         "lombardia": "nord", "piemonte": "nord", "veneto": "nord",
-        "lazio": "centro", "toscana": "centro", "marche": "centro",
-        "campania": "sud", "sicilia": "sud", "calabria": "sud",
-        "nazionale": "tutte"
+        "liguria": "nord", "emilia-romagna": "nord",
+        "toscana": "centro", "umbria": "centro", "marche": "centro", "lazio": "centro",
+        "campania": "sud", "puglia": "sud", "calabria": "sud", "sicilia": "sud", "basilicata": "sud",
+        "sardegna": "isole", "trentino": "nord", "friuli": "nord", "abruzzo": "centro"
     }
     return mapping.get(regione, regione)
 
 def match_bando(azienda, bando):
-    match_ateco = False
-    match_regione = False
-    fallback = False
     log = []
+    fallback = False
 
     ateco_azienda = normalizza_ateco(azienda.get("codice_ateco"))
     ateco_bando = [normalizza_ateco(c) for c in bando.get("Codici_ATECO", [])]
@@ -29,6 +30,7 @@ def match_bando(azienda, bando):
     if "tutti" in bando.get("Codici_ATECO", []) or ateco_azienda in ateco_bando:
         match_ateco = True
     else:
+        match_ateco = False
         log.append("Codice ATECO non compatibile")
         fallback = True
 
@@ -38,6 +40,7 @@ def match_bando(azienda, bando):
     if "nazionale" in bando.get("Regioni", []) or regione_azienda in regioni_bando:
         match_regione = True
     else:
+        match_regione = False
         log.append("Regione non compatibile")
         fallback = True
 
@@ -46,7 +49,7 @@ def match_bando(azienda, bando):
         obiettivo_macroarea = "CRISI"
     elif any(k in obiettivo for k in ["start", "sviluppo", "investimenti", "giovanile", "femminile"]):
         obiettivo_macroarea = "CRESCITA"
-    elif any(k in obiettivo for k in ["internaz", "ricerca", "innovazione", "ecologica"]):
+    elif any(k in obiettivo for k in ["internaz", "ricerca", "innovazione", "ecologica", "green"]):
         obiettivo_macroarea = "ESPANSIONE"
     else:
         obiettivo_macroarea = None

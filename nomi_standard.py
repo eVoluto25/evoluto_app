@@ -61,7 +61,7 @@ SOGLIE_INDICI = {
     "calcola_indipendenza_finanziaria": 0.3,
     "calcola_rigidita_investimenti": 0.2,
     "calcola_ros": 0.05,
-    "fatturato_crescente": True  # valutato in analisi macroarea
+    "fatturato_crescente": True
 }
 
 # Punteggi associati a soglie
