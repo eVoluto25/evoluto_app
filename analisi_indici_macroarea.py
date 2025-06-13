@@ -1,10 +1,5 @@
 import logging
-from formule_indici import (
-    calcola_roe, calcola_roi, calcola_ros, calcola_roic, calcola_rot,
-    calcola_leverage, calcola_pfnpn, calcola_ebit_of, calcola_current_ratio,
-    calcola_quick_ratio, calcola_indipendenza_fin, calcola_margine_tesoreria,
-    calcola_copertura_imm, calcola_margine_struttura, calcola_ccn
-)
+from formule_indici import calcola_indici_finanziari
 
 def calcola_indici(dati):
     indici = {}
@@ -43,6 +38,12 @@ def calcola_indici(dati):
     indici["Debt/Equity"] = calcola_debt_equity(debiti, patrimonio)
     indici["EBITDA Margin"] = calcola_ebitda_margin(ebitda, ricavi)
     indici["Interest Coverage"] = calcola_interest_coverage(ebitda, oneri_fin)
+    indici["Z-Score Altman"] = calcola_zscore_altman(ebitda, patrimonio, utile, attivo_corr, passivo_corr, ricavi, attivo)
+    indici["DSCR"] = calcola_dscr(ebitda, dati.get("Quota Debito Annua", 0))
+    indici["Leverage"] = calcola_leverage(attivo, patrimonio)
+    indici["Indipendenza Finanziaria"] = calcola_indipendenza_fin(patrimonio, passivo)
+    indici["Copertura Immobilizzazioni"] = calcola_copertura_imm(patrimonio, dati.get("Debiti M/L Termine", 0), dati.get("Immobilizzazioni", 0))
+    indici["Classe MCC"] = calcola_classe_mcc(indici)  
 
     return indici
 
