@@ -1,6 +1,7 @@
 import logging
 import re
 import pdfplumber
+from estrazione_dati import normalizza_dati
 from supabase_connector import fetch_bandi
 from analisi_indici_macroarea import calcola_indici, assegna_macro_area
 from scoring_bandi import filtra_e_valuta_bandi
@@ -62,6 +63,7 @@ def step1_analisi(pdf_file):
         global dati_azienda, output_analisi
 
         dati = estrai_dati_da_pdf(pdf_file.name)
+        dati = normalizza_dati(dati)
         logging.info(f"Dati grezzi estratti: {list(dati.keys())}")
 
         indici = calcola_indici(dati)
