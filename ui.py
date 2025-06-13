@@ -14,7 +14,7 @@ def analizza_file(file):
         return f"Errore upload: {res.text}", None
 
     azienda = res.json()
-    id_bando = "TEST_001"  # 🔁 sostituibile con dropdown se integrato
+    id_bando = "TEST_001"
     payload = {
         "azienda": azienda,
         "id_bando": id_bando
@@ -34,4 +34,4 @@ with gr.Blocks(title="eVoluto – Sistema Matching Bandi") as demo:
 
     button.click(fn=analizza_file, inputs=file_input, outputs=[status, output_json])
 
-demo.launch()
+demo.launch(server_name="0.0.0.0", server_port=10000)
