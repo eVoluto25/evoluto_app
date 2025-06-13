@@ -9,7 +9,7 @@ from analisi_indici_macroarea import analizza_macroarea
 from matching_bandi import match_bando
 from scoring_bandi import calcola_score
 from claude_fallback import invia_a_claude
-from supabase_client import inserisci_diagnosi, recupera_bando
+from supabase_client import recupera_bando
 from gpt_estrattore import estrai_dati_pdf
 
 logging.basicConfig(level=logging.INFO)
@@ -70,16 +70,6 @@ async def score(request: Request):
         claude_output = invia_a_claude(payload_claude)
         risultato["macroarea_validata_claude"] = claude_output.get("macroarea_validata")
         risultato["motivazione_claude"] = claude_output.get("motivazione")
-
-    # Salvataggio su Supabase
-    record = {
-        "azienda_id": azienda.get("anagrafica", {}).get("codice_fiscale"),
-        "bando_id": id_bando,
-        "score": risultato.get("score"),
-        "macroarea": azienda.get("macroarea_primaria"),
-        "diagnostica": risultato,
-    }
-    inserisci_diagnosi(SUPABASE_TABELLA, record)
 
     return risultato
 
