@@ -3,17 +3,18 @@ import logging
 
 def calcola_indici(dati):
     indici = {}
-    num = dati.get("utile_netto", 0)
-        den = dati.get("patrimonio_netto", 1)
-        val = calcola_roe(num, den)
-        if den == 0:
-            note = "Denominatore assente o zero"
-        elif val < 0:
-            note = f"Valore negativo – Numeratore: {num}, Denominatore: {den}"
-        else:
-            note = f"Numeratore: {num}, Denominatore: {den}"
-        indici["ROE"] = {"valore": val, "note": note}
 
+    num = dati.get("Risultato Netto", 0)
+    den = dati.get("Patrimonio Netto", 1)
+    val = calcola_roe(num, den)
+    if den == 0:
+        note = "Denominatore assente o zero"
+    elif val < 0:
+        note = f"Valore negativo – Numeratore: {num}, Denominatore: {den}"
+    else:
+        note = f"Numeratore: {num}, Denominatore: {den}"
+    indici["ROE"] = {"valore": val, "note": note}
+    
     num = dati.get("ebit", 0)
         den = dati.get("totale_attivo", 1)
         val = calcola_roi(num, den)
