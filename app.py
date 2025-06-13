@@ -69,7 +69,7 @@ def step1_analisi(pdf_file):
 
         macroarea = assegna_macro_area(indici)
         logging.info(f"Macroarea assegnata: {macroarea}")
-        bandi = filtra_e_valuta_bandi(macroarea, indici, dati)
+        bandi_trovati = filtra_e_valuta_bandi(macroarea, indici, azienda, bandi)
 
         dati_azienda = {
             "nome_azienda": indici.get("Nome Azienda", "ND"),
