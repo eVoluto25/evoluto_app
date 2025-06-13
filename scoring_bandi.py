@@ -112,17 +112,31 @@ def valuta_bando(bando, azienda):
         logger.error(f"Errore valutazione bando {bando.get('Titolo', '')}: {e}")
         return 0, "Errore"
 
-def filtra_e_valuta_bandi(macroarea, indici, azienda):
-    risultati = []
-    oggi = datetime.today().date()
+def filtra_e_valuta_bandi(macroarea, indici, azienda, bandi):
+    bandi_filtrati = []
     for bando in bandi:
-        try:
-            if parse(bando["Data_scadenza"]).date() < oggi:
-                continue
-            score, livello = valuta_bando(bando, azienda)
-            bando["score"] = score
-            bando["valutazione"] = livello
-            risultati.append(bando)
-        except Exception as e:
-            logger.warning(f"Bando saltato: {e}")
-    return sorted(risultati, key=lambda x: x["score"], reverse=True)
+        punteggio = 0
+        if macroarea == "Crisi":
+            if indici.get("Debt/Equity") and 0.5 <= indici["Debt/Equity"] <= 2:
+                punteggio += 1
+            if indici.get("EBITDA Margin", 0) > 0:
+                punteggio += 1
+            if azienda.get("utile_netto", 0) > 0:
+                punteggio += 1
+        elif macroarea == "Crescita":
+            if azienda.get("autofinanziamento", False):
+                punteggio += 1
+            if azienda.get("solidita_patrimoniale", False):
+                punteggio += 1
+            if azienda.get("investimenti_presenti", False):
+                punteggio += 1
+        elif macroarea == "Espansione":
+            if azienda.get("fatturato_crescita", False):
+                punteggio += 1
+            if indici.get("ROS", 0) > 0.05:
+                punteggio += 1
+            if indici.get("EBITDA Margin", 0) > 0.1:
+                punteggio += 1
+        if punteggio >= 2:
+            bandi_filtrati.append({**bando, "punteggio": punteggio})
+    return sorted(bandi_filtrati, key=lambda b: b["punteggio"], reverse=True)
