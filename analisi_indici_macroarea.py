@@ -41,7 +41,7 @@ def calcola_indici(dati):
 
     return indici
 
-(indici):
+def assegna_macro_area(indici):
     try:
         crisi = crescita = espansione = 0
 
