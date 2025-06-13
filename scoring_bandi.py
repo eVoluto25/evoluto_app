@@ -1,142 +1,106 @@
-import os
-import logging
-from datetime import datetime
-from supabase import create_client
-from dateutil.parser import parse
+# scoring_bandi.py
 
-# Setup Supabase client
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+def calcola_score(bando, azienda):
+    log = []
+    score = 0
+    fallback = False
+    nd_counter = 0
 
-# Setup logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+    macroarea_bando = bando.get("obiettivo_macroarea")
+    macroarea_azienda = azienda.get("macroarea_primaria")
 
-# Definizione pesi
-PESI = {
-    "macroarea": 30,
-    "solidita": 25,
-    "forma_agevolazione": 15,
-    "dimensione": 10,
-    "cofinanziamento": 10,
-    "territorio_settore": 10
-}
+    # A. Macroarea (30 pt)
+    if macroarea_bando and macroarea_azienda:
+        if macroarea_bando == macroarea_azienda:
+            score += 30
+        elif azienda.get("macroarea_alternativa") == macroarea_bando:
+            score += 20
+        else:
+            log.append("Macroarea non coerente")
+    else:
+        fallback = True
+        nd_counter += 1
+        log.append("Macroarea non disponibile")
 
-# Mapping finalità → macroaree
-MAPPING_FINALITA_MACROAREA = {
-    "Crisi d'impresa": "Crisi",
-    "Sostegno liquidità": "Crisi",
-    "Inclusione sociale": "Crisi",
-    "Start up / Sviluppo d'impresa": "Crescita",
-    "Sostegno investimenti": "Crescita",
-    "Imprenditoria giovanile": "Crescita",
-    "Imprenditoria femminile": "Crescita",
-    "Internazionalizzazione": "Espansione",
-    "Sviluppo d'impresa": "Espansione",
-    "Transizione ecologica": "Espansione",
-    "Innovazione e ricerca": "Espansione"
-}
+    # B. Solidità Finanziaria (25 pt)
+    indici = azienda.get("indici", {})
+    ebitda_margin = indici.get("calcola_ebitda_margin")
+    utile_netto = azienda.get("utile_netto")
+    debt_equity = indici.get("calcola_debt_equity")
 
-def normalizza_dimensione(val):
-    if "micro" in val.lower():
-        return "Microimpresa"
-    elif "piccola" in val.lower():
-        return "Piccola Impresa"
-    elif "media" in val.lower():
-        return "Media Impresa"
-    elif "grande" in val.lower():
-        return "Grande Impresa"
-    return "Non classificabile"
+    if ebitda_margin is not None and ebitda_margin > 0.10:
+        score += 10
+    elif ebitda_margin is None:
+        nd_counter += 1
+        log.append("EBITDA Margin ND")
 
-def punteggio_macroarea(macroarea_azienda, finalita_bando):
-    punteggio = 0
-    for f in finalita_bando:
-        if MAPPING_FINALITA_MACROAREA.get(f) == macroarea_azienda:
-            punteggio += 1
-    return round((punteggio / len(finalita_bando)) * PESI["macroarea"])
+    if utile_netto is not None and utile_netto > 0:
+        score += 10
+    elif utile_netto is None:
+        nd_counter += 1
+        log.append("Utile netto ND")
 
-def punteggio_solidita(indici):
-    punti = 0
-    try:
-        if float(indici.get("EBITDA Margin", "ND")) > 10:
-            punti += 1
-        if float(indici.get("Utile Netto", "ND")) > 0:
-            punti += 1
-        if 0.5 <= float(indici.get("Debt/Equity", "ND")) <= 2:
-            punti += 1
-    except:
-        logger.warning("Dati solidità parziali o ND")
-    return round((punti / 3) * PESI["solidita"])
+    if debt_equity is not None and 0.5 <= debt_equity <= 2:
+        score += 5
+    elif debt_equity is None:
+        nd_counter += 1
+        log.append("Debt/Equity ND")
 
-def punteggio_agevolazione(forme):
-    punteggio = 0
-    priorita = {"Contributo/Fondo perduto": 3, "Agevolazione fiscale": 2, "Prestito/Anticipo rimborsabile": 1}
-    for f in forme:
-        punteggio = max(punteggio, priorita.get(f.strip(), 0))
-    return round((punteggio / 3) * PESI["forma_agevolazione"])
+    # C. Forma Agevolazione (15 pt)
+    forma = bando.get("Forma_agevolazione", "").lower()
+    if "fondo perduto" in forma:
+        score += 15
+    elif "credito" in forma:
+        score += 12
+    elif "finanziamento" in forma:
+        score += 8
+    else:
+        nd_counter += 1
+        log.append("Forma agevolazione non riconosciuta")
 
-def punteggio_dimensione(dim_azienda, dim_bando):
-    return PESI["dimensione"] if dim_azienda in dim_bando else 0
+    # D. Dimensione (10 pt)
+    dim_bando = bando.get("Dimensioni")
+    dim_azienda = azienda.get("dimensione_impresa")
+    if dim_bando == dim_azienda:
+        score += 10
+    elif dim_bando and dim_azienda:
+        score += 6  # vicinanza
+    else:
+        nd_counter += 1
+        log.append("Dimensione non definita")
 
-def punteggio_cofinanziamento(capacita=True):
-    return PESI["cofinanziamento"] if capacita else round(PESI["cofinanziamento"] / 2)
+    # E. Cofinanziamento (10 pt)
+    quick = indici.get("calcola_quick_ratio")
+    pfn_pn = indici.get("calcola_pfn_pn")
+    cf = azienda.get("cash_flow_operativo")
 
-def punteggio_settore_territorio(codice_ateco, codici_bando):
-    if "tutti" in codici_bando.lower():
-        return PESI["territorio_settore"]
-    codici = [c.strip() for c in codici_bando.split(";")]
-    for c in codici:
-        if codice_ateco.startswith(c):
-            return PESI["territorio_settore"]
-    return 0
+    if quick and quick > 1:
+        score += 5
+    if pfn_pn and pfn_pn < 1:
+        score += 3
+    if cf and cf > 0:
+        score += 2
 
-def classifica_score(score):
-    if score >= 80:
-        return "Alta probabilità"
-    elif score >= 50:
-        return "Media probabilità"
-    return "Bassa probabilità"
+    if all(x in (None, 0) for x in [quick, pfn_pn, cf]):
+        score -= 5
+        log.append("Cofinanziamento assente")
+        nd_counter += 1
 
-def valuta_bando(bando, azienda):
-    try:
-        score = 0
-        score += punteggio_macroarea(azienda["macroarea"], json.loads(bando["Obiettivo_Finalita"]))
-        score += punteggio_solidita(azienda["indici"])
-        score += punteggio_agevolazione(json.loads(bando["Forma_agevolazione"]))
-        score += punteggio_dimensione(azienda["dimensione"], json.loads(bando["Dimensioni"]))
-        score += punteggio_cofinanziamento(azienda.get("capacita_cofinanziamento", True))
-        score += punteggio_settore_territorio(azienda["codice_ateco"], bando["Codici_ATECO"])
-        return score, classifica_score(score)
-    except Exception as e:
-        logger.error(f"Errore valutazione bando {bando.get('Titolo', '')}: {e}")
-        return 0, "Errore"
+    # F. ATECO + Territorio (10 pt)
+    if azienda.get("match_ateco") and azienda.get("match_regione"):
+        score += 10
+    elif azienda.get("match_ateco") or azienda.get("match_regione"):
+        score += 5
+    else:
+        log.append("ATECO o regione non compatibili")
+        nd_counter += 1
 
-def filtra_e_valuta_bandi(macroarea, indici, azienda, bandi):
-    bandi_filtrati = []
-    for bando in bandi:
-        punteggio = 0
-        if macroarea == "Crisi":
-            if indici.get("Debt/Equity") and 0.5 <= indici["Debt/Equity"] <= 2:
-                punteggio += 1
-            if indici.get("EBITDA Margin", 0) > 0:
-                punteggio += 1
-            if azienda.get("utile_netto", 0) > 0:
-                punteggio += 1
-        elif macroarea == "Crescita":
-            if azienda.get("autofinanziamento", False):
-                punteggio += 1
-            if azienda.get("solidita_patrimoniale", False):
-                punteggio += 1
-            if azienda.get("investimenti_presenti", False):
-                punteggio += 1
-        elif macroarea == "Espansione":
-            if azienda.get("fatturato_crescita", False):
-                punteggio += 1
-            if indici.get("ROS", 0) > 0.05:
-                punteggio += 1
-            if indici.get("EBITDA Margin", 0) > 0.1:
-                punteggio += 1
-        if punteggio >= 2:
-            bandi_filtrati.append({**bando, "punteggio": punteggio})
-    return sorted(bandi_filtrati, key=lambda b: b["punteggio"], reverse=True)
+    # Diagnostica e trigger fallback
+    if score < 40 or nd_counter >= 3 or azienda.get("dati_incompleti"):
+        fallback = True
+
+    return {
+        "score": max(score, 0),
+        "log_scoring": log,
+        "forward_to_claude": fallback
+    }
