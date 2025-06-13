@@ -1,21 +1,22 @@
 
-def calcola_indici_finanziari(dati):
-    risultati = {}
+from formule_indici import calcola_indici_finanziari
 
-    utile_netto = dati.get("utile_netto", 0)
-    patrimonio_netto = dati.get("patrimonio_netto", 0)
-    ricavi = dati.get("ricavi", 0)
-    ebitda = dati.get("ebitda", 0)
-    debiti_finanziari = dati.get("debiti_finanziari", 0)
-    disponibilita = dati.get("disponibilita", 0)
-    totale_attivo = dati.get("totale_attivo", 0)
-    totale_passivo = dati.get("totale_passivo", 0)
-    attivo_circolante = dati.get("attivo_circolante", 0)
-    passivo_corrente = dati.get("passivo_corrente", 0)
-    immobilizzazioni = dati.get("immobilizzazioni", 0)
-    debiti_medio_lungo = dati.get("debiti_medio_lungo", 0)
-    oneri_finanziari = dati.get("oneri_finanziari", 0)
-    quota_debito_annua = dati.get("quota_debito_annua", 0)
+indici = calcola_indici_finanziari({
+    "utile_netto": dati.get("Risultato Netto", 0),
+    "patrimonio_netto": dati.get("Patrimonio Netto", 0),
+    "ricavi": dati.get("Ricavi", 0),
+    "ebitda": dati.get("EBITDA", 0),
+    "debiti_finanziari": dati.get("Debiti", 0),
+    "disponibilita": dati.get("Disponibilità liquide", 0),
+    "totale_attivo": dati.get("Totale Attivo", 0),
+    "totale_passivo": dati.get("Totale Passivo", 0),
+    "attivo_circolante": dati.get("Attivo Corrente", 0),
+    "passivo_corrente": dati.get("Passivo Corrente", 0),
+    "immobilizzazioni": dati.get("Immobilizzazioni", 0),
+    "debiti_medio_lungo": dati.get("Debiti M/L Termine", 0),
+    "oneri_finanziari": dati.get("Oneri Finanziari", 0),
+    "quota_debito_annua": dati.get("Quota Debito Annua", 0)
+})
 
     pfnet = debiti_finanziari - disponibilita
 
