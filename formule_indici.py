@@ -1,92 +1,54 @@
-def calcola_roe(utile_netto, patrimonio_netto):
-    if utile_netto is None or patrimonio_netto in (None, 0):
-        return "ND"
-    return round(utile_netto / patrimonio_netto, 6)
 
-def calcola_debt_equity(debiti, patrimonio):
+def calcola_indici_finanziari(dati):
+    risultati = {}
+
+    utile_netto = dati.get("utile_netto", 0)
+    patrimonio_netto = dati.get("patrimonio_netto", 0)
+    ricavi = dati.get("ricavi", 0)
+    ebitda = dati.get("ebitda", 0)
+    debiti_finanziari = dati.get("debiti_finanziari", 0)
+    disponibilita = dati.get("disponibilita", 0)
+    totale_attivo = dati.get("totale_attivo", 0)
+    totale_passivo = dati.get("totale_passivo", 0)
+    attivo_circolante = dati.get("attivo_circolante", 0)
+    passivo_corrente = dati.get("passivo_corrente", 0)
+    immobilizzazioni = dati.get("immobilizzazioni", 0)
+    debiti_medio_lungo = dati.get("debiti_medio_lungo", 0)
+    oneri_finanziari = dati.get("oneri_finanziari", 0)
+    quota_debito_annua = dati.get("quota_debito_annua", 0)
+
+    pfnet = debiti_finanziari - disponibilita
+
+    # MCC semplificato
+    risultati['ROE'] = utile_netto / patrimonio_netto if patrimonio_netto != 0 else 0
+    risultati['EBITDA/Ricavi'] = ebitda / ricavi if ricavi != 0 else 0
+    risultati['PFN/EBITDA'] = pfnet / ebitda if ebitda != 0 else 0
+    risultati['PFN/PN'] = pfnet / patrimonio_netto if patrimonio_netto != 0 else 0
+    risultati['Oneri Fin / Ricavi'] = oneri_finanziari / ricavi if ricavi != 0 else 0
+    risultati['Current Ratio'] = attivo_circolante / passivo_corrente if passivo_corrente != 0 else 0
+
+    # Z-Score Altman (semplificato per PMI)
     try:
-        return debiti / patrimonio if patrimonio else 0
-    except Exception:
-        return 0
+        risultati['Z-Score Altman'] = (
+            0.717 * (ebitda / totale_attivo) +
+            0.847 * (patrimonio_netto / totale_passivo) +
+            3.107 * (utile_netto / totale_attivo) +
+            0.420 * ((attivo_circolante - passivo_corrente) / totale_attivo) +
+            0.998 * (ricavi / totale_attivo)
+        )
+    except ZeroDivisionError:
+        risultati['Z-Score Altman'] = 0
 
-def calcola_ebitda_margin(ebitda, ricavi):
-    try:
-        return ebitda / ricavi if ricavi else 0
-    except Exception:
-        return 0
+    # DSCR
+    risultati['DSCR'] = ebitda / quota_debito_annua if quota_debito_annua != 0 else 0
 
-def calcola_interest_coverage(ebitda, oneri_fin):
-    try:
-        return ebitda / oneri_fin if oneri_fin else 0
-    except Exception:
-        return 0
+    # Leverage
+    risultati['Leverage'] = totale_attivo / patrimonio_netto if patrimonio_netto != 0 else 0
 
-def calcola_roi(ebit, totale_attivo):
-    if ebit is None or totale_attivo in (None, 0):
-        return "ND"
-    return round(ebit / totale_attivo, 6)
+    # Indipendenza Finanziaria
+    risultati['Indipendenza Finanziaria'] = patrimonio_netto / totale_passivo if totale_passivo != 0 else 0
 
-def calcola_ros(ebit, ricavi):
-    if ebit is None or ricavi in (None, 0):
-        return "ND"
-    return round(ebit / ricavi, 6)
+    # Copertura Immobilizzazioni
+    risultati['Copertura Immobilizzazioni'] = (patrimonio_netto + debiti_medio_lungo) / immobilizzazioni if immobilizzazioni != 0 else 0
 
-def calcola_roic(ebit, debiti, patrimonio_netto):
-    capitale_investito = (debiti or 0) + (patrimonio_netto or 0)
-    if ebit is None or capitale_investito in (None, 0):
-        return "ND"
-    return round(ebit / capitale_investito, 6)
-
-def calcola_rot(ricavi, totale_attivo):
-    if ricavi is None or totale_attivo in (None, 0):
-        return "ND"
-    return round(ricavi / totale_attivo, 6)
-
-def calcola_leverage(totale_passivo, patrimonio_netto):
-    if totale_passivo is None or patrimonio_netto in (None, 0):
-        return "ND"
-    return round(totale_passivo / patrimonio_netto, 6)
-
-def calcola_pfnpn(debiti_totali, liquidita, patrimonio_netto):
-    pfn = (debiti_totali or 0) - (liquidita or 0)
-    if patrimonio_netto in (None, 0):
-        return "ND"
-    return round(pfn / patrimonio_netto, 6)
-
-def calcola_ebit_of(ebit, oneri_finanziari):
-    if ebit is None or oneri_finanziari in (None, 0):
-        return "ND"
-    return round(ebit / oneri_finanziari, 6)
-
-def calcola_current_ratio(attivo_corrente, passivo_corrente):
-    if attivo_corrente is None or passivo_corrente in (None, 0):
-        return "ND"
-    return round(attivo_corrente / passivo_corrente, 6)
-
-def calcola_quick_ratio(attivo_corrente, rimanenze, passivo_corrente):
-    if attivo_corrente is None or passivo_corrente in (None, 0):
-        return "ND"
-    return round((attivo_corrente - (rimanenze or 0)) / passivo_corrente, 6)
-
-def calcola_indipendenza_fin(patrimonio_netto, totale_attivo):
-    if patrimonio_netto is None or totale_attivo in (None, 0):
-        return "ND"
-    return round(patrimonio_netto / totale_attivo, 6)
-
-def calcola_margine_tesoreria(liquidita, passivo_corrente):
-    if liquidita is None or passivo_corrente in (None, 0):
-        return "ND"
-    return round(liquidita / passivo_corrente, 6)
-
-def calcola_copertura_imm(patrimonio_netto, immobilizzazioni):
-    if patrimonio_netto is None or immobilizzazioni in (None, 0):
-        return "ND"
-    return round(patrimonio_netto / immobilizzazioni, 6)
-
-def calcola_margine_struttura(patrimonio_netto, immobilizzazioni):
-    return calcola_copertura_imm(patrimonio_netto, immobilizzazioni)
-
-def calcola_ccn(attivo_corrente, passivo_corrente):
-    if attivo_corrente is None or passivo_corrente is None:
-        return "ND"
-    return round(attivo_corrente - passivo_corrente, 2)
+    return risultati
