@@ -18,8 +18,6 @@ indici = calcola_indici_finanziari({
     "quota_debito_annua": dati.get("Quota Debito Annua", 0)
 })
 
-    pfnet = debiti_finanziari - disponibilita
-
     # MCC semplificato
     risultati['ROE'] = utile_netto / patrimonio_netto if patrimonio_netto != 0 else 0
     risultati['EBITDA/Ricavi'] = ebitda / ricavi if ricavi != 0 else 0
