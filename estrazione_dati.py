@@ -12,7 +12,7 @@ def normalizza_dati(dati: dict) -> dict:
     try:
         with open(alias_path) as f:
             alias = json.load(f)
-        return {alias.get(k, k): v for k, v in dati_raw.items()}
+        return {alias.get(k, k): v for k, v in dati.items()}
     except Exception as e:
         logging.warning(f"Alias mapping non applicato: {e}")
-        return dati_raw  # Fallback: restituisce i dati originali
+        return dati # Fallback: restituisce i dati originali
