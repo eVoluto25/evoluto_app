@@ -1,10 +1,8 @@
+
 import logging
 from formule_indici import calcola_indici_finanziari
 
 def calcola_indici(dati):
-    indici = {}
-
-    # Estrazione variabili base
     utile = dati.get("Risultato Netto")
     ricavi = dati.get("Ricavi")
     patrimonio = dati.get("Patrimonio Netto")
@@ -15,39 +13,35 @@ def calcola_indici(dati):
     rimanenze = dati.get("Rimanenze")
     immobilizzazioni = dati.get("Immobilizzazioni")
     oneri_fin = dati.get("Oneri Finanziari")
-    ebit = dati.get("EBIT") or dati.get("EBITDA")  # fallback proxy
+    ebitda = dati.get("EBITDA")
+    ebit = dati.get("EBIT") or ebitda
     attivo_corr = dati.get("Attivo Corrente")
     passivo_corr = dati.get("Passivo Corrente")
 
-    # Calcolo indici reali
-    indici["ROE"] = calcola_roe(utile, patrimonio)
-    indici["ROI"] = calcola_roi(ebit, attivo)
-    indici["ROS"] = calcola_ros(ebit, ricavi)
-    indici["ROIC"] = calcola_roic(ebit, debiti, patrimonio)
-    indici["ROT"] = calcola_rot(ricavi, attivo)
-    indici["Leverage"] = calcola_leverage(passivo, patrimonio)
-    indici["PFN/PN"] = calcola_pfnpn(debiti, liquidita, patrimonio)
-    indici["EBIT/OF"] = calcola_ebit_of(ebit, oneri_fin)
-    indici["Current Ratio"] = calcola_current_ratio(attivo_corr, passivo_corr)
-    indici["Quick Ratio"] = calcola_quick_ratio(attivo_corr, rimanenze, passivo_corr)
-    indici["Indipendenza Finanziaria"] = calcola_indipendenza_fin(patrimonio, attivo)
-    indici["Margine di Tesoreria"] = calcola_margine_tesoreria(liquidita, passivo_corr)
-    indici["Copertura Immobilizzazioni"] = calcola_copertura_imm(patrimonio, immobilizzazioni)
-    indici["Margine di Struttura"] = calcola_margine_struttura(patrimonio, immobilizzazioni)
-    indici["Capitale Circolante Netto"] = calcola_ccn(attivo_corr, passivo_corr)
-    indici["Debt/Equity"] = calcola_debt_equity(debiti, patrimonio)
-    indici["EBITDA Margin"] = calcola_ebitda_margin(ebitda, ricavi)
-    indici["Interest Coverage"] = calcola_interest_coverage(ebitda, oneri_fin)
-    indici["Z-Score Altman"] = calcola_zscore_altman(ebitda, patrimonio, utile, attivo_corr, passivo_corr, ricavi, attivo)
-    indici["DSCR"] = calcola_dscr(ebitda, dati.get("Quota Debito Annua", 0))
-    indici["Leverage"] = calcola_leverage(attivo, patrimonio)
-    indici["Indipendenza Finanziaria"] = calcola_indipendenza_fin(patrimonio, passivo)
-    indici["Copertura Immobilizzazioni"] = calcola_copertura_imm(patrimonio, dati.get("Debiti M/L Termine", 0), dati.get("Immobilizzazioni", 0))
-    indici["Classe MCC"] = calcola_classe_mcc(indici)  
+    indici = calcola_indici_finanziari({
+        "utile_netto": utile,
+        "patrimonio_netto": patrimonio,
+        "ricavi": ricavi,
+        "ebitda": ebitda,
+        "debiti_finanziari": debiti,
+        "disponibilita": liquidita,
+        "totale_attivo": attivo,
+        "totale_passivo": passivo,
+        "attivo_circolante": attivo_corr,
+        "passivo_corrente": passivo_corr,
+        "immobilizzazioni": immobilizzazioni,
+        "debiti_medio_lungo": dati.get("Debiti M/L Termine", 0),
+        "oneri_finanziari": oneri_fin,
+        "quota_debito_annua": dati.get("Quota Debito Annua", 0),
+        "ebit": ebit,
+        "liquidita": liquidita,
+        "rimanenze": rimanenze,
+        "debiti": debiti
+    })
 
     return indici
 
-def assegna_macro_area(indici):
+(indici):
     try:
         crisi = crescita = espansione = 0
 
