@@ -1,79 +1,78 @@
-
+from formule_indici import *
 import logging
-from formule_indici import calcola_indici_finanziari
 
 def calcola_indici(dati):
-    utile = dati.get("Risultato Netto")
-    ricavi = dati.get("Ricavi")
-    patrimonio = dati.get("Patrimonio Netto")
-    attivo = dati.get("Totale Attivo")
-    passivo = dati.get("Totale Passivo")
-    liquidita = dati.get("Disponibilità liquide")
-    debiti = dati.get("Debiti")
-    rimanenze = dati.get("Rimanenze")
-    immobilizzazioni = dati.get("Immobilizzazioni")
-    oneri_fin = dati.get("Oneri Finanziari")
-    ebitda = dati.get("EBITDA")
-    ebit = dati.get("EBIT") or ebitda
-    attivo_corr = dati.get("Attivo Corrente")
-    passivo_corr = dati.get("Passivo Corrente")
-
-    indici = calcola_indici_finanziari({
-        "utile_netto": utile,
-        "patrimonio_netto": patrimonio,
-        "ricavi": ricavi,
-        "ebitda": ebitda,
-        "debiti_finanziari": debiti,
-        "disponibilita": liquidita,
-        "totale_attivo": attivo,
-        "totale_passivo": passivo,
-        "attivo_circolante": attivo_corr,
-        "passivo_corrente": passivo_corr,
-        "immobilizzazioni": immobilizzazioni,
-        "debiti_medio_lungo": dati.get("Debiti M/L Termine", 0),
-        "oneri_finanziari": oneri_fin,
-        "quota_debito_annua": dati.get("Quota Debito Annua", 0),
-        "ebit": ebit,
-        "liquidita": liquidita,
-        "rimanenze": rimanenze,
-        "debiti": debiti
-    })
-
+    indici = {}
+    indici["ROE"] = calcola_roe(dati.get("utile_netto", 0), dati.get("patrimonio_netto", 1))
+    indici["ROI"] = calcola_roi(dati.get("ebit", 0), dati.get("totale_attivo", 1))
+    indici["ROS"] = calcola_ros(dati.get("ebit", 0), dati.get("ricavi", 1))
+    indici["ROIC"] = calcola_roic(dati.get("ebit", 0), dati.get("capitale_investito", 1))
+    indici["ROT"] = calcola_rot(dati.get("ricavi", 0), dati.get("totale_attivo", 1))
+    indici["EBITDA MARGIN"] = calcola_ebitda_margin(dati.get("ebitda", 0), dati.get("ricavi", 1))
+    indici["EBIT OF"] = calcola_ebit_of(dati.get("ebit", 0), dati.get("oneri_fin", 1))
+    indici["LEVERAGE"] = calcola_leverage(dati.get("totale_passivo", 0), dati.get("patrimonio_netto", 1))
+    indici["DEBT EQUITY"] = calcola_debt_equity(dati.get("debiti", 0), dati.get("patrimonio_netto", 1))
+    indici["PFNPN"] = calcola_pfnpn(dati.get("pfn", 0), dati.get("patrimonio_netto", 1))
+    indici["INDIPENDENZA FIN"] = calcola_indipendenza_fin(dati.get("patrimonio_netto", 0), dati.get("totale_fonti", 1))
+    indici["MARGINE STRUTTURA"] = calcola_margine_struttura(dati.get("patrimonio_netto", 0), dati.get("immobilizzazioni", 1))
+    indici["COPERTURA IMM"] = calcola_copertura_imm(dati.get("cap_medio_termine", 0), dati.get("immobilizzazioni", 1))
+    indici["MARGINE TESORERIA"] = calcola_margine_tesoreria(dati.get("liquidita_imm", 0), dati.get("debiti_brevedurata", 1))
+    indici["CCN"] = calcola_ccn(dati.get("attivo_corr", 0), dati.get("passivo_corr", 1))
+    indici["QUICK RATIO"] = calcola_quick_ratio(dati.get("liquidita_imm", 0), dati.get("passivo_corr", 1))
+    indici["CURRENT RATIO"] = calcola_current_ratio(dati.get("attivo_corr", 0), dati.get("passivo_corr", 1))
+    indici["MCC"] = calcola_mcc(dati.get("attivo_corr", 0), dati.get("passivo_corr", 1))
+    indici["DSCR"] = calcola_dscr(dati.get("cash_flow_operativo", 0), dati.get("quota_debiti", 1))
+    indici["CASHFLOW DEBITI"] = calcola_cashflow_debiti(dati.get("cash_flow_operativo", 0), dati.get("debiti", 1))
+    indici["LIQUIDITA IMMEDIATA"] = calcola_liquidita_immediata(dati.get("disponibilita", 0), dati.get("passivo_corr", 1))
+    indici["ACID TEST"] = calcola_acid_test(dati.get("liquidita_imm", 0), dati.get("passivo_corr", 1))
+    indici["COVERAGE RATIO"] = calcola_coverage_ratio(dati.get("ebitda", 0), dati.get("oneri_fin", 1))
+    indici["CF RICAVI"] = calcola_cf_ricavi(dati.get("cash_flow_operativo", 0), dati.get("ricavi", 1))
+    indici["CF ATTIVO"] = calcola_cf_attivo(dati.get("cash_flow_operativo", 0), dati.get("totale_attivo", 1))
+    indici["ATT CORR ATTIVO"] = calcola_att_corr_attivo(dati.get("attivo_corr", 0), dati.get("totale_attivo", 1))
+    indici["ONERI RICAVI"] = calcola_oneri_ricavi(dati.get("oneri_fin", 0), dati.get("ricavi", 1))
+    indici["ROA"] = calcola_roa(dati.get("utile_netto", 0), dati.get("totale_attivo", 1))
+    indici["CAP NETTO ATTIVO"] = calcola_cap_netto_attivo(dati.get("capitale_netto", 0), dati.get("totale_attivo", 1))
+    indici["RIGIDITA INV"] = calcola_rigidita_inv(dati.get("immobilizzazioni", 0), dati.get("totale_attivo", 1))
+    indici["AUTONOMIA FINANZIARIA"] = calcola_autonomia_finanziaria(dati.get("patrimonio_netto", 0), dati.get("totale_passivo", 1))
     return indici
 
-def assegna_macro_area(indici):
+def assegna_macro_area(indici: dict) -> str:
     try:
         crisi = crescita = espansione = 0
 
-        roe = indici.get("ROE")
-        leverage = indici.get("Leverage")
-        struttura = indici.get("Margine di Struttura")
-
-        if isinstance(roe, float) and roe < 0.01:
+        if indici.get("Debt/Equity") is not None and 0.5 <= indici["Debt/Equity"] <= 2:
             crisi += 1
-        if isinstance(leverage, float) and leverage > 4:
+        if indici.get("EBITDA Margin", 0) > 0:
             crisi += 1
-        if isinstance(struttura, float) and struttura < 0.8:
+        if indici.get("Risultato Netto", 0) > 0:
             crisi += 1
 
-        if isinstance(roe, float) and roe > 0.05:
+        if indici.get("Autofinanziamento", False):
             crescita += 1
-        if isinstance(struttura, float) and struttura > 1:
+        if indici.get("Solidità patrimoniale", False):
+            crescita += 1
+        if indici.get("Investimenti presenti", False):
             crescita += 1
 
-        if isinstance(roe, float) and roe > 0.1:
+        if indici.get("Fatturato in crescita", False):
             espansione += 1
-        if isinstance(leverage, float) and leverage < 2:
+        if indici.get("ROS", 0) > 0.05:
+            espansione += 1
+        if indici.get("EBITDA Margin", 0) > 0.1:
             espansione += 1
 
         logging.info(f"Punteggi: Crisi={crisi}, Crescita={crescita}, Espansione={espansione}")
 
-        if espansione >= 2:
-            return "Espansione"
-        elif crescita >= 2:
-            return "Crescita"
-        else:
-            return "Crisi"
+        if crisi == crescita == espansione:
+            if espansione > 0:
+                return "Espansione"
+            elif crescita > 0:
+                return "Crescita"
+            else:
+                return "Crisi"
+
+        punteggi = {"Crisi": crisi, "Crescita": crescita, "Espansione": espansione}
+        return max(punteggi, key=punteggi.get)
 
     except Exception as e:
         logging.error(f"Errore durante l'assegnazione della macro area: {e}")
