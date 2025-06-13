@@ -8,7 +8,7 @@ from formule_indici import (
     calcola_ebit_of,
     calcola_leverage,
     calcola_debt_equity,
-    calcola_pfn_pn,
+    calcola_pfnpn,
     calcola_indipendenza,
     calcola_margine_struttura,
     calcola_copertura_imm,
@@ -71,7 +71,7 @@ def calcola_indici(dati):
     assegna("EBIT/OF", dati.get("ebit", 0), dati.get("oneri_fin", 1), calcola_ebit_of)
     assegna("LEVERAGE", dati.get("totale_attivo", 0), dati.get("patrimonio_netto", 1), calcola_leverage)
     assegna("DEBT EQUITY", dati.get("debiti", 0), dati.get("patrimonio_netto", 1), calcola_debt_equity)
-    assegna("PFN/PN", dati.get("pfn", 0), dati.get("patrimonio_netto", 1), calcola_pfn_pn)
+    assegna("PFN/PN", dati.get("pfn", 0), dati.get("patrimonio_netto", 1), calcola_pfnpn)
     assegna("INDIPENDENZA FIN", dati.get("patrimonio_netto", 0), dati.get("totale_attivo", 1), calcola_indipendenza)
 
     assegna("MARGINE STRUTTURA", dati.get("patrimonio_netto", 0), dati.get("immobilizzazioni", 1), calcola_margine_struttura)
