@@ -1,0 +1,126 @@
+{
+    "ROE": [
+        "patrimonio_netto",
+        "utile_netto"
+    ],
+    "ROI": [
+        "ebit",
+        "totale_attivo"
+    ],
+    "ROS": [
+        "ebit",
+        "ricavi"
+    ],
+    "ROIC": [
+        "debiti",
+        "ebit"
+    ],
+    "ROT": [
+        "attivo",
+        "ricavi"
+    ],
+    "EBITDA MARGIN": [
+        "ebitda",
+        "ricavi"
+    ],
+    "EBIT/OF": [
+        "ebit",
+        "oneri_fin"
+    ],
+    "LEVERAGE": [
+        "patrimonio_netto",
+        "totale_passivo"
+    ],
+    "DEBT EQUITY": [
+        "debiti",
+        "patrimonio_netto"
+    ],
+    "PFN/PN": [
+        "patrimonio_netto",
+        "pfn"
+    ],
+    "INDIPENDENZA FIN": [
+        "patrimonio_netto",
+        "totale_attivo"
+    ],
+    "MARGINE STRUTTURA": [
+        "immobilizzazioni",
+        "patrimonio_netto"
+    ],
+    "COPERTURA IMM": [
+        "immobilizzazioni",
+        "patrimonio_netto"
+    ],
+    "MARGINE TESORERIA": [
+        "liquidita",
+        "passivo_corr"
+    ],
+    "CCN": [
+        "attivo_corr",
+        "passivo_corr"
+    ],
+    "QUICK RATIO": [
+        "attivo_corr",
+        "rimanenze"
+    ],
+    "CURRENT RATIO": [
+        "attivo_corr",
+        "passivo_corr"
+    ],
+    "MCC": [
+        "ebit",
+        "oneri_fin"
+    ],
+    "DSCR": [
+        "flussi_cassa",
+        "rata_debiti"
+    ],
+    "CASHFLOW DEBITI": [
+        "debiti",
+        "flussi_cassa"
+    ],
+    "LIQUIDIT\u00c0 IMMEDIATA": [
+        "liquidita",
+        "passivo_corr"
+    ],
+    "ACID TEST": [
+        "liquidita",
+        "passivo_corr"
+    ],
+    "COVERAGE RATIO": [
+        "ebit",
+        "oneri_fin"
+    ],
+    "CF RICAVI": [
+        "flussi_cassa",
+        "ricavi"
+    ],
+    "CF ATTIVO": [
+        "flussi_cassa",
+        "totale_attivo"
+    ],
+    "ATT CORR ATTIVO": [
+        "attivo_corr",
+        "totale_attivo"
+    ],
+    "ONERI RICAVI": [
+        "oneri_fin",
+        "ricavi"
+    ],
+    "ROA": [
+        "totale_attivo",
+        "utile_netto"
+    ],
+    "CAP NETTO ATTIVO": [
+        "patrimonio_netto",
+        "totale_attivo"
+    ],
+    "RIGIDIT\u00c0 INV": [
+        "immobilizzazioni",
+        "totale_attivo"
+    ],
+    "AUTONOMIA FINANZIARIA": [
+        "patrimonio_netto",
+        "totale_attivo"
+    ]
+}
