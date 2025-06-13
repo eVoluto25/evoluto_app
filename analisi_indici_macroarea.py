@@ -3,7 +3,7 @@ import logging
 import json
 
 def calcola_indici(dati):
-    indici = 
+    indici = {}
 
     # Mappatura variabili in base al file alias
     try:
