@@ -1,48 +1,37 @@
+# ui.py
+
 import gradio as gr
-from app import step1_analisi
+import requests
+import json
 
-def run_analisi(file):
-    try:
-        file_path = None
+API_URL = "https://evoluto.onrender.com"  # Cambia con il tuo dominio reale se diverso
 
-        # Compatibilità Gradio Web e CLI
-        if hasattr(file, 'name') and isinstance(file.name, str):
-            file_path = file.name
-        elif hasattr(file, 'tempfile'):
-            file_path = file.tempfile
+def analizza_file(file):
+    with open(file.name, "rb") as f:
+        files = {"file": f}
+        res = requests.post(f"{API_URL}/upload", files=files)
+    if res.status_code != 200:
+        return f"Errore upload: {res.text}", None
 
-        if not file_path:
-            return "Formato file non valido"
+    azienda = res.json()
+    id_bando = "TEST_001"  # 🔁 sostituibile con dropdown se integrato
+    payload = {
+        "azienda": azienda,
+        "id_bando": id_bando
+    }
+    res2 = requests.post(f"{API_URL}/score", json=payload)
+    if res2.status_code != 200:
+        return f"Errore score: {res2.text}", None
 
-        class FileMock:
-            name = file_path
+    return "Analisi completata", json.dumps(res2.json(), indent=2)
 
-        result = step1_analisi(FileMock())
+with gr.Blocks(title="eVoluto – Sistema Matching Bandi") as demo:
+    gr.Markdown("# 📊 eVoluto – Analisi automatica bilanci e bandi")
+    file_input = gr.File(label="Carica PDF Bilancio/Visura", file_types=[".pdf"])
+    button = gr.Button("Analizza e Calcola Score")
+    output_json = gr.Textbox(label="Output JSON (score + macroarea)", lines=25)
+    status = gr.Textbox(label="Esito", max_lines=1)
 
-        if isinstance(result, str):
-            return result
+    button.click(fn=analizza_file, inputs=file_input, outputs=[status, output_json])
 
-        output, *_ = result
-        indici = output.get("Indici calcolati", {})
-        macroarea = output.get("Macroarea", "ND")
-
-        out = f"✅ Macroarea assegnata: {macroarea}\n\n📊 Indici calcolati:\n"
-        out += "\n".join([f"- {k}: {v if v not in [None, ''] else 'ND'}" for k, v in indici.items()])
-        return out
-
-    except Exception as e:
-        return f"Errore durante l'analisi: {str(e)}"
-
-with gr.Blocks() as ui:
-    with gr.Row():
-        pdf_input = gr.File(label="Carica il bilancio PDF", file_types=[".pdf"])
-
-    with gr.Row():
-        output_box = gr.Textbox(label="Analisi completata", lines=30, interactive=False, show_copy_button=True)
-
-    with gr.Row():
-        analizza_btn = gr.Button("Avvia Analisi")
-
-    analizza_btn.click(fn=run_analisi, inputs=[pdf_input], outputs=[output_box])
-
-ui.launch(server_name="0.0.0.0", server_port=7860)
+demo.launch()
