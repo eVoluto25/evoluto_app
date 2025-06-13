@@ -40,6 +40,9 @@ def calcola_indici(dati):
     indici["Copertura Immobilizzazioni"] = calcola_copertura_imm(patrimonio, immobilizzazioni)
     indici["Margine di Struttura"] = calcola_margine_struttura(patrimonio, immobilizzazioni)
     indici["Capitale Circolante Netto"] = calcola_ccn(attivo_corr, passivo_corr)
+    indici["Debt/Equity"] = calcola_debt_equity(debiti, patrimonio)
+    indici["EBITDA Margin"] = calcola_ebitda_margin(ebitda, ricavi)
+    indici["Interest Coverage"] = calcola_interest_coverage(ebitda, oneri_fin)
 
     return indici
 
