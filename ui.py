@@ -1,5 +1,5 @@
 # ui.py
-
+import os
 import gradio as gr
 import requests
 import json
@@ -34,4 +34,5 @@ with gr.Blocks(title="eVoluto – Sistema Matching Bandi") as demo:
 
     button.click(fn=analizza_file, inputs=file_input, outputs=[status, output_json])
 
-demo.launch(server_name="0.0.0.0", server_port=10000)
+port = int(os.environ.get("PORT", 10000))
+demo.launch(server_name="0.0.0.0", server_port=port)
