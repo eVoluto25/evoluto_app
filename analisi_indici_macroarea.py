@@ -9,7 +9,7 @@ from formule_indici import (
     calcola_leverage,
     calcola_debt_equity,
     calcola_pfnpn,
-    calcola_indipendenza,
+    calcola_indipendenza_fin,
     calcola_margine_struttura,
     calcola_copertura_imm,
     calcola_margine_tesoreria,
@@ -72,7 +72,7 @@ def calcola_indici(dati):
     assegna("LEVERAGE", dati.get("totale_attivo", 0), dati.get("patrimonio_netto", 1), calcola_leverage)
     assegna("DEBT EQUITY", dati.get("debiti", 0), dati.get("patrimonio_netto", 1), calcola_debt_equity)
     assegna("PFN/PN", dati.get("pfn", 0), dati.get("patrimonio_netto", 1), calcola_pfnpn)
-    assegna("INDIPENDENZA FIN", dati.get("patrimonio_netto", 0), dati.get("totale_attivo", 1), calcola_indipendenza)
+    assegna("INDIPENDENZA FIN", dati.get("patrimonio_netto", 0), dati.get("totale_attivo", 1), calcola_indipendenza_fin)
 
     assegna("MARGINE STRUTTURA", dati.get("patrimonio_netto", 0), dati.get("immobilizzazioni", 1), calcola_margine_struttura)
     assegna("COPERTURA IMM", dati.get("patrimonio_netto", 0), dati.get("immobilizzazioni", 1), calcola_copertura_imm)
