@@ -3,9 +3,9 @@ import json
 import logging
 import os
 
-def normalizza_dati(dati_raw: dict) -> dict:
+def normalizza_dati(dati: dict) -> dict:
     """
-    Converte le chiavi del dizionario 'dati_raw' in chiavi standardizzate
+    Converte le chiavi del dizionario 'dati' in chiavi standardizzate
     secondo la mappa 'mappa_alias_variabili.json'. Restituisce un nuovo dizionario.
     """
     alias_path = os.path.join(os.path.dirname(__file__), "mappa_alias_variabili.json")
