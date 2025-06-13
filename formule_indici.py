@@ -2,24 +2,24 @@
 def calcola_indici_finanziari(dati):
     risultati = {}
 
-    utile_netto = dati.get("utile_netto", 0)
-    patrimonio_netto = dati.get("patrimonio_netto", 0)
-    ricavi = dati.get("ricavi", 0)
-    ebitda = dati.get("ebitda", 0)
-    debiti_finanziari = dati.get("debiti_finanziari", 0)
-    disponibilita = dati.get("disponibilita", 0)
-    totale_attivo = dati.get("totale_attivo", 0)
-    totale_passivo = dati.get("totale_passivo", 0)
-    attivo_circolante = dati.get("attivo_circolante", 0)
-    passivo_corrente = dati.get("passivo_corrente", 0)
-    immobilizzazioni = dati.get("immobilizzazioni", 0)
-    debiti_medio_lungo = dati.get("debiti_medio_lungo", 0)
-    oneri_finanziari = dati.get("oneri_finanziari", 0)
-    quota_debito_annua = dati.get("quota_debito_annua", 0)
+    utile_netto = dati.get("utile_netto") or 0.0
+    patrimonio_netto = dati.get("patrimonio_netto") or 0.0
+    ricavi = dati.get("ricavi") or 0.0
+    ebitda = dati.get("ebitda") or 0.0
+    debiti_finanziari = dati.get("debiti_finanziari") or 0.0
+    disponibilita = dati.get("disponibilita") or 0.0
+    totale_attivo = dati.get("totale_attivo") or 0.0
+    totale_passivo = dati.get("totale_passivo") or 0.0
+    attivo_circolante = dati.get("attivo_circolante") or 0.0
+    passivo_corrente = dati.get("passivo_corrente") or 0.0
+    immobilizzazioni = dati.get("immobilizzazioni") or 0.0
+    debiti_medio_lungo = dati.get("debiti_medio_lungo") or 0.0
+    oneri_finanziari = dati.get("oneri_finanziari") or 0.0
+    quota_debito_annua = dati.get("quota_debito_annua") or 0.0
     ebit = dati.get("ebit", ebitda)
-    debiti = dati.get("debiti", 0)
-    liquidita = dati.get("liquidita", 0)
-    rimanenze = dati.get("rimanenze", 0)
+    debiti = dati.get("debiti") or 0.0
+    liquidita = dati.get("liquidita") or 0.0
+    rimanenze = dati.get("rimanenze") or 0.0
 
     pfnet = debiti_finanziari - disponibilita
 
