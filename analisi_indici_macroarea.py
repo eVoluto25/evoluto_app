@@ -1,8 +1,17 @@
 from formule_indici import *
 import logging
+import json
 
 def calcola_indici(dati):
-    indici = {}
+    indici = 
+
+    # Mappatura variabili in base al file alias
+    try:
+        with open("mappa_alias_variabili.json") as f:
+            alias = json.load(f)
+        dati = {alias.get(k, k): v for k, v in dati.items()}
+    except Exception as e:
+        logging.warning(f"Alias mapping non applicato: {e}")
 
     num = dati.get("utile_netto", 0)
     den = dati.get("patrimonio_netto", 1)
