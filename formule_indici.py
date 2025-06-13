@@ -3,6 +3,24 @@ def calcola_roe(utile_netto, patrimonio_netto):
         return "ND"
     return round(utile_netto / patrimonio_netto, 6)
 
+def calcola_debt_equity(debiti, patrimonio):
+    try:
+        return debiti / patrimonio if patrimonio else 0
+    except Exception:
+        return 0
+
+def calcola_ebitda_margin(ebitda, ricavi):
+    try:
+        return ebitda / ricavi if ricavi else 0
+    except Exception:
+        return 0
+
+def calcola_interest_coverage(ebitda, oneri_fin):
+    try:
+        return ebitda / oneri_fin if oneri_fin else 0
+    except Exception:
+        return 0
+
 def calcola_roi(ebit, totale_attivo):
     if ebit is None or totale_attivo in (None, 0):
         return "ND"
