@@ -4,8 +4,8 @@ import logging
 def calcola_indici(dati):
     indici = {}
 
-    num = dati.get("Risultato Netto", 0)
-    den = dati.get("Patrimonio Netto", 1)
+    num = dati.get("utile_netto", 0)
+    den = dati.get("patrimonio_netto", 1)
     val = calcola_roe(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -15,8 +15,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROE"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("ebit", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_roi(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -26,8 +26,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROI"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Ricavi", 1)
+    num = dati.get("ebit", 0)
+    den = dati.get("ricavi", 1)
     val = calcola_ros(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -37,8 +37,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROS"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Capitale Netto", 1)
+    num = dati.get("ebit", 0)
+    den = dati.get("debiti", 1)
     val = calcola_roic(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -48,8 +48,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROIC"] = {"valore": val, "note": note}
 
-    num = dati.get("Ricavi", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("ricavi", 0)
+    den = dati.get("attivo", 1)
     val = calcola_rot(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -59,8 +59,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROT"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Ricavi", 1)
+    num = dati.get("ebitda", 0)
+    den = dati.get("ricavi", 1)
     val = calcola_ebitda_margin(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -70,9 +70,9 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["EBITDA MARGIN"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Oneri Finanziari", 1)
-    val = calcola_ebit/of(num, den)
+    num = dati.get("ebit", 0)
+    den = dati.get("oneri_fin", 1)
+    val = calcola_ebit_of(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
     elif val < 0:
@@ -81,8 +81,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["EBIT/OF"] = {"valore": val, "note": note}
 
-    num = dati.get("Totale Attivo", 0)
-    den = dati.get("Patrimonio Netto", 1)
+    num = dati.get("totale_passivo", 0)
+    den = dati.get("patrimonio_netto", 1)
     val = calcola_leverage(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -92,8 +92,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["LEVERAGE"] = {"valore": val, "note": note}
 
-    num = dati.get("Debiti", 0)
-    den = dati.get("Patrimonio Netto", 1)
+    num = dati.get("debiti", 0)
+    den = dati.get("patrimonio_netto", 1)
     val = calcola_debt_equity(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -103,9 +103,9 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["DEBT EQUITY"] = {"valore": val, "note": note}
 
-    num = dati.get("PFN", 0)
-    den = dati.get("Patrimonio Netto", 1)
-    val = calcola_pfn/pn(num, den)
+    num = dati.get("pfn", 0)
+    den = dati.get("patrimonio_netto", 1)
+    val = calcola_pfnpn(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
     elif val < 0:
@@ -114,8 +114,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["PFN/PN"] = {"valore": val, "note": note}
 
-    num = dati.get("Patrimonio Netto", 0)
-    den = dati.get("Totale Passivo", 1)
+    num = dati.get("patrimonio_netto", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_indipendenza_fin(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -125,8 +125,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["INDIPENDENZA FIN"] = {"valore": val, "note": note}
 
-    num = dati.get("Patrimonio Netto", 0)
-    den = dati.get("Immobilizzazioni", 1)
+    num = dati.get("patrimonio_netto", 0)
+    den = dati.get("immobilizzazioni", 1)
     val = calcola_margine_struttura(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -136,8 +136,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["MARGINE STRUTTURA"] = {"valore": val, "note": note}
 
-    num = dati.get("Patrimonio Netto", 0)
-    den = dati.get("Immobilizzazioni", 1)
+    num = dati.get("patrimonio_netto", 0)
+    den = dati.get("immobilizzazioni", 1)
     val = calcola_copertura_imm(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -147,8 +147,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["COPERTURA IMM"] = {"valore": val, "note": note}
 
-    num = dati.get("Disponibilità liquide", 0)
-    den = dati.get("Passivo Corrente", 1)
+    num = dati.get("liquidita", 0)
+    den = dati.get("passivo_corr", 1)
     val = calcola_margine_tesoreria(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -158,8 +158,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["MARGINE TESORERIA"] = {"valore": val, "note": note}
 
-    num = dati.get("Attivo Corrente", 0)
-    den = dati.get("Passivo Corrente", 1)
+    num = dati.get("attivo_corr", 0)
+    den = dati.get("passivo_corr", 1)
     val = calcola_ccn(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -169,8 +169,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CCN"] = {"valore": val, "note": note}
 
-    num = dati.get("Disponibilità liquide", 0)
-    den = dati.get("Passivo Corrente", 1)
+    num = dati.get("attivo_corr", 0)
+    den = dati.get("rimanenze", 1)
     val = calcola_quick_ratio(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -180,8 +180,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["QUICK RATIO"] = {"valore": val, "note": note}
 
-    num = dati.get("Attivo Corrente", 0)
-    den = dati.get("Passivo Corrente", 1)
+    num = dati.get("attivo_corr", 0)
+    den = dati.get("passivo_corr", 1)
     val = calcola_current_ratio(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -191,8 +191,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CURRENT RATIO"] = {"valore": val, "note": note}
 
-    num = dati.get("Cash Flow Operativo", 0)
-    den = dati.get("Quota Debiti", 1)
+    num = dati.get("ebit", 0)
+    den = dati.get("oneri_fin", 1)
     val = calcola_mcc(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -202,8 +202,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["MCC"] = {"valore": val, "note": note}
 
-    num = dati.get("Cash Flow Operativo", 0)
-    den = dati.get("Quota Debiti", 1)
+    num = dati.get("flussi_cassa", 0)
+    den = dati.get("rata_debiti", 1)
     val = calcola_dscr(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -213,8 +213,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["DSCR"] = {"valore": val, "note": note}
 
-    num = dati.get("Cash Flow Operativo", 0)
-    den = dati.get("Debiti", 1)
+    num = dati.get("flussi_cassa", 0)
+    den = dati.get("debiti", 1)
     val = calcola_cashflow_debiti(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -224,9 +224,9 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CASHFLOW DEBITI"] = {"valore": val, "note": note}
 
-    num = dati.get("Disponibilità liquide", 0)
-    den = dati.get("Passivo Corrente", 1)
-    val = calcola_liquidità_immediata(num, den)
+    num = dati.get("liquidita", 0)
+    den = dati.get("passivo_corr", 1)
+    val = calcola_liquidita_immediata(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
     elif val < 0:
@@ -235,8 +235,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["LIQUIDITÀ IMMEDIATA"] = {"valore": val, "note": note}
 
-    num = dati.get("Disponibilità liquide", 0)
-    den = dati.get("Passivo Corrente", 1)
+    num = dati.get("liquidita", 0)
+    den = dati.get("passivo_corr", 1)
     val = calcola_acid_test(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -246,8 +246,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ACID TEST"] = {"valore": val, "note": note}
 
-    num = dati.get("EBITDA", 0)
-    den = dati.get("Oneri Finanziari", 1)
+    num = dati.get("ebit", 0)
+    den = dati.get("oneri_fin", 1)
     val = calcola_coverage_ratio(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -257,8 +257,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["COVERAGE RATIO"] = {"valore": val, "note": note}
 
-    num = dati.get("Cash Flow Operativo", 0)
-    den = dati.get("Ricavi", 1)
+    num = dati.get("flussi_cassa", 0)
+    den = dati.get("ricavi", 1)
     val = calcola_cf_ricavi(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -268,8 +268,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CF RICAVI"] = {"valore": val, "note": note}
 
-    num = dati.get("Cash Flow Operativo", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("flussi_cassa", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_cf_attivo(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -279,8 +279,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CF ATTIVO"] = {"valore": val, "note": note}
 
-    num = dati.get("Attivo Corrente", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("attivo_corr", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_att_corr_attivo(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -290,8 +290,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ATT CORR ATTIVO"] = {"valore": val, "note": note}
 
-    num = dati.get("Oneri Finanziari", 0)
-    den = dati.get("Ricavi", 1)
+    num = dati.get("oneri_fin", 0)
+    den = dati.get("ricavi", 1)
     val = calcola_oneri_ricavi(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -301,8 +301,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ONERI RICAVI"] = {"valore": val, "note": note}
 
-    num = dati.get("Risultato Netto", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("utile_netto", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_roa(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -312,8 +312,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["ROA"] = {"valore": val, "note": note}
 
-    num = dati.get("Patrimonio Netto", 0)
-    den = dati.get("Totale Attivo", 1)
+    num = dati.get("patrimonio_netto", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_cap_netto_attivo(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
@@ -323,9 +323,9 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["CAP NETTO ATTIVO"] = {"valore": val, "note": note}
 
-    num = dati.get("Immobilizzazioni", 0)
-    den = dati.get("Totale Attivo", 1)
-    val = calcola_rigidità_inv(num, den)
+    num = dati.get("immobilizzazioni", 0)
+    den = dati.get("totale_attivo", 1)
+    val = calcola_rigidita_inv(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
     elif val < 0:
@@ -334,8 +334,8 @@ def calcola_indici(dati):
         note = f"Numeratore: {num}, Denominatore: {den}"
     indici["RIGIDITÀ INV"] = {"valore": val, "note": note}
 
-    num = dati.get("Patrimonio Netto", 0)
-    den = dati.get("Totale Passivo", 1)
+    num = dati.get("patrimonio_netto", 0)
+    den = dati.get("totale_attivo", 1)
     val = calcola_autonomia_finanziaria(num, den)
     if den == 0:
         note = "Denominatore assente o zero"
