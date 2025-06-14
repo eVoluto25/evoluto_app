@@ -2,36 +2,55 @@ from typing import Dict
 
 def calcola_indici(dati: dict) -> dict:
     try:
+        # Safe cast con fallback 0
+        ricavi = float(dati.get("ricavi") or 0)
+        utile_netto = float(dati.get("utile_netto") or 0)
+        ammortamenti = float(dati.get("ammortamenti") or 0)
+        ebitda = float(dati.get("ebitda") or 0)
+        ebit = float(dati.get("ebit") or 0)
+        liquidita = float(dati.get("liquidità") or 0)
+        debiti_finanziari = float(dati.get("debiti_finanziari") or 0)
+        debiti_totali = float(dati.get("debiti_totali") or 0)
+        patrimonio_netto = float(dati.get("patrimonio_netto") or 0)
+        attivo_corrente = float(dati.get("attivo_corrente") or 0)
+        passivo_corrente = float(dati.get("passivo_corrente") or 0)
+        totale_attivo = float(dati.get("totale_attivo") or 0)
+        immobilizzazioni = float(dati.get("immobilizzazioni") or 0)
+        immobilizzazioni_prec = float(dati.get("immobilizzazioni_prec") or 0)
+        ricavi_anno_prec = float(dati.get("ricavi_anno_prec") or 0)
+        oneri_finanziari = float(dati.get("oneri_finanziari") or 0)
+        rimanenze = float(dati.get("rimanenze") or 0)
+
         indici = {
-            "EBITDA_margin": dati["ebitda"] / dati["ricavi"] if dati["ricavi"] else 0,
-            "Current_Ratio": dati["attivo_corrente"] / dati["passivo_corrente"] if dati["passivo_corrente"] else 0,
-            "Quick_Ratio": (dati.get("attivo_corrente", 0) - dati.get("rimanenze", 0)) / dati["passivo_corrente"] if dati["passivo_corrente"] else 0,
-            "Debt_Equity": dati["debiti_totali"] / dati["patrimonio_netto"] if dati["patrimonio_netto"] else 0,
-            "PFN_EBITDA": (float(dati.get("debiti_finanziari") or 0) - float(dati.get("liquidità") or 0)) / dati["ebitda"] if dati["ebitda"] else 0,
-            "Interest_Coverage": dati["ebit"] / dati["oneri_finanziari"] if dati["oneri_finanziari"] else 0,
-            "Oneri_Fin_su_Ricavi": dati["oneri_finanziari"] / dati["ricavi"] if dati["ricavi"] else 0,
-            "Autofinanziamento": dati["utile_netto"] + dati["ammortamenti"],
-            "Solidità_Patrimoniale": dati["patrimonio_netto"] / dati["totale_attivo"] if dati["totale_attivo"] else 0,
-            "Incidenza_Investimenti": dati["immobilizzazioni"] / dati["totale_attivo"] if dati["totale_attivo"] else 0,
-            "Crescita_Ricavi": (dati["ricavi"] - dati["ricavi_anno_prec"]) / dati["ricavi_anno_prec"] if dati["ricavi_anno_prec"] else 0,
-            "Variazione_Immobilizzazioni": (dati["immobilizzazioni"] - dati.get("immobilizzazioni_prec", 0)) / dati.get("immobilizzazioni_prec", 1)
+            "EBITDA_margin": ebitda / ricavi if ricavi else 0,
+            "Current_Ratio": attivo_corrente / passivo_corrente if passivo_corrente else 0,
+            "Quick_Ratio": (attivo_corrente - rimanenze) / passivo_corrente if passivo_corrente else 0,
+            "Debt_Equity": debiti_totali / patrimonio_netto if patrimonio_netto else 0,
+            "PFN_EBITDA": (debiti_finanziari - liquidita) / ebitda if ebitda else 0,
+            "Interest_Coverage": ebit / oneri_finanziari if oneri_finanziari else 0,
+            "Oneri_Fin_su_Ricavi": oneri_finanziari / ricavi if ricavi else 0,
+            "Autofinanziamento": utile_netto + ammortamenti,
+            "Solidità_Patrimoniale": patrimonio_netto / totale_attivo if totale_attivo else 0,
+            "Incidenza_Investimenti": immobilizzazioni / totale_attivo if totale_attivo else 0,
+            "Crescita_Ricavi": (ricavi - ricavi_anno_prec) / ricavi_anno_prec if ricavi_anno_prec else 0,
+            "Variazione_Immobilizzazioni": (immobilizzazioni - immobilizzazioni_prec) / immobilizzazioni_prec if immobilizzazioni_prec else 0,
         }
 
         indici["Z_Score"] = (
-            0.717 * ((dati["attivo_corrente"] - dati["passivo_corrente"]) / dati["totale_attivo"]) +
-            0.847 * (dati["ebit"] / dati["totale_attivo"]) +
-            3.107 * (dati["utile_netto"] / dati["totale_attivo"]) +
-            0.420 * (dati["patrimonio_netto"] / dati["debiti_totali"]) +
-            0.998 * (dati["ricavi"] / dati["totale_attivo"])
-        ) if dati["totale_attivo"] and dati["debiti_totali"] else 0
+            0.717 * ((attivo_corrente - passivo_corrente) / totale_attivo) +
+            0.847 * (ebit / totale_attivo) +
+            3.107 * (utile_netto / totale_attivo) +
+            0.420 * (patrimonio_netto / debiti_totali if debiti_totali else 0) +
+            0.998 * (ricavi / totale_attivo)
+        ) if totale_attivo else 0
 
-        # Calcolo rating MCC
+        # MCC rating
         mcc = 5
-        if indici["EBITDA_margin"] > 0.15 and dati["utile_netto"] > 0 and 0.5 <= indici["Debt_Equity"] <= 2:
+        if indici["EBITDA_margin"] > 0.15 and utile_netto > 0 and 0.5 <= indici["Debt_Equity"] <= 2:
             mcc = 1
-        elif indici["EBITDA_margin"] > 0.10 and dati["utile_netto"] > 0 and indici["Debt_Equity"] <= 3:
+        elif indici["EBITDA_margin"] > 0.10 and utile_netto > 0 and indici["Debt_Equity"] <= 3:
             mcc = 2
-        elif indici["EBITDA_margin"] > 0.05 and dati["utile_netto"] >= 0:
+        elif indici["EBITDA_margin"] > 0.05 and utile_netto >= 0:
             mcc = 3
         elif indici["EBITDA_margin"] > 0:
             mcc = 4
