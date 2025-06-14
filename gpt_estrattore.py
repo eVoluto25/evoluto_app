@@ -3,29 +3,27 @@
 import requests
 import os
 import logging
-import json
 
 GPT_API_URL = os.getenv("RENDER_GPT_URL", "https://render-gpt.example.com/estrai")
 GPT_API_KEY = os.getenv("RENDER_GPT_API_KEY")
 
 VARIABILI_ATTESE = {
     "anagrafica": [
-        "codice_fiscale", "regione", "dimensione_impresa"
+        "denominazione", "codice_fiscale", "partita_iva", "forma_giuridica", "regione", "provincia",
+        "comune", "indirizzo", "cap", "data_costituzione", "data_inizio_attivita", "codice_ateco",
+        "descrizione_ateco", "addetti", "stato_attivita", "attivita_prevalente", "dimensione_impresa"
     ],
     "bilancio": [
-        "ricavi", "ebitda", "utile_netto", "patrimonio_netto",
-        "totale_attivo", "totale_passivo", "totale_debiti",
-        "oneri_finanziari", "liquidita", "crediti", "debiti_brevi",
-        "immobilizzazioni", "passivo_consolidato", "attivo_corrente",
-        "passivo_corrente", "cassa", "pfn", "interessi_attivi",
-        "cash_flow_operativo", "rimanenze", "totale_fonti"
+        "ricavi", "ebitda", "utile_netto", "patrimonio_netto", "oneri_finanziari", "interessi_attivi",
+        "totale_attivo", "totale_passivo", "totale_debiti", "crediti", "liquidita", "debiti_brevi",
+        "immobilizzazioni", "attivo_corrente", "passivo_corrente", "pfn", "cash_flow_operativo",
+        "rimanenze", "totale_fonti", "addetti"
     ]
 }
 
 def inferisci_dimensione_impresa(bilancio: dict) -> str:
     ricavi = bilancio.get("ricavi", 0)
     addetti = bilancio.get("addetti", 0)
-
     if ricavi < 2_000_000:
         return "micro"
     elif ricavi < 10_000_000:
@@ -48,23 +46,13 @@ def estrai_dati_pdf(file_path: str) -> dict:
 
         if "anagrafica" not in result:
             result["anagrafica"] = {}
-
         if "bilancio" not in result:
             result["bilancio"] = {}
 
-        # Parsing anagrafica da visura: normalizzazione base
-        raw = result.get("anagrafica", {})
-        cf = raw.get("codice_fiscale") or raw.get("cf") or raw.get("piva")
-        regione = raw.get("regione") or raw.get("provincia") or raw.get("sede_legale")
+        # Infer dimensione impresa
+        result["anagrafica"]["dimensione_impresa"] = inferisci_dimensione_impresa(result["bilancio"])
 
-        result["anagrafica"]["codice_fiscale"] = cf
-        result["anagrafica"]["regione"] = regione
-
-        # Inferenza automatica dimensione da bilancio
-        dimensione = inferisci_dimensione_impresa(result["bilancio"])
-        result["anagrafica"]["dimensione_impresa"] = dimensione
-
-        # Controllo campi mancanti
+        # Validazione campi
         mancano = {}
         for sezione, chiavi in VARIABILI_ATTESE.items():
             presenti = result.get(sezione, {})
