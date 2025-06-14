@@ -1,50 +1,51 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
-import threading
-import uuid
-import os
-import json
-import logging
-from scoring_bandi import seleziona_bando_migliore
+from typing import Dict, Any
+from analisi_finanziaria import calcola_indici, assegna_macro_area, calcola_dimensione
+from query_supabase import estrai_bandi
+from scoring_claude import classifica_bandi_claude
 
 app = FastAPI()
-logging.basicConfig(level=logging.INFO)
-
-OUTPUT_DIR = "./elaborazioni"
-os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 class AziendaInput(BaseModel):
-    azienda: str
-    macroarea: str
-    indici: dict
+    anagrafica: Dict[str, Any]
+    bilancio: Dict[str, float]
 
-@app.post("/analizza")
-async def ricevi_dati(dati: AziendaInput):
-    elaborazione_id = str(uuid.uuid4())
-    filepath = os.path.join(OUTPUT_DIR, f"{elaborazione_id}.json")
-
-    threading.Thread(target=elabora_dati, args=(dati.dict(), filepath)).start()
-
-    return {
-        "status": "Elaborazione in corso",
-        "id_elaborazione": elaborazione_id,
-        "messaggio": "Richiesta ricevuta, il sistema eVoluto è ora attivo."
-    }
-
-def elabora_dati(dati: dict, filepath: str):
-    logging.info(f"Avvio analisi per: {dati['azienda']}")
-
-    # ⬇️ Calcolo reale del bando migliore
-    bando, diagnostica, forward_to_claude = seleziona_bando_migliore(
-        macroarea=dati["macroarea"],
-        indici=dati["indici"]
+@app.post("/analizza-azienda")
+def analizza_azienda(input_data: AziendaInput):
+    # Calcolo dimensione e indici
+    dimensione = calcola_dimensione(
+        input_data.anagrafica["dipendenti"],
+        input_data.bilancio["ricavi"],
+        input_data.bilancio["totale_attivo"]
     )
 
-    dati["top_bando"] = bando
-    dati["diagnostica"] = diagnostica
-    dati["forward_to_claude"] = forward_to_claude
+    indici = calcola_indici(input_data.bilancio)
+    macro_area = assegna_macro_area(indici)
 
-    with open(filepath, "w") as f:
-        json.dump(dati, f, indent=2)
+    # Estrazione bandi filtrati
+    bandi = estrai_bandi(
+        macro_area=macro_area,
+        codice_ateco=input_data.anagrafica["codice_ateco"],
+        regione=input_data.anagrafica["regione"],
+        dimensione=dimensione
+    )
 
-    logging.info(f"Elaborazione completata per: {dati['azienda']}")
+    # Invio a Claude per selezione finale
+    azienda_data = {
+        "regione": input_data.anagrafica["regione"],
+        "codice_ateco": input_data.anagrafica["codice_ateco"],
+        "dimensione": dimensione,
+        "macro_area": macro_area,
+        "indici": indici
+    }
+
+    commento = classifica_bandi_claude(bandi, azienda_data)
+
+    return {
+       "macro_area": macro_area,
+        "dimensione": dimensione,
+        "z_score": indici.get("Z_Score"),
+        "mcc_rating": indici.get("MCC", "N/D"),
+        "bandi_raccomandati": commento
+    }
