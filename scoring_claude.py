@@ -25,11 +25,14 @@ Analizza i bandi forniti alla luce della struttura economico-finanziaria dell’
 🎯 Obiettivo:
 Scegli solo i 3 bandi più coerenti con la struttura aziendale.
 Per ciascuno:
-- Indica il titolo del bando
-- Dai una motivazione sintetica (max 3 righe)
-- Classifica qualitativamente: Alta ✅, Media ⚠️, Bassa ❌
+**Per ogni bando con punteggio ≥80**, restituisci:
+- Titolo
+- Motivazione sintetica (max 200 caratteri per ciascun bando selezionato)
+- Spesa minima richiesta e contributo massimo concesso (se noti)
+- Percentuale di agevolazione (fondo perduto o altra forma)
+- Data di scadenza (se nota)
 
-Scarta gli altri. Rispondi in formato elenco numerato e metti come prima frase: "il sistema eVoluto ha selezionato per te:"
+Rispondi in formato JSON con una lista ordinata decrescente in formato elenco numerato e metti come prima frase: "il sistema eVoluto ha selezionato per te:"
 """
 
     response = client.messages.create(
