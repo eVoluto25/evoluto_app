@@ -48,18 +48,17 @@ def calcola_indici(dati: Dict[str, Any]) -> Dict[str, float]:
             ) if dati["totale_attivo"] and dati["debiti_totali"] else 0
         }
             # Calcolo rating MCC (approssimazione interna eVoluto)
-            mcc = 5
-            if indici["EBITDA_margin"] > 0.15 and indici["ROE"] > 0.1 and 0.5 <= indici["Debt_Equity"] <= 2:
-            mcc = 1
-            elif indici["EBITDA_margin"] > 0.10 and indici["ROE"] > 0 and indici["Debt_Equity"] <= 3:
-            mcc = 2
-            elif indici["EBITDA_margin"] > 0.05 and indici["ROE"] >= 0:
-            mcc = 3
-            elif indici["EBITDA_margin"] > 0:
-            mcc = 4
-
-            indici["MCC"] = mcc
-        return indici
+    # Calcolo rating MCC (approssimazione interna eVoluto)
+    mcc = 5
+    if indici["EBITDA_margin"] > 0.15 and indici["ROE"] > 0.1 and 0.5 <= indici["Debt_Equity"] <= 2:
+        mcc = 1
+    elif indici["EBITDA_margin"] > 0.10 and indici["ROE"] > 0 and indici["Debt_Equity"] <= 3:
+        mcc = 2
+    elif indici["EBITDA_margin"] > 0.05 and indici["ROE"] >= 0:
+        mcc = 3
+    elif indici["EBITDA_margin"] > 0:
+        mcc = 4
+    indici["MCC"] = mcc
     except Exception as e:
         return {"errore": str(e)}
 
