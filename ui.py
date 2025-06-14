@@ -2,7 +2,7 @@
 
 import gradio as gr
 import json
-from analisi_indici import estrai_dati_gpt_mock
+from gpt_estrattore import estrai_dati_pdf
 from macroarea_logica import assegna_macroarea
 from matching_bandi import filtra_bandi_macroarea
 from scoring_bandi import calcola_scoring_bando
