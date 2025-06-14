@@ -1,0 +1,63 @@
+{
+  "azienda": {
+    "denominazione": "MAMIDO SRL",
+    "codice_ateco": "25.62",
+    "regione": "Lombardia",
+    "forma_giuridica": "SRL",
+    "fatturato": 1250000,
+    "dipendenti": 9
+  },
+  "analisi_finanziaria": {
+    "EBITDA_Margin": "11.2%",
+    "Utile_Netto": "€18.400",
+    "Quick_Ratio": "0.95",
+    "Cash_Flow_Operativo": "€34.000",
+    "PFN_PN": "0.8",
+    "Debt_Equity": "1.9",
+    "Patrimonio_Netto": "€85.000",
+    "Ricavi_Spesa": "2.5x",
+    "stato_azienda": "Sana – Coerente con progetti di crescita ed espansione"
+  },
+  "macroarea": "Espansione, Internazionalizzazione, Transizione Ecologica",
+  "bandi_selezionati": [
+    {
+      "id": "BND001",
+      "titolo": "Transizione Digitale PMI 2025",
+      "score": 89,
+      "probabilita": "Alta",
+      "importo_max": "€60.000",
+      "agevolazione": "Fondo perduto 50%",
+      "cofinanziamento": true,
+      "garanzia_bancaria": "Probabile",
+      "note": "coerente con ATECO e regione, disponibile fino al 30/07"
+    },
+    {
+      "id": "BND002",
+      "titolo": "Innovazione Processi Produttivi",
+      "score": 84,
+      "probabilita": "Alta",
+      "agevolazione": "Finanziamento agevolato 0.4% + 20% fondo perduto",
+      "riserva_microimpresa": true
+    }
+  ],
+  "analisi_advisor": "Il bando Transizione Digitale è perfettamente allineato al profilo azienda. Unica criticità è la liquidità a breve. Suggerita garanzia Confidi o fondo MCC.",
+  "simulazione_garanzia": {
+    "esito": "Probabile",
+    "soglie_superate": 6,
+    "soglie_totali": 7,
+    "note": [
+      "Utile netto > 0 ✅",
+      "EBITDA Margin 8.5% ✅",
+      "Quick Ratio 0.95 ❌ (min 1)",
+      "Debt/Equity 2.1 ✅",
+      "PN positivo ✅",
+      "Cash Flow > 0 ✅"
+    ],
+    "rischio": "Moderato"
+  },
+  "raccomandazioni_finali": [
+    "Verificare possibilità anticipo fondi con banca partner",
+    "Preparare progetto tecnico semplificato entro 10 giorni",
+    "Consigliata consulenza per garanzia + rendicontazione"
+  ]
+}
