@@ -7,7 +7,7 @@ def calcola_indici(dati: dict) -> dict:
             "Current_Ratio": dati["attivo_corrente"] / dati["passivo_corrente"] if dati["passivo_corrente"] else 0,
             "Quick_Ratio": (dati.get("attivo_corrente", 0) - dati.get("rimanenze", 0)) / dati["passivo_corrente"] if dati["passivo_corrente"] else 0,
             "Debt_Equity": dati["debiti_totali"] / dati["patrimonio_netto"] if dati["patrimonio_netto"] else 0,
-            "PFN_EBITDA": (dati.get("debiti_finanziari", 0) - dati.get("liquidità", 0)) / dati["ebitda"] if dati["ebitda"] else 0,
+            "PFN_EBITDA": (float(dati.get("debiti_finanziari") or 0) - float(dati.get("liquidità") or 0)) / dati["ebitda"] if dati["ebitda"] else 0,
             "Interest_Coverage": dati["ebit"] / dati["oneri_finanziari"] if dati["oneri_finanziari"] else 0,
             "Oneri_Fin_su_Ricavi": dati["oneri_finanziari"] / dati["ricavi"] if dati["ricavi"] else 0,
             "Autofinanziamento": dati["utile_netto"] + dati["ammortamenti"],
