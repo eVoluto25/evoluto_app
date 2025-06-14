@@ -4,6 +4,7 @@ from typing import Dict, Any
 from analisi_finanziaria import calcola_indici, assegna_macro_area, calcola_dimensione
 from query_supabase import estrai_bandi
 from scoring_claude import classifica_bandi_claude
+import os
 
 app = FastAPI()
 
@@ -49,3 +50,7 @@ def analizza_azienda(input_data: AziendaInput):
         "mcc_rating": indici.get("MCC", "N/D"),
         "bandi_raccomandati": commento
     }
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    uvicorn.run(app, host="0.0.0.0", port=port)
