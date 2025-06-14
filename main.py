@@ -44,11 +44,11 @@ def analizza_azienda(input_data: AziendaInput):
     commento = classifica_bandi_claude(bandi, azienda_data)
 
     return {
-       "macro_area": macro_area,
+        "macro_area": macro_area,
         "dimensione": dimensione,
         "z_score": indici.get("Z_Score"),
         "mcc_rating": indici.get("MCC", "N/D"),
-        "bandi_raccomandati": commento
+        "bandi_raccomandati": commento  # deve essere una lista strutturata
     }
 
 if __name__ == "__main__":
