@@ -1,0 +1,146 @@
+{
+  "macroaree": {
+    "Crisi": {
+      "regole": [
+        {
+          "variabile": "calcola_current_ratio",
+          "condizione": "< 0.5",
+          "punteggio": -1
+        },
+        {
+          "variabile": "calcola_current_ratio",
+          "condizione": ">= 1",
+          "punteggio": 0
+        },
+        {
+          "variabile": "calcola_current_ratio",
+          "condizione": "missing|borderline",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_indebitamento",
+          "condizione": ">= 0.5 and <= 2",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_indebitamento",
+          "condizione": "> 3",
+          "punteggio": -1
+        },
+        {
+          "variabile": "calcola_indebitamento",
+          "condizione": "missing|borderline",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_copertura_oneri_finanziari",
+          "condizione": "> 1",
+          "punteggio": 0
+        },
+        {
+          "variabile": "calcola_copertura_oneri_finanziari",
+          "condizione": "missing|borderline",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_ebitda_margin",
+          "condizione": "> 0",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_ebitda_margin",
+          "condizione": "missing",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "utile_netto",
+          "condizione": "> 0",
+          "punteggio": 1
+        },
+        {
+          "variabile": "utile_netto",
+          "condizione": "< 0",
+          "punteggio": -1
+        },
+        {
+          "variabile": "utile_netto",
+          "condizione": "missing",
+          "punteggio": 0.5
+        }
+      ]
+    },
+    "Crescita": {
+      "regole": [
+        {
+          "variabile": "cash_flow_operativo",
+          "condizione": "> 0",
+          "punteggio": 1
+        },
+        {
+          "variabile": "cash_flow_operativo",
+          "condizione": "missing",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_autonomia_finanziaria",
+          "condizione": "> 0.3",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_autonomia_finanziaria",
+          "condizione": "missing",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_rigidita_struttura_attivo",
+          "condizione": "> 0.2",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_rigidita_struttura_attivo",
+          "condizione": "missing",
+          "punteggio": 0.5
+        }
+      ]
+    },
+    "Espansione": {
+      "regole": [
+        {
+          "variabile": "ricavi",
+          "condizione": "present",
+          "punteggio": 1
+        },
+        {
+          "variabile": "ricavi",
+          "condizione": "missing",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_ros",
+          "condizione": "> 0.05",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_ros",
+          "condizione": "missing",
+          "punteggio": 0.5
+        },
+        {
+          "variabile": "calcola_ebitda_margin",
+          "condizione": "> 0.1",
+          "punteggio": 1
+        },
+        {
+          "variabile": "calcola_ebitda_margin",
+          "condizione": "missing",
+          "punteggio": 0.5
+        }
+      ]
+    }
+  },
+  "decisione": {
+    "se_pari": "fallback_claude = true",
+    "se_max_unico": "macroarea = maggiore punteggio",
+    "note": "penalit\u00e0 o tolleranze gi\u00e0 incluse nelle regole"
+  }
+}
