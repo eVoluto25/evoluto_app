@@ -1,38 +1,120 @@
-# ui.py
-import os
+# ui.py – Interfaccia Gradio completa per flusso eVoluto
+
 import gradio as gr
-import requests
 import json
+from analisi_indici import estrai_dati_gpt_mock
+from macroarea_logica import assegna_macroarea
+from matching_bandi import filtra_bandi_macroarea
+from scoring_bandi import calcola_scoring_bando
+from claude_fallback import chiama_claude
 
-API_URL = "https://evoluto.onrender.com"  # Cambia con il tuo dominio reale se diverso
+# Stato globale
+STATO = {
+    "azienda": None,
+    "indici": None,
+    "macroarea": None,
+    "bandi_filtrati": [],
+    "bandi_scoring": [],
+    "claude_output": {}
+}
 
-def analizza_file(file):
-    with open(file.name, "rb") as f:
-        files = {"file": f}
-        res = requests.post(f"{API_URL}/upload", files=files)
-    if res.status_code != 200:
-        return f"Errore upload: {res.text}", None
+def step_1_analizza(pdf_file):
+    if not pdf_file:
+        return "Nessun file caricato", None
 
-    azienda = res.json()
-    id_bando = "TEST_001"
-    payload = {
-        "azienda": azienda,
-        "id_bando": id_bando
+    dati = estrai_dati_gpt_mock(pdf_file.name)  # simulazione GPT
+    STATO["azienda"] = dati["anagrafica"]
+    STATO["indici"] = dati["bilancio"]
+
+    macroarea = assegna_macroarea(STATO["indici"], STATO["azienda"])
+    STATO["macroarea"] = macroarea
+
+    azienda_txt = json.dumps(STATO["azienda"], indent=2, ensure_ascii=False)
+    indici_txt = json.dumps(STATO["indici"], indent=2, ensure_ascii=False)
+    return f"Macroarea: {macroarea}", f"Azienda:\n{azienda_txt}\n\nIndici:\n{indici_txt}"
+
+def step_2_filtra_bandi():
+    bandi = filtra_bandi_macroarea(STATO["macroarea"])
+    STATO["bandi_filtrati"] = bandi
+    return f"{len(bandi)} bandi compatibili trovati."
+
+def step_3_scoring():
+    risultati = []
+    for bando in STATO["bandi_filtrati"]:
+        score_data = calcola_scoring_bando(bando, STATO["azienda"], STATO["indici"], STATO["macroarea"])
+        if score_data["score"] >= 80:
+            risultati.append({
+                "ID": bando["ID_Incentivo"],
+                "Titolo": bando["Titolo"],
+                "Score": score_data["score"],
+                "Fascia": score_data["fascia"],
+                "Bando": bando,
+                "Scoring": score_data
+            })
+    STATO["bandi_scoring"] = risultati
+    opzioni = [f"{r['ID']} – {r['Titolo']} ({r['Score']} pt)" for r in risultati]
+    return opzioni
+
+def step_4_claude(scelta):
+    if not scelta:
+        return "Seleziona un bando"
+
+    selezionato = next((r for r in STATO["bandi_scoring"] if scelta.startswith(r["ID"])), None)
+    if not selezionato:
+        return "Errore selezione"
+
+    data = {
+        "azienda": {
+            **STATO["azienda"],
+            "macroarea": STATO["macroarea"],
+            "indici": STATO["indici"]
+        },
+        "bando": selezionato["Bando"],
+        "score": selezionato["Scoring"]["score"],
+        "fascia": selezionato["Scoring"]["fascia"],
+        "note": selezionato["Scoring"]["note"]
     }
-    res2 = requests.post(f"{API_URL}/score", json=payload)
-    if res2.status_code != 200:
-        return f"Errore score: {res2.text}", None
 
-    return "Analisi completata", json.dumps(res2.json(), indent=2)
+    risposta = chiama_claude(data)
+    STATO["claude_output"] = risposta
+    return json.dumps(risposta, indent=2, ensure_ascii=False)
 
-with gr.Blocks(title="eVoluto – Sistema Matching Bandi") as demo:
-    gr.Markdown("# 📊 eVoluto – Analisi automatica bilanci e bandi")
-    file_input = gr.File(label="Carica PDF Bilancio/Visura", file_types=[".pdf"])
-    button = gr.Button("Analizza e Calcola Score")
-    output_json = gr.Textbox(label="Output JSON (score + macroarea)", lines=25)
-    status = gr.Textbox(label="Esito", max_lines=1)
+def esporta_risultato():
+    export = {
+        "azienda": STATO["azienda"],
+        "indici": STATO["indici"],
+        "macroarea": STATO["macroarea"],
+        "bandi": STATO["bandi_scoring"],
+        "claude": STATO["claude_output"]
+    }
+    with open("/mnt/data/risultato_evoluto.json", "w", encoding="utf-8") as f:
+        json.dump(export, f, indent=2, ensure_ascii=False)
+    return "/mnt/data/risultato_evoluto.json"
 
-    button.click(fn=analizza_file, inputs=file_input, outputs=[status, output_json])
+with gr.Blocks(title="eVoluto – Analisi PDF + Matching Bandi") as demo:
+    gr.Markdown("# 📊 Sistema eVoluto – Matching Bandi Finanza Agevolata")
 
-port = int(os.environ.get("PORT", 10000))
-demo.launch(server_name="0.0.0.0", server_port=port)
+    with gr.Row():
+        pdf_input = gr.File(label="📁 Carica il Bilancio PDF")
+        btn_analizza = gr.Button("1️⃣ Analizza Bilancio")
+    out_macro, out_dati = gr.Textbox(label="Macroarea", lines=1), gr.Textbox(label="Dati estratti", lines=10)
+
+    btn_match = gr.Button("2️⃣ Filtra Bandi")
+    out_match = gr.Textbox(label="Risultati Matching")
+
+    btn_scoring = gr.Button("3️⃣ Calcola Scoring")
+    bandi_lista = gr.Dropdown(choices=[], label="Bandi con Score ≥ 80")
+
+    btn_claude = gr.Button("4️⃣ Analisi Claude")
+    out_claude = gr.Textbox(label="Risposta Claude", lines=10)
+
+    btn_export = gr.Button("📤 Esporta JSON")
+    out_file = gr.File(label="Download Risultati")
+
+    btn_analizza.click(step_1_analizza, inputs=pdf_input, outputs=[out_macro, out_dati])
+    btn_match.click(step_2_filtra_bandi, outputs=out_match)
+    btn_scoring.click(step_3_scoring, outputs=bandi_lista)
+    btn_claude.click(step_4_claude, inputs=bandi_lista, outputs=out_claude)
+    btn_export.click(esporta_risultato, outputs=out_file)
+
+demo.launch()

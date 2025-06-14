@@ -1,27 +1,91 @@
-# claude_fallback.py
+# claude_fallback.py – invio dati a Claude per validazione semantica + predizione
 
-import requests
 import os
-import logging
+import openai  # se usi Claude via OpenAI compatibile oppure sostituire con SDK reale
+import json
 
-CLAUDE_API_URL = os.getenv("RENDER_CLAUDE_URL", "https://render-claude.example.com/fallback")
-CLAUDE_API_KEY = os.getenv("RENDER_CLAUDE_API_KEY")
+CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")  # da Render
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-3-opus")
 
-def invia_a_claude(payload: dict) -> dict:
-    headers = {
-        "Authorization": f"Bearer {CLAUDE_API_KEY}",
-        "Content-Type": "application/json"
-    }
+def prepara_prompt_claude(data: dict) -> str:
+    azienda = data["azienda"]
+    bando = data["bando"]
+    score = data.get("score", 0)
+    fascia = data.get("fascia", "")
+    note = data.get("note", [])
+
+    prompt = f"""Sei un esperto in finanza agevolata. Valuta se il seguente bando è coerente con la situazione aziendale e assegna una probabilità di approvazione.
+
+Macroarea azienda: {azienda['macroarea']}
+Regione: {azienda.get('regione', 'ND')}
+Codice ATECO: {azienda.get('ateco', 'ND')}
+Indicatori finanziari: {json.dumps(azienda.get('indici', {}), indent=2)}
+
+Score tecnico: {score} ({fascia})
+Note analisi: {note}
+
+Dati bando:
+Titolo: {bando.get('Titolo')}
+Obiettivo: {bando.get('Obiettivo_Finalita')}
+Forma: {bando.get('Forma_agevolazione')}
+Regioni: {bando.get('Regioni')}
+Codici ATECO: {bando.get('Codici_ATECO')}
+Scadenza: {bando.get('Data_chiusura')}
+
+Fornisci:
+- Macroarea corretta (1 parola)
+- Probabilità approvazione (alta/media/bassa)
+- Motivazione sintetica
+- Parole chiave rilevanti rilevate
+"""
+    return prompt
+
+def chiama_claude(data: dict) -> dict:
+    prompt = prepara_prompt_claude(data)
+
     try:
-        response = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=15)
-        response.raise_for_status()
-        risultato = response.json()
-        if "macroarea_validata" not in risultato:
-            return {"errore": "Claude non ha restituito macroarea_validata"}
+        response = openai.ChatCompletion.create(
+            model=CLAUDE_MODEL,
+            api_key=CLAUDE_API_KEY,
+            messages=[
+                {"role": "system", "content": "Agisci come esperto di bandi pubblici italiani."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.4,
+        )
+        testo = response.choices[0].message["content"]
+
         return {
-            "macroarea_validata": risultato.get("macroarea_validata"),
-            "motivazione": risultato.get("motivazione", "N/D")
+            "claude_output_raw": testo,
+            "claude_parsed": parse_output_claude(testo)
         }
+
     except Exception as e:
-        logging.error(f"Errore Claude fallback: {e}")
-        return {"errore": str(e), "macroarea_validata": None, "motivazione": None}
+        return {
+            "errore": str(e),
+            "claude_output_raw": None,
+            "claude_parsed": None
+        }
+
+def parse_output_claude(testo: str) -> dict:
+    # Estrazione base da testo in linguaggio naturale
+    output = {
+        "macroarea_validata": None,
+        "approvazione_probabile": None,
+        "motivazione": None,
+        "note_semantiche": None
+    }
+    testo_lower = testo.lower()
+
+    if "espansione" in testo_lower: output["macroarea_validata"] = "Espansione"
+    elif "crescita" in testo_lower: output["macroarea_validata"] = "Crescita"
+    elif "crisi" in testo_lower: output["macroarea_validata"] = "Crisi"
+
+    if "alta" in testo_lower: output["approvazione_probabile"] = "alta"
+    elif "media" in testo_lower: output["approvazione_probabile"] = "media"
+    elif "bassa" in testo_lower: output["approvazione_probabile"] = "bassa"
+
+    output["motivazione"] = testo
+    output["note_semantiche"] = "Autoestratto Claude – parsing base"
+
+    return output
