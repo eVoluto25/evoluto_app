@@ -1,11 +1,9 @@
-# gpt_estrattore.py
-
 import requests
 import os
 import logging
+import openai
 
-GPT_API_URL = os.getenv("RENDER_GPT_URL", "https://render-gpt.example.com/estrai")
-GPT_API_KEY = os.getenv("RENDER_GPT_API_KEY")
+openai.api_key = os.getenv("OPENAI_KEY")
 
 VARIABILI_ATTESE = {
     "anagrafica": [
@@ -13,11 +11,13 @@ VARIABILI_ATTESE = {
         "comune", "indirizzo", "cap", "data_costituzione", "data_inizio_attivita", "codice_ateco",
         "descrizione_ateco", "addetti", "stato_attivita", "attivita_prevalente", "dimensione_impresa"
     ],
-    "bilancio": [
-        "ricavi", "ebitda", "utile_netto", "patrimonio_netto", "oneri_finanziari", "interessi_attivi",
-        "totale_attivo", "totale_passivo", "totale_debiti", "crediti", "liquidita", "debiti_brevi",
-        "immobilizzazioni", "attivo_corrente", "passivo_corrente", "pfn", "cash_flow_operativo",
-        "rimanenze", "totale_fonti", "addetti"
+   "bilancio": [
+  "ricavi", "ebitda", "utile_netto", "patrimonio_netto",
+  "oneri_finanziari", "interessi_attivi", "totale_attivo",
+  "totale_passivo", "totale_debiti", "crediti", "liquidita",
+  "debiti_brevi", "immobilizzazioni", "attivo_corrente",
+  "passivo_corrente", "cash_flow_operativo", "rimanenze",
+  "totale_fonti", "pfn", "addetti", "altri_debiti_lungo"
     ]
 }
 
