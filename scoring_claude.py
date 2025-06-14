@@ -2,7 +2,7 @@ import os
 import anthropic
 from typing import List, Dict
 
-client = anthropic.Anthropic(api_key=os.getenv("CLAUDE_API_KEY"))
+client = anthropic.Anthropic(api_key=os.getenv("CLAUDE_KEY"))
 
 def classifica_bandi_claude(bandi: List[Dict], azienda: Dict) -> str:
     prompt = f"""
