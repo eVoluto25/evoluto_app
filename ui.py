@@ -1,4 +1,4 @@
-# ui.py – Interfaccia Gradio completa per flusso eVoluto
+# ui.py – Interfaccia Gradio aggiornata con analisi Claude automatica su top 3 bandi
 
 import gradio as gr
 import json
@@ -6,26 +6,24 @@ from analisi_indici import estrai_dati_gpt_mock
 from macroarea_logica import assegna_macroarea
 from matching_bandi import filtra_bandi_macroarea
 from scoring_bandi import calcola_scoring_bando
-from claude_fallback import chiama_claude
+from claude_fallback import analizza_top_bandi
 
-# Stato globale
 STATO = {
     "azienda": None,
     "indici": None,
     "macroarea": None,
     "bandi_filtrati": [],
     "bandi_scoring": [],
-    "claude_output": {}
+    "claude_output": []
 }
 
 def step_1_analizza(pdf_file):
     if not pdf_file:
         return "Nessun file caricato", None
 
-    dati = estrai_dati_gpt_mock(pdf_file.name)  # simulazione GPT
+    dati = estrai_dati_gpt_mock(pdf_file.name)
     STATO["azienda"] = dati["anagrafica"]
     STATO["indici"] = dati["bilancio"]
-
     macroarea = assegna_macroarea(STATO["indici"], STATO["azienda"])
     STATO["macroarea"] = macroarea
 
@@ -51,33 +49,19 @@ def step_3_scoring():
                 "Bando": bando,
                 "Scoring": score_data
             })
-    STATO["bandi_scoring"] = risultati
-    opzioni = [f"{r['ID']} – {r['Titolo']} ({r['Score']} pt)" for r in risultati]
+    STATO["bandi_scoring"] = sorted(risultati, key=lambda x: -x["Score"])
+    opzioni = [f"{r['ID']} – {r['Titolo']} ({r['Score']} pt)" for r in STATO["bandi_scoring"]]
     return opzioni
 
-def step_4_claude(scelta):
-    if not scelta:
-        return "Seleziona un bando"
-
-    selezionato = next((r for r in STATO["bandi_scoring"] if scelta.startswith(r["ID"])), None)
-    if not selezionato:
-        return "Errore selezione"
-
-    data = {
-        "azienda": {
-            **STATO["azienda"],
-            "macroarea": STATO["macroarea"],
-            "indici": STATO["indici"]
-        },
-        "bando": selezionato["Bando"],
-        "score": selezionato["Scoring"]["score"],
-        "fascia": selezionato["Scoring"]["fascia"],
-        "note": selezionato["Scoring"]["note"]
-    }
-
-    risposta = chiama_claude(data)
-    STATO["claude_output"] = risposta
-    return json.dumps(risposta, indent=2, ensure_ascii=False)
+def step_4_claude_batch():
+    risultati = analizza_top_bandi(
+        STATO["bandi_scoring"],
+        STATO["azienda"],
+        STATO["macroarea"],
+        STATO["indici"]
+    )
+    STATO["claude_output"] = risultati
+    return json.dumps(risultati, indent=2, ensure_ascii=False)
 
 def esporta_risultato():
     export = {
@@ -105,8 +89,8 @@ with gr.Blocks(title="eVoluto – Analisi PDF + Matching Bandi") as demo:
     btn_scoring = gr.Button("3️⃣ Calcola Scoring")
     bandi_lista = gr.Dropdown(choices=[], label="Bandi con Score ≥ 80")
 
-    btn_claude = gr.Button("4️⃣ Analisi Claude")
-    out_claude = gr.Textbox(label="Risposta Claude", lines=10)
+    btn_claude = gr.Button("4️⃣ Analisi Claude (Top 3)")
+    out_claude = gr.Textbox(label="Risposte Claude", lines=10)
 
     btn_export = gr.Button("📤 Esporta JSON")
     out_file = gr.File(label="Download Risultati")
@@ -114,7 +98,7 @@ with gr.Blocks(title="eVoluto – Analisi PDF + Matching Bandi") as demo:
     btn_analizza.click(step_1_analizza, inputs=pdf_input, outputs=[out_macro, out_dati])
     btn_match.click(step_2_filtra_bandi, outputs=out_match)
     btn_scoring.click(step_3_scoring, outputs=bandi_lista)
-    btn_claude.click(step_4_claude, inputs=bandi_lista, outputs=out_claude)
+    btn_claude.click(step_4_claude_batch, outputs=out_claude)
     btn_export.click(esporta_risultato, outputs=out_file)
 
 demo.launch()
