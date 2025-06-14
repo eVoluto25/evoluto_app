@@ -1,5 +1,5 @@
 {
-  "istruzioni": "Estrai dai PDF allegati i dati anagrafici e di bilancio dell\u2019azienda nel seguente formato JSON. I dati anagrafici derivano dalla visura camerale, quelli economico-finanziari dal bilancio. Restituisci solo i valori numerici (senza simboli o testo) e rispetta esattamente le chiavi specificate. Se un dato non \u00e8 disponibile, omettilo dal risultato.",
+  "istruzioni": "Estrai dai PDF allegati i dati anagrafici e di bilancio dell'azienda nel seguente formato JSON. I dati anagrafici derivano dalla visura camerale, quelli economico-finanziari dal bilancio. Restituisci solo i valori numerici (senza simboli o testo) e rispetta esattamente le chiavi specificate. Se un dato è disponibile, omettilo dal risultato scrivendo ND.",
   "output_atteso": {
     "anagrafica": {
       "denominazione": "string",
@@ -42,5 +42,5 @@
       "addetti": "int"
     }
   },
-  "formato_richiesto": "JSON puro, senza commenti n\u00e9 intestazioni"
+  "formato_richiesto": "JSON puro, senza commenti"
 }
