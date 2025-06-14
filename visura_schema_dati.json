@@ -9,15 +9,12 @@
     "comune": "",
     "indirizzo": "",
     "cap": "",
-    "pec": "",
-    "rea": "",
     "data_costituzione": "",
     "data_inizio_attivita": "",
     "codice_ateco": "",
     "descrizione_ateco": "",
     "addetti": 0,
-    "rating_legalita": "",
-    "certificazione_soa": "",
-    "certificazione_qualita": ""
+     "stato_attivita": "",
+    "attivita_prevalente": "",
   }
 }
