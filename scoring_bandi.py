@@ -1,106 +1,123 @@
-# scoring_bandi.py
+# scoring_bandi.py – scoring 100 pt + fallback Claude
 
-def calcola_score(bando, azienda):
-    log = []
+import logging
+import json
+import os
+
+# Lettura pesi dinamici se presenti
+def carica_pesi():
+    try:
+        with open("scoring_pesi.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {
+            "macroarea": 30,
+            "finanziaria": 25,
+            "forma": 15,
+            "dimensione": 10,
+            "cofinanziamento": 10,
+            "settore_territorio": 10
+        }
+
+def calcola_scoring_bando(bando: dict, azienda: dict, indici: dict, macroarea: str) -> dict:
+    pesi = carica_pesi()
     score = 0
-    fallback = False
-    nd_counter = 0
-
-    macroarea_bando = bando.get("obiettivo_macroarea")
-    macroarea_azienda = azienda.get("macroarea_primaria")
+    dettaglio = {}
+    note = []
+    forward_to_claude = False
 
     # A. Macroarea (30 pt)
-    if macroarea_bando and macroarea_azienda:
-        if macroarea_bando == macroarea_azienda:
-            score += 30
-        elif azienda.get("macroarea_alternativa") == macroarea_bando:
-            score += 20
-        else:
-            log.append("Macroarea non coerente")
+    obiettivo = (bando.get("Obiettivo_Finalita") or "").lower()
+    if macroarea.lower() in obiettivo:
+        punteggio = pesi["macroarea"]
+    elif any(kw in obiettivo for kw in ["sviluppo", "ricerca", "impresa"]):
+        punteggio = 20
+    elif not obiettivo:
+        punteggio = 0
+        forward_to_claude = True
+        note.append("Obiettivo_Finalita non definito")
     else:
-        fallback = True
-        nd_counter += 1
-        log.append("Macroarea non disponibile")
+        punteggio = 0
+    score += punteggio
+    dettaglio["macroarea"] = punteggio
 
     # B. Solidità Finanziaria (25 pt)
-    indici = azienda.get("indici", {})
-    ebitda_margin = indici.get("calcola_ebitda_margin")
-    utile_netto = azienda.get("utile_netto")
-    debt_equity = indici.get("calcola_debt_equity")
+    pf = 0
+    if indici.get("calcola_ebitda_margin", 0) > 0.10: pf += 10
+    elif indici.get("calcola_ebitda_margin") is None: pf -= 3
 
-    if ebitda_margin is not None and ebitda_margin > 0.10:
-        score += 10
-    elif ebitda_margin is None:
-        nd_counter += 1
-        log.append("EBITDA Margin ND")
+    if azienda.get("utile_netto", 0) > 0: pf += 10
+    elif azienda.get("utile_netto") is None: pf -= 3
+    elif azienda.get("utile_netto") < 0: pf -= 5
 
-    if utile_netto is not None and utile_netto > 0:
-        score += 10
-    elif utile_netto is None:
-        nd_counter += 1
-        log.append("Utile netto ND")
-
-    if debt_equity is not None and 0.5 <= debt_equity <= 2:
-        score += 5
-    elif debt_equity is None:
-        nd_counter += 1
-        log.append("Debt/Equity ND")
-
-    # C. Forma Agevolazione (15 pt)
-    forma = bando.get("Forma_agevolazione", "").lower()
-    if "fondo perduto" in forma:
-        score += 15
-    elif "credito" in forma:
-        score += 12
-    elif "finanziamento" in forma:
-        score += 8
+    d_e = indici.get("calcola_indebitamento")
+    if d_e is not None:
+        if 0.5 <= d_e <= 2: pf += 5
+        else: pf -= 5
     else:
-        nd_counter += 1
-        log.append("Forma agevolazione non riconosciuta")
+        pf -= 3
 
-    # D. Dimensione (10 pt)
-    dim_bando = bando.get("Dimensioni")
-    dim_azienda = azienda.get("dimensione_impresa")
-    if dim_bando == dim_azienda:
-        score += 10
-    elif dim_bando and dim_azienda:
-        score += 6
-    else:
-        nd_counter += 1
-        log.append("Dimensione non definita")
+    pf = max(0, pf)
+    score += pf
+    dettaglio["finanziaria"] = pf
+
+    # C. Forma agevolazione (15 pt)
+    forma = (bando.get("Forma_agevolazione") or "").lower()
+    if "fondo" in forma: p = 15
+    elif "credito" in forma: p = 12
+    elif "finanziamento" in forma: p = 10
+    else: p = 0
+    score += p
+    dettaglio["forma"] = p
+
+    # D. Dimensione azienda (10 pt)
+    azi_dim = azienda.get("dimensione", "").lower()
+    bando_dim = (bando.get("Dimensioni") or "").lower()
+    if azi_dim and azi_dim in bando_dim: p = 10
+    elif azi_dim and any(x in bando_dim for x in ["micro", "pmi", "media"]) and azi_dim != bando_dim: p = 6
+    elif not azi_dim: p = 0; note.append("Dimensione azienda mancante")
+    else: p = 0
+    score += p
+    dettaglio["dimensione"] = p
 
     # E. Cofinanziamento (10 pt)
-    quick = indici.get("calcola_quick_ratio")
-    pfn_pn = indici.get("calcola_pfn_pn")
-    cf = azienda.get("cash_flow_operativo")
+    pc = 0
+    if indici.get("calcola_quick_ratio", 0) > 1: pc += 5
+    if indici.get("calcola_pfn_su_patrimonio", 0) < 1: pc += 3
+    if azienda.get("cash_flow_operativo", 0) > 0: pc += 2
+    if pc == 0: note.append("Cofinanziamento debole o assente")
+    score += pc
+    dettaglio["cofinanziamento"] = pc
 
-    if quick and quick > 1:
-        score += 5
-    if pfn_pn and pfn_pn < 1:
-        score += 3
-    if cf and cf > 0:
-        score += 2
+    # F. Settore e territorio (10 pt)
+    pt = 0
+    ateco_az = azienda.get("ateco", "")
+    reg_az = azienda.get("regione", "")
+    codici_bando = (bando.get("Codici_ATECO") or "").lower()
+    regioni_bando = (bando.get("Regioni") or "").lower()
 
-    if all(x in (None, 0) for x in [quick, pfn_pn, cf]):
-        score -= 5
-        log.append("Cofinanziamento assente")
-        nd_counter += 1
-
-    # F. ATECO + Territorio (10 pt)
-    if azienda.get("match_ateco") and azienda.get("match_regione"):
-        score += 10
-    elif azienda.get("match_ateco") or azienda.get("match_regione"):
-        score += 5
+    if ateco_az.lower() in codici_bando and reg_az.lower() in regioni_bando:
+        pt = 10
+    elif ateco_az.lower() in codici_bando or reg_az.lower() in regioni_bando:
+        pt = 5
     else:
-        log.append("ATECO o regione non compatibili")
-        nd_counter += 1
+        pt = 0
+        if not ateco_az: note.append("Codice ATECO azienda mancante")
+    score += pt
+    dettaglio["settore_territorio"] = pt
 
-    # Diagnostica e trigger fallback
-    if score < 40 or nd_counter >= 3 or azienda.get("dati_incompleti"):
-        fallback = True
+    # Fascia
+    if score >= 80: fascia = "Alta probabilità"
+    elif score >= 60: fascia = "Media probabilità"
+    elif score >= 40: fascia = "Bassa probabilità"
+    else:
+        fascia = "Non idoneo"
+        forward_to_claude = True
 
     return {
-        "score": max(score, 0),
-        "log_scoring": log,
-        "forward_to_claude": fallback
+        "score": round(score, 2),
+        "fascia": fascia,
+        "dettaglio": dettaglio,
+        "note": note,
+        "forward_to_claude": forward_to_claude
     }
