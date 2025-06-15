@@ -1,6 +1,3 @@
-
-# scoring_claude.py
-
 def calcola_punteggio_bando(bando, azienda):
     punteggio = 0
     log = {}
