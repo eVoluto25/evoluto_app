@@ -1,4 +1,5 @@
 from supabase import create_client
+from typing import Optional
 import os
 
 # Collegamento a Supabase tramite chiavi salvate su Render
