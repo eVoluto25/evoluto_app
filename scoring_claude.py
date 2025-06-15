@@ -1,84 +1,91 @@
-from typing import List, Dict
-import os
-from anthropic import Anthropic
 
-client = Anthropic(api_key=os.getenv("CLAUDE_KEY"))
+# scoring_claude.py
 
-def classifica_bandi_claude(bandi: List[Dict], azienda: Dict) -> str:
-    prompt = f"""
-Hai a disposizione un elenco di bandi pubblici e i dati di una azienda. Analizza i dati e assegna un punteggio da 0 a 100 a ciascun bando secondo i seguenti criteri:
+def calcola_punteggio_bando(bando, azienda):
+    punteggio = 0
+    log = {}
 
-Criteri di scoring:
-1. Solidità finanziaria (peso 40%)
-   - EBITDA Margin > 10% → + punti
-   - Utile netto positivo → + punti
-   - Debt/Equity tra 0.5 e 2 → + punti
-   - Z-Score e MCC (se critici) → penalizzazione
+    # 1. Solidità finanziaria (50%)
+    solidita = 0
+    ebitda = azienda.get("ebitda", 0)
+    utile_netto = azienda.get("utile_netto", 0)
+    debiti_finanziari = azienda.get("debiti_finanziari", 0)
+    patrimonio_netto = azienda.get("patrimonio_netto", 0)
+    z_score = azienda.get("z_score", None)
+    mcc_rating = azienda.get("mcc_rating", None)
 
-2. Forma dell’agevolazione (peso 20%)
-   - Fondo perduto: massimo
-   - Credito d’imposta: medio
-   - Finanziamento agevolato: basso
+    # EBITDA positivo
+    if ebitda > 0:
+        solidita += 1
+        log["ebitda_positivo"] = 1
+    else:
+        log["ebitda_positivo"] = 0
 
-3. Dimensione aziendale (peso 15%)
-   - Match perfetto → massimo punteggio
-   - Mismatch → penalità
+    # Utile positivo
+    if utile_netto > 0:
+        solidita += 1
+        log["utile_positivo"] = 1
+    else:
+        log["utile_positivo"] = 0
 
-4. Capacità di co-finanziamento (peso 15%)
-   - Basata su MCC, Z-Score e utile netto
+    # Debt/Equity
+    debt_equity = debiti_finanziari / patrimonio_netto if patrimonio_netto else None
+    if debt_equity is not None and 0.5 <= debt_equity <= 2:
+        solidita += 1
+        log["debt_equity_ok"] = 1
+    else:
+        log["debt_equity_ok"] = 0
 
-5. Coerenza economica bando/azienda (peso 10%)
-   - Analizza spesa minima e contributo in relazione alla struttura aziendale
+    # Z-score critico
+    if z_score is not None and z_score < 1.8:
+        solidita -= 1
+        log["z_score_critico"] = -1
+    else:
+        log["z_score_critico"] = 0
 
-I dati aziendali sono:
-Regione: {azienda['regione']}
-Codice ATECO: {azienda['codice_ateco']}
-Dimensione: {azienda['dimensione']}
-Macro-area: {azienda['macro_area']}
-Z-Score: {azienda['indici'].get('Z_Score', 'N/D')}
-MCC: {azienda['indici'].get('MCC', 'N/D')}
+    # MCC critico
+    if mcc_rating is not None and mcc_rating >= 4:
+        solidita -= 1
+        log["mcc_critico"] = -1
+    else:
+        log["mcc_critico"] = 0
 
----
-Bandi disponibili (max 25):
-{bandi}
+    punteggio += max(0, solidita) * 50 / 5
 
-🎯 Obiettivo:
-Scegli solo i 3 bandi più coerenti con la struttura aziendale tra quelli **con punteggii ≥80**
-Per ciascuno dei 3 restituisci::
-- Titolo
-- Obiettivo e finalità dell'incentivo
-- Motivazione sintetica (max 150 caratteri per ciascun bando selezionato)
-- Spesa minima richiesta e contributo massimo concesso (se noti)
-- Percentuale e tipo di agevolazione (fondo perduto o altra forma)
-- Data di scadenza (se nota)
+    # 2. Forma dell’agevolazione (25%)
+    forma = bando.get("forma_agevolazione", "").lower()
+    if "fondo perduto" in forma:
+        punteggio += 25
+        log["forma_agevolazione"] = "fondo perduto"
+    elif "credito d’imposta" in forma:
+        punteggio += 12.5
+        log["forma_agevolazione"] = "credito d’imposta"
+    elif "finanziamento" in forma:
+        punteggio += 6.25
+        log["forma_agevolazione"] = "finanziamento"
+    else:
+        log["forma_agevolazione"] = "non specificata"
 
-Rispondi in formato JSON strutturato come segue:
-{
-  "macro_area": "...",
-  "dimensione": "...",
-  "z_score": ...,
-  "mcc_rating": ...,
-  "bandi_raccomandati": [
-    {
-      "titolo": "...",
-      "motivazione": "...",
-      "spesa_minima": "...",
-      "agevolazione": "...",
-      "scadenza": "..."
-    },
-    ...max 3...
-  ]
-}
-La prima frase del JSON deve essere: "il sistema eVoluto ha selezionato per te:"
-"""
+    # 3. Capacità di co-finanziamento (15%)
+    if utile_netto > 0 and mcc_rating is not None and mcc_rating <= 3:
+        punteggio += 15
+        log["capacita_cofinanziamento"] = "alta"
+    elif utile_netto < 0 and mcc_rating is not None and mcc_rating >= 4:
+        punteggio -= 5
+        log["capacita_cofinanziamento"] = "bassa"
+    else:
+        log["capacita_cofinanziamento"] = "media"
 
-    response = client.messages.create(
-        model="claude-3-opus-20240229",
-        max_tokens=1000,
-        temperature=0.3,
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
+    # 4. Coerenza economica bando/azienda (10%)
+    spesa_minima = bando.get("spesa_minima", None)
+    totale_attivo = azienda.get("totale_attivo", None)
+    if spesa_minima is not None and totale_attivo is not None:
+        if spesa_minima <= 0.5 * totale_attivo:
+            punteggio += 10
+            log["coerenza_spesa"] = "coerente"
+        else:
+            log["coerenza_spesa"] = "non coerente"
+    else:
+        log["coerenza_spesa"] = "dati insufficienti"
 
-    return response.content[0].text if response.content else "Errore nella risposta di Claude."
+    return round(punteggio, 2), log
