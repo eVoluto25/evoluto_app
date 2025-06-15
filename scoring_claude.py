@@ -43,11 +43,11 @@ Bandi disponibili (max 25):
 {bandi}
 
 🎯 Obiettivo:
-Scegli solo i 3 bandi più coerenti con la struttura aziendale.
-Per ciascuno:
-**Per ogni bando con punteggio ≥80**, restituisci:
+Scegli solo i 3 bandi più coerenti con la struttura aziendale tra quelli **con punteggii ≥80**
+Per ciascuno dei 3 restituisci::
 - Titolo
-- Motivazione sintetica (max 300 caratteri per ciascun bando selezionato)
+- Obiettivo e finalità dell'incentivo
+- Motivazione sintetica (max 150 caratteri per ciascun bando selezionato)
 - Spesa minima richiesta e contributo massimo concesso (se noti)
 - Percentuale e tipo di agevolazione (fondo perduto o altra forma)
 - Data di scadenza (se nota)
