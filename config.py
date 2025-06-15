@@ -1,7 +1,7 @@
 import os
 
 # Claude API key
-CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
+CLAUDE_KEY = os.getenv("CLAUDE_KEY")
 
 # Supabase credentials
 SUPABASE_URL = os.getenv("SUPABASE_URL")
