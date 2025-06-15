@@ -85,7 +85,7 @@ async def analizza_azienda(dati: InputDati):
         logger.info("Risposta Claude ricevuta")
 
         return {
-            "macro_area=assegna_macro_area(dati.bilancio),
+            "macro_area": assegna_macro_area(dati.bilancio),
             "dimensione": dimensione_azienda(dati.anagrafica),
             "z_score": z_score,
             "mcc_rating": mcc_rating,
