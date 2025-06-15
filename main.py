@@ -109,6 +109,22 @@ def stima_mcc(bilancio: Bilancio) -> int:
         return 3
     return 4
 
+def assegna_macro_area(bilancio: Bilancio) -> str:
+    ricavi = bilancio.ricavi or 0
+    ebitda = bilancio.ebitda or 0
+    immobilizzazioni = bilancio.immobilizzazioni or 0
+
+    if ricavi < 150000 or ebitda < 10000:
+        return "Crisi"
+
+    if ricavi < 1000000 and ebitda >= 10000 and immobilizzazioni < 200000:
+        return "Sviluppo"
+
+    if ricavi >= 1000000 and immobilizzazioni >= 200000:
+        return "Espansione"
+
+    return "Sviluppo"
+
 def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], regione: Optional[str]):
     # MOCK: sostituire con query a Supabase
     bandi_mock = [
