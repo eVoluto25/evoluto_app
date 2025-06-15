@@ -6,7 +6,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def recupera_bandi_da_macroarea(macro_area, codice_ateco, regione):
+def recupera_bandi_filtrati((macro_area, codice_ateco, regione):
     tabella_mapping = {
         "Crisi o Risanamento Aziendale": "bandi_crisi",
         "Crescita e Sviluppo": "bandi_crescita",
