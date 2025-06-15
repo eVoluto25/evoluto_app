@@ -6,7 +6,7 @@ from prompt_claude import PROMPT_CLAUDE
 
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 
-def prompt = PROMPT_CLAUDE.format(
+    prompt = PROMPT_CLAUDE.format(
     macro_area=macro_area,
     dimensione=dimensione,
     codice_ateco=codice_ateco,
@@ -16,7 +16,7 @@ def prompt = PROMPT_CLAUDE.format(
     mcc=mcc_rating,
     z_score=z_score,
     bandi=bandi_filtrati_json
-)
+    )
 
     headers = {
         "x-api-key": CLAUDE_KEY,
