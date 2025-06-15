@@ -6,10 +6,21 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def recupera_bandi_filtrati(...):
-    ...
+def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], regione: Optional[str]):
+    tabella = None
+    if macro_area == "Crisi":
+        tabella = "bandi_crisi"
+    elif macro_area == "Sviluppo":
+        tabella = "bandi_crescita"
+    elif macro_area == "Espansione":
+        tabella = "bandi_espansione"
+    else:
+        return []
+
+    response = supabase.table(tabella).select("*").execute()
     bandi = []
-    for row in query_supabase(...):  # pseudocodice
+
+    for row in response.data:
         bandi.append({
             "ID_incentivo": row["ID_incentivo"],
             "Titolo": row["Titolo"],
@@ -23,4 +34,5 @@ def recupera_bandi_filtrati(...):
             "Codici_ATECO": row["Codici_ATECO"],
             "Regioni": row["Regioni"]
         })
+
     return bandi
