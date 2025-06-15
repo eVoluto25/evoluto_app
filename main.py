@@ -1,102 +1,58 @@
-
+import json
 import os
 import logging
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Dict, Any
-from analisi_finanziaria import calcola_indici, assegna_macro_area, calcola_dimensione
-from query_supabase import estrai_bandi
-from scoring_claude import classifica_bandi_claude
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from query_supabase import get_bandi_filtrati
 
 app = FastAPI()
 
-class Anagrafica(BaseModel):
-    codice_ateco: str
-    dipendenti: int
-    regione: str
+# Configurazione logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-class Bilancio(BaseModel):
-    ricavi: Any
-    utile_netto: Any
-    ebitda: Any
-    ebit: Any
-    ammortamenti: Any
-    oneri_finanziari: Any
-    patrimonio_netto: Any
-    attivo_corrente: Any
-    passivo_corrente: Any
-    debiti_totali: Any
-    debiti_finanziari: Any
-    totale_attivo: Any
-    immobilizzazioni: Any
-    ricavi_anno_prec: Any
-    immobilizzazioni_prec: Any
-
-class AziendaInput(BaseModel):
-    anagrafica: Anagrafica
-    bilancio: Bilancio
+# Abilitazione CORS per permettere chiamate da altri domini
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/analizza-azienda")
-def analizza_azienda(input_data: AziendaInput):
+async def analizza_azienda(request: Request):
+    try:
+        data = await request.json()
+        logger.info("Dati ricevuti da GPT: %s", json.dumps(data, indent=2))
 
-    logger.debug("Calcolo dimensione e indici")
-    dimensione = calcola_dimensione(
-        int(input_data.anagrafica.dipendenti or 0),
-        float(input_data.bilancio.ricavi or 0.0),
-        float(input_data.bilancio.totale_attivo or 0.0)
-    )
+        macro_area = data.get("macro_area")
+        codice_ateco = data.get("codice_ateco")
+        regione = data.get("regione")
+        dimensione = data.get("dimensione")
 
-    logger.debug("Pulizia dati di bilancio in corso")
-    bilancio_pulito = {}
-    chiavi_bilancio = [
-        "utile_netto", "ebit", "ebitda", "fatturato",
-        "patrimonio_netto", "debiti_totali", "debiti_finanziari",
-        "totale_attivo", "attivo_corrente", "passivo_corrente",
-        "interessi_passivi", "oneri_finanziari",
-        "immobilizzazioni", "immobilizzazioni_prec", "ricavi_anno_prec"
-    ]
+        # Verifica campi obbligatori
+        if not all([macro_area, codice_ateco, regione, dimensione]):
+            return {"errore": "Dati mancanti per l'interrogazione. Verifica macro_area, codice_ateco, regione, dimensione."}
 
-    for k in chiavi_bilancio:
-        raw = input_data.bilancio.__dict__.get(k)
-        try:
-            bilancio_pulito[k] = float(raw)
-        except (TypeError, ValueError):
-            logger.warning(f"[{k}] valore assente o non valido: '{raw}', impostato a 0.")
-            bilancio_pulito[k] = 0.0
+        # Interrogazione tabella corretta in Supabase
+        bandi_filtrati = get_bandi_filtrati(macro_area, codice_ateco, regione, dimensione, max_results=25)
 
-    logger.debug(f"Dati di bilancio puliti: {bilancio_pulito}")
+        # Estrazione variabili chiave da passare a Claude
+        z_score = data.get("z_score", "ND")
+        mcc_rating = data.get("mcc_rating", "ND")
+        utile_netto = data.get("utile_netto", 0)
 
-    indici = calcola_indici(bilancio_pulito)
-    logger.debug(f"Indici calcolati: {indici}")
+        logger.info("Bandi filtrati trovati: %d", len(bandi_filtrati))
 
-    macro_area = assegna_macro_area(indici)
-    logger.debug(f"Macro area assegnata: {macro_area}")
+        return {
+            "bandi": bandi_filtrati,
+            "z_score": z_score,
+            "mcc_rating": mcc_rating,
+            "utile_netto": utile_netto,
+            "dimensione": dimensione
+        }
 
-    bandi = estrai_bandi(macro_area, dimensione)
-    logger.debug(f"Bandi estratti: {bandi[:3]}")
-
-    azienda_data = {
-        "regione": input_data.anagrafica.regione,
-        "codice_ateco": input_data.anagrafica.codice_ateco,
-        "dimensione": dimensione,
-        "indici": indici,
-    }
-
-    commento = classifica_bandi_claude(bandi, azienda_data)
-    logger.debug("Commento Claude generato")
-
-    return {
-        "macro_area": macro_area,
-        "dimensione": dimensione,
-        "z_score": indici.get("Z_Score"),
-        "mcc_rating": indici.get("MCC", "N/D"),
-        "bandi_raccomandati": commento
-    }
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 7860))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    except Exception as e:
+        logger.error("Errore nell'analisi aziendale: %s", str(e))
+        return {"errore": f"Errore durante l'elaborazione: {str(e)}"}
