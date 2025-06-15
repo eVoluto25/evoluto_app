@@ -1,33 +1,44 @@
-from supabase import create_client, Client
-from typing import List, Dict
+from supabase import create_client
 import os
 
+# Collegamento a Supabase tramite chiavi salvate su Render
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def estrai_bandi(macro_area: str, codice_ateco: str, regione: str, dimensione: str, limite: int = 15) -> List[Dict]:
-    tabella_map = {
-        "Crisi": "bandi_crisi",
-        "Sviluppo": "bandi_crescita",
-        "Espansione": "bandi_espansione"
+def recupera_bandi_da_macroarea(macro_area, codice_ateco, regione):
+    tabella_mapping = {
+        "Crisi o Risanamento Aziendale": "bandi_crisi",
+        "Crescita e Sviluppo": "bandi_crescita",
+        "Espansione e Transizione": "bandi_espansione"
     }
 
-    tabella = tabella_map.get(macro_area)
-    if not tabella:
+    nome_tabella = tabella_mapping.get(macro_area)
+    if not nome_tabella:
         return []
 
-    query = supabase.table(tabella).select("*")
+    try:
+        response = supabase.table(nome_tabella).select("*").execute()
+        bandi = response.data
+    except Exception as e:
+        print(f"Errore nella query Supabase: {e}")
+        return []
 
-    # Filtro per regione (se presente o "tutti")
-    query = query.or_(f"Regioni.ilike.%{regione}%,Regioni.ilike.%tutti%")
+    bandi_filtrati = []
+    for bando in bandi:
+        codici_ateco_bando = bando.get("Codici_ATECO", "").lower()
+        regione_bando = bando.get("Regione", "").lower()
 
-    # Filtro per dimensione (es. "Microimpresa")
-    query = query.or_(f"Dimensioni.ilike.%{dimensione}%,Dimensioni.ilike.%tutte%")
+        ateco_match = (
+            "tutti i settori" in codici_ateco_bando or
+            codice_ateco.lower() in codici_ateco_bando
+        )
+        regione_match = (
+            regione_bando in ["", "tutte", "tutta italia"] or
+            regione.lower() == regione_bando
+        )
 
-    # Filtro per codice ATECO: match puntuale o "tutti i settori"
-    query = query.or_(f"Codici_ATECO.ilike.%{codice_ateco}%,Codici_ATECO.ilike.%tutti%")
+        if ateco_match and regione_match:
+            bandi_filtrati.append(bando)
 
-    response = query.limit(limite).execute()
-
-    return response.data if response.data else []
+    return bandi_filtrati
