@@ -1,5 +1,5 @@
 # 📌 RUOLO:
-Agisci come analista strategico per l'assegnazione di contributi pubblici alle imprese.  
+PROMPT_CLAUDE = "Agisci come analista strategico per l’assegnazione di contributi pubblici alle imprese."
 Ricevi un elenco di 25 bandi già filtrati da Python in base a coerenza macro-area, settore e regione.
 
 # 🎯 OBIETTIVO:
