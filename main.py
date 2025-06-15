@@ -52,7 +52,6 @@ class Bilancio(BaseModel):
 class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
-    macro_area: Optional[str]
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
