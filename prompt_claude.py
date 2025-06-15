@@ -11,11 +11,12 @@ Il tuo compito è:
 1. Analizzare i bandi forniti
 2. Assegnare a ciascuno un giudizio qualitativo sintetico: **Eccellente**, **Buono**, **Marginale**
 3. Restituire solo i **3 bandi con il miglior match**
-4. Per ciascun bando selezionato, spiegare in massimo 4 righe:
+4. Se due o più bandi hanno lo stesso punteggio, applica questi criteri per decidere i primi 3:
+ - Priorità alla scadenza più ravvicinata.
+ - In caso di ulteriore parità, preferisci la spesa ammessa max più elevata dando sempre priorità al prestito a fondo perduto.
+5. Per ciascun bando selezionato, spiegare in massimo 4 righe:
    - Perché è coerente con il profilo aziendale
-   - Quali indicatori lo giustificano
    - Quali vantaggi offre
-   - Se ci sono rischi o limiti
 
 Il tono deve essere professionale, chiaro e sintetico. Nessuna premessa, nessuna frase introduttiva, solo l’elenco dei bandi selezionati con spiegazione diretta.
 
