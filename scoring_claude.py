@@ -61,28 +61,33 @@ def calcola_punteggio_bando(bando, azienda):
         punteggio += 6.25
         log["forma_agevolazione"] = "finanziamento"
     else:
-        log["forma_agevolazione"] = "non specificata"
-
-    # 3. Capacità di co-finanziamento (15%)
-    if utile_netto > 0 and mcc_rating is not None and mcc_rating <= 3:
-        punteggio += 15
-        log["capacita_cofinanziamento"] = "alta"
-    elif utile_netto < 0 and mcc_rating is not None and mcc_rating >= 4:
-        punteggio -= 5
-        log["capacita_cofinanziamento"] = "bassa"
-    else:
-        log["capacita_cofinanziamento"] = "media"
-
-    # 4. Coerenza economica bando/azienda (10%)
-    spesa_minima = bando.get("spesa_minima", None)
-    totale_attivo = azienda.get("totale_attivo", None)
-    if spesa_minima is not None and totale_attivo is not None:
-        if spesa_minima <= 0.5 * totale_attivo:
-            punteggio += 10
-            log["coerenza_spesa"] = "coerente"
-        else:
-            log["coerenza_spesa"] = "non coerente"
-    else:
-        log["coerenza_spesa"] = "dati insufficienti"
+        log["forma_agevolazione"] = "altro"
 
     return round(punteggio, 2), log
+
+def genera_output_finale_claude(claude_output, macro_area, dimensione, mcc, z_score):
+    output = f"""
+📂 Macro Area Assegnata: {macro_area}
+🏷 Dimensione Impresa: {dimensione}
+🔐 MCC Rating: {mcc}
+📉 Z-Score stimato: {z_score}
+
+📋 eVoluto ha analizzato 25 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale (punteggio ≥ 80):
+"""
+
+    for i, bando in enumerate(claude_output, 1):
+        output += f"""
+{i}. 🏆 **{bando.get('Titolo', 'Senza titolo')}**
+   - 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '-')}
+   - 💬 Motivazione: {bando.get('Motivazione', '-')}
+   - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
+   - 🎁 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '-')}
+   - 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '-')}
+   - ⏳ Scadenza: {bando.get('Data_chiusura', '-')}
+"""
+
+    output += """
+📌 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti.
+"""
+
+    return output
