@@ -78,7 +78,7 @@ async def analizza_azienda(dati: InputDati):
 
         logger.info("Bandi recuperati: %d", len(bandi))
 
-        bandi_filtrati_json = json.dumps(bandi, ensure_ascii=False)
+        bandi_filtrati_json = json.dumps(bandi_filtrati, ensure_ascii=False, indent=2, separators=(",", ":"))
 
         # Chiamata a Claude per selezione finale
         risposta_claude = chiama_claude(bandi, z_score, mcc_rating, utile_netto)
