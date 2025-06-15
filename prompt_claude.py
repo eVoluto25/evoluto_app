@@ -10,20 +10,23 @@ Valuta coerenza generale in base a:
 - importi minimi e massimi richiesti/concessi
 - sostenibilità per l’azienda
 
-# 📝 OUTPUT:
-Restituisci **esattamente 3 bandi**, in ordine decrescente di coerenza.  
+📤 OUTPUT:
+Restituisci **esattamente 3 bandi**, in ordine decrescente di coerenza.
 Per ciascuno:
-- Titolo  
-- Obiettivo/finalità  
-- Motivazione sintetica (max 150 caratteri)  
-- Spesa minima richiesta e contributo massimo (se noti)  
-- Tipo e percentuale di agevolazione (fondo perduto, credito imposta, ecc.)  
-- Data di scadenza (se nota)
+- Titolo
+- Obiettivo_finalita
+- Motivazione sintetica (max 150 caratteri)
+- Spesa_Ammessa_max (se nota)
+- Agevolazione_Concedibile_max (se nota)
+- Forma_agevolazione (fondo perduto, credito imposta, ecc.)
+- Data_apertura (se nota)
+- Data_chiusura (se nota)
 
 # 💡 NOTA TECNICA:
 - I 25 bandi sono già filtrati da Python in base a macro-area, codice ATECO, e regione.
 - Ricevi in input anche: Z-Score, MCC, utile netto.
 - Restituisci l’output in **formato JSON ordinato** con chiavi strutturate.
+- Nessun testo fuori dal JSON.
 
 # ✅ FORMATO DI RISPOSTA:
 ```json
