@@ -1,3 +1,7 @@
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import Dict, Any
@@ -14,6 +18,7 @@ class AziendaInput(BaseModel):
 
 @app.post("/analizza-azienda")
 def analizza_azienda(input_data: AziendaInput):
+    logger.debug(f'Input ricevuto: {input_data}')
     try:
         # Calcolo dimensione e indici
         dimensione = calcola_dimensione(
@@ -22,7 +27,8 @@ def analizza_azienda(input_data: AziendaInput):
             float(input_data.bilancio.get("totale_attivo", 0.0))
         )
 
-        bilancio_pulito = {
+        logger.debug('Pulizia dati di bilancio in corso')
+    bilancio_pulito = {
             k: float(input_data.bilancio.get(k, 0.0)) for k in [
                 "utile_netto", "ebit", "ebitda", "fatturato",
                 "patrimonio_netto", "debiti_totali", "debiti_finanziari",
@@ -32,11 +38,15 @@ def analizza_azienda(input_data: AziendaInput):
             ]
         }
 
-        indici = calcola_indici(bilancio_pulito)
+        logger.debug(f'Dati di bilancio puliti: {bilancio_pulito}')
+    indici = calcola_indici(bilancio_pulito)
+    logger.debug(f'Indici calcolati: {indici}')
         macro_area = assegna_macro_area(indici)
+    logger.debug(f'Macro area assegnata: {macro_area}')
 
         # Estrazione bandi filtrati
         bandi = estrai_bandi(macro_area, dimensione)
+    logger.debug(f'Bandi estratti: {bandi[:3]}')
 
         # Invio a Claude per selezione finale
         azienda_data = {
@@ -46,7 +56,9 @@ def analizza_azienda(input_data: AziendaInput):
             "indici": indici
         }
 
-        commento = classifica_bandi_claude(bandi, azienda_data)
+        logger.debug(f'Dati per Claude: {azienda_data}')
+    commento = classifica_bandi_claude(bandi, azienda_data)
+    logger.debug(f'Commento Claude: {commento}')
 
         return {
             "macro_area": macro_area,
