@@ -1,8 +1,8 @@
 import os
 import requests
 import json
-from config import ANTHROPIC_API_KEY
-from prompt_claude import PROMPT_CLAUDE_BASE
+from config import CLAUDE_KEY
+from prompt_claude import PROMPT_CLAUDE
 
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 
@@ -15,7 +15,7 @@ def chiama_claude(bandi_filtrati, z_score, mcc_rating, utile_netto):
     )
 
     headers = {
-        "x-api-key": ANTHROPIC_API_KEY,
+        "x-api-key": CLAUDE_KEY,
         "anthropic-version": "2023-06-01",
         "Content-Type": "application/json"
     }
