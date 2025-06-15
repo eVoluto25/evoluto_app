@@ -6,39 +6,21 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def recupera_bandi_filtrati(macro_area, codice_ateco, regione):
-    tabella_mapping = {
-        "Crisi o Risanamento Aziendale": "bandi_crisi",
-        "Crescita e Sviluppo": "bandi_crescita",
-        "Espansione e Transizione": "bandi_espansione"
-    }
-
-    nome_tabella = tabella_mapping.get(macro_area)
-    if not nome_tabella:
-        return []
-
-    try:
-        response = supabase.table(nome_tabella).select("*").execute()
-        bandi = response.data
-    except Exception as e:
-        print(f"Errore nella query Supabase: {e}")
-        return []
-
-    bandi_filtrati = []
-    for bando in bandi:
-        codici_ateco_bando = bando.get("Codici_ATECO", "").lower()
-        regione_bando = bando.get("Regione", "").lower()
-
-        ateco_match = (
-            "tutti i settori" in codici_ateco_bando or
-            codice_ateco.lower() in codici_ateco_bando
-        )
-        regione_match = (
-            regione_bando in ["", "tutte", "tutta italia"] or
-            regione.lower() == regione_bando
-        )
-
-        if ateco_match and regione_match:
-            bandi_filtrati.append(bando)
-
-    return bandi_filtrati
+def recupera_bandi_filtrati(...):
+    ...
+    bandi = []
+    for row in query_supabase(...):  # pseudocodice
+        bandi.append({
+            "ID_incentivo": row["ID_incentivo"],
+            "Titolo": row["Titolo"],
+            "Obiettivo_finalita": row["Obiettivo_finalita"],
+            "Data_apertura": row["Data_apertura"],
+            "Data_chiusura": row["Data_chiusura"],
+            "Dimensione": row["Dimensione"],
+            "Forma_agevolazione": row["Forma_agevolazione"],
+            "Spesa_Ammessa_max": row["Spesa_Ammessa_max"],
+            "Agevolazione_Concedibile_max": row["Agevolazione_Concedibile_max"],
+            "Codici_ATECO": row["Codici_ATECO"],
+            "Regioni": row["Regioni"]
+        })
+    return bandi
