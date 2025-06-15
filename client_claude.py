@@ -25,7 +25,7 @@ def prompt = PROMPT_CLAUDE.format(
     }
 
     payload = {
-        "model": "claude-3-opus-20240229",
+        "model": "claude-3-haiku-20240307",
         "max_tokens": 1500,
         "temperature": 0.3,
         "messages": [{"role": "user", "content": prompt}]
