@@ -1,4 +1,5 @@
 import json
+from fastapi import FastAPI
 from query_supabase import recupera_bandi_filtrati
 from fastapi.responses import PlainTextResponse
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 @app.get("/", response_class=PlainTextResponse)
-def root():
+async def root():
     return "eVoluto è attivo."
 
 origins = [
