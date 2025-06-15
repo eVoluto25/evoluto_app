@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+@app.get("/", response_class=PlainTextResponse)
+def root():
+    return "eVoluto è attivo."
+
 origins = [
     "http://localhost",
     "http://localhost:3000",
