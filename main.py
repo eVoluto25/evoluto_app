@@ -71,7 +71,7 @@ async def analizza_azienda(dati: InputDati):
 
         # Recupero bandi da Supabase in base a macro-area
         bandi = recupera_bandi_filtrati(
-            macro_area=dati.macro_area,
+            macro_area=assegna_macro_area(dati.bilancio),
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )
