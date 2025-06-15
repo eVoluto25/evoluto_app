@@ -10,47 +10,56 @@ app = FastAPI()
 
 class AziendaInput(BaseModel):
     anagrafica: Dict[str, Any]
-    bilancio: Dict[str, float]
+    bilancio: Dict[str, Any]
 
 @app.post("/analizza-azienda")
 def analizza_azienda(input_data: AziendaInput):
-    # Calcolo dimensione e indici
-    dimensione = calcola_dimensione(
-        input_data.anagrafica["dipendenti"],
-        input_data.bilancio["ricavi"],
-        input_data.bilancio["totale_attivo"]
-    )
+    try:
+        # Calcolo dimensione e indici
+        dimensione = calcola_dimensione(
+            int(input_data.anagrafica.get("dipendenti", 0)),
+            float(input_data.bilancio.get("ricavi", 0.0)),
+            float(input_data.bilancio.get("totale_attivo", 0.0))
+        )
 
-    indici = calcola_indici(input_data.bilancio)
-    macro_area = assegna_macro_area(indici)
+        bilancio_pulito = {
+            k: float(input_data.bilancio.get(k, 0.0)) for k in [
+                "utile_netto", "ebit", "ebitda", "fatturato",
+                "patrimonio_netto", "debiti_totali", "debiti_finanziari",
+                "totale_attivo", "attivo_corrente", "passivo_corrente",
+                "interessi_passivi", "oneri_finanziari", "immobilizzazioni",
+                "immobilizzazioni_prec", "ricavi_anno_prec"
+            ]
+        }
 
-    # Estrazione bandi filtrati
-    bandi = estrai_bandi(
-        macro_area=macro_area,
-        codice_ateco=input_data.anagrafica["codice_ateco"],
-        regione=input_data.anagrafica["regione"],
-        dimensione=dimensione
-    )
+        indici = calcola_indici(bilancio_pulito)
+        macro_area = assegna_macro_area(indici)
 
-    # Invio a Claude per selezione finale
-    azienda_data = {
-        "regione": input_data.anagrafica["regione"],
-        "codice_ateco": input_data.anagrafica["codice_ateco"],
-        "dimensione": dimensione,
-        "macro_area": macro_area,
-        "indici": indici
-    }
+        # Estrazione bandi filtrati
+        bandi = estrai_bandi(macro_area, dimensione)
 
-    commento = classifica_bandi_claude(bandi, azienda_data)
+        # Invio a Claude per selezione finale
+        azienda_data = {
+            "regione": input_data.anagrafica.get("regione", ""),
+            "codice_ateco": input_data.anagrafica.get("codice_ateco", ""),
+            "dimensione": dimensione,
+            "indici": indici
+        }
 
-    return {
-        "macro_area": macro_area,
-        "dimensione": dimensione,
-        "z_score": indici.get("Z_Score"),
-        "mcc_rating": indici.get("MCC", "N/D"),
-        "bandi_raccomandati": commento  # deve essere una lista strutturata
-    }
+        commento = classifica_bandi_claude(bandi, azienda_data)
+
+        return {
+            "macro_area": macro_area,
+            "dimensione": dimensione,
+            "z_score": indici.get("Z_Score", "N/D"),
+            "mcc_rating": indici.get("MCC", "N/D"),
+            "bandi_raccomandati": commento
+        }
+
+    except Exception as e:
+        return {"errore": str(e)}
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7860))
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=port)
