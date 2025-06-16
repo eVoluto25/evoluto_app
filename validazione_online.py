@@ -2,37 +2,31 @@ import random
 
 # Elenco fonti autorevoli da usare nelle ricerche
 FONTI_AUTOREVOLI = [
-   invitalia.it
-mise.gov.it
-incentivi.gov.it
-fondieuropei.gov.it
-pnrr.gov.it
-italiadomani.gov.it
-regione.lombardia.it
-regione.veneto.it
-regione.piemonte.it
-regione.emilia-romagna.it
-regione.toscana.it
-regione.lazio.it
-regione.campania.it
-regione.puglia.it
-regione.sardegna.it
-regione.sicilia.it
-regione.abruzzo.it
-regione.basilicata.it
-regione.calabria.it
-regione.fvg.it
-regione.marche.it
-regione.molise.it
-regione.umbria.it
-regione.vda.it
-provincia.bz.it
-provincia.tn.it
-filse.it
-svemmarche.it
-ilsole24ore.com
-startmag.it
-quifinanza.it
+    "invitalia.it",
+    "mise.gov.it",
+    "incentivi.gov.it",
+    "fondieuropei.gov.it",
+    "pnrr.gov.it",
+    "italiadomani.gov.it",
+    "regione.lombardia.it",
+    "regione.veneto.it",
+    "regione.piemonte.it",
+    "regione.emilia-romagna.it",
+    "regione.toscana.it",
+    "regione.lazio.it",
+    "regione.campania.it",
+    "regione.puglia.it",
+    "regione.sardegna.it",
+    "regione.sicilia.it",
+    "regione.abruzzo.it",
+    "regione.basilicata.it",
+    "regione.calabria.it",
+    "regione.fvg.it",
+    "regione.marche.it",
+    "regione.molise.it",
+    "regione.umbria.it",
+    "regione.vda.it",
+    "provincia.bz.it"
 ]
 
 def valida_bando_online_mock(titolo_bando, regione=None):
