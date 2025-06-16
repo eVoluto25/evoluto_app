@@ -133,7 +133,7 @@ async def analizza_azienda(dati: InputDati):
             })
 
         output_predittivo = analizza_benefici_bandi(top3, azienda)
-        output_testuale = genera_output_finale(top3, macro_area, dimensione, mcc_rating, z_score)
+        output_finale = genera_output_finale(top3, macro_area, dimensione, mcc_rating, z_score, analisi_gpt=output_predittivo)
 
         return {
             "macro_area": macro_area,
@@ -172,7 +172,14 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score):
    - ⏳ Scadenza: {bando.get('Data_chiusura', '-')}
 """
 
-    output += "\n📌 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti."
+    output += "\n📌 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti.\n"
+
+    # Aggiunta dell'analisi GPT
+    if analisi_gpt:
+        output += "\n🧠 Analisi Predittiva:\n"
+        for i, testo in enumerate(analisi_gpt, 1):
+            output += f"\n{i}. {testo}\n"
+
     return output
 
 if __name__ == "__main__":
