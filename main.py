@@ -187,13 +187,13 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
 
     # ✅ Aggiunta validazione online, se disponibile
     if validazione_online:
-    output += f"\n\n✅ Validazione online:\n"
-    for v in validazione_online:
-        output += (
-            f" • {v.get('titolo', 'Senza titolo')} — "
-            f"{v.get('esito', 'N/D')} "
-            f"(fondi disponibili: {v.get('fondi_disponibili', 'N/D')})\n"
-        )
+        output += f"\n\n✅ Validazione online:\n"
+        for v in validazione_online:
+            output += (
+                f" • {v.get('titolo', 'Senza titolo')} — "
+                f"{v.get('esito', 'N/D')} "
+                f"(fondi disponibili: {v.get('fondi_disponibili', 'N/D')})\n"
+            )
 
     return output
 
