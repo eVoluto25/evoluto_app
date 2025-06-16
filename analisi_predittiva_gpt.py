@@ -37,10 +37,10 @@ def analizza_benefici_bandi(bandi, azienda):
 
         sintesi = f"{introduzione} {impatto}."
 
-        # Limita a circa 50 parole
+        # Limita a circa 80 parole
         parole = sintesi.split()
-        if len(parole) > 50:
-            sintesi = " ".join(parole[:50]) + "..."
+        if len(parole) > 80:
+            sintesi = " ".join(parole[:80]) + "..."
 
         testo += sintesi
         analisi.append(testo)
