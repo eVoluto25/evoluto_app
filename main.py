@@ -152,7 +152,7 @@ async def analizza_azienda(dati: InputDati):
         raise HTTPException(status_code=500, detail=str(e))
 
 # OUTPUT TESTUALE GPT
-def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score):
+def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gpt=None):
     output = f"""
 📌 Macro Area Assegnata: {macro_area}
 📙 Dimensione Impresa: {dimensione}
