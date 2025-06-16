@@ -118,7 +118,7 @@ async def analizza_azienda(dati: InputDati):
         stato_bandi = []
         for bando in top3:
             try:
-                validazione = cerca_google_bando(bando.get("titolo"), dati.anagrafica.regione)
+                validazione = valida_bando_online_mock(bando.get("titolo"), azienda.get("regione"))
             except Exception as e:
                 validazione = {
                     "validato": False,
@@ -134,18 +134,11 @@ async def analizza_azienda(dati: InputDati):
             })
 
         output_predittivo = analizza_benefici_bandi(top3, azienda)
-        output_finale = genera_output_finale(top3, macro_area, dimensione, mcc_rating, z_score, analisi_gpt=output_predittivo)
-
-        # Validazione online dei bandi
-        stato_bandi = []
-        for bando in top3:
-            validazione = valida_bando_online_mock(bando.get("titolo"), azienda.get("regione"))
-            stato_bandi.append({
-                "titolo": bando.get("titolo"),
-                "validato": validazione["validato"],
-                "fondi_disponibili": validazione["fondi_disponibili"],
-                "esito": validazione["messaggio"]
-            })
+        output_finale = genera_output_finale(
+            top3, macro_area, dimensione, mcc_rating, z_score,
+            analisi_gpt=output_predittivo,
+            validazione_online=stato_bandi
+        )
 
         return {
             "macro_area": macro_area,
