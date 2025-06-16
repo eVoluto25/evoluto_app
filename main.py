@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from validazione_online import valida_bando_online_mock
-from validazione_google import cerca_google_bando as analisi_google_search
+from validazione_google import cerca_google_bando 
 from analisi_predittiva_gpt import analizza_benefici_bandi
 import uvicorn
 import logging
@@ -118,12 +118,12 @@ async def analizza_azienda(dati: InputDati):
         stato_bandi = []
         for bando in top3:
             try:
-                validazione = valida_bando_online_mock(bando.get("titolo"), azienda.get("regione"))
+                validazione = cerca_google_bando(bando.get("titolo"), dati.anagrafica.regione)
             except Exception as e:
                 validazione = {
                     "validato": False,
                     "fondi_disponibili": False,
-                    "messaggio": f"⚠️ Errore nella validazione: {str(e)}"
+                    "messaggio": f"⚠️ Errore nella validazione Google: {str(e)}"
                 }
 
             stato_bandi.append({
