@@ -24,12 +24,12 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], region
 
     for row in response.data:
         bandi.append({
-            "ID_incentivo": row["ID_incentivo"],
+            "ID_incentivo": row["ID_Incentivo"],,
             "Titolo": row["Titolo"],
             "Obiettivo_finalita": row["Obiettivo_finalita"],
             "Data_apertura": row["Data_apertura"],
             "Data_chiusura": row["Data_chiusura"],
-            "Dimensione": row["Dimensione"],
+            "Dimensioni": row["Dimensione"],
             "Forma_agevolazione": row["Forma_agevolazione"],
             "Spesa_Ammessa_max": row["Spesa_Ammessa_max"],
             "Agevolazione_Concedibile_max": row["Agevolazione_Concedibile_max"],
