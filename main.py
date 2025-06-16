@@ -6,6 +6,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+from validazione_online import valida_bando_online_mock
 from validazione_google import cerca_google_bando
 from analisi_predittiva_gpt import analizza_benefici_bandi
 import uvicorn
