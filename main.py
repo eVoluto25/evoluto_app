@@ -172,6 +172,7 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
         output += f"- 🗓️ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
         # 🔍 Validazione via Google (se disponibile)
+        print("DEBUG:", validazione_online)
         if validazione_online:
             match = next((v for v in validazione_online if v.get("titolo") == titolo and v.get("fonte") == "google"), None)
             if match:
