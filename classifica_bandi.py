@@ -71,11 +71,17 @@ def punteggio_agevolazione_vs_ebitda(agevolazione, ebitda):
         return 1
 
 def punteggio_spesa_compatibile(spesa, immobilizzazioni):
-    if spesa <= immobilizzazioni * 0.3:
-        return 5
-    elif spesa <= immobilizzazioni:
-        return 3
-    else:
+    try:
+        spesa = float(spesa) if not isinstance(spesa, (int, float)) else spesa
+        immobilizzazioni = float(immobilizzazioni) if not isinstance(immobilizzazioni, (int, float)) else immobilizzazioni
+
+        if spesa <= immobilizzazioni * 0.3:
+            return 5
+        elif spesa <= immobilizzazioni:
+            return 3
+        else:
+            return 1
+    except Exception:
         return 1
 
 def codice_ateco_compatibile(codice_azienda, codici_bando):
