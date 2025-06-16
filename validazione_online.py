@@ -1,18 +1,47 @@
-
 import random
 
 # Elenco fonti autorevoli da usare nelle ricerche
 FONTI_AUTOREVOLI = [
+    # Ministeri e agenzie nazionali
     "mise.gov.it",
     "invitalia.it",
     "incentivi.gov.it",
-    "europa.eu",
     "fondieuropei.gov.it",
-    "bandi.regione.lombardia.it",
-    "regione.piemonte.it",
     "pnrr.gov.it",
-    "filse.it",
-    "ilsole24ore.com"
+    "italiadomani.gov.it",
+
+    # Portali europei
+    "europa.eu",
+    "ec.europa.eu",
+
+    # Portali Regioni
+    "bandi.regione.abruzzo.it",
+    "bandi.regione.basilicata.it",
+    "bandi.regione.calabria.it",
+    "bandi.regione.campania.it",
+    "bandi.regione.emilia-romagna.it",
+    "bandi.regione.fvg.it",  # Friuli Venezia Giulia
+    "filse.it",  # Liguria (agenzia)
+    "bandi.regione.lazio.it",
+    "bandi.regione.lombardia.it",
+    "bandi.regione.marche.it",
+    "regione.molise.it",
+    "regione.piemonte.it",
+    "bandi.regione.puglia.it",
+    "bandi.regione.sardegna.it",
+    "bandi.regione.sicilia.it",
+    "regione.taa.it",  # Trentino-Alto Adige
+    "bandi.regione.toscana.it",
+    "bandi.regione.umbria.it",
+    "bandi.regione.veneto.it",
+    "regione.vda.it",  # Valle d'Aosta
+    "svemmarche.it"  # alternativa per Marche
+
+    # Fonti informative autorevoli
+    "ilsole24ore.com",
+    "agendadigitale.eu",
+    "startmag.it",
+    "quifinanza.it"
 ]
 
 def valida_bando_online_mock(titolo_bando, regione=None):
@@ -26,7 +55,7 @@ def valida_bando_online_mock(titolo_bando, regione=None):
     messaggio = ""
 
     if validato:
-        messaggio += f"✅ Validato online tramite {fonte}."
+        messaggio += f"✅ Validato online da fonti ufficiali."
     else:
         messaggio += "⚠️ Non validato da fonti ufficiali."
 
