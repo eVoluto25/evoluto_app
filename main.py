@@ -175,7 +175,6 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
     for i, bando in enumerate(bandi, 1):
         output += f"""
 {i}. 🏆 **{bando.get('titolo', 'Senza titolo')}**
-   - 🔍 Validazione online: {validazione.get("messaggio", 'N/D')}
    - 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '-')}
    - 💬 Motivazione: {bando.get('Motivazione', '-')}
    - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
@@ -191,6 +190,10 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
         output += "\n🧠 Analisi Predittiva:\n"
         for i, testo in enumerate(analisi_gpt, 1):
             output += f"\n{i}. {testo}\n"
+
+     # ✅ Aggiunta validazione online, se disponibile
+     if validazione_online:
+         output += f"\n🔎 Validazione online: {validazione_online.get('messaggio', 'N/D')}"
 
     return output
 
