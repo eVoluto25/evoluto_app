@@ -1,6 +1,6 @@
 import json
 from query_supabase import recupera_bandi_filtrati
-from classifica_bandi import classifica_bandi
+from classifica_bandi import classifica_bandi_avanzata as classifica_bandi
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
