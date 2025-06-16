@@ -1,6 +1,6 @@
 import json
 from query_supabase import recupera_bandi_filtrati
-from classifica_bandi import classifica_bandi 
+from classifica_bandi import classifica_bandi
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -55,6 +55,35 @@ class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
 
+# Indicatori economico-finanziari
+def stima_z_score(bilancio: Bilancio):
+    if not bilancio.totale_attivo or bilancio.totale_attivo == 0:
+        return 0
+    return round((bilancio.ebitda + bilancio.utile_netto) / bilancio.totale_attivo, 2)
+
+def stima_mcc(bilancio: Bilancio):
+    if not bilancio.ricavi or bilancio.ricavi == 0:
+        return 0
+    return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
+
+def assegna_macro_area(bilancio: Bilancio):
+    if bilancio.ebitda > 0:
+        return "Espansione"
+    elif bilancio.ricavi > 0:
+        return "Sviluppo"
+    return "Crisi"
+
+def dimensione_azienda(anagrafica: Anagrafica) -> str:
+    if anagrafica.numero_dipendenti is None:
+        return "Non classificabile"
+    if anagrafica.numero_dipendenti <= 9:
+        return "Microimpresa"
+    elif anagrafica.numero_dipendenti <= 49:
+        return "Piccola Impresa"
+    elif anagrafica.numero_dipendenti <= 249:
+        return "Media Impresa"
+    return "Grande impresa"
+
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
@@ -63,25 +92,17 @@ async def analizza_azienda(dati: InputDati):
         if not dati.anagrafica or not dati.bilancio:
             raise HTTPException(status_code=400, detail="Dati incompleti")
 
-        # Calcolo indicatori economici
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
 
-        logger.info("Z-Score stimato: %s", z_score)
-        logger.info("MCC rating stimato: %s", mcc_rating)
-
-        # Recupero bandi
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )
 
-        logger.info("Bandi recuperati: %d", len(bandi))
-
-        # Costruzione profilo aziendale
         azienda = {
             "codice_ateco": dati.anagrafica.codice_ateco,
             "regione": dati.anagrafica.regione,
@@ -91,86 +112,54 @@ async def analizza_azienda(dati: InputDati):
             "macro_area": macro_area
         }
 
-        # Classifica e seleziona i migliori 3 bandi
         top3 = classifica_bandi(bandi, azienda)
+
+        stato_bandi = []
+        for bando in top3:
+            try:
+                validazione = cerca_google_bando(bando.get("titolo"), dati.anagrafica.regione)
+            except Exception as e:
+                validazione = {
+                    "validato": False,
+                    "fondi_disponibili": False,
+                    "messaggio": f"⚠️ Errore nella validazione: {str(e)}"
+                }
+
+            stato_bandi.append({
+                "titolo": bando.get("titolo"),
+                "validato": validazione["validato"],
+                "fondi_disponibili": validazione["fondi_disponibili"],
+                "esito": validazione["messaggio"]
+            })
+
+        output_predittivo = analizza_benefici_bandi(top3, azienda)
+        output_testuale = genera_output_finale(top3, macro_area, dimensione, mcc_rating, z_score)
 
         return {
             "macro_area": macro_area,
             "dimensione": dimensione,
             "z_score": z_score,
             "mcc_rating": mcc_rating,
-            stato_bandi = []
-
-            for bando in top3:
-                try:
-                    validazione = cerca_google_bando(bando.get("titolo"), azienda.get("regione"))
-                except Exception as e:
-                    validazione = {
-                        "validato": False,
-                        "fondi_disponibili": False,
-                        "messaggio": f"⚠️ Errore nella validazione: {str(e)}"
-                    }
-
-                 stato_bandi.append({
-                     "titolo": bando.get("titolo"),
-                     "validato": validazione["validato"],
-                     "fondi_disponibili": validazione["fondi_disponibili"],
-                     "esito": validazione["messaggio"]
-                 })
-            "bandi_filtrati": top3
-            "output_predittivo": analizza_benefici_bandi(top3, azienda)
-            "output_testuale": output_finale
-            "analisi_predittiva": output_predittivo  # 🧠 Risultato GPT
+            "stato_bandi": stato_bandi,
+            "bandi_filtrati": top3,
+            "output_predittivo": output_predittivo,
+            "output_testuale": output_testuale,
+            "analisi_predittiva": output_predittivo
         }
 
     except Exception as e:
         logger.exception("Errore durante l'elaborazione")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Funzioni di supporto
-def stima_z_score(bilancio: Bilancio) -> float:
-    if bilancio.totale_attivo and bilancio.utile_netto:
-        return round((bilancio.utile_netto / bilancio.totale_attivo) * 3.5, 2)
-    return 1.5
-
-def stima_mcc(bilancio: Bilancio) -> int:
-    if bilancio.utile_netto > 0 and bilancio.ebitda > 0:
-        return 2
-    elif bilancio.utile_netto > 0:
-        return 3
-    return 4
-
-def assegna_macro_area(bilancio: Bilancio) -> str:
-    ricavi = bilancio.ricavi or 0
-    ebitda = bilancio.ebitda or 0
-    immobilizzazioni = bilancio.immobilizzazioni or 0
-
-    if ricavi < 150000 or ebitda < 10000:
-        return "Crisi"
-    if ricavi < 1000000 and immobilizzazioni < 200000:
-        return "Sviluppo"
-    if ricavi >= 1000000 and immobilizzazioni >= 200000:
-        return "Espansione"
-    return "Sviluppo"
-
-def dimensione_azienda(anagrafica: Anagrafica) -> str:
-    dipendenti = anagrafica.numero_dipendenti or 0
-    if dipendenti <= 10:
-        return "Microimpresa"
-    elif dipendenti <= 50:
-        return "Piccola impresa"
-    elif dipendenti <= 250:
-        return "Media impresa"
-    return "Grande impresa"
-
+# OUTPUT TESTUALE GPT
 def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score):
     output = f"""
-📂 Macro Area Assegnata: {macro_area}
-📊 Dimensione Impresa: {dimensione}
+📌 Macro Area Assegnata: {macro_area}
+📙 Dimensione Impresa: {dimensione}
 🔐 MCC Rating: {mcc}
 📉 Z-Score stimato: {z_score}
 
-📌 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:
+📋 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:
 """
     for i, bando in enumerate(bandi, 1):
         output += f"""
@@ -178,12 +167,12 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score):
    - 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '-')}
    - 💬 Motivazione: {bando.get('Motivazione', '-')}
    - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
-   - 💸 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '-')}
-   - 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '-')}
+   - 🧾 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '-')}
+   - 🏛️ Forma agevolazione: {bando.get('Forma_agevolazione', '-')}
    - ⏳ Scadenza: {bando.get('Data_chiusura', '-')}
 """
 
-    output += "\n📍 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti."
+    output += "\n📌 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti."
     return output
 
 if __name__ == "__main__":
