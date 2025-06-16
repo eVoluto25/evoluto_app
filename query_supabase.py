@@ -24,7 +24,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], region
 
     for row in response.data:
         bandi.append({
-            "ID_incentivo": row["ID_Incentivo"],,
+            "ID_incentivo": row["ID_Incentivo"],
             "Titolo": row["Titolo"],
             "Obiettivo_finalita": row["Obiettivo_finalita"],
             "Data_apertura": row["Data_apertura"],
