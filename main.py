@@ -6,6 +6,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+from analisi_predittiva_gpt import analizza_benefici_bandi
 import uvicorn
 import logging
 
@@ -98,6 +99,9 @@ async def analizza_azienda(dati: InputDati):
             "z_score": z_score,
             "mcc_rating": mcc_rating,
             "bandi_filtrati": top3
+            "output_predittivo": analizza_benefici_bandi(top3, azienda)
+            "output_testuale": output_finale
+            "analisi_predittiva": output_predittivo  # 🧠 Risultato GPT
         }
 
     except Exception as e:
@@ -139,6 +143,29 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     elif dipendenti <= 250:
         return "Media impresa"
     return "Grande impresa"
+
+def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score):
+    output = f"""
+📂 Macro Area Assegnata: {macro_area}
+📊 Dimensione Impresa: {dimensione}
+🔐 MCC Rating: {mcc}
+📉 Z-Score stimato: {z_score}
+
+📌 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:
+"""
+    for i, bando in enumerate(bandi, 1):
+        output += f"""
+{i}. 🏆 **{bando.get('titolo', 'Senza titolo')}**
+   - 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '-')}
+   - 💬 Motivazione: {bando.get('Motivazione', '-')}
+   - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
+   - 💸 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '-')}
+   - 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '-')}
+   - ⏳ Scadenza: {bando.get('Data_chiusura', '-')}
+"""
+
+    output += "\n📍 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti."
+    return output
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
