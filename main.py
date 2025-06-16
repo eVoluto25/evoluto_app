@@ -158,44 +158,32 @@ async def analizza_azienda(dati: InputDati):
 
 # OUTPUT TESTUALE GPT
 def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gpt=None, validazione_online=None):
-    output = f"""
-📌 Macro Area Assegnata: {macro_area}
-📙 Dimensione Impresa: {dimensione}
-🔐 MCC Rating: {mcc}
-📉 Z-Score stimato: {z_score}
-
-📋 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:
-"""
+    output = "🔎 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:\n\n"
+    
     for i, bando in enumerate(bandi, 1):
-        output += f"""
-{i}. 🏆 **{bando.get('Titolo', 'Senza titolo')}**
-   - 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '-')}
-   - 💬 Motivazione: {bando.get('Motivazione', '-')}
-   - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
-   - 🧾 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '-')}
-   - 🏛️ Forma agevolazione: {bando.get('Forma_agevolazione', '-')}
-   - ⏳ Scadenza: {bando.get('Data_chiusura', '-')}
-"""
+        titolo = bando.get("Titolo", "Senza titolo")
+        
+        output += f"""**{i}. {titolo}**\n"""
+        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '--')}\n"
+        output += f"- 💡 Motivazione: {bando.get('Motivazione', '--')}\n"
+        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')}\n"
+        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')}\n"
+        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
+        output += f"- 🗓️ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-    output += "\n📌 Puoi usare queste informazioni per valutare la candidatura ai bandi più adatti.\n"
+        # 🔍 Validazione via Google (se disponibile)
+        if validazione_online:
+            match = next((v for v in validazione_online if v.get("titolo") == titolo and v.get("fonte") == "google"), None)
+            if match:
+                output += f"  🔗 Fonte Google: {match.get('esito', 'N/D')}\n"
+                output += f"  💰 Fondi disponibili: {match.get('fondi_disponibili', 'N/D')}\n"
 
-    # Aggiunta dell'analisi GPT
+        output += "\n"
+
+    # GPT Analysis
     if analisi_gpt:
-        output += "\n🧠 Analisi Predittiva:\n"
+        output += "\n📊 Analisi Predittiva:\n"
         for i, testo in enumerate(analisi_gpt, 1):
-            output += f"\n{i}. {testo}\n"
-
-    # ✅ Aggiunta validazione online, se disponibile
-    if validazione_online:
-        output += f"\n\n✅ Validazione online:\n"
-        for v in validazione_online:
-            output += (
-                f" • {v.get('titolo', 'Senza titolo')} — "
-                f"{v.get('esito', 'N/D')} "
-                f"(fondi disponibili: {v.get('fondi_disponibili', 'N/D')})\n"
-            )
+            output += f"{i}. {testo}\n"
 
     return output
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
