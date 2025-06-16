@@ -2,46 +2,37 @@ import random
 
 # Elenco fonti autorevoli da usare nelle ricerche
 FONTI_AUTOREVOLI = [
-    # Ministeri e agenzie nazionali
-    "mise.gov.it",
-    "invitalia.it",
-    "incentivi.gov.it",
-    "fondieuropei.gov.it",
-    "pnrr.gov.it",
-    "italiadomani.gov.it",
-
-    # Portali europei
-    "europa.eu",
-    "ec.europa.eu",
-
-    # Portali Regioni
-    "bandi.regione.abruzzo.it",
-    "bandi.regione.basilicata.it",
-    "bandi.regione.calabria.it",
-    "bandi.regione.campania.it",
-    "bandi.regione.emilia-romagna.it",
-    "bandi.regione.fvg.it",  # Friuli Venezia Giulia
-    "filse.it",  # Liguria (agenzia)
-    "bandi.regione.lazio.it",
-    "bandi.regione.lombardia.it",
-    "bandi.regione.marche.it",
-    "regione.molise.it",
-    "regione.piemonte.it",
-    "bandi.regione.puglia.it",
-    "bandi.regione.sardegna.it",
-    "bandi.regione.sicilia.it",
-    "regione.taa.it",  # Trentino-Alto Adige
-    "bandi.regione.toscana.it",
-    "bandi.regione.umbria.it",
-    "bandi.regione.veneto.it",
-    "regione.vda.it",  # Valle d'Aosta
-    "svemmarche.it"  # alternativa per Marche
-
-    # Fonti informative autorevoli
-    "ilsole24ore.com",
-    "agendadigitale.eu",
-    "startmag.it",
-    "quifinanza.it"
+   invitalia.it
+mise.gov.it
+incentivi.gov.it
+fondieuropei.gov.it
+pnrr.gov.it
+italiadomani.gov.it
+regione.lombardia.it
+regione.veneto.it
+regione.piemonte.it
+regione.emilia-romagna.it
+regione.toscana.it
+regione.lazio.it
+regione.campania.it
+regione.puglia.it
+regione.sardegna.it
+regione.sicilia.it
+regione.abruzzo.it
+regione.basilicata.it
+regione.calabria.it
+regione.fvg.it
+regione.marche.it
+regione.molise.it
+regione.umbria.it
+regione.vda.it
+provincia.bz.it
+provincia.tn.it
+filse.it
+svemmarche.it
+ilsole24ore.com
+startmag.it
+quifinanza.it
 ]
 
 def valida_bando_online_mock(titolo_bando, regione=None):
