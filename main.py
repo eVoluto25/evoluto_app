@@ -1,12 +1,11 @@
 import json
-from fastapi import FastAPI
 from query_supabase import recupera_bandi_filtrati
-from fastapi.responses import PlainTextResponse
+from classifica_bandi import classifica_bandi 
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from client_claude import chiama_claude
 import uvicorn
 import logging
 
@@ -34,6 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Modelli input
 class Anagrafica(BaseModel):
     codice_ateco: Optional[str] = None
     regione: Optional[str] = None
@@ -58,52 +58,59 @@ async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
 
     try:
-        # Validazione input
         if not dati.anagrafica or not dati.bilancio:
             raise HTTPException(status_code=400, detail="Dati incompleti")
 
-        # Placeholder logica Z-Score e MCC stimati
+        # Calcolo indicatori economici
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
+        macro_area = assegna_macro_area(dati.bilancio)
+        dimensione = dimensione_azienda(dati.anagrafica)
 
         logger.info("Z-Score stimato: %s", z_score)
         logger.info("MCC rating stimato: %s", mcc_rating)
 
-        # Recupero bandi da Supabase in base a macro-area
+        # Recupero bandi
         bandi = recupera_bandi_filtrati(
-            macro_area=assegna_macro_area(dati.bilancio),
+            macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )
 
         logger.info("Bandi recuperati: %d", len(bandi))
 
-        bandi_filtrati_json = json.dumps(bandi_filtrati, ensure_ascii=False, indent=2, separators=(",", ":"))
+        # Costruzione profilo aziendale
+        azienda = {
+            "codice_ateco": dati.anagrafica.codice_ateco,
+            "regione": dati.anagrafica.regione,
+            "dimensione": dimensione,
+            "ebitda": dati.bilancio.ebitda,
+            "immobilizzazioni": dati.bilancio.immobilizzazioni,
+            "macro_area": macro_area
+        }
 
-        # Chiamata a Claude per selezione finale
-        risposta_claude = chiama_claude(bandi, z_score, mcc_rating, utile_netto)
-        logger.info("Risposta Claude ricevuta")
+        # Classifica e seleziona i migliori 3 bandi
+        top3 = classifica_bandi(bandi, azienda)
 
         return {
-            "macro_area": assegna_macro_area(dati.bilancio),
-            "dimensione": dimensione_azienda(dati.anagrafica),
+            "macro_area": macro_area,
+            "dimensione": dimensione,
             "z_score": z_score,
             "mcc_rating": mcc_rating,
-            "bandi_filtrati": bandi
+            "bandi_filtrati": top3
         }
 
     except Exception as e:
         logger.exception("Errore durante l'elaborazione")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Funzioni di supporto
 def stima_z_score(bilancio: Bilancio) -> float:
-    # Formula semplificata (proxy)
     if bilancio.totale_attivo and bilancio.utile_netto:
         return round((bilancio.utile_netto / bilancio.totale_attivo) * 3.5, 2)
-    return 1.5  # Valore medio stimato
+    return 1.5
 
 def stima_mcc(bilancio: Bilancio) -> int:
-    # MCC stimato da utile e EBITDA
     if bilancio.utile_netto > 0 and bilancio.ebitda > 0:
         return 2
     elif bilancio.utile_netto > 0:
@@ -117,22 +124,11 @@ def assegna_macro_area(bilancio: Bilancio) -> str:
 
     if ricavi < 150000 or ebitda < 10000:
         return "Crisi"
-
-    if ricavi < 1000000 and ebitda >= 10000 and immobilizzazioni < 200000:
+    if ricavi < 1000000 and immobilizzazioni < 200000:
         return "Sviluppo"
-
     if ricavi >= 1000000 and immobilizzazioni >= 200000:
         return "Espansione"
-
     return "Sviluppo"
-
-def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], regione: Optional[str]):
-    # MOCK: sostituire con query a Supabase
-    bandi_mock = [
-        {"titolo": "Bando Innovazione", "regione": regione, "settore": codice_ateco, "macro_area": macro_area},
-        {"titolo": "Bando Digitalizzazione", "regione": regione, "settore": codice_ateco, "macro_area": macro_area}
-    ]
-    return bandi_mock
 
 def dimensione_azienda(anagrafica: Anagrafica) -> str:
     dipendenti = anagrafica.numero_dipendenti or 0
