@@ -20,6 +20,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], region
         return []
 
     response = supabase.table(tabella).select("*").execute()
+    print("DEBUG BANDO:", bando)
     bandi = []
 
     for row in response.data:
