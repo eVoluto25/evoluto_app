@@ -2,40 +2,47 @@
 def analizza_benefici_bandi(bandi, azienda):
     analisi = []
 
+    impatti_strategici = {
+        "transizione ecologica": "migliora il posizionamento ESG e rende la struttura più sostenibile nel medio termine",
+        "transizione digitale": "favorisce l’innovazione interna e ottimizza i processi aziendali",
+        "digitalizzazione": "porta maggiore efficienza e competitività tramite strumenti tecnologici",
+        "internazionalizzazione": "apre l'accesso a nuovi mercati esteri, aumentando la resilienza del fatturato",
+        "sviluppo d’impresa": "rafforza la crescita organica e migliora la solidità operativa",
+        "investimenti produttivi": "abilita nuovi asset strategici e migliora il margine operativo lordo",
+        "innovazione e ricerca": "rafforza il vantaggio competitivo e l’attrattività nel lungo termine",
+        "crisi": "permette un riequilibrio finanziario, migliorando il cash flow e riducendo il rischio d’impresa",
+        "inclusione sociale": "rafforza la responsabilità d’impresa e l’integrazione in contesti locali"
+    }
+
     for bando in bandi:
         titolo = bando.get("titolo", "Bando senza titolo")
         obiettivo = bando.get("Obiettivo_Finalita", "").lower()
-        forma = bando.get("Forma_agevolazione", "").lower()
-        agevolazione = bando.get("Agevolazione_Concedibile_max", 0)
-        spesa = bando.get("Spesa_Ammessa_max", 0)
-        ebitda = azienda.get("ebitda", 0)
-        immobilizzazioni = azienda.get("immobilizzazioni", 0)
-        macro_area = azienda.get("macro_area", "")
+        macro_area = azienda.get("macro_area", "").lower()
 
-        impatto = []
+        testo = f"📌 **{titolo}** – "
 
-        # 1. Patrimoniale / reddituale
-        if "fondo perduto" in forma or "contributo" in forma:
-            impatto.append("potenzia la struttura patrimoniale aziendale")
-        elif "prestito" in forma:
-            impatto.append("fornisce liquidità ma impatta sul debito")
+        impatto = next(
+            (descrizione for keyword, descrizione in impatti_strategici.items() if keyword in obiettivo),
+            "ha potenziale strategico per rafforzare l’assetto aziendale"
+        )
 
-        # 2. Coerenza con macro area
-        if "sviluppo" in obiettivo and "Sviluppo" in macro_area:
-            impatto.append("coerente con l'espansione e lo sviluppo operativo")
-        elif "crisi" in obiettivo and "Crisi" in macro_area:
-            impatto.append("mirato alla ristrutturazione aziendale")
-        elif "internazionalizzazione" in obiettivo and "Espansione" in macro_area:
-            impatto.append("utile per l'apertura a nuovi mercati")
+        if "crisi" in macro_area:
+            introduzione = "In un contesto di fragilità economica, l’adozione di questo bando"
+        elif "sviluppo" in macro_area:
+            introduzione = "Questo bando può accompagnare la crescita aziendale"
+        elif "espansione" in macro_area:
+            introduzione = "Lo strumento selezionato sostiene l’espansione e l’apertura a nuove opportunità"
+        else:
+            introduzione = "L’incentivo selezionato"
 
-        # 3. Sostenibilità economica
-        if agevolazione <= ebitda * 0.3:
-            impatto.append("sostenibile rispetto alla marginalità")
-        elif spesa <= immobilizzazioni:
-            impatto.append("compatibile con l'attivo immobilizzato")
+        sintesi = f"{introduzione} {impatto}."
 
-        sintesi = f"📌 **{titolo}** – " + "; ".join(impatto) + "."
+        # Limita a circa 50 parole
+        parole = sintesi.split()
+        if len(parole) > 50:
+            sintesi = " ".join(parole[:50]) + "..."
 
-        analisi.append(sintesi)
+        testo += sintesi
+        analisi.append(testo)
 
     return analisi
