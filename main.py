@@ -175,7 +175,7 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
 """
     for i, bando in enumerate(bandi, 1):
         output += f"""
-{i}. 🏆 **{bando.get('titolo', 'Senza titolo')}**
+{i}. 🏆 **{bando.get('Titolo', 'Senza titolo')}**
    - 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '-')}
    - 💬 Motivazione: {bando.get('Motivazione', '-')}
    - 💰 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '-')}
