@@ -6,6 +6,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+from validazione_online import valida_bando_online_mock
 from analisi_predittiva_gpt import analizza_benefici_bandi
 import uvicorn
 import logging
@@ -98,6 +99,16 @@ async def analizza_azienda(dati: InputDati):
             "dimensione": dimensione,
             "z_score": z_score,
             "mcc_rating": mcc_rating,
+            "stato_bandi": [
+                {
+                     "titolo": bando.get("titolo"),
+                     "validato": validazione["validato"],
+                     "fondi_disponibili": validazione["fondi_disponibili"],
+                     "esito": validazione["messaggio"]
+                }
+                for bando in top3
+                for validazione in [valida_bando_online_mock(bando.get("titolo"), azienda.get("regione"))]
+            ],
             "bandi_filtrati": top3
             "output_predittivo": analizza_benefici_bandi(top3, azienda)
             "output_testuale": output_finale
