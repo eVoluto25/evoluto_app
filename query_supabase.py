@@ -27,6 +27,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], region
             "ID_incentivo": row["ID_Incentivo"],
             "Titolo": row["Titolo"],
             "Obiettivo_finalita": row["Obiettivo_Finalita"],
+            "Motivazione": row["Motivazione"],
             "Data_apertura": row["Data_apertura"],
             "Data_chiusura": row["Data_chiusura"],
             "Dimensioni": row["Dimensioni"],
