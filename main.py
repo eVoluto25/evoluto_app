@@ -159,11 +159,13 @@ async def analizza_azienda(dati: InputDati):
 # OUTPUT TESTUALE GPT
 def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gpt=None, validazione_online=None):
     output = "🔎 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:\n\n"
+
+    print("DEBUG FINALE BANDO:", bandi[-1])
     
     for i, bando in enumerate(bandi, 1):
-        titolo = bando.get("Titolo", "Senza titolo")
+        titolo = bando.get("Titolo", "").strip()
         
-        output += f"""**{i}. {titolo}**\n"""
+        output += f"""**{i}. {Titolo}**\n"""
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '--')}\n"
         output += f"- 💡 Motivazione: {bando.get('Motivazione', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')}\n"
@@ -174,7 +176,7 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
         # 🔍 Validazione via Google (se disponibile)
         print("DEBUG:", validazione_online)
         if validazione_online:
-            match = next((v for v in validazione_online if v.get("titolo") == titolo and v.get("fonte") == "google"), None)
+            match = next((v for v in validazione_online if v.get("Titolo") == titolo ...), None)
             if match:
                 output += f"  🔗 Fonte Google: {match.get('esito', 'N/D')}\n"
                 output += f"  💰 Fondi disponibili: {match.get('fondi_disponibili', 'N/D')}\n"
