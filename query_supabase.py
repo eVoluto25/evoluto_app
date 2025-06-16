@@ -1,4 +1,4 @@
-from classifica_bandi import classifica_bandi
+from classifica_bandi import classifica_bandi_avanzata 
 from supabase import create_client
 from typing import Optional
 import os
