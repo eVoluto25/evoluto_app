@@ -163,7 +163,7 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
     print("DEBUG FINALE BANDO:", bandi[-1])
     
     for i, bando in enumerate(bandi, 1):
-        titolo = bando.get("Titolo", "").strip()
+        titolo = str(bando.get("Titolo", "")).strip()
         
         output += f"""**{i}. {Titolo}**\n"""
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '--')}\n"
@@ -173,15 +173,18 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- 🗓️ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        # 🔍 Validazione via Google (se disponibile)
+       
         print("DEBUG:", validazione_online)
+        # 🔍 Validazione via Google (se disponibile)
         if validazione_online:
-            match = next((v for v in validazione_online if v.get("Titolo") == titolo ...), None)
+            match = next(
+                (v for v in validazione_online if v.get("Titolo") == titolo and v.get("fonte") == "google"),
+                None
+            )
             if match:
-                output += f"  🔗 Fonte Google: {match.get('esito', 'N/D')}\n"
-                output += f"  💰 Fondi disponibili: {match.get('fondi_disponibili', 'N/D')}\n"
-
-        output += "\n"
+                output += f"🔗 Fonte Google: {match.get('esito', 'N/D')}\n"
+                output += f"💰 Fondi disponibili: {match.get('fondi_disponibili', 'N/D')}\n"
+                output += "\n"
 
     # GPT Analysis
     if analisi_gpt:
