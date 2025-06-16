@@ -43,7 +43,12 @@ def analizza_benefici_bandi(bandi, azienda):
         if len(parole) > 80:
             sintesi = " ".join(parole[:80]) + "..."
 
-        testo += sintesi
+        # Validazione online del bando
+        validazione = valida_bando_online_mock(titolo, azienda.get("regione"))
+
+        testo += sintesi + "\n" + validazione["messaggio"]
+
         analisi.append(testo)
+
 
     return analisi
