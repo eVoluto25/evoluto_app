@@ -182,12 +182,12 @@ def interpreta_mcc(mcc):
 def genera_output_finale(
     bandi,
     macro_area,
-    totale_agevolazioni_macroarea=None,
     dimensione,
     mcc_rating,
     z_score,
     validazione_online=None,
-    approfondimenti_google=None 
+    approfondimenti_google=None, 
+    totale_agevolazioni_macroarea=None
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}**\n"
