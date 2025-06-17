@@ -1,4 +1,3 @@
-import random
 from validazione_google import cerca_google_bando
 
 # Elenco fonti autorevoli da usare nelle ricerche
