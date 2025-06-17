@@ -147,9 +147,8 @@ async def analizza_azienda(dati: InputDati):
             "mcc_rating": mcc_rating,
             "stato_bandi": stato_bandi,
             "bandi_filtrati": top3,
-            "output_predittivo": output_predittivo,
-            "output_testuale": output_finale,
-            "analisi_predittiva": output_predittivo
+            "analisi_predittiva": output_predittivo,
+            "output_finale": output_finale 
         }
 
     except Exception as e:
