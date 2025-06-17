@@ -198,9 +198,7 @@ def genera_output_finale(
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-
-        for i, bando in enumerate(top_bandi):
-            output += f"\n{i+1}. {bando['Titolo']}\n"
+        if validazione_online:
             output += f"🔍 Verifica online: {validazione_online[i]['esito']}\n"  
 
     return output
