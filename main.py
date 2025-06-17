@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from analisi_predittiva_gpt import analizza_benefici_bandi
-from validazione_google import cerca_google_bando as valida_bando_online_mock
+from validazione_google import cerca_google_bando
 import uvicorn
 import logging
 
