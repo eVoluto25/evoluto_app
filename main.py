@@ -183,6 +183,7 @@ def genera_output_finale(
     mcc_rating,
     z_score,
     validazione_online=None
+    approfondimenti_google=None 
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}**\n"
@@ -200,5 +201,9 @@ def genera_output_finale(
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
         if validazione_online:
             output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
-
-    return output
+        if approfondimenti_google:
+            output += "\n\n🔎 **Approfondimenti online trovati**\n"
+            for voce in approfondimenti_google:
+                output += f"{voce}\n"   
+    
+        return output
