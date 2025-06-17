@@ -149,6 +149,9 @@ async def analizza_azienda(dati: InputDati):
             analisi_gpt=analisi_gpt,
             validazione_online=stato_bandi
         )
+        print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
+        print(output_finale)
+        print("\n📏 Lunghezza caratteri:", len(output_finale))
         
         return {
             "macro_area": macro_area,
@@ -175,47 +178,33 @@ def genera_output_finale(
     analisi_gpt=None,
     validazione_online=None
 ):
-    output = f"""📌 **Analisi Aziendale**
-- Macro Area: **{macro_area}**
-- Dimensione: **{dimensione}**
-- MCC Rating: **{mcc_rating}**
-- Z-Score: **{z_score:.2f}**
+    output = "📌 **Analisi Aziendale**\n"
+    output += f"- Macro Area: **{macro_area}**\n"
+    output += f"- Dimensione: **{dimensione}**\n"
+    output += f"- MCC Rating: **{mcc_rating}**\n"
+    output += f"- Z-Score: **{z_score:.2f}**\n"
 
-📑 **Top 3 Bandi Selezionati:**
-"""
-
+    output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi, 1):
-        titolo = bando.get("Titolo", "--")
-        obiettivo = ", ".join(bando.get("Obiettivo_finalita", ["--"]))
-        spesa_max = bando.get("Spesa_Ammessa_max", "--")
-        agevolazione = bando.get("Agevolazione_Concedibile_max", "--")
-        forma = ", ".join(bando.get("Forma_agevolazione", ["--"]))
-        scadenza = bando.get("Data_chiusura", "--")
+        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
+        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
+        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
+        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
+        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
+        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        output += f"""\n**{i}. {titolo}**
-- 🎯 Obiettivo: {obiettivo}
-- 💶 Spesa ammessa max: {spesa_max} €
-- 🧮 Agevolazione concedibile: {agevolazione} €
-- 🧾 Forma agevolazione: {forma}
-- ⏳ Scadenza: {scadenza}
-"""
-
-        # Validazione + Analisi nella stessa sezione
-        msg_validazione = ""
+        # 🔍 Verifica online integrata
+        validazione_msg = ""
         if validazione_online:
-            match = next((v for v in validazione_online if v.get("titolo") == titolo), None)
-            if match:
-                msg_validazione = match.get("messaggio", "").strip()
+            match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
+            if match and isinstance(match, dict):
+                validazione_msg = match.get("messaggio", "").strip()
+                output += f"- 🔎 Verifica online: {validazione_msg}\n"
 
-        msg_analisi = ""
-        if analisi_gpt and i - 1 < len(analisi_gpt):
-            msg_analisi = analisi_gpt[i - 1].get("testo", "").strip()
-
-        if msg_validazione or msg_analisi:
-            output += "- 📋 Dettagli:\n"
-            if msg_validazione:
-                output += f"  • 🔍 Verifica online: {msg_validazione}\n"
-            if msg_analisi:
-                output += f"  • 📊 Analisi Predittiva: {msg_analisi}\n"
+        # 📊 Analisi predittiva integrata
+        if analisi_gpt and len(analisi_gpt) >= i:
+            voce = analisi_gpt[i - 1]
+            testo = voce.get("testo", "").strip() if isinstance(voce, dict) else str(voce).strip()
+            output += f"- 📊 Analisi Predittiva: {testo}\n"
 
     return output
