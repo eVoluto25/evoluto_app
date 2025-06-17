@@ -157,39 +157,42 @@ async def analizza_azienda(dati: InputDati):
         raise HTTPException(status_code=500, detail=str(e))
 
 # OUTPUT TESTUALE GPT
-def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gpt=None, validazione_online=None):
-    output = "🔎 eVoluto ha analizzato +300 bandi pubblici. Ecco i 3 più coerenti con la tua struttura aziendale:\n\n"
+def genera_output_finale(
+    bandi,
+    macro_area,
+    dimensione,
+    mcc_rating,
+    z_score,
+    analisi_gpt=None,
+    validazione_online=None
+):
+    output = f"📌 **Analisi Aziendale**\n"
+    output += f"- Macro Area: **{macro_area}**\n"
+    output += f"- Dimensione: **{dimensione}**\n"
+    output += f"- MCC Rating: **{mcc_rating}**\n"
+    output += f"- Z-Score: **{z_score:.2f}**\n"
 
-    print("DEBUG FINALE BANDO:", bandi[-1])
-    
+    output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
     for i, bando in enumerate(bandi, 1):
-        titolo = str(bando.get("Titolo", "")).strip()
-        
-        output += f"""**{i}. {titolo}**\n"""
-        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '--')}\n"
-        output += f"- 💡 Motivazione: {bando.get('Motivazione', '--')}\n"
-        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')}\n"
-        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')}\n"
+        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
+        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
+        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
+        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
-        output += f"- 🗓️ Scadenza: {bando.get('Data_chiusura', '--')}\n"
+        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-       
-        print("DEBUG:", validazione_online)
-        # 🔍 Validazione via Google (se disponibile)
+        # ✅ Validazione online
         if validazione_online:
-            match = next(
-                (v for v in validazione_online if v.get("Titolo") == titolo and v.get("fonte") == "google"),
-                None
-            )
-            if match:
-                output += f"🔗 Fonte Google: {match.get('esito', 'N/D')}\n"
-                output += f"💰 Fondi disponibili: {match.get('fondi_disponibili', 'N/D')}\n"
-                output += "\n"
+            validazione = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
+            if validazione:
+                msg = validazione.get("messaggio", "").strip()
+                output += f"- 🔍 Verifica online: {msg}\n"
 
-    # GPT Analysis
-    if analisi_gpt:
-        output += "\n📊 Analisi Predittiva:\n"
-        for i, testo in enumerate(analisi_gpt, 1):
-            output += f"{i}. {testo}\n"
+        # ✅ Analisi GPT
+        if analisi_gpt:
+            analisi = next((a for a in analisi_gpt if a.get("titolo") == bando.get("Titolo")), None)
+            if analisi:
+                testo = analisi.get("analisi", "").strip()
+                output += f"- 📊 Analisi predittiva: {testo}\n"
 
     return output
