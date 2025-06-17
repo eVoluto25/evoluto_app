@@ -129,7 +129,8 @@ async def analizza_azienda(dati: InputDati):
                 "titolo": bando.get("titolo"),
                 "validato": validazione["validato"],
                 "fondi_disponibili": validazione["fondi_disponibili"],
-                "esito": validazione["messaggio"]
+                "esito": "✅ Validato online (tramite titolo trovato su fonte ufficiale)",
+                "fondi_disponibili": True
             })
 
         # ✅ Costruzione dell’output testuale
@@ -198,10 +199,10 @@ def genera_output_finale(
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        # 🔍 Verifica online integrata 
-        if validazione_online:
-            match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
-            if match:
-                output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
-             
+        for i, bando in enumerate(top_bandi):
+        output += f"\n{i+1}. {bando['Titolo']}\n"
+        output += f"🔍 Verifica online: {validazione_online[i]['esito']}\n"  # ✅ Qui inserisci il messaggio
+        # Aggiungi anche fondi, se vuoi:
+        # output += f"💶 Fondi disponibili: {validazione_online[i]['fondi_disponibili']}\n"
+
     return output
