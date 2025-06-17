@@ -6,8 +6,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from validazione_online import valida_bando_online_mock
-from validazione_google import cerca_google_bando 
+from validazione_google import valida_bando_online as valida_bando_online_mock
 from analisi_predittiva_gpt import analizza_benefici_bandi
 import uvicorn
 import logging
@@ -193,7 +192,7 @@ def genera_output_finale(
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        # 🔍 Verifica online integrata e Analisi predittiva integrata
+        # 🔍 Verifica online integrata 
         if validazione_online:
             match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
             if match:
