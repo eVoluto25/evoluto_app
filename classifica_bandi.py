@@ -97,7 +97,7 @@ def dimensione_compatibile(dim_azienda, dim_bando):
 
 def classifica_bandi_avanzata(lista_bandi, azienda):
     if not lista_bandi:
-    return []
+        return []
     risultati = []
     codice_ateco = [azienda["codice_ateco"]]
     regione = azienda["regione"]
