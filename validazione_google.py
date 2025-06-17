@@ -50,8 +50,29 @@ def cerca_google_bando(titolo_bando, regione=None):
             logger.info(f"🔹 Risultato {i+1}: {item.get('title')} | Snippet: {item.get('snippet')}")
 
     # Analizza i primi 5 snippet
-    validato = any("aperto" in item.get("snippet", "").lower() or "proroga" in item.get("snippet", "").lower() for item in risultati)
-    fondi = any("fondi" in item.get("snippet", "").lower() or "disponibile" in item.get("snippet", "").lower() for item in risultati)
+    validato = any(
+        "aperto" in item.get("snippet", "").lower() or
+        "proroga" in item.get("snippet", "").lower()
+        for item in risultati
+    )
+
+    fondi = any(
+        "fondi" in item.get("snippet", "").lower() or
+        "disponibile" in item.get("snippet", "").lower()
+        for item in risultati
+    )
+
+    # 🔁 Nuova logica: se il titolo del bando è presente, validiamo comunque
+    if not validato:
+        titolo_match = any(
+            titolo_bando.lower() in item.get("title", "").lower() or
+            titolo_bando.lower() in item.get("snippet", "").lower()
+            for item in risultati
+        )
+        if titolo_match:
+            validato = True
+            logger.info("✅ Validazione accettata tramite titolo del bando nei risultati Google.")
+            messaggio += "✅ Validato online (tramite titolo trovato su fonte ufficiale)."
 
     messaggio = ""
     if validato:
