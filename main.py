@@ -114,7 +114,7 @@ async def analizza_azienda(dati: InputDati):
         top5 = classifica_bandi(bandi, azienda)
 
         stato_bandi = []
-        for bando in top3:
+        for bando in top5:
             try:
                 titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
                 validazione = cerca_google_bando(titolo, dati.anagrafica.regione)
