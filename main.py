@@ -199,6 +199,6 @@ def genera_output_finale(
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
         if validazione_online:
-            output += f"🔍 Verifica online: {validazione_online[i]['esito']}\n"  
+            output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
 
     return output
