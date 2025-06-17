@@ -209,7 +209,7 @@ def genera_output_finale(
 
         msg_analisi = ""
         if analisi_gpt and i - 1 < len(analisi_gpt):
-            msg_analisi = analisi_gpt[i - 1].strip()
+            msg_analisi = analisi_gpt[i - 1].get("testo", "").strip()
 
         if msg_validazione or msg_analisi:
             output += "- 📋 Dettagli:\n"
