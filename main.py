@@ -173,30 +173,20 @@ def genera_output_finale(
 
     output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
     for i, bando in enumerate(bandi, 1):
-        output = f"📌 **Analisi Aziendale**\n"
-        output += f"- Macro Area: **{macro_area}**\n"
-        output += f"- Dimensione: **{dimensione}**\n"
-        output += f"- MCC Rating: **{mcc_rating}**\n"
-        output += f"- Z-Score: **{z_score:.2f}**\n"
+        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
+        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
+        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
+        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
+        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
+        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
+        if validazione_online:
+            match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
+            if match:
+                output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
 
-        for i, voce in enumerate(bandi_completi, 1):
-            bando = voce["bando"]
-            analisi = voce.get("analisi")
-            validazione = voce.get("validazione")
+        if analisi_gpt:
+            testo = analisi_gpt[i-1] if i-1 < len(analisi_gpt) else ""
+            output += f"\n📊 Analisi Predittiva:\n{testo}\n"
 
-            output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
-            output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
-            output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
-            output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
-            output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
-            output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-
-            if validazione:
-                output += f"- 🔍 Verifica online: {validazione}\n"
-
-            if analisi:
-                 output += f"\n📊 Analisi Predittiva:\n{analisi}\n"
-
-        return output
+    return output
