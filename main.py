@@ -116,7 +116,8 @@ async def analizza_azienda(dati: InputDati):
         stato_bandi = []
         for bando in top3:
             try:
-                validazione = cerca_google_bando(bando.get("titolo"), dati.anagrafica.regione)
+                titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
+                validazione = cerca_google_bando(titolo, dati.anagrafica.regione)
             except Exception as e:
                 validazione = {
                     "validato": False,
