@@ -194,9 +194,9 @@ def genera_output_finale(
             output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
             if validazione:
-            output += f"- 🔍 Verifica online: {validazione}\n"
+                output += f"- 🔍 Verifica online: {validazione}\n"
 
             if analisi:
-            output += f"\n📊 Analisi Predittiva:\n{analisi}\n"
+                 output += f"\n📊 Analisi Predittiva:\n{analisi}\n"
 
         return output
