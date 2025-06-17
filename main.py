@@ -141,7 +141,7 @@ async def analizza_azienda(dati: InputDati):
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
             top_bandi, macro_area, dimensione, mcc_rating, z_score,
-            validazione_online=stato_bandi
+            validazione_online=stato_bandi,
             approfondimenti_google=google_extra,
             totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
         )
