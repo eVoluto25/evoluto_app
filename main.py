@@ -182,7 +182,7 @@ def genera_output_finale(
     dimensione,
     mcc_rating,
     z_score,
-    validazione_online=None
+    validazione_online=None,
     approfondimenti_google=None 
 ):
     output = "📌 **Analisi Aziendale**\n"
