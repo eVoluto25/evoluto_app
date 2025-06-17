@@ -134,12 +134,22 @@ async def analizza_azienda(dati: InputDati):
             })
 
         output_predittivo = analizza_benefici_bandi(top3, azienda)
+
+        # 🔁 Costruisci lista strutturata per analisi_gpt
+        analisi_gpt = []
+        for bando, testo in zip(top3, output_predittivo):
+            analisi_gpt.append({
+                "titolo": bando.get("Titolo", ""),
+                "analisi": testo
+            })
+
+        # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
             top3, macro_area, dimensione, mcc_rating, z_score,
-            analisi_gpt=output_predittivo,
+            analisi_gpt=analisi_gpt,
             validazione_online=stato_bandi
         )
-
+        
         return {
             "macro_area": macro_area,
             "dimensione": dimensione,
