@@ -30,7 +30,6 @@ def cerca_google_bando(titolo_bando, regione=None):
     response = requests.get(url, params=params)
     
     logger.info(f"📩 Risposta ricevuta da Google API | Status: {response.status_code}")
-    logger.error("❌ Errore nella risposta di Google API.")
 
     if response.status_code != 200:
         return {
@@ -39,6 +38,8 @@ def cerca_google_bando(titolo_bando, regione=None):
             "messaggio": "⚠️ Errore nella richiesta a Google API.",
             "results": []
         }
+
+    logger.error("❌ Errore nella risposta di Google API.")
 
     risultati = response.json().get("items", [])
 
