@@ -165,7 +165,7 @@ def genera_output_finale(bandi, macro_area, dimensione, mcc, z_score, analisi_gp
     for i, bando in enumerate(bandi, 1):
         titolo = str(bando.get("Titolo", "")).strip()
         
-        output += f"""**{i}. {Titolo}**\n"""
+        output += f"""**{i}. {titolo}**\n"""
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_Finalita', '--')}\n"
         output += f"- 💡 Motivazione: {bando.get('Motivazione', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')}\n"
