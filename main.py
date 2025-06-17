@@ -198,9 +198,5 @@ def genera_output_finale(
             match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
             if match:
                 output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
-
-        if analisi_gpt:
-            testo = analisi_gpt[i-1]["analisi"] if i-1 < len(analisi_gpt) else ""
-            output += f"- 🧠 Analisi Predittiva: {testo.strip()}\n"
              
     return output
