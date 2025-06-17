@@ -189,4 +189,7 @@ def genera_output_finale(
             testo = analisi_gpt[i-1] if i-1 < len(analisi_gpt) else ""
             output += f"\n📊 Analisi Predittiva:\n{testo}\n"
 
+        print("\n\n📤 LOG - OUTPUT COMPLETO:\n", output)
+        print("📏 Lunghezza output:", len(output))
+
     return output
