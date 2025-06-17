@@ -200,9 +200,7 @@ def genera_output_finale(
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
         for i, bando in enumerate(top_bandi):
-        output += f"\n{i+1}. {bando['Titolo']}\n"
-        output += f"🔍 Verifica online: {validazione_online[i]['esito']}\n"  # ✅ Qui inserisci il messaggio
-        # Aggiungi anche fondi, se vuoi:
-        # output += f"💶 Fondi disponibili: {validazione_online[i]['fondi_disponibili']}\n"
+            output += f"\n{i+1}. {bando['Titolo']}\n"
+            output += f"🔍 Verifica online: {validazione_online[i]['esito']}\n"  
 
     return output
