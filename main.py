@@ -85,6 +85,8 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
     totale_agevolazioni_macroarea = somma_agevolazioni_macroarea(macro_area)
+    if totale_agevolazioni_macroarea is None:
+        totale_agevolazioni_macroarea = 0
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
