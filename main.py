@@ -173,24 +173,30 @@ def genera_output_finale(
 
     output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
     for i, bando in enumerate(bandi, 1):
-        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
-        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
-        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
-        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
-        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
-        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
+        output = f"📌 **Analisi Aziendale**\n"
+        output += f"- Macro Area: **{macro_area}**\n"
+        output += f"- Dimensione: **{dimensione}**\n"
+        output += f"- MCC Rating: **{mcc_rating}**\n"
+        output += f"- Z-Score: **{z_score:.2f}**\n"
 
-        # ✅ Validazione online
-        if validazione_online:
-            validazione = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
+        output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
+
+        for i, voce in enumerate(bandi_completi, 1):
+            bando = voce["bando"]
+            analisi = voce.get("analisi")
+            validazione = voce.get("validazione")
+
+            output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
+            output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
+            output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
+            output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
+            output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
+            output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
+
             if validazione:
-                msg = validazione.get("messaggio", "").strip()
-                output += f"- 🔍 Verifica online: {msg}\n"
+            output += f"- 🔍 Verifica online: {validazione}\n"
 
-        # ✅ Analisi GPT
-        if analisi_gpt:
-            output += "\n📊 Analisi Predittiva:\n"
-            for i, testo in enumerate(analisi_gpt, 1):
-                output += f"{i}. {testo}\n"
+            if analisi:
+            output += f"\n📊 Analisi Predittiva:\n{analisi}\n"
 
-    return output
+        return output
