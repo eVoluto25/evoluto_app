@@ -84,7 +84,7 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
         return "Media Impresa"
     return "Grande impresa"
 
-    totale_agevolazioni_macroarea = somma_agevolazioni_macroarea(macro_area)
+    totale_agevolazioni_macroarea, bandi_macroarea = somma_agevolazioni_macroarea(macro_area)
     if totale_agevolazioni_macroarea is None:
         totale_agevolazioni_macroarea = 0
 
@@ -116,7 +116,7 @@ async def analizza_azienda(dati: InputDati):
             "macro_area": macro_area
         }
 
-        top10 = classifica_bandi(bandi, azienda)
+        top_bandi = classifica_bandi(bandi_macroarea, azienda)
 
         stato_bandi = []
         for b in top10 or []:
@@ -140,8 +140,10 @@ async def analizza_azienda(dati: InputDati):
 
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
-            top10, macro_area, dimensione, mcc_rating, z_score,
+            top_bandi, macro_area, dimensione, mcc_rating, z_score,
             validazione_online=stato_bandi
+            approfondimenti_google=google_extra,
+            totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
         print(output_finale)
