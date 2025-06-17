@@ -1,5 +1,3 @@
-from validazione_online import valida_bando_online_mock
-
 def analizza_benefici_bandi(bandi, azienda):
     analisi = []
 
