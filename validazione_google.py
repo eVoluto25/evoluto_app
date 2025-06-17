@@ -27,11 +27,11 @@ def cerca_google_bando(titolo_bando, regione=None):
         "num": 5
     }
 
+    response = requests.get(url, params=params)
+    
     logger.info(f"📩 Risposta ricevuta da Google API | Status: {response.status_code}")
-
     logger.error("❌ Errore nella risposta di Google API.")
 
-    response = requests.get(url, params=params)
     if response.status_code != 200:
         return {
             "validato": False,
@@ -41,6 +41,12 @@ def cerca_google_bando(titolo_bando, regione=None):
         }
 
     risultati = response.json().get("items", [])
+
+    if not risultati:
+        logger.warning("🟨 Nessun risultato restituito da Google API.")
+    else:
+        for i, item in enumerate(risultati):
+            logger.info(f"🔹 Risultato {i+1}: {item.get('title')} | Snippet: {item.get('snippet')}")
 
     # Analizza i primi 5 snippet
     validato = any("aperto" in item.get("snippet", "").lower() or "proroga" in item.get("snippet", "").lower() for item in risultati)
