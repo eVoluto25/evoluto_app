@@ -193,18 +193,14 @@ def genera_output_finale(
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
 
-        # 🔍 Verifica online integrata
-        validazione_msg = ""
+        # 🔍 Verifica online integrata e Analisi predittiva integrata
         if validazione_online:
             match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
-            if match and isinstance(match, dict):
-                validazione_msg = match.get("messaggio", "").strip()
-                output += f"- 🔎 Verifica online: {validazione_msg}\n"
+            if match:
+                output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
 
-        # 📊 Analisi predittiva integrata
-        if analisi_gpt and len(analisi_gpt) >= i:
-            voce = analisi_gpt[i - 1]
-            testo = voce.get("testo", "").strip() if isinstance(voce, dict) else str(voce).strip()
-            output += f"- 📊 Analisi Predittiva: {testo}\n"
-
+        if analisi_gpt:
+            testo = analisi_gpt[i-1] if i-1 < len(analisi_gpt) else ""
+            output += f"- 🧠 Analisi Predittiva: {testo.strip()}\n"
+             
     return output
