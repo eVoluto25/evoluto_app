@@ -211,4 +211,4 @@ def genera_output_finale(
             for voce in approfondimenti_google:
                 output += f"{voce}\n"   
     
-        return output
+        return output or ""
