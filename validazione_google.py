@@ -49,13 +49,22 @@ def cerca_google_bando(titolo_bando, regione=None):
         for i, item in enumerate(risultati):
             logger.info(f"🔹 Risultato {i+1}: {item.get('title')} | Snippet: {item.get('snippet')}")
 
-    # Analizza i primi 5 snippet
+    # 🔍 Parole chiave per identificare validità e fondi
+    keywords_validita = ["aperto", "proroga", "attivo", "in corso", "scadenza", "accesso", "presentazione domande"]
+    keywords_fondi = ["fondi", "disponibile", "stanziamento", "risorse", "finanziamento"]
+
+    # ✅ Verifica validità tramite snippet
     validato = any(
-        "aperto" in item.get("snippet", "").lower() or
-        "proroga" in item.get("snippet", "").lower()
+        any(kw in item.get("snippet", "").lower() for kw in keywords_validita)
         for item in risultati
     )
 
+    # 💰 Verifica presenza fondi
+    fondi = any(
+        any(kw in item.get("snippet", "").lower() for kw in keywords_fondi)
+        for item in risultati
+    )
+    
     fondi = any(
         "fondi" in item.get("snippet", "").lower() or
         "disponibile" in item.get("snippet", "").lower()
