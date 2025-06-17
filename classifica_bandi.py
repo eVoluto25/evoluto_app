@@ -141,4 +141,4 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         reverse=True
     )
 
-    return risultati[:3]
+    return risultati[:5]
