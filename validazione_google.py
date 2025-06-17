@@ -1,10 +1,14 @@
-
 import os
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 def cerca_google_bando(titolo_bando, regione=None):
     API_KEY = os.getenv("GOOGLE_API_KEY")
     CX = os.getenv("GOOGLE_CX_ID")
+
+    logger.info(f"▶️ Avvio validazione con Google: '{titolo_bando}' | Regione: '{regione}'")
 
     if not API_KEY or not CX:
         raise ValueError("API Key o CX ID mancanti nelle variabili ambiente.")
@@ -13,6 +17,8 @@ def cerca_google_bando(titolo_bando, regione=None):
     if regione:
         query += f" {regione}"
 
+    logger.info(f"🔎 Query generata per Google API: {query}")
+
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
         "key": API_KEY,
@@ -20,6 +26,10 @@ def cerca_google_bando(titolo_bando, regione=None):
         "q": query,
         "num": 5
     }
+
+    logger.info(f"📩 Risposta ricevuta da Google API | Status: {response.status_code}")
+
+    logger.error("❌ Errore nella risposta di Google API.")
 
     response = requests.get(url, params=params)
     if response.status_code != 200:
@@ -46,6 +56,8 @@ def cerca_google_bando(titolo_bando, regione=None):
         messaggio += " 💰 Fondi ancora disponibili secondo fonti pubbliche."
     else:
         messaggio += " ❌ Fondi risultano esauriti o non verificabili."
+
+    logger.info(f"📊 Esito validazione Google → Validato: {validato} | Fondi: {fondi}")
 
     return {
         "validato": validato,
