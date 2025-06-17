@@ -175,31 +175,47 @@ def genera_output_finale(
     analisi_gpt=None,
     validazione_online=None
 ):
-    output = f"📌 **Analisi Aziendale**\n"
-    output += f"- Macro Area: **{macro_area}**\n"
-    output += f"- Dimensione: **{dimensione}**\n"
-    output += f"- MCC Rating: **{mcc_rating}**\n"
-    output += f"- Z-Score: **{z_score:.2f}**\n"
+    output = f"""📌 **Analisi Aziendale**
+- Macro Area: **{macro_area}**
+- Dimensione: **{dimensione}**
+- MCC Rating: **{mcc_rating}**
+- Z-Score: **{z_score:.2f}**
 
-    output += f"\n\n📑 **Top 3 Bandi Selezionati:**\n"
+📑 **Top 3 Bandi Selezionati:**
+"""
+
     for i, bando in enumerate(bandi, 1):
-        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
-        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
-        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
-        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
-        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
-        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
+        titolo = bando.get("Titolo", "--")
+        obiettivo = ", ".join(bando.get("Obiettivo_finalita", ["--"]))
+        spesa_max = bando.get("Spesa_Ammessa_max", "--")
+        agevolazione = bando.get("Agevolazione_Concedibile_max", "--")
+        forma = ", ".join(bando.get("Forma_agevolazione", ["--"]))
+        scadenza = bando.get("Data_chiusura", "--")
 
+        output += f"""\n**{i}. {titolo}**
+- 🎯 Obiettivo: {obiettivo}
+- 💶 Spesa ammessa max: {spesa_max} €
+- 🧮 Agevolazione concedibile: {agevolazione} €
+- 🧾 Forma agevolazione: {forma}
+- ⏳ Scadenza: {scadenza}
+"""
+
+        # Validazione + Analisi nella stessa sezione
+        msg_validazione = ""
         if validazione_online:
-            match = next((v for v in validazione_online if v.get("titolo") == bando.get("Titolo")), None)
+            match = next((v for v in validazione_online if v.get("titolo") == titolo), None)
             if match:
-                output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
+                msg_validazione = match.get("messaggio", "").strip()
 
-        if analisi_gpt:
-            testo = next((a["analisi"] for a in analisi_gpt if a.get("titolo") == bando.get("Titolo")), "")
-            output += f"\n📊 Analisi Predittiva:\n{testo}\n"
+        msg_analisi = ""
+        if analisi_gpt and i - 1 < len(analisi_gpt):
+            msg_analisi = analisi_gpt[i - 1].strip()
 
-        print("\n\n📤 LOG - OUTPUT COMPLETO:\n", output)
-        print("📏 Lunghezza output:", len(output))
+        if msg_validazione or msg_analisi:
+            output += "- 📋 Dettagli:\n"
+            if msg_validazione:
+                output += f"  • 🔍 Verifica online: {msg_validazione}\n"
+            if msg_analisi:
+                output += f"  • 📊 Analisi Predittiva: {msg_analisi}\n"
 
     return output
