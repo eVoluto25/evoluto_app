@@ -155,6 +155,25 @@ async def analizza_azienda(dati: InputDati):
         logger.exception("Errore durante l'elaborazione")
         raise HTTPException(status_code=500, detail=str(e))
 
+def interpreta_z_score(z):
+    if z > 0.20:
+        return "✅ Eccellente"
+    elif z > 0.10:
+        return "🟡 Buona"
+    elif z > 0.00:
+        return "🟠 Debole"
+    return "🔴 Critica"
+
+def interpreta_mcc(mcc):
+    if mcc > 10:
+        return "✅ Molto solida"
+    elif mcc > 5:
+        return "🟢 Buona"
+    elif mcc > 1:
+        return "🟡 Sufficiente"
+    return "🔴 Critica"
+
+
 # OUTPUT TESTUALE GPT
 def genera_output_finale(
     bandi,
@@ -167,8 +186,8 @@ def genera_output_finale(
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}**\n"
     output += f"- Dimensione: **{dimensione}**\n"
-    output += f"- MCC Rating: **{mcc_rating}**\n"
-    output += f"- Z-Score: **{z_score:.2f}**\n"
+    output += f"- **MCC Rating:** **{mcc_rating}** ({interpreta_mcc(mcc_rating)})\n"
+    output += f"- **Z-Score:** **{z_score:.2f}** ({interpreta_z_score(z_score)})\n"
 
     output += "\n\n📑 **Top 5 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:5], 1):
