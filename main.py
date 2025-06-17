@@ -83,6 +83,8 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
         return "Media Impresa"
     return "Grande impresa"
 
+    totale_agevolazioni_macroarea = somma_agevolazioni_macroarea(macro_area)
+
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
@@ -179,6 +181,7 @@ def interpreta_mcc(mcc):
 def genera_output_finale(
     bandi,
     macro_area,
+    totale_agevolazioni_macroarea=None,
     dimensione,
     mcc_rating,
     z_score,
@@ -187,6 +190,7 @@ def genera_output_finale(
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}**\n"
+    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: {totale_agevolazioni_macroarea} milioni di euro\n"
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"- **MCC Rating:** **{mcc_rating}** ({interpreta_mcc(mcc_rating)})\n"
     output += f"- **Z-Score:** **{z_score:.2f}** ({interpreta_z_score(z_score)})\n"
