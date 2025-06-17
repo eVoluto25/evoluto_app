@@ -39,9 +39,10 @@ def valida_bando_online(titolo_bando, regione=None):
             "messaggio": risposta.get("messaggio", "⚠️ Nessuna informazione disponibile.")
         }
     except Exception as e:
-        return {
-            "validato": False,
-            "fondi_disponibili": False,
-            "fonte": None,
-            "messaggio": f"❌ Errore durante la validazione: {str(e)}"
-        }
+    logger.error(f"❌ Errore durante la richiesta Google API: {str(e)}")
+    return {
+        "validato": False,
+        "fondi_disponibili": False,
+        "messaggio": f"⚠️ Errore tecnico Google API: {str(e)}",
+        "results": []
+    }
