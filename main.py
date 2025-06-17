@@ -200,7 +200,7 @@ def genera_output_finale(
                 output += f"- 🔍 Verifica online: {match.get('messaggio', 'N/D')}\n"
 
         if analisi_gpt:
-            testo = analisi_gpt[i-1] if i-1 < len(analisi_gpt) else ""
+            testo = analisi_gpt[i-1]["analisi"] if i-1 < len(analisi_gpt) else ""
             output += f"- 🧠 Analisi Predittiva: {testo.strip()}\n"
              
     return output
