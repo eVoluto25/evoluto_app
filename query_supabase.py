@@ -22,6 +22,27 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], region
     response = supabase.table(tabella).select("*").execute()
     bandi = []
 
+def somma_agevolazioni_macroarea(macro_area: str) -> float:
+    tabella = {
+        "Crisi": "bandi_crisi",
+        "Sviluppo": "bandi_crescita",
+        "Espansione": "bandi_espansione"
+    }.get(macro_area)
+
+    if not tabella:
+        return 0.0
+
+    response = supabase.table(tabella).select("Agevolazione_Concedibile_max").execute()
+
+    agevolazioni = [
+        b.get("Agevolazione_Concedibile_max", 0) or 0
+        for b in response.data
+        if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
+    ]
+
+    totale = sum(agevolazioni)
+    return round(totale / 1_000_000, 2)  # in milioni di euro
+
     for row in response.data:
         bandi.append({
             "ID_incentivo": row["ID_Incentivo"],
