@@ -135,7 +135,7 @@ async def analizza_azienda(dati: InputDati):
 
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
-            top5, macro_area, dimensione, mcc_rating, z_score,
+            top10, macro_area, dimensione, mcc_rating, z_score,
             validazione_online=stato_bandi
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
@@ -148,7 +148,7 @@ async def analizza_azienda(dati: InputDati):
             "z_score": z_score,
             "mcc_rating": mcc_rating,
             "stato_bandi": stato_bandi,
-            "bandi_filtrati": top5,
+            "bandi_filtrati": top10,
             "output_finale": output_finale 
         }
 
@@ -190,8 +190,8 @@ def genera_output_finale(
     output += f"- **MCC Rating:** **{mcc_rating}** ({interpreta_mcc(mcc_rating)})\n"
     output += f"- **Z-Score:** **{z_score:.2f}** ({interpreta_z_score(z_score)})\n"
 
-    output += "\n\n📑 **Top 5 Bandi Selezionati**\n"
-    for i, bando in enumerate(bandi[:5], 1):
+    output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
+    for i, bando in enumerate(bandi[:10], 1):
         output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
