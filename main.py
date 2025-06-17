@@ -190,9 +190,8 @@ def genera_output_finale(
 
         # ✅ Analisi GPT
         if analisi_gpt:
-            analisi = next((a for a in analisi_gpt if a.get("titolo") == bando.get("Titolo")), None)
-            if analisi:
-                testo = analisi.get("analisi", "").strip()
-                output += f"- 📊 Analisi predittiva: {testo}\n"
+            output += "\n📊 Analisi Predittiva:\n"
+            for i, testo in enumerate(analisi_gpt, 1):
+                output += f"{i}. {testo}\n"
 
     return output
