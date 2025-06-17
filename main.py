@@ -6,7 +6,6 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from analisi_predittiva_gpt import analizza_benefici_bandi
 from validazione_google import cerca_google_bando
 import uvicorn
 import logging
@@ -132,20 +131,9 @@ async def analizza_azienda(dati: InputDati):
                 "esito": validazione["messaggio"]
             })
 
-        output_predittivo = analizza_benefici_bandi(top3, azienda)
-
-        # 🔁 Costruisci lista strutturata per analisi_gpt
-        analisi_gpt = []
-        for bando, testo in zip(top3, output_predittivo):
-            analisi_gpt.append({
-                "titolo": bando.get("Titolo", ""),
-                "analisi": testo
-            })
-
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
             top3, macro_area, dimensione, mcc_rating, z_score,
-            analisi_gpt=analisi_gpt,
             validazione_online=stato_bandi
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
@@ -173,7 +161,6 @@ def genera_output_finale(
     dimensione,
     mcc_rating,
     z_score,
-    analisi_gpt=None,
     validazione_online=None
 ):
     output = "📌 **Analisi Aziendale**\n"
