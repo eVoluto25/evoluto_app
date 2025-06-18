@@ -209,7 +209,9 @@ def genera_output_finale(
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
         if validazione_online and i <= len(validazione_online):
             output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
-            output += f"{bando.get('messaggio', '')}\n"
+            if 'messaggio' in validazione_online[i - 1]:
+            output += f"{validazione_online[i - 1]['messaggio']}\n"
+            
         if approfondimenti_google:
             output += "\n\n🔎 **Approfondimenti online trovati**\n"
             for voce in approfondimenti_google:
