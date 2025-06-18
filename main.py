@@ -216,8 +216,8 @@ def genera_output_finale(
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
     output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{totale_agevolazioni_macroarea:,.0f}\n"
     output += f"- Dimensione: **{dimensione}**\n"
-    output += f"- **Rating Bancario MCC:** {interpreta_mcc(mcc_rating)}\n"
-    output += f"- **Solidità Patrimoniale (Z-Score):** {interpreta_z_score(z_score)}\n"
+    output += f"- **Rating Bancario MCC:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
+    output += f"- **Solidità Patrimoniale (Z-Score):** {z_score:.2f} ({interpreta_z_score(z_score)})\n"
 
     output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:10], 1):
