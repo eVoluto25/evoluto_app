@@ -114,7 +114,7 @@ async def analizza_azienda(dati: InputDati):
             "macro_area": macro_area
         }
 
-        top_bandi = classifica_bandi(bandi_macroarea, azienda)
+        top_bandi = classifica_bandi(bandi, azienda)
 
         stato_bandi = []
         for bando in top_bandi[:10] or []:
