@@ -1,28 +1,13 @@
-from classifica_bandi import classifica_bandi_avanzata as classifica_bandi
+from typing import Optional, Tuple, List
 from supabase import create_client
-from typing import Optional
 import os
 
-# Collegamento a Supabase tramite chiavi salvate su Render
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Connessione al client Supabase
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_KEY")
+supabase = create_client(supabase_url, supabase_key)
 
-def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str], regione: Optional[str]):
-    tabella = None
-    if macro_area == "Crisi":
-        tabella = "bandi_crisi"
-    elif macro_area == "Sviluppo":
-        tabella = "bandi_crescita"
-    elif macro_area == "Espansione":
-        tabella = "bandi_espansione"
-    else:
-        return []
-
-    response = supabase.table(tabella).select("*").execute()
-    bandi = []
-
-def somma_agevolazioni_macroarea(macro_area: str) -> tuple[float, list]:
+def somma_agevolazioni_macroarea(macro_area: str) -> Tuple[float, List[dict]]:
     tabella = {
         "Crisi": "bandi_crisi",
         "Sviluppo": "bandi_crescita",
@@ -30,7 +15,7 @@ def somma_agevolazioni_macroarea(macro_area: str) -> tuple[float, list]:
     }.get(macro_area)
 
     if not tabella:
-        return round(totale / 1_000_000, 2), bandi
+        return 0.0, []
 
     response = supabase.table(tabella).select("*").execute()
 
@@ -43,7 +28,7 @@ def somma_agevolazioni_macroarea(macro_area: str) -> tuple[float, list]:
             totale += float(val)
         except (ValueError, TypeError):
             continue
-   
+
     bandi = []
     for row in response.data:
         bandi.append({
