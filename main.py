@@ -97,14 +97,15 @@ async def analizza_azienda(dati: InputDati):
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
 
-        totale_agevolazioni_macroarea, bandi_macroarea = somma_agevolazioni_macroarea(macro_area)
-        if totale_agevolazioni_macroarea is None:
-            totale_agevolazioni_macroarea = 0
-
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
+
+        totale_agevolazioni_macroarea = sum(
+            b.get('Agevolazione_Concedibile_max', 0)
+            for b in bandi
+            if isinstance(b.get('Agevolazione_Concedibile_max', 0), (int, float))
         )
 
         azienda = {
