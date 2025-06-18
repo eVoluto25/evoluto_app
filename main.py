@@ -118,7 +118,9 @@ async def analizza_azienda(dati: InputDati):
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )    
-
+        
+        numero_bandi_filtrati = len(bandi)
+        
         print(f"📊 Bandi totali filtrati da Supabase: {len(bandi)}")
         print(f"📋 Titoli bandi recuperati: {[b.get('Titolo', '--') for b in bandi]}")
 
@@ -175,6 +177,7 @@ async def analizza_azienda(dati: InputDati):
         output_finale = genera_output_finale(
             top_bandi, macro_area, dimensione, mcc_rating, z_score,
             validazione_online=stato_bandi,
+            numero_bandi_filtrati=numero_bandi_filtrati,
             totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
@@ -221,12 +224,14 @@ def genera_output_finale(
     dimensione,
     mcc_rating,
     z_score,
+    numero_bandi_filtrati,
     validazione_online=None,
     approfondimenti_google=None, 
     totale_agevolazioni_macroarea=None
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
+    output += f"- **Bandi disponibili da fonte Ministeriale in linea con il profilo aziendale:** {numero_bandi_filtrati}\n"
     output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{totale_agevolazioni_macroarea:,.0f}\n"
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"- **Rating Bancario MCC:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
