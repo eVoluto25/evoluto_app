@@ -145,6 +145,6 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         reverse=True
     )
 
-    print(f"📤 Bandi restituiti dopo la classifica: {len(bandi_ordinati)}")
+    print(f"📊 Bandi restituiti dopo la classifica: {len(risultati)}")
 
     return risultati[:10]
