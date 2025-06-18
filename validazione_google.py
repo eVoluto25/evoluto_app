@@ -65,7 +65,7 @@ def cerca_google_bando(titolo_bando):
             return {
                 "validato": True,
                 "estratto": estratto,
-                "esito": f"✅ Verificato online\n📄 Titolo: {titolo_pagina}\n📌 Estratto: {estratto}..."
+                "esito": f"✅ Verificato online (bando analizzato su fonte ufficiale)"
             }
 
     logger.info("❌ Nessuna corrispondenza trovata nei risultati.")
