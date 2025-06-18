@@ -114,6 +114,8 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         if not dimensione_compatibile(dimensione, b.get("Dimensioni", "")):
             continue
 
+        print(f"\n📥 Bandi ricevuti da classificare: {len(bandi)}")
+
         punteggi = {
             "obiettivo": punteggio_obiettivo_finalita(b.get("Obiettivo_Finalita", ""), macro_area),
             "forma": punteggio_forma_agevolazione(b.get("Forma_agevolazione", "")),
@@ -142,5 +144,7 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         ),
         reverse=True
     )
+
+    print(f"📤 Bandi restituiti dopo la classifica: {len(bandi_ordinati)}")
 
     return risultati[:10]
