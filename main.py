@@ -119,6 +119,12 @@ async def analizza_azienda(dati: InputDati):
         }
 
         top_bandi = classifica_bandi(bandi, azienda)
+        
+        totale_agevolazioni_macroarea = sum(
+            float(b.get("Agevolazione_Concedibile_max", 0) or 0)
+            for b in top_bandi
+            if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float, str))
+        )
 
         stato_bandi = []
         for bando in top_bandi[:10] or []:
