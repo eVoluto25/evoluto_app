@@ -112,6 +112,9 @@ async def analizza_azienda(dati: InputDati):
             regione=dati.anagrafica.regione
         )    
 
+        print(f"📊 Bandi totali filtrati da Supabase: {len(bandi)}")
+        print(f"📋 Titoli bandi recuperati: {[b.get('Titolo', '--') for b in bandi]}")
+
         totale_agevolazioni_macroarea = sum(
             float(b.get("Agevolazione_Concedibile_max", 0)) 
             for b in bandi 
@@ -128,6 +131,9 @@ async def analizza_azienda(dati: InputDati):
         }
 
         top_bandi = classifica_bandi(bandi, azienda)
+
+        print(f"🏆 Top bandi selezionati: {len(top_bandi)}")
+        print(f"🏷️ Titoli top bandi: {[b.get('Titolo', '--') for b in top_bandi]}")
         
         totale_agevolazioni_macroarea = sum(
             float(b.get("Agevolazione_Concedibile_max", 0) or 0)
