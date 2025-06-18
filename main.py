@@ -71,13 +71,18 @@ def assegna_macro_area(bilancio: Bilancio) -> str:
 
     if bilancio.ebitda > 0:
         if z_score >= 0.20:
+            print("📍 Macro area assegnata: Espansione (z_score >= 0.20)")
             return "Espansione"
         elif z_score > 0.05:
+            print("📍 Macro area assegnata: Sviluppo (z_score > 0.05)")
             return "Sviluppo"
         else:
+            print("📍 Macro area assegnata: Crisi (z_score basso con EBITDA > 0)")
             return "Crisi"
     elif bilancio.ricavi > 0:
+        print("📍 Macro area assegnata: Sviluppo (EBITDA ≤ 0 ma ricavi > 0)")
         return "Sviluppo"
+    print("📍 Macro area assegnata: Crisi (nessun ricavo o EBITDA ≤ 0)")    
     return "Crisi"
 
 def interpreta_macro_area(macro_area: str) -> str:
