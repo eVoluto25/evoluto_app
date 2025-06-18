@@ -73,6 +73,15 @@ def assegna_macro_area(bilancio: Bilancio):
         return "Sviluppo"
     return "Crisi"
 
+def interpreta_macro_area(macro_area: str) -> str:
+    if macro_area == "Espansione":
+        return "🚀 Fase di crescita: investimenti e sviluppo"
+    elif macro_area == "Sviluppo":
+        return "📈 Fase di consolidamento e ottimizzazione"
+    elif macro_area == "Crisi":
+        return "⚠️ Stato critico: rilancio e risanamento"
+    return "⚙️ Stato non classificato"
+
 def dimensione_azienda(anagrafica: Anagrafica) -> str:
     if anagrafica.numero_dipendenti is None:
         return "Non classificabile"
@@ -204,11 +213,11 @@ def genera_output_finale(
     totale_agevolazioni_macroarea=None
 ):
     output = "📌 **Analisi Aziendale**\n"
-    output += f"- Macro Area: **{macro_area}**\n"
+    output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
     output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{totale_agevolazioni_macroarea:,.0f}\n"
     output += f"- Dimensione: **{dimensione}**\n"
-    output += f"- **MCC Rating:** **{mcc_rating}** ({interpreta_mcc(mcc_rating)})\n"
-    output += f"- **Z-Score:** **{z_score:.2f}** ({interpreta_z_score(z_score)})\n"
+    output += f"- **Rating Bancario MCC:** {interpreta_mcc(mcc_rating)}\n"
+    output += f"- **Solidità Patrimoniale (Z-Score):** {interpreta_z_score(z_score)}\n"
 
     output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:10], 1):
