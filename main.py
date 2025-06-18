@@ -241,3 +241,13 @@ def genera_output_finale(
                 output += f"{voce}\n"   
     
         return output or ""
+
+    # Endpoint di controllo per uptime
+    @app.get("/ping")
+    async def ping():
+        return {"status": "ok"}
+
+    # Avvio del server in modalità standalone
+    if __name__ == "__main__":
+        import uvicorn
+        uvicorn.run("main:app", host="0.0.0.0", port=8000)
