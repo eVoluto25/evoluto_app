@@ -66,9 +66,16 @@ def stima_mcc(bilancio: Bilancio):
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
 
-def assegna_macro_area(bilancio: Bilancio):
+def assegna_macro_area(bilancio: Bilancio) -> str:
+    z_score = stima_z_score(bilancio)
+
     if bilancio.ebitda > 0:
-        return "Espansione"
+        if z_score >= 0.20:
+            return "Espansione"
+        elif z_score > 0.05:
+            return "Sviluppo"
+        else:
+            return "Crisi"
     elif bilancio.ricavi > 0:
         return "Sviluppo"
     return "Crisi"
