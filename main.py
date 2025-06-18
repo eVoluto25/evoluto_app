@@ -249,8 +249,9 @@ def genera_output_finale(
         return output or ""
 
     # Endpoint di controllo per uptime
+    @app.head("/ping")
     @app.get("/ping")
-    async def ping():
+    async def ping(request: Request):
         return {"status": "ok"}
 
     # Avvio del server in modalità standalone
