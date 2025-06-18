@@ -135,7 +135,7 @@ async def analizza_azienda(dati: InputDati):
                 "validato": validazione["validato"],
                 "fondi_disponibili": validazione["fondi_disponibili"],
                 "esito": "✅ Validato online (titolo del bando trovato su fonte ufficiale)",
-                "Verifica online": True
+                "Verifica online": True,
                 "Approfondimenti online": True
             })
 
