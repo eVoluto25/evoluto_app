@@ -104,12 +104,7 @@ def cerca_google_bando(titolo_bando, regione=None):
     else:
         messaggio += "⚠️ Non validato da fonti ufficiali."
 
-    if fondi:
-        messaggio += " 💰 Fondi ancora disponibili secondo fonti pubbliche."
-    else:
-        messaggio += " ❌ Fondi risultano esauriti o non verificabili."
-
-    logger.info(f"📊 Esito validazione Google → Validato: {validato} | Fondi: {fondi}")
+    logger.info(f"📊 Esito validazione Google → Validato: {validato}")
 
     return {
         "validato": validato,
