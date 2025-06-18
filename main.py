@@ -137,6 +137,8 @@ async def analizza_azienda(dati: InputDati):
                 "Approfondimenti online": True
             })
 
+        print(stato_bandi)
+
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
             top_bandi, macro_area, dimensione, mcc_rating, z_score,
