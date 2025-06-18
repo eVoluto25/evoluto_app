@@ -101,6 +101,7 @@ async def analizza_azienda(dati: InputDati):
             macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
+        )    
 
         totale_agevolazioni_macroarea = sum(
             b.get('Agevolazione_Concedibile_max', 0)
