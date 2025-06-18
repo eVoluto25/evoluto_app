@@ -194,7 +194,7 @@ def genera_output_finale(
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}**\n"
-    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: {totale_agevolazioni_macroarea} milioni di euro\n"
+    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{totale_agevolazioni_macroarea:,.0f}\n"
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"- **MCC Rating:** **{mcc_rating}** ({interpreta_mcc(mcc_rating)})\n"
     output += f"- **Z-Score:** **{z_score:.2f}** ({interpreta_z_score(z_score)})\n"
@@ -207,7 +207,7 @@ def genera_output_finale(
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-        if validazione_online:
+        if validazione_online and i <= len(validazione_online):
             output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
         if approfondimenti_google:
             output += "\n\n🔎 **Approfondimenti online trovati**\n"
