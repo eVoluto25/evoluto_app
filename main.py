@@ -84,10 +84,6 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
         return "Media Impresa"
     return "Grande impresa"
 
-    totale_agevolazioni_macroarea, bandi_macroarea = somma_agevolazioni_macroarea(macro_area)
-    if totale_agevolazioni_macroarea is None:
-        totale_agevolazioni_macroarea = 0
-
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
@@ -100,6 +96,10 @@ async def analizza_azienda(dati: InputDati):
         mcc_rating = stima_mcc(dati.bilancio)
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
+
+        totale_agevolazioni_macroarea, bandi_macroarea = somma_agevolazioni_macroarea(macro_area)
+        if totale_agevolazioni_macroarea is None:
+            totale_agevolazioni_macroarea = 0
 
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
