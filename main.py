@@ -103,10 +103,10 @@ async def analizza_azienda(dati: InputDati):
             regione=dati.anagrafica.regione
         )    
 
-        bandi = recupera_bandi_filtrati(
-            macro_area=macro_area,
-            codice_ateco=dati.anagrafica.codice_ateco,
-            regione=dati.anagrafica.regione
+        totale_agevolazioni_macroarea = sum(
+            float(b.get("Agevolazione_Concedibile_max", 0)) 
+            for b in bandi 
+            if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
         )
 
         azienda = {
