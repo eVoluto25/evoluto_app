@@ -8,14 +8,12 @@ def cerca_google_bando(titolo_bando, regione=None):
     API_KEY = os.getenv("GOOGLE_API_KEY")
     CX = os.getenv("GOOGLE_CX_ID")
 
-    logger.info(f"▶️ Avvio validazione con Google: '{titolo_bando}' | Regione: '{regione}'")
+    logger.info(f"▶️ Avvio validazione con Google: '{titolo_bando}'")
 
     if not API_KEY or not CX:
         raise ValueError("API Key o CX ID mancanti nelle variabili ambiente.")
 
     query = f"{titolo_bando} bando attivo"
-    if regione:
-        query += f" {regione}"
 
     logger.info(f"🔎 Query generata per Google API: {query}")
 
