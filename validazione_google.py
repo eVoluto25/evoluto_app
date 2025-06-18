@@ -95,8 +95,8 @@ def cerca_google_bando(titolo_bando, regione=None):
             raw_snippet = item.get("snippet", "").replace('\n', ' ').strip()
             estratto_snippet = ' '.join(raw_snippet.split()[:25])
     
-           logger.info(f"✅ Titolo trovato: {titolo_pagina}")
-           messaggio += f"✅ Validato online\n📄 Titolo: {titolo_pagina}\n📌 Estratto: {estratto_snippet}..."
+            logger.info(f"✅ Titolo trovato: {titolo_pagina}")
+            messaggio += f"✅ Validato online\n📄 Titolo: {titolo_pagina}\n📌 Estratto: {estratto_snippet}..."
 
     messaggio = ""
     if validato:
