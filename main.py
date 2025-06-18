@@ -103,7 +103,11 @@ async def analizza_azienda(dati: InputDati):
             regione=dati.anagrafica.regione
         )    
 
-        totale_agevolazioni_macroarea, _ = somma_agevolazioni_macroarea(macro_area)
+        bandi = recupera_bandi_filtrati(
+            macro_area=macro_area,
+            codice_ateco=dati.anagrafica.codice_ateco,
+            regione=dati.anagrafica.regione
+        )
 
         azienda = {
             "codice_ateco": dati.anagrafica.codice_ateco,
