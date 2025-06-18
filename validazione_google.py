@@ -91,8 +91,12 @@ def cerca_google_bando(titolo_bando, regione=None):
         )
         if titolo_match:
             validato = True
-            logger.info("✅ Validazione accettata tramite titolo del bando nei risultati Google.")
-            messaggio += "✅ Validato online (tramite titolo trovato su fonte ufficiale)."
+            titolo_pagina = item.get("title", "")
+            raw_snippet = item.get("snippet", "").replace('\n', ' ').strip()
+            estratto_snippet = ' '.join(raw_snippet.split()[:25])
+    
+           logger.info(f"✅ Titolo trovato: {titolo_pagina}")
+           messaggio += f"✅ Validato online\n📄 Titolo: {titolo_pagina}\n📌 Estratto: {estratto_snippet}..."
 
     messaggio = ""
     if validato:
@@ -111,5 +115,5 @@ def cerca_google_bando(titolo_bando, regione=None):
         "validato": validato,
         "fondi_disponibili": fondi,
         "messaggio": messaggio,
-        "results": risultati
+        "results": risultati[:5]
     }
