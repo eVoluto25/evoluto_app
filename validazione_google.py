@@ -51,7 +51,10 @@ def cerca_google_bando(titolo_bando, regione=None):
             titolo_google = item.get("title", "").lower()
             if any(parola in titolo_google for parola in titolo_normalizzato.split()):
                 validato = True
-                messaggio = f"✅ Verificato online → Fonte: {item.get('title', '')[:100]}"
+                titolo_pagina = item.get('title', '')[:100]
+                raw_snippet = item.get('snippet', '').strip().replace('\n', ' ')
+                estratto_snippet = ' '.join(raw_snippet.split()[:30])
+                messaggio = f"✅ Verificato online\n📄 Titolo: {titolo_pagina}\n📌 Estratto: {estratto_snippet}..."
                 break
 
     # 💬 Restituzione risultato finale
