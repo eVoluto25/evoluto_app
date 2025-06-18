@@ -30,7 +30,7 @@ def somma_agevolazioni_macroarea(macro_area: str) -> tuple[float, list]:
     }.get(macro_area)
 
     if not tabella:
-        return 0.0
+        return round(totale / 1_000_000, 2), bandi
 
     response = supabase.table(tabella).select("*").execute()
 
