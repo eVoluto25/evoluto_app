@@ -208,9 +208,12 @@ def genera_output_finale(
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
         if validazione_online and i <= len(validazione_online):
-            output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
-            if 'messaggio' in validazione_online[i - 1]:
-                output += f"{validazione_online[i - 1].get('messaggio', '')}\n"
+            voce_val = validazione_online[i - 1]
+            output += f"🌐 Verifica online: {voce_val.get('esito', 'Non disponibile')}\n"
+
+            messaggio = voce_val.get('messaggio', '').strip()
+            if messaggio and "Nessun risultato" not in messaggio:
+                output += f"{messaggio}\n"
             
         if approfondimenti_google:
             output += "\n\n🔎 **Approfondimenti online trovati**\n"
