@@ -155,7 +155,7 @@ async def analizza_azienda(dati: InputDati):
             "z_score": z_score,
             "mcc_rating": mcc_rating,
             "stato_bandi": stato_bandi,
-            "bandi_filtrati": top10,
+            "bandi_filtrati": top_bandi[:10],
             "output_finale": output_finale 
         }
 
