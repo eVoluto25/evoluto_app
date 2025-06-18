@@ -210,7 +210,7 @@ def genera_output_finale(
         if validazione_online and i <= len(validazione_online):
             output += f"🔍 Verifica online: {validazione_online[i - 1]['esito']}\n"
             if 'messaggio' in validazione_online[i - 1]:
-            output += f"{validazione_online[i - 1]['messaggio']}\n"
+                output += f"{validazione_online[i - 1]['messaggio']}\n"
             
         if approfondimenti_google:
             output += "\n\n🔎 **Approfondimenti online trovati**\n"
