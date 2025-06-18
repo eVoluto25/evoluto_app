@@ -191,9 +191,12 @@ async def analizza_azienda(dati: InputDati):
         
         return {
             "macro_area": macro_area,
+            "macro_area_interpretata": interpreta_macro_area(macro_area),
             "dimensione": dimensione,
             "z_score": z_score,
+            "z_score_interpretato": interpreta_z_score(z_score),
             "mcc_rating": mcc_rating,
+            "mcc_rating_interpretato": interpreta_mcc(mcc_rating),
             "stato_bandi": stato_bandi,
             "bandi_filtrati": top_bandi[:10],
             "output_finale": output_finale 
