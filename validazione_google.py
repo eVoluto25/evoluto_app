@@ -60,7 +60,7 @@ def cerca_google_bando(titolo_bando, regione=None):
     # 💬 Restituzione risultato finale
     return {
         "validato": validato,
-        "fondi_disponibili": False,
+        "fondi_disponibili": fondi,
         "messaggio": messaggio if validato else "❌ Nessun risultato compatibile trovato online.",
         "results": risultati[:3]
     }
