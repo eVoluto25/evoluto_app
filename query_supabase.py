@@ -34,12 +34,15 @@ def somma_agevolazioni_macroarea(macro_area: str) -> tuple[float, list]:
 
     response = supabase.table(tabella).select("*").execute()
 
-    agevolazioni = [
-        b.get("Agevolazione_Concedibile_max", 0) or 0
-        for b in response.data
-        if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
-    ]
-    totale = sum(agevolazioni)
+    totale = 0
+    for bando in response.data:
+        val = bando.get("Agevolazione_Concedibile_max", "0")
+        if isinstance(val, str):
+            val = val.replace("€", "").replace(".", "").replace(",", ".").strip()
+        try:
+            totale += float(val)
+        except (ValueError, TypeError):
+            continue
    
     bandi = []
     for row in response.data:
