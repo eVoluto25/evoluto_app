@@ -134,7 +134,7 @@ async def analizza_azienda(dati: InputDati):
                 "titolo": bando.get("titolo"),
                 "validato": validazione["validato"],
                 "fondi_disponibili": validazione["fondi_disponibili"],
-                "esito": "✅ Validato online (tramite titolo trovato su fonte ufficiale)",
+                "esito": "✅ Validato online (titolo del bando trovato su fonte ufficiale)",
                 "fondi_disponibili": True
             })
 
