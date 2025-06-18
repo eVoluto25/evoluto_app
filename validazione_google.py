@@ -49,7 +49,7 @@ def cerca_google_bando(titolo_bando, regione=None):
         titolo_normalizzato = titolo_bando.lower()
         for item in risultati:
             titolo_google = item.get("title", "").lower()
-            if any(parola in titolo_google for parola in titolo_normalizzato.split()):
+            if any(parola in titolo_google for parola in titolo_normalizzato.split() if len(parola) > 3):
                 validato = True
                 titolo_pagina = item.get('title', '')[:100]
                 raw_snippet = item.get('snippet', '').strip().replace('\n', ' ')
