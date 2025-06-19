@@ -75,6 +75,34 @@ def stima_mcc(bilancio: Bilancio):
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
 
+def calcola_indici_plus(bilancio: Bilancio) -> dict:
+    try:
+        patrimonio_netto = bilancio.totale_attivo - sum([
+            bilancio.immobilizzazioni,
+            getattr(bilancio, "debiti", 0)
+        ])
+    except:
+        patrimonio_netto = 0
+
+    def safe_div(num, den):
+        try:
+            if den == 0: return "ND"
+            return round(num / den, 2)
+        except:
+            return "ND"
+
+    ricavi_giornalieri = safe_div(bilancio.ricavi, 365)
+
+    return {
+        "ROE": safe_div(bilancio.utile_netto, patrimonio_netto),
+        "Debt/Equity Ratio": safe_div(getattr(bilancio, "debiti", 0), patrimonio_netto),
+        "Current Ratio": safe_div(getattr(bilancio, "attivo_circolante", 0), getattr(bilancio, "passivo_corrente", 0)),
+        "DSO": safe_div(getattr(bilancio, "crediti_vs_clienti", 0), ricavi_giornalieri),
+        "Quick Ratio": safe_div(getattr(bilancio, "crediti_vs_clienti", 0) + getattr(bilancio, "liquidita", 0), getattr(bilancio, "passivo_corrente", 0)),
+        "Cash Ratio": safe_div(getattr(bilancio, "liquidita", 0), getattr(bilancio, "passivo_corrente", 0)),
+        "ROS": safe_div(getattr(bilancio, "ebit", 0), bilancio.ricavi)
+    }
+
 def assegna_macro_area(bilancio: Bilancio) -> str:
     z_score = stima_z_score(bilancio)
 
@@ -128,6 +156,7 @@ async def analizza_azienda(dati: InputDati):
         mcc_rating = stima_mcc(dati.bilancio)
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
+        indici_plus = calcola_indici_plus(dati.bilancio)
 
         def calcola_tematiche_attive(risposte_test: RisposteTest):
             mappa = {
@@ -230,6 +259,7 @@ async def analizza_azienda(dati: InputDati):
             "stato_bandi": stato_bandi,
             "bandi_filtrati": top_bandi[:10],
             "output_finale": output_finale 
+            "indici_plus": indici_plus
         }
 
     except Exception as e:
@@ -274,6 +304,9 @@ def genera_output_finale(
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"📊 **Indice MCC-eVoluto:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
     output += f"🧮 **Indice Z-eVoluto:** {z_score:.2f} ({interpreta_z_score(z_score)})\n"
+    output += "\n📊 **Indici extra di supporto**\n"
+    for nome, valore in indici_plus.items():
+        output += f"- {nome}: {valore if valore != 'ND' else 'Non disponibile'}\n"
 
     output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:10], 1):
