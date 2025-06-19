@@ -296,7 +296,7 @@ def genera_output_finale(
     numero_bandi_filtrati,
     validazione_online=None,
     approfondimenti_google=None, 
-    totale_agevolazioni_macroarea=None
+    totale_agevolazioni_macroarea=None,
     indici_plus=None
 ):
     output = "📌 **Analisi Aziendale**\n"
