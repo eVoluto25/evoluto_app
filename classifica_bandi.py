@@ -134,13 +134,12 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
 
     print(f"\n📊 Bandi ricevuti da classificare: {len(lista_bandi)}")
 
-        punteggi = {
-            "obiettivo": punteggio_obiettivo_finalita(b.get("Obiettivo_Finalita", ""), macro_area),
-            "forma": punteggio_forma_agevolazione(b.get("Forma_agevolazione", "")),
-            "scadenza": punteggio_scadenza(b.get("Data_chiusura", "")),
-            "agevolazione_vs_ebitda": punteggio_agevolazione_vs_ebitda(float(b.get("Agevolazione_Concedibile_max", 0) or 0), ebitda),
-            "spesa_compatibile": punteggio_spesa_compatibile(b.get("Spesa_Ammessa_max", 0), immobilizzazioni)
-        }
+    punteggi = {
+        "obiettivo": punteggio_obiettivo_finalita(b.get("Obiettivo_Finalita", ""), macro_area),
+        "forma": punteggio_forma_agevolazione(b.get("Forma_agevolazione", "")),
+        "scadenza": punteggio_scadenza(b.get("Data_chiusura", "")),
+        "agevolazione_vs_ebitda": punteggio_agevolazione_vs_ebitda(float(b.get("Agevolazione_Concedibile_max", 0) or 0), ebitda),            "spesa_compatibile": punteggio_spesa_compatibile(b.get("Spesa_Ammessa_max", 0), immobilizzazioni)
+    }
 
         # ✅ Aggiungi punteggio test
         punteggi["test"] = test_score
