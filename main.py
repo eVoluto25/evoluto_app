@@ -111,6 +111,8 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
 
+    logger.info(f"[DEBUG] Input ricevuto completo: {dati.dict()}")
+
     try:
         if not dati.anagrafica or not dati.bilancio:
             raise HTTPException(status_code=400, detail="Dati incompleti")
