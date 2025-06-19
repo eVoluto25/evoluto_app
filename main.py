@@ -5,7 +5,7 @@ from classifica_bandi import classifica_bandi_avanzata as classifica_bandi
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from typing import Dict
 from validazione_google import cerca_google_bando
