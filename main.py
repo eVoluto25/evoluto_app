@@ -55,7 +55,15 @@ class Bilancio(BaseModel):
 class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
-    risposte_test: Dict[str, str]
+    risposte_test: Dict[str, str] = Field(
+        ..., example={
+            "crisi_impresa": "...",
+            "sostegno_liquidita": "...",
+            "sostegno_investimenti": "...",
+            "transizione_ecologica": "...",
+            "innovazione_ricerca": "..."
+        }
+    )
 
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
