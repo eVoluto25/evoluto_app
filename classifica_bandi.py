@@ -132,7 +132,7 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
 
     # Lo sommerai a punteggio_totale più avanti
 
-        print(f"\n📊 Bandi ricevuti da classificare: {len(lista_bandi)}")
+    print(f"\n📊 Bandi ricevuti da classificare: {len(lista_bandi)}")
 
         punteggi = {
             "obiettivo": punteggio_obiettivo_finalita(b.get("Obiettivo_Finalita", ""), macro_area),
