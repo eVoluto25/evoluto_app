@@ -152,6 +152,17 @@ async def analizza_azienda(dati: InputDati):
         )    
 
         tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
+
+        azienda = {
+            "codice_ateco": dati.anagrafica.codice_ateco,
+            "regione": dati.anagrafica.regione,
+            "dimensione": dimensione,
+            "ebitda": dati.bilancio.ebitda,
+            "immobilizzazioni": dati.bilancio.immobilizzazioni,
+            "macro_area": macro_area,
+            "tematiche_attive": tematiche_attive
+        }
+        
         top_bandi = classifica_bandi_avanzata(bandi, azienda, tematiche_attive)
         
         numero_bandi_filtrati = len(bandi)
@@ -164,17 +175,6 @@ async def analizza_azienda(dati: InputDati):
             for b in bandi 
             if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
         )
-
-        azienda = {
-            "codice_ateco": dati.anagrafica.codice_ateco,
-            "regione": dati.anagrafica.regione,
-            "dimensione": dimensione,
-            "ebitda": dati.bilancio.ebitda,
-            "immobilizzazioni": dati.bilancio.immobilizzazioni,
-            "macro_area": macro_area,
-            "tematiche_attive": tematiche_attive
-        }
-
         top_bandi = classifica_bandi(bandi, azienda)
 
         print(f"🏆 Top bandi selezionati: {len(top_bandi)}")
