@@ -57,11 +57,11 @@ class InputDati(BaseModel):
     bilancio: Bilancio
     risposte_test: Dict[str, str] = Field(
         ..., example={
-            "crisi_impresa": "...",
-            "sostegno_liquidita": "...",
-            "sostegno_investimenti": "...",
-            "transizione_ecologica": "...",
-            "innovazione_ricerca": "..."
+            "crisi_impresa": "A",
+            "sostegno_liquidita": "B",
+            "sostegno_investimenti": "C",
+            "transizione_ecologica": "A",
+            "innovazione_ricerca": "B"
         }
     )
 
