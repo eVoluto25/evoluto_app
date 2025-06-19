@@ -144,14 +144,15 @@ async def analizza_azienda(dati: InputDati):
                 if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
                     temi_attivi.append(tema)
             return temi_attivi
-            
-        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
 
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )    
+
+        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
+        top_bandi = classifica_bandi_avanzata(bandi, azienda, tematiche_attive)
         
         numero_bandi_filtrati = len(bandi)
         
