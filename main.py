@@ -137,11 +137,14 @@ async def analizza_azienda(dati: InputDati):
             "transizione_ecologica": "Transizione ecologica",
             "innovazione_ricerca": "Innovazione e ricerca"
             }
-            return [
-                tema for key, tema in mappa.items()
-                if getattr(risposte_test, key, "C").strip().upper() in ("A", "B")
-            ]
-
+            
+            temi_attivi = []
+            for key, tema in mappa.items():
+                valore = getattr(risposte_test, key, "C")
+                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+                    temi_attivi.append(tema)
+            return temi_attivi
+            
         tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
 
         bandi = recupera_bandi_filtrati(
