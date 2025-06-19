@@ -142,16 +142,16 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         "spesa_compatibile": punteggio_spesa_compatibile(b.get("Spesa_Ammessa_max", 0), immobilizzazioni)
     }
 
-        # ✅ Aggiungi punteggio test
-        punteggi["test"] = test_score
+    # ✅ Aggiungi punteggio test
+    punteggi["test"] = test_score
 
-        totale = sum(punteggi.values())
+    totale = sum(punteggi.values())
 
-        risultati.append({
-            **b,
-            "punteggi": punteggi,
-            "totale": totale
-        })
+    risultati.append({
+    **b,
+    "punteggi": punteggi,
+    "totale": totale
+    })
 
     # Ordinamento ibrido: in caso di parità si applicano criteri secondari
     risultati.sort(
