@@ -52,18 +52,17 @@ class Bilancio(BaseModel):
     immobilizzazioni: Optional[float] = 0
     ricavi_anno_prec: Optional[float] = None
 
+class RisposteTest(BaseModel):
+    crisi_impresa: Optional[str] = None
+    sostegno_liquidita: Optional[str] = None
+    sostegno_investimenti: Optional[str] = None
+    transizione_ecologica: Optional[str] = None
+    innovazione_ricerca: Optional[str] = None
+
 class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
-    risposte_test: Dict[str, str] = Field(
-        ..., example={
-            "crisi_impresa": "A",
-            "sostegno_liquidita": "B",
-            "sostegno_investimenti": "C",
-            "transizione_ecologica": "A",
-            "innovazione_ricerca": "B"
-        }
-    )
+    risposte_test: RisposteTest
 
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
