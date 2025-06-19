@@ -243,6 +243,7 @@ async def analizza_azienda(dati: InputDati):
             validazione_online=stato_bandi,
             numero_bandi_filtrati=numero_bandi_filtrati,
             totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
+            indici_plus = calcola_indici_plus(dati.bilancio)
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
         print(output_finale)
@@ -296,6 +297,7 @@ def genera_output_finale(
     validazione_online=None,
     approfondimenti_google=None, 
     totale_agevolazioni_macroarea=None
+    indici_plus=None
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
