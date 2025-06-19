@@ -258,7 +258,7 @@ async def analizza_azienda(dati: InputDati):
             "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
             "stato_bandi": stato_bandi,
             "bandi_filtrati": top_bandi[:10],
-            "output_finale": output_finale 
+            "output_finale": output_finale,
             "indici_plus": indici_plus
         }
 
