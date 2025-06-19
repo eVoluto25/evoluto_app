@@ -7,6 +7,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+from typing import Dict
 from validazione_google import cerca_google_bando
 import uvicorn
 import logging
@@ -54,6 +55,7 @@ class Bilancio(BaseModel):
 class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
+    risposte_test: Dict[str, str]
 
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
@@ -118,6 +120,21 @@ async def analizza_azienda(dati: InputDati):
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
 
+        def calcola_tematiche_attive(risposte_test):
+            mappa = {
+            "crisi_impresa": "Crisi d’impresa",
+            "sostegno_liquidita": "Sostegno liquidità",
+            "sostegno_investimenti": "Sostegno investimenti",
+            "transizione_ecologica": "Transizione ecologica",
+            "innovazione_ricerca": "Innovazione e ricerca"
+            }
+            return [
+                tema for key, tema in mappa.items()
+                if risposte_test.get(key, "C") in ("A", "B")
+            ]
+
+        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
+
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
             codice_ateco=dati.anagrafica.codice_ateco,
@@ -142,6 +159,7 @@ async def analizza_azienda(dati: InputDati):
             "ebitda": dati.bilancio.ebitda,
             "immobilizzazioni": dati.bilancio.immobilizzazioni,
             "macro_area": macro_area
+            "tematiche_attive": tematiche_attive
         }
 
         top_bandi = classifica_bandi(bandi, azienda)
