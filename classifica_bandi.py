@@ -101,7 +101,7 @@ def punteggio_test_bando(tematiche_bando: list[str], tematiche_attive: list[str]
 
 # --- Funzione principale ---
 
-def classifica_bandi_avanzata(lista_bandi, azienda):
+def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive):
     if not lista_bandi:
         return []
     risultati = []
