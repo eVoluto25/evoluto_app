@@ -88,7 +88,11 @@ def codice_ateco_compatibile(codice_azienda, codici_bando):
     return "tutti" in codici_bando.lower() or any(codice.strip() in codici_bando for codice in codice_azienda)
 
 def regione_compatibile(regione_azienda, regioni_bando):
-    return regione_azienda in regioni_bando
+    if isinstance(regioni_bando, str):
+        regioni_bando = [r.strip().lower() for r in regioni_bando.split(",")]
+    elif isinstance(regioni_bando, list):
+        regioni_bando = [r.strip().lower() for r in regioni_bando]
+    return regione_azienda.strip().lower() in regioni_bando or "tutte" in regioni_bando
 
 def dimensione_compatibile(dim_azienda, dim_bando):
     return "tutte" in dim_bando.lower() or dim_azienda in dim_bando
