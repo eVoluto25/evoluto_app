@@ -1,4 +1,4 @@
-
+from ast import literal_eval
 from datetime import datetime
 
 # --- Funzioni di supporto ---
@@ -93,6 +93,12 @@ def regione_compatibile(regione_azienda, regioni_bando):
 def dimensione_compatibile(dim_azienda, dim_bando):
     return "tutte" in dim_bando.lower() or dim_azienda in dim_bando
 
+def punteggio_test_bando(tematiche_bando: list[str], tematiche_attive: list[str]) -> int:
+    return sum(
+        1 for tema in tematiche_attive
+        if tema.lower() in [t.lower() for t in tematiche_bando]
+    ) * 5
+
 # --- Funzione principale ---
 
 def classifica_bandi_avanzata(lista_bandi, azienda):
@@ -114,6 +120,18 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
         if not dimensione_compatibile(dimensione, b.get("Dimensioni", "")):
             continue
 
+    # Estrazione tematiche del bando (gestisce sia liste che stringhe CSV)
+    raw_tematica = b.get("Obiettivo_Finalita", "")
+    try:
+        tematiche_bando = literal_eval(raw_tematica)
+    except:
+        tematiche_bando = [t.strip() for t in raw_tematica.split(",") if t.strip()]
+
+    # Calcolo punteggio test
+    test_score = punteggio_test_bando(tematiche_bando, tematiche_attive)
+
+    # Lo sommerai a punteggio_totale più avanti
+
         print(f"\n📊 Bandi ricevuti da classificare: {len(lista_bandi)}")
 
         punteggi = {
@@ -123,6 +141,9 @@ def classifica_bandi_avanzata(lista_bandi, azienda):
             "agevolazione_vs_ebitda": punteggio_agevolazione_vs_ebitda(float(b.get("Agevolazione_Concedibile_max", 0) or 0), ebitda),
             "spesa_compatibile": punteggio_spesa_compatibile(b.get("Spesa_Ammessa_max", 0), immobilizzazioni)
         }
+
+        # ✅ Aggiungi punteggio test
+        punteggi["test"] = test_score
 
         totale = sum(punteggi.values())
 
