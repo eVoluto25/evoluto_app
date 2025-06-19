@@ -242,7 +242,7 @@ async def analizza_azienda(dati: InputDati):
             top_bandi, macro_area, dimensione, mcc_rating, z_score,
             validazione_online=stato_bandi,
             numero_bandi_filtrati=numero_bandi_filtrati,
-            totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
+            totale_agevolazioni_macroarea=totale_agevolazioni_macroarea,
             indici_plus = calcola_indici_plus(dati.bilancio)
         )
         print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
