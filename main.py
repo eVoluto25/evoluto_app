@@ -129,7 +129,7 @@ async def analizza_azienda(dati: InputDati):
         macro_area = assegna_macro_area(dati.bilancio)
         dimensione = dimensione_azienda(dati.anagrafica)
 
-        def calcola_tematiche_attive(risposte_test: RisposteTest) -> list:
+        def calcola_tematiche_attive(risposte_test: RisposteTest):
             mappa = {
             "crisi_impresa": "Crisi d’impresa",
             "sostegno_liquidita": "Sostegno liquidità",
@@ -139,8 +139,7 @@ async def analizza_azienda(dati: InputDati):
             }
             return [
                 tema for key, tema in mappa.items()
-                valore = getattr(risposte_test, key, "C")
-                if valore and valore.strip().upper() in ("A", "B"):
+                if getattr(risposte_test, key, "C").strip().upper() in ("A", "B")
             ]
 
         tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
