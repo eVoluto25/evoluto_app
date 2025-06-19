@@ -175,7 +175,6 @@ async def analizza_azienda(dati: InputDati):
             for b in bandi 
             if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
         )
-        top_bandi = classifica_bandi(bandi, azienda)
 
         print(f"🏆 Top bandi selezionati: {len(top_bandi)}")
         print(f"🏷️ Titoli top bandi: {[b.get('Titolo', '--') for b in top_bandi]}")
