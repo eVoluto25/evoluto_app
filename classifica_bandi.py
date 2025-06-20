@@ -172,4 +172,4 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive):
 
     print(f"📊 Bandi restituiti dopo la classifica: {len(risultati)}")
 
-    return risultati[:10]
+    return risultati[:3]
