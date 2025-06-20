@@ -19,3 +19,4 @@ pdfplumber
 fpdf
 gunicorn
 pydantic
+beautifulsoup4
