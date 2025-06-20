@@ -220,6 +220,8 @@ async def analizza_azienda(dati: InputDati):
             dettagli = estrai_estratto_bando(titolo)
             bando["Link"] = dettagli["link"]
             bando["Estratto"] = dettagli["estratto"]
+            dettagli_supabase = recupera_dettagli_bando(bando.get("ID_incentivo", ""))
+            bando["dettagli_gpt"] = dettagli_supabase
 
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
