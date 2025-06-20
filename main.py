@@ -214,7 +214,7 @@ async def analizza_azienda(dati: InputDati):
             if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float, str))
         )
 
-        for bando in top_bandi[:10] or []:
+        for bando in top_bandi[:3] or []:
             titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
             dettagli = estrai_estratto_bando(titolo)
             bando["Link"] = dettagli["link"]
@@ -241,7 +241,7 @@ async def analizza_azienda(dati: InputDati):
             "indice_mcc_evoluto": mcc_rating,
             "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
             "stato_bandi": stato_bandi,
-            "bandi_filtrati": top_bandi[:10],
+            "bandi_filtrati": top_bandi[:3],
             "output_finale": output_finale,
             "indici_plus": indici_plus
         }
@@ -278,7 +278,6 @@ def genera_output_finale(
     z_score,
     numero_bandi_filtrati,
     validazione_online=None,
-    approfondimenti_google=None, 
     totale_agevolazioni_macroarea=None,
     indici_plus=None
 ):
@@ -298,8 +297,8 @@ def genera_output_finale(
     output += f"- Cash Ratio: {indici_plus.get('Cash Ratio', 'Non disponibile')}\n"
     output += f"- ROS (Return on Sales): {indici_plus.get('ROS', 'Non disponibile')}\n"
 
-    output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
-    for i, bando in enumerate(bandi[:10], 1):
+    output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
+    for i, bando in enumerate(bandi[:3], 1):
         output += f"\n🔹 **{i}. {bando.get('Titolo', '—')}**\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
