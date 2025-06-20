@@ -154,7 +154,8 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive):
     risultati.append({
     **b,
     "punteggi": punteggi,
-    "totale": totale
+    "totale": totale,
+    "ID_incentivo": b.get("ID_incentivo", None)
     })
 
     # Ordinamento ibrido: in caso di parità si applicano criteri secondari
