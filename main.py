@@ -297,18 +297,18 @@ def genera_output_finale(
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     
     for i, bando in enumerate(bandi[:3], 1):
-        id_incentivo = bando.get("ID_Incentivo")
-        logger.info(f"▶️ Recupero dettagli per ID_Incentivo: {id_incentivo}")
+        ID_Incentivo = bando.get("ID_Incentivo")
+        logger.info(f"▶️ Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
 
-        if isinstance(id_incentivo, int) or (isinstance(id_incentivo, str) and id_incentivo.isdigit()):
+        if isinstance(ID_Incentivo, int) or (isinstance(ID_Incentivo, str) and ID_Incentivo.isdigit()):
             try:
-                dettagli_estesi = recupera_dettagli_bando(int(id_incentivo))
-                logger.info(f"✅ Dettagli ottenuti per ID {id_incentivo}: {dettagli_estesi}")
+                dettagli_estesi = recupera_dettagli_bando(int(ID_Incentivo))
+                logger.info(f"✅ Dettagli ottenuti per ID {ID_Incentivo}: {dettagli_estesi}")
                 bando.update(dettagli_estesi)
             except Exception as e:
-                logger.error(f"❌ Errore durante il recupero dettagli per ID {id_incentivo}: {e}")
+                logger.error(f"❌ Errore durante il recupero dettagli per ID {ID_Incentivo}: {e}")
         else:
-            logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {id_incentivo}")
+            logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {ID_Incentivo}")
         output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
