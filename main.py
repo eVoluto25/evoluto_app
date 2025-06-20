@@ -216,7 +216,7 @@ async def analizza_azienda(dati: InputDati):
 
         for bando in top_bandi[:3] or []:
             titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
-            dettagli_supabase = recupera_dettagli_bando(bando.get("ID_incentivo", ""))
+            dettagli_supabase = recupera_dettagli_bando(bando.get("ID_Incentivo", ""))
             bando["dettagli_gpt"] = dettagli_supabase
 
         # ✅ Costruzione dell’output testuale
