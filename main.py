@@ -298,26 +298,13 @@ def genera_output_finale(
 
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:3], 1):
-        output += f"\n🔹 **{i}. {bando.get('Titolo', '—')}**\n"
+        output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-        # 🌐 Verifica online
-        link = bando.get("Link", "")
-        if link:
-            output += f"🌐 Verifica online: {link}\n"
-        else:
-            output += "🌐 Verifica online: Non disponibile\n"
-
-        # 📌 Estratto
-        estratto = bando.get("Estratto", "").strip()
-        if estratto:
-            output += f"📌 Estratto: {estratto}\n\n"
-        else:
-            output += "📌 Estratto: Non disponibile\n" 
-    
+        
         return output or ""
 
     # Endpoint di controllo per uptime
