@@ -301,11 +301,11 @@ def genera_output_finale(
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:3], 1):
         # 🧠 Recupera dettagli estesi dalla tabella bandi_disponibili
-        id_incentivo = bando.get("ID_Incentivo")
-        if id_incentivo:
-            dettagli_estesi = recupera_dettagli_bando(id_incentivo)
+        ID_Incentivo = bando.get("ID_Incentivo")
+        if ID_Incentivo:
+            dettagli_estesi = recupera_dettagli_bando(ID_Incentivo)
             bando.update(dettagli_estesi)
-        output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_incentivo', 'N/D')}`)\n"
+        output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
