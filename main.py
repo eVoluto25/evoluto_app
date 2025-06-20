@@ -9,7 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 from typing import Dict
-from validazione_google import cerca_google_bando
 import uvicorn
 import logging
 
@@ -215,28 +214,11 @@ async def analizza_azienda(dati: InputDati):
             if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float, str))
         )
 
-        stato_bandi = []
         for bando in top_bandi[:10] or []:
-            try:
-                titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
-                validazione = cerca_google_bando(titolo, dati.anagrafica.regione)
-            except Exception as e:
-                validazione = {
-                    "validato": False,
-                    "fondi_disponibili": False,
-                    "messaggio": f"⚠️ Errore nella validazione Google: {str(e)}"
-                }
-
-            stato_bandi.append({
-                "titolo": bando.get("titolo"),
-                "validato": validazione["validato"],
-                "fondi_disponibili": validazione["fondi_disponibili"],
-                "esito": "✅ Validato online (titolo del bando trovato su fonte ufficiale)",
-                "Verifica online": True,
-                "Approfondimenti online": True
-            })
-
-        print(stato_bandi)
+            titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
+            dettagli = estrai_estratto_bando(titolo)
+            bando["Link"] = dettagli["link"]
+            bando["Estratto"] = dettagli["estratto"]
 
         # ✅ Costruzione dell’output testuale
         output_finale = genera_output_finale(
@@ -318,24 +300,25 @@ def genera_output_finale(
 
     output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:10], 1):
-        output += f"\n**{i}. {bando.get('Titolo', '--')}**\n"
+        output += f"\n🔹 **{i}. {bando.get('Titolo', '—')}**\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-        if validazione_online and i <= len(validazione_online):
-            voce_val = validazione_online[i - 1]
-            output += f"🌐 Verifica online: {voce_val.get('esito', 'Non disponibile')}\n"
+        # 🌐 Verifica online
+        link = bando.get("Link", "")
+        if link:
+            output += f"🌐 Verifica online: {link}\n"
+        else:
+            output += "🌐 Verifica online: Non disponibile\n"
 
-            messaggio = voce_val.get('messaggio', '').strip()
-            if messaggio and "Nessun risultato" not in messaggio:
-                output += f"{messaggio}\n"
-            
-        if approfondimenti_google:
-            output += "\n\n🔎 **Approfondimenti online trovati**\n"
-            for voce in approfondimenti_google:
-                output += f"{voce}\n"   
+        # 📌 Estratto
+        estratto = bando.get("Estratto", "").strip()
+        if estratto:
+            output += f"📌 Estratto: {estratto}\n\n"
+        else:
+            output += "📌 Estratto: Non disponibile\n" 
     
         return output or ""
 
