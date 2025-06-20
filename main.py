@@ -279,7 +279,6 @@ def genera_output_finale(
     mcc_rating,
     z_score,
     numero_bandi_filtrati,
-    validazione_online=None,
     totale_agevolazioni_macroarea=None,
     indici_plus=None
 ):
