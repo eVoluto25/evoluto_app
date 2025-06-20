@@ -83,7 +83,7 @@ def recupera_dettagli_bando(ID_Incentivo: str) -> dict:
         "Descrizione": row.get("Descrizione", ""),
         "Note_di_apertura_chiusura": row.get("Note_di_apertura_chiusura", ""),
         "Tipologia_Soggetto": row.get("Tipologia_Soggetto", ""),
-        "Stanziamento_incentivo": row.get("Stanziamento_incentivo", ""),
+        "Stanziamento_incentivo": row.get("Stanziamento_incentivo") or 0,
         "Link_istituzionale": row.get("Link_istituzionale", "")
     } if row else {}
 
