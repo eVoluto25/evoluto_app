@@ -1,5 +1,4 @@
 import json
-from estrai_descrizione_bando import estrai_estratto_bando
 from query_supabase import recupera_dettagli_bando
 from query_supabase import recupera_bandi_filtrati
 from query_supabase import somma_agevolazioni_macroarea
