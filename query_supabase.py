@@ -22,7 +22,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
     bandi = []
     for row in response.data:
         bandi.append({
-            "ID_incentivo": row["ID_Incentivo"],
+            "ID_Incentivo": row["ID_Incentivo"],
             "Titolo": row["Titolo"],
             "Obiettivo_finalita": row["Obiettivo_Finalita"],
             "Data_apertura": row["Data_apertura"],
@@ -63,7 +63,7 @@ def somma_agevolazioni_macroarea(macro_area: str) -> Tuple[float, List[dict]]:
     bandi = []
     for row in response.data:
         bandi.append({
-            "ID_incentivo": row["ID_Incentivo"],
+            "ID_Incentivo": row["ID_Incentivo"],
             "Titolo": row["Titolo"],
             "Obiettivo_finalita": row["Obiettivo_Finalita"],
             "Data_apertura": row["Data_apertura"],
@@ -76,8 +76,8 @@ def somma_agevolazioni_macroarea(macro_area: str) -> Tuple[float, List[dict]]:
             "Regioni": row["Regioni"]
         })
 
-def recupera_dettagli_bando(id_incentivo: str) -> dict:
-    response = supabase.table("bandi_disponibili").select("*").eq("ID_incentivo", id_incentivo).single().execute()
+def recupera_dettagli_bando(ID_Incentivo: str) -> dict:
+    response = supabase.table("bandi_disponibili").select("*").eq("ID_Incentivo", ID_Incentivo).single().execute()
     row = response.data
     return {
         "Descrizione": row.get("Descrizione", ""),
