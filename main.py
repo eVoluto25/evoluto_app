@@ -306,9 +306,14 @@ def genera_output_finale(
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"📊 **Indice MCC-eVoluto:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
     output += f"🧮 **Indice Z-eVoluto:** {z_score:.2f} ({interpreta_z_score(z_score)})\n"
-    output += "\n📊 **Indici extra di supporto**\n"
-    for nome, valore in indici_plus.items():
-        output += f"- {nome}: {valore if valore != 'ND' else 'Non disponibile'}\n"
+    output += f"\n\n📊 **Indici extra di supporto**\n"
+    output += f"- ROE (Return on Equity): {indici_plus.get('ROE', 'Non disponibile')}\n"
+    output += f"- Debt/Equity Ratio: {indici_plus.get('Debt/Equity Ratio', 'Non disponibile')}\n"
+    output += f"- Current Ratio: {indici_plus.get('Current Ratio', 'Non disponibile')}\n"
+    output += f"- DSO (Days Sales Outstanding): {indici_plus.get('DSO', 'Non disponibile')}\n"
+    output += f"- Quick Ratio: {indici_plus.get('Quick Ratio', 'Non disponibile')}\n"
+    output += f"- Cash Ratio: {indici_plus.get('Cash Ratio', 'Non disponibile')}\n"
+    output += f"- ROS (Return on Sales): {indici_plus.get('ROS', 'Non disponibile')}\n"
 
     output += "\n\n📑 **Top 10 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:10], 1):
