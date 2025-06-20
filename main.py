@@ -1,5 +1,6 @@
 import json
 from estrai_descrizione_bando import estrai_estratto_bando
+from query_supabase import recupera_dettagli_bando
 from query_supabase import recupera_bandi_filtrati
 from query_supabase import somma_agevolazioni_macroarea
 from classifica_bandi import classifica_bandi_avanzata
@@ -298,6 +299,11 @@ def genera_output_finale(
 
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:3], 1):
+        # 🧠 Recupera dettagli estesi dalla tabella bandi_disponibili
+        id_incentivo = bando.get("ID_incentivo")
+        if id_incentivo:
+            dettagli_estesi = recupera_dettagli_bando(id_incentivo)
+            bando.update(dettagli_estesi)
         output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
