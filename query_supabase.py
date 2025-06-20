@@ -76,7 +76,7 @@ def somma_agevolazioni_macroarea(macro_area: str) -> Tuple[float, List[dict]]:
             "Regioni": row["Regioni"]
         })
 
-    def recupera_dettagli_bando(id_incentivo: str) -> dict:
+def recupera_dettagli_bando(id_incentivo: str) -> dict:
     response = supabase.table("bandi_disponibili").select("*").eq("ID_incentivo", id_incentivo).single().execute()
     row = response.data
     return {
