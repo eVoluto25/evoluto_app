@@ -301,7 +301,7 @@ def genera_output_finale(
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     for i, bando in enumerate(bandi[:3], 1):
         # 🧠 Recupera dettagli estesi dalla tabella bandi_disponibili
-        id_incentivo = bando.get("ID_incentivo")
+        id_incentivo = bando.get("ID_Incentivo")
         if id_incentivo:
             dettagli_estesi = recupera_dettagli_bando(id_incentivo)
             bando.update(dettagli_estesi)
