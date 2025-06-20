@@ -42,8 +42,7 @@ def limita_estratto_intelligente(testo: str, max_parole=200) -> str:
 
 def estrai_estratto_bando(titolo_bando_esatto: str) -> dict:
     """
-    Cerca il bando su incentivi.gov.it e restituisce l'estratto (descrizione) e link diretto.
-    Usa cache per evitare richieste ripetute.
+    Cerca il bando su incentivi.gov.it e restituisce il link e il paragrafo introduttivo (estratto).
     """
     if titolo_bando_esatto in cache:
         logging.info(f"Cache hit per: {titolo_bando_esatto}")
@@ -69,8 +68,8 @@ def estrai_estratto_bando(titolo_bando_esatto: str) -> dict:
                 descrizione_finale = limita_estratto_intelligente(descrizione)
 
                 risultato = {
-                    "estratto": descrizione_finale,
-                    "link": url_bando
+                    "link": url_bando,
+                    "estratto": descrizione_finale
                 }
                 cache[titolo_bando_esatto] = risultato
                 salva_cache()
@@ -78,8 +77,8 @@ def estrai_estratto_bando(titolo_bando_esatto: str) -> dict:
                 return risultato
 
         risultato = {
-            "estratto": "Bando non trovato.",
-            "link": None
+            "link": None,
+            "estratto": "Bando non trovato."
         }
         cache[titolo_bando_esatto] = risultato
         salva_cache()
@@ -89,6 +88,6 @@ def estrai_estratto_bando(titolo_bando_esatto: str) -> dict:
     except Exception as e:
         logging.error(f"Errore per {titolo_bando_esatto}: {str(e)}")
         return {
-            "estratto": f"Errore durante lo scraping: {str(e)}",
-            "link": None
+            "link": None,
+            "estratto": f"Errore durante lo scraping: {str(e)}"
         }
