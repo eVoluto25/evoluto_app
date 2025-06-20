@@ -314,6 +314,13 @@ def genera_output_finale(
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
+        # ✅ Inclusione dei dettagli estesi (dettagli_gpt)
+        dettagli = bando.get("dettagli_gpt", {})
+        output += f"- 📋 Dettagli: {dettagli.get('Descrizione', '—')}\n"
+        output += f"- 🗓️ Note di apertura/chiusura: {dettagli.get('Note_di_apertura_chiusura', '—')}\n"
+        output += f"- 🏢 Tipologia soggetto: {dettagli.get('Tipologia_Soggetto', '—')}\n"
+        output += f"- 📊 Stanziamento incentivo: {dettagli.get('Stanziamento_incentivo', '—')} €\n"
+        output += f"- 🌐 Verifica online: {dettagli.get('Link_istituzionale', '—')}\n"
         
         return output or ""
 
