@@ -75,6 +75,24 @@ def stima_mcc(bilancio: Bilancio):
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
 
+def necessita_simulazione(z_score, mcc_rating):
+    soglia_z = 2.5
+    soglia_mcc = 7
+    return z_score < soglia_z or mcc_rating < soglia_mcc
+
+def genera_bilancio_simulato(bilancio: Bilancio):
+    bilancio_simulato = bilancio.copy()
+
+    # Migliora ebitda per aumentare z_score
+    if bilancio_simulato.ebitda < 0.1 * bilancio_simulato.totale_attivo:
+        bilancio_simulato.ebitda = round(0.12 * bilancio_simulato.totale_attivo, 2)
+
+    # Migliora utile netto per aumentare mcc
+    if bilancio_simulato.utile_netto < 0.07 * bilancio_simulato.ricavi:
+        bilancio_simulato.utile_netto = round(0.08 * bilancio_simulato.ricavi, 2)
+
+    return bilancio_simulato
+
 def calcola_indici_plus(bilancio: Bilancio) -> dict:
     try:
         patrimonio_netto = bilancio.totale_attivo - sum([
@@ -154,9 +172,39 @@ async def analizza_azienda(dati: InputDati):
 
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
-        macro_area = assegna_macro_area(dati.bilancio)
-        dimensione = dimensione_azienda(dati.anagrafica)
-        indici_plus = calcola_indici_plus(dati.bilancio)
+
+        estendi_ricerca = False
+        if z_score >= 0.2 and mcc_rating >= 7:
+            estendi_ricerca = True
+
+        bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
+
+        if necessita_simulazione(z_score, mcc_rating):
+            bilancio_simulato = genera_bilancio_simulato(dati.bilancio)
+            z_sim = stima_z_score(bilancio_simulato)
+            mcc_sim = stima_mcc(bilancio_simulato)
+            bilanci_da_valutare.append({"tipo": "simulato", "bilancio": bilancio_simulato, "z_score": z_sim, "mcc": mcc_sim})
+
+        output_analisi = []
+
+        for item in bilanci_da_valutare:
+            bilancio_corrente = item["bilancio"]
+            z_score_corrente = item["z_score"]
+            mcc_corrente = item["mcc"]
+
+            macro_area = assegna_macro_area(dati.bilancio)
+            dimensione = dimensione_azienda(dati.anagrafica)
+            indici_plus = calcola_indici_plus(dati.bilancio
+
+            output_analisi.append({
+                "tipo": item["tipo"],
+                "macro_area": macro_area,
+                "dimensione": dimensione,
+                "mcc_rating": mcc_corrente,
+                "z_score": z_score_corrente,
+                "indici_plus": indici_plus,
+                "bilancio": bilancio_corrente
+            })
 
         def calcola_tematiche_attive(risposte_test: RisposteTest):
             mappa = {
@@ -220,28 +268,52 @@ async def analizza_azienda(dati: InputDati):
             bando["dettagli_gpt"] = dettagli_supabase
 
         # ✅ Costruzione dell’output testuale
-        output_finale = genera_output_finale(
-            top_bandi, macro_area, dimensione, mcc_rating, z_score,
-            numero_bandi_filtrati=numero_bandi_filtrati,
-            totale_agevolazioni_macroarea=totale_agevolazioni_macroarea,
-            indici_plus = calcola_indici_plus(dati.bilancio)
-        )
-        print("\n\n🪵 LOG COMPLETO OUTPUT:\n")
-        print(output_finale)
-        print("\n📏 Lunghezza caratteri:", len(output_finale))
-        
-        return {
-            "macro_area": macro_area,
-            "macro_area_interpretata": interpreta_macro_area(macro_area),
-            "dimensione": dimensione,
-            "indice_z_evoluto": z_score,
-            "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
-            "indice_mcc_evoluto": mcc_rating,
-            "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
-            "bandi_filtrati": top_bandi[:3],
-            "output_finale": output_finale,
-            "indici_plus": indici_plus
-        }
+        risultati_finali = []
+
+        for analisi in bilanci_da_valutare:
+            bilancio_corrente = analisi["bilancio"]
+            z_score = analisi["z_score"]
+            mcc_rating = analisi["mcc"]
+
+            macro_area = assegna_macro_area(bilancio_corrente)
+            dimensione = dimensione_azienda(dati.anagrafica)
+            indici_plus = calcola_indici_plus(bilancio_corrente)
+
+            top_bandi = classifica_bandi_filtrati(
+                bilancio=bilancio_corrente,
+                macro_area=macro_area,
+                dimensione=dimensione,
+                mcc_rating=mcc_rating,
+                z_score=z_score,
+               temi_attivi=calcola_tematiche_attive(dati.risposte_test)
+            )
+
+            output_finale = genera_output_finale(
+                top_bandi,
+                macro_area,
+                dimensione,
+                mcc_rating,
+                z_score,
+                numero_bandi_filtrati=len(top_bandi),
+                totale_agevolazioni_macroarea=None,
+                indici_plus=indici_plus
+            )
+
+            risultati_finali.append({
+                "tipo": analisi["tipo"],
+                "macro_area": macro_area,
+                "macro_area_interpretata": interpreta_macro_area(macro_area),
+                "dimensione": dimensione,
+                "indice_z_evoluto": z_score,
+                "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
+                "indice_mcc_evoluto": mcc_rating,
+                "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
+                "bandi_filtrati": top_bandi[:3],
+                "output_finale": output_finale,
+                "indici_plus": indici_plus
+            })
+
+        return risultati_finali
 
     except Exception as e:
         logger.exception("Errore durante l'elaborazione")
