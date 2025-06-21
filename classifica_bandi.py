@@ -2,6 +2,29 @@ from ast import literal_eval
 from datetime import datetime
 
 # --- Funzioni di supporto ---
+def verifica_compatibilita_forma_giuridica(forma_giuridica_impresa, tipologia_soggetto_bando):
+    """
+    Verifica se la forma giuridica dell'impresa è coerente con le categorie ammesse dal bando.
+    """
+    mapping_equivalenze = {
+        "impresa": ["impresa", "società", "azienda", "micro impresa", "piccola impresa", "media impresa", "PMI"],
+        "professionista": ["libero professionista", "professionista", "studio professionale"],
+        "cooperativa": ["cooperativa", "società cooperativa"],
+        "consorzio": ["consorzio", "rete d’impresa", "ATI"],
+        "ente": ["ente", "fondazione", "associazione"],
+    }
+
+    tipologia_soggetto_bando = tipologia_soggetto_bando.lower()
+    forma_giuridica_impresa = forma_giuridica_impresa.lower()
+
+    for categoria, sinonimi in mapping_equivalenze.items():
+        if any(s in forma_giuridica_impresa for s in sinonimi):
+            if any(s in tipologia_soggetto_bando for s in sinonimi):
+                return True
+            else:
+                return False
+    # Se non si trova una corrispondenza chiara, per sicurezza si considera compatibile
+    return True
 
 def punteggio_obiettivo_finalita(obiettivo, macro_area):
     priorita = {
