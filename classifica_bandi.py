@@ -142,6 +142,7 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive, estensione
     ebitda = azienda["ebitda"]
     immobilizzazioni = azienda["immobilizzazioni"]
     macro_area = azienda["macro_area"]
+    forma_giuridica = azienda.get("forma_giuridica", "").lower()
 
     for b in lista_bandi:
         if not codice_ateco_compatibile(codice_ateco, b.get("Codici_ATECO", "")):
@@ -149,6 +150,9 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive, estensione
         if not regione_compatibile(regione, b.get("Regioni", [])):
             continue
         if not dimensione_compatibile(dimensione, b.get("Dimensioni", "")):
+            continue
+        tipologie_soggetto = [t.strip().lower() for t in b.get("Tipologia_Soggetto", "").split(",")]
+        if forma_giuridica and not any(forma_giuridica in t for t in tipologie_soggetto):
             continue
             # 🔁 Filtro per forma agevolazione, se estensione è False mostra solo "fondo perduto"
         forma = b.get("Forma_agevolazione", "").lower()
