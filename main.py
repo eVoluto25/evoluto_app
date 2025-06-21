@@ -199,9 +199,6 @@ async def analizza_azienda(dati: InputDati):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
 
-        # Chiamata API
-        response = evoluto_capitaleaziendale_it__jit_plugin.analizza_azienda(input_dict)
-
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
             estendi_ricerca = True
