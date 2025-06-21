@@ -240,7 +240,7 @@ async def analizza_azienda(dati: InputDati):
             "tematiche_attive": tematiche_attive
         }
         
-        top_bandi = classifica_bandi_avanzata(bandi, azienda, tematiche_attive)
+        top_bandi = classifica_bandi_avanzata(bandi, azienda, tematiche_attive, estensione=estendi_ricerca)
         
         numero_bandi_filtrati = len(bandi)
         
