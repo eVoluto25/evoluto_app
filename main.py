@@ -221,6 +221,13 @@ async def analizza_azienda(dati: InputDati):
                 "tematiche_attive": tematiche_attive
             }
 
+            bandi = recupera_bandi_filtrati(
+                macro_area=macro_area_sim,
+                codice_ateco=dati.anagrafica.codice_ateco,
+                regione=dati.anagrafica.regione,
+                forma_giuridica=dati.anagrafica.forma_giuridica
+            )
+
             # 🔍 Estensione attiva per sfruttare anche bandi con altre forme
             top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
 
