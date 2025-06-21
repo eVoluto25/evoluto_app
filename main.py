@@ -190,7 +190,7 @@ async def analizza_azienda(dati: InputDati):
 
             z_sim = stima_z_score(bilancio_simulato)
             mcc_sim = stima_mcc(bilancio_simulato)
-            macro_area_sim = assegna_macro_area(bilancio_simulato, mcc_sim)
+            macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
 
 
             azienda_simulata = {
