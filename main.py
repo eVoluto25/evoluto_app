@@ -185,7 +185,7 @@ async def analizza_azienda(dati: InputDati):
             "dimensione": dimensione,
             "ebitda": bilancio_simulato.ebitda,
             "immobilizzazioni": bilancio_simulato.immobilizzazioni,
-            "macro_area": macro_area,
+             macro_area_sim = calcola_macro_area(bilancio_simulato),
             "tematiche_attive": tematiche_attive
         }
 
@@ -194,6 +194,14 @@ async def analizza_azienda(dati: InputDati):
 
         print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
         print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
+
+        output_analisi.append({
+            "tipo": "simulato",
+            "macro_area": macro_area_sim,
+            "z_score": z_sim,
+            "mcc": mcc_sim,
+            "bandi": top_bandi_sim
+        })
 
         # 🔁 Unione bandi reali + simulati (se vuoi prendere i migliori)
         top_bandi = top_bandi + top_bandi_sim
