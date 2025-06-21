@@ -181,6 +181,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
+    output_analisi = []
     logger.info("Dati ricevuti: %s", dati.json())
 
     logger.info(f"[DEBUG] Input ricevuto completo: {dati.dict()}")
