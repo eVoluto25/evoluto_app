@@ -163,6 +163,22 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
         return "Media Impresa"
     return "Grande impresa"
 
+def calcola_tematiche_attive(risposte_test: RisposteTest):
+            mappa = {
+            "crisi_impresa": "Crisi d’impresa",
+            "sostegno_liquidita": "Sostegno liquidità",
+            "sostegno_investimenti": "Sostegno investimenti",
+            "transizione_ecologica": "Transizione ecologica",
+            "innovazione_ricerca": "Innovazione e ricerca"
+            }
+            
+            temi_attivi = []
+            for key, tema in mappa.items():
+                valore = getattr(risposte_test, key, "C")
+                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+                    temi_attivi.append(tema)
+            return temi_attivi
+
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
@@ -264,22 +280,6 @@ async def analizza_azienda(dati: InputDati):
                 "indici_plus": indici_plus,
                 "bilancio": bilancio_corrente
             })
-
-        def calcola_tematiche_attive(risposte_test: RisposteTest):
-            mappa = {
-            "crisi_impresa": "Crisi d’impresa",
-            "sostegno_liquidita": "Sostegno liquidità",
-            "sostegno_investimenti": "Sostegno investimenti",
-            "transizione_ecologica": "Transizione ecologica",
-            "innovazione_ricerca": "Innovazione e ricerca"
-            }
-            
-            temi_attivi = []
-            for key, tema in mappa.items():
-                valore = getattr(risposte_test, key, "C")
-                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-                    temi_attivi.append(tema)
-            return temi_attivi
 
         bandi = recupera_bandi_filtrati(
             macro_area=macro_area,
