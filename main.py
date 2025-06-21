@@ -185,7 +185,7 @@ async def analizza_azienda(dati: InputDati):
             "dimensione": dimensione,
             "ebitda": bilancio_simulato.ebitda,
             "immobilizzazioni": bilancio_simulato.immobilizzazioni,
-             macro_area_sim = calcola_macro_area(bilancio_simulato),
+             macro_area_sim = calcola_macro_area(bilancio_simulato)
             "tematiche_attive": tematiche_attive
         }
 
