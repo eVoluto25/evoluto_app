@@ -185,12 +185,12 @@ async def analizza_azienda(dati: InputDati):
         dimensione = dimensione_azienda(dati.anagrafica)
 
         if necessita_simulazione(z_score, mcc_rating):
-            macro_area_attuale = assegna_macro_area(dati.bilancio)
+            macro_area_attuale = assegna_macro_area(dati.bilancio, mcc_rating)
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
 
             z_sim = stima_z_score(bilancio_simulato)
             mcc_sim = stima_mcc(bilancio_simulato)
-            macro_area_sim = assegna_macro_area(bilancio_simulato)
+            macro_area_sim = assegna_macro_area(bilancio_simulato, mcc_sim)
 
 
             azienda_simulata = {
