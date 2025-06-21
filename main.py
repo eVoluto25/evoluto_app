@@ -179,6 +179,26 @@ async def analizza_azienda(dati: InputDati):
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
 
+        azienda_simulata = {
+            "codice_ateco": dati.anagrafica.codice_ateco,
+            "regione": dati.anagrafica.regione,
+            "dimensione": dimensione,
+            "ebitda": bilancio_simulato.ebitda,
+            "immobilizzazioni": bilancio_simulato.immobilizzazioni,
+            "macro_area": macro_area,
+            "tematiche_attive": tematiche_attive
+        }
+
+        # 🔍 Estensione attiva per sfruttare anche bandi con altre forme
+        top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
+
+        print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
+        print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
+
+        # 🔁 Unione bandi reali + simulati (se vuoi prendere i migliori)
+        top_bandi = top_bandi + top_bandi_sim
+        top_bandi = sorted(top_bandi, key=lambda b: b.get("punteggio_totale", 0), reverse=True)[:3]
+
         if necessita_simulazione(z_score, mcc_rating):
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio)
             z_sim = stima_z_score(bilancio_simulato)
