@@ -174,8 +174,7 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive, estensione
             continue
         if not dimensione_compatibile(dimensione, b.get("Dimensioni", "")):
             continue
-        tipologie_soggetto = [t.strip().lower() for t in b.get("Tipologia_Soggetto", "").split(",")]
-        if forma_giuridica and not any(forma_giuridica in t for t in tipologie_soggetto):
+        if forma_giuridica and not verifica_compatibilita_forma_giuridica(forma_giuridica, b.get("Tipologia_Soggetto", "")):
             continue
             # 🔁 Filtro per forma agevolazione, se estensione è False mostra solo "fondo perduto"
         forma = b.get("Forma_agevolazione", "").lower()
