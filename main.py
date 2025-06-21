@@ -180,7 +180,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
             return temi_attivi
 
 @app.post("/analizza-azienda")
-logger.info("✅ [FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
+logger.info("[FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
 async def analizza_azienda(dati: InputDati):
     output_analisi = []
     logger.info("Dati ricevuti: %s", dati.json())
