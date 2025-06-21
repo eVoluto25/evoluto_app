@@ -252,6 +252,7 @@ async def analizza_azienda(dati: InputDati):
             })
 
         # 🔁 Unione bandi reali + simulati (se vuoi prendere i migliori)
+        top_bandi = []
         top_bandi = top_bandi + top_bandi_sim
         top_bandi = sorted(top_bandi, key=lambda b: b.get("punteggio_totale", 0), reverse=True)[:3]
 
