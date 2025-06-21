@@ -23,7 +23,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
     if regione:
         query = query.eq("Regioni", regione)
     if forma_giuridica and tabella == "bandi_disponibili":
-    query = query.eq("Forma_giuridica", forma_giuridica)
+        query = query.eq("Forma_giuridica", forma_giuridica)
     
     bandi = []
     for row in response.data:
