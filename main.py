@@ -186,7 +186,10 @@ async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
 
     logger.info(f"[DEBUG] Input ricevuto completo: {dati.dict()}")
-
+    try:
+        dati.mcc_rating = stima_mcc(dati.bilancio)  
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore MCC: {str(e)}")
     try:
         if not dati.anagrafica or not dati.bilancio:
             raise HTTPException(status_code=400, detail="Dati incompleti")
