@@ -104,8 +104,35 @@ def punteggio_test_bando(tematiche_bando: list[str], tematiche_attive: list[str]
     ) * 5
 
 # --- Funzione principale ---
+def contiene_agevolazioni_valide(forma_raw: str) -> bool:
+    """
+    Verifica se la stringa 'Forma_Agevolazione' contiene una o più forme agevolative accettabili.
+    Gestisce maiuscole/minuscole e scritture diverse.
+    """
+    forme = [f.strip().lower() for f in forma_raw.split(",") if f.strip()]
+    parole_chiave = [
+        "fondo", "perduto", "contributo", "prestito", "anticipo", 
+        "rimborsabile", "garanzia", "capitale", "fiscale", "riduzione", "previdenza"
+    ]
+    for f in forme:
+        if any(chiave in f for chiave in parole_chiave):
+            return True
+    return False
 
-def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive):
+def contiene_fondo_perduto(forme_raw: str) -> bool:
+    """
+    Verifica se la stringa 'Forma_Agevolazione' contiene un riferimento valido al fondo perduto.
+    Gestisce varianti, maiuscole/minuscole e scritture multiple.
+    """
+    forme = [f.strip().lower() for f in forme_raw.split(",") if f.strip()]
+    for f in forme:
+        if "fondo" in f and "perduto" in f:
+            return True
+        if "contributo" in f:
+            return True
+    return False
+
+def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive, estensione=False):
     if not lista_bandi:
         return []
     risultati = []
@@ -122,6 +149,12 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive):
         if not regione_compatibile(regione, b.get("Regioni", [])):
             continue
         if not dimensione_compatibile(dimensione, b.get("Dimensioni", "")):
+            continue
+            # 🔁 Filtro per forma agevolazione, se estensione è False mostra solo "fondo perduto"
+        forma = b.get("Forma_agevolazione", "").lower()
+        if not estensione and not contiene_fondo_perduto(forma_raw):
+            continue
+        elif estensione and not contiene_agevolazioni_valide(forma_raw):
             continue
 
     # Estrazione tematiche del bando (gestisce sia liste che stringhe CSV)
