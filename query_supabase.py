@@ -17,7 +17,15 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
     if not tabella:
         return []
 
-    response = supabase.table(tabella).select("*").execute()
+    query = supabase.table(tabella).select("*")
+    if codice_ateco:
+        query = query.eq("Codici_ATECO", codice_ateco)
+    if regione:
+        query = query.eq("Regioni", regione)
+    if forma_giuridica:
+        query = query.eq("Forma_giuridica", forma_giuridica)
+
+    response = query.execute()
 
     bandi = []
     for row in response.data:
