@@ -63,7 +63,6 @@ class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
     risposte_test: RisposteTest
-    mcc_rating: float
 
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
