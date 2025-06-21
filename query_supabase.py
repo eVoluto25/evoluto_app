@@ -84,15 +84,27 @@ def somma_agevolazioni_macroarea(macro_area: str) -> Tuple[float, List[dict]]:
             "Regioni": row["Regioni"]
         })
 
-def recupera_dettagli_bando(ID_Incentivo: str) -> dict:
+def recupera_dettagli_bando(ID_Incentivo: str, forma_giuridica_azienda: str) -> dict:
     response = supabase.table("bandi_disponibili").select("*").eq("ID_Incentivo", ID_Incentivo).single().execute()
     row = response.data
+
+    if not row:
+        return {}
+
+    # Controllo compatibilità forma giuridica
+    forme_ammesse = row.get("Forma_giuridica", "")
+    if forme_ammesse:
+        forma_giuridica_azienda = forma_giuridica_azienda.lower()
+        forme_ammesse_lower = forme_ammesse.lower()
+        if forma_giuridica_azienda not in forme_ammesse_lower:
+            return {}  # Bando non compatibile
+
     return {
         "Descrizione": row.get("Descrizione", ""),
         "Note_di_apertura_chiusura": row.get("Note_di_apertura_chiusura", ""),
         "Tipologia_Soggetto": row.get("Tipologia_Soggetto", ""),
         "Stanziamento_incentivo": row.get("Stanziamento_incentivo") or 0,
         "Link_istituzionale": row.get("Link_istituzionale", "")
-    } if row else {}
+    }
 
     return round(totale / 1_000_000, 2), bandi
