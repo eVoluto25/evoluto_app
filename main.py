@@ -180,16 +180,19 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
             return temi_attivi
 
 @app.post("/analizza-azienda")
+logger.info("✅ [FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
 async def analizza_azienda(dati: InputDati):
     output_analisi = []
     logger.info("Dati ricevuti: %s", dati.json())
 
     try:
         if not dati.anagrafica or not dati.bilancio:
+            logger.warning("⚠️ [VALIDAZIONE] Dati anagrafica o bilancio mancanti")
             raise HTTPException(status_code=400, detail="Dati incompleti")
     
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
+        logger.info(f"📊 Z-Score calcolato: {z_score}, MCC rating calcolato: {mcc_rating}")
 
         input_dict = dati.dict()
         input_dict["mcc_rating"] = mcc_rating
@@ -201,21 +204,25 @@ async def analizza_azienda(dati: InputDati):
 
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
+            logger.info(f"📌 Estendi ricerca: {estendi_ricerca} (Z-Score: {z_score}, MCC: {mcc_rating})")
             estendi_ricerca = True
 
         tematiche_attive = calcola_tematiche_attive(dati)
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
+        logger.info(f"📊 Bilanci da valutare per simulazione: {bilanci_da_valutare}")
 
         dimensione = dimensione_azienda(dati.anagrafica)
 
         if necessita_simulazione(z_score, mcc_rating):
             macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
+            logger.info(f"🏁 Avvio simulazione: macro area attuale = {macro_area_attuale}")
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
 
             z_sim = stima_z_score(bilancio_simulato)
             mcc_sim = stima_mcc(bilancio_simulato)
             macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
+            logger.info(f"🎯 Macro-area simulata assegnata: {macro_area_sim}")
 
 
             azienda_simulata = {
@@ -227,7 +234,7 @@ async def analizza_azienda(dati: InputDati):
                 "macro_area": macro_area_sim,
                 "tematiche_attive": tematiche_attive
             }
-
+            logger.info(f"📤 Avvio classificazione bandi con dati: azienda={azienda_simulata}, bilanci={bilanci_da_valutare}, tematiche={tematiche_attive}")
             bandi = recupera_bandi_filtrati(
                 macro_area=macro_area_sim,
                 codice_ateco=dati.anagrafica.codice_ateco,
@@ -237,6 +244,7 @@ async def analizza_azienda(dati: InputDati):
 
             # 🔍 Estensione attiva per sfruttare anche bandi con altre forme
             top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
+            logger.info(f"✅ Classificazione completata: {len(top_bandi_sim)} bandi selezionati")
 
             print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
             print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
