@@ -256,7 +256,7 @@ async def analizza_azienda(dati: InputDati):
         top_bandi = top_bandi + top_bandi_sim
         top_bandi = sorted(top_bandi, key=lambda b: b.get("punteggio_totale", 0), reverse=True)[:3]
 
-        macro_area_attuale = assegna_macro_area(dati.bilancio)
+        macro_area_attuale = assegna_macro_area(dati.bilancio, dati.mcc_rating)
 
         if necessita_simulazione(z_score, mcc_rating):
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
