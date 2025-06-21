@@ -222,7 +222,7 @@ async def analizza_azienda(dati: InputDati):
 
             macro_area = assegna_macro_area(dati.bilancio)
             dimensione = dimensione_azienda(dati.anagrafica)
-            indici_plus = calcola_indici_plus(dati.bilancio
+            indici_plus = calcola_indici_plus(dati.bilancio)
 
             output_analisi.append({
                 "tipo": item["tipo"],
