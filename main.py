@@ -180,6 +180,8 @@ async def analizza_azienda(dati: InputDati):
         if z_score >= 0.2 and mcc_rating >= 7:
             estendi_ricerca = True
 
+        tematiche_attive = calcola_tematiche_attive(dati)
+
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
 
         dimensione = dimensione_azienda(dati.anagrafica)
