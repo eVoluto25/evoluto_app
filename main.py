@@ -80,17 +80,28 @@ def necessita_simulazione(z_score, mcc_rating):
     soglia_mcc = 7
     return z_score < soglia_z or mcc_rating < soglia_mcc
 
-def genera_bilancio_simulato(bilancio: Bilancio):
+def genera_bilancio_simulato(bilancio: Bilancio, macro_area_attuale: str) -> Bilancio:
     bilancio_simulato = bilancio.copy()
 
-    # Migliora ebitda per aumentare z_score
-    if bilancio_simulato.ebitda < 0.1 * bilancio_simulato.totale_attivo:
-        bilancio_simulato.ebitda = round(0.12 * bilancio_simulato.totale_attivo, 2)
+    # STEP 1: Se sei in Crisi, prova a simulare il passaggio a Sviluppo
+    if macro_area_attuale == "Crisi":
+        # Aumenta EBITDA per spingere lo Z-score oltre 1.8
+        if bilancio_simulato.ebitda < 0.1 * bilancio_simulato.totale_attivo:
+            bilancio_simulato.ebitda = round(0.12 * bilancio_simulato.totale_attivo, 2)
 
-    # Migliora utile netto per aumentare mcc
-    if bilancio_simulato.utile_netto < 0.07 * bilancio_simulato.ricavi:
-        bilancio_simulato.utile_netto = round(0.08 * bilancio_simulato.ricavi, 2)
+        # Aumenta utile netto per ridurre MCC (verso 5)
+        if bilancio_simulato.utile_netto < 0.07 * bilancio_simulato.ricavi:
+            bilancio_simulato.utile_netto = round(0.08 * bilancio_simulato.ricavi, 2)
 
+    # STEP 2: Se sei in Sviluppo, prova ad arrivare a Espansione
+    elif macro_area_attuale == "Sviluppo":
+        if bilancio_simulato.ebitda < 0.14 * bilancio_simulato.totale_attivo:
+            bilancio_simulato.ebitda = round(0.18 * bilancio_simulato.totale_attivo, 2)
+
+        if bilancio_simulato.utile_netto < 0.09 * bilancio_simulato.ricavi:
+            bilancio_simulato.utile_netto = round(0.10 * bilancio_simulato.ricavi, 2)
+
+    # In tutti i casi ritorna il bilancio simulato
     return bilancio_simulato
 
 def calcola_indici_plus(bilancio: Bilancio) -> dict:
@@ -121,25 +132,17 @@ def calcola_indici_plus(bilancio: Bilancio) -> dict:
         "ROS": safe_div(getattr(bilancio, "ebit", 0), bilancio.ricavi)
     }
 
-def assegna_macro_area(bilancio: Bilancio) -> str:
-    z_score = stima_z_score(bilancio)
-
-    if bilancio.ebitda > 0:
-        if z_score >= 0.20:
-            print("📍 Macro area assegnata: Espansione (z_score >= 0.20)")
-            return "Espansione"
-        elif z_score > 0.05:
-            print("📍 Macro area assegnata: Sviluppo (z_score > 0.05)")
-            return "Sviluppo"
-        else:
-            print("📍 Macro area assegnata: Crisi (z_score basso con EBITDA > 0)")
-            return "Crisi"
-    elif bilancio.ricavi > 0:
-        print("📍 Macro area assegnata: Sviluppo (EBITDA ≤ 0 ma ricavi > 0)")
+def assegna_macro_area(z_score: float, mcc_rating: float) -> str:
+    if z_score >= 2.5 and mcc_rating <= 3:
+        print("# Macro area assegnata: Espansione (z ≥ 2.5 e MCC ≤ 3)")
+        return "Espansione"
+    elif 1.8 <= z_score < 2.5 and 4 <= mcc_rating <= 6:
+        print("# Macro area assegnata: Sviluppo (1.8 ≤ z < 2.5 e 4 ≤ MCC ≤ 6)")
         return "Sviluppo"
-    print("📍 Macro area assegnata: Crisi (nessun ricavo o EBITDA ≤ 0)")    
-    return "Crisi"
-
+    else:
+        print("# Macro area assegnata: Crisi (z < 1.8 o MCC ≥ 7)")
+        return "Crisi"
+    
 def interpreta_macro_area(macro_area: str) -> str:
     if macro_area == "Espansione":
         return "🚀 Fase di crescita: investimenti e sviluppo"
@@ -207,11 +210,18 @@ async def analizza_azienda(dati: InputDati):
         top_bandi = top_bandi + top_bandi_sim
         top_bandi = sorted(top_bandi, key=lambda b: b.get("punteggio_totale", 0), reverse=True)[:3]
 
+        macro_area_attuale = assegna_macro_area(dati.bilancio)
+
         if necessita_simulazione(z_score, mcc_rating):
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio)
+            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
             z_sim = stima_z_score(bilancio_simulato)
             mcc_sim = stima_mcc(bilancio_simulato)
-            bilanci_da_valutare.append({"tipo": "simulato", "bilancio": bilancio_simulato, "z_score": z_sim, "mcc": mcc_sim})
+            bilanci_da_valutare.append({
+                "tipo": "simulato",
+                "bilancio": bilancio_simulato,
+                "z_score": z_sim,
+                "mcc": mcc_sim
+            })
 
         output_analisi = []
 
