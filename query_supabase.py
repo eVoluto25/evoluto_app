@@ -7,7 +7,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None, regione: Optional[str] = None):
+def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None, regione: Optional[str] = None, forma_giuridica: Optional[str] = None):
     tabella = {
         "Crisi": "bandi_crisi",
         "Sviluppo": "bandi_crescita",
