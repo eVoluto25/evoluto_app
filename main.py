@@ -185,7 +185,9 @@ async def analizza_azienda(dati: InputDati):
     output_analisi = []
     logger.info("Dati ricevuti: %s", dati.json())
 
-    logger.info(f"[DEBUG] Input ricevuto completo: {dati.dict()}")
+    input_dict = dati.dict()
+    input_dict["mcc_rating"] = dati.mcc_rating
+    logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
     try:
         dati.mcc_rating = stima_mcc(dati.bilancio)  
     except Exception as e:
@@ -196,6 +198,13 @@ async def analizza_azienda(dati: InputDati):
 
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
+
+        # Converti in dict e aggiungi mcc_rating
+        input_dict = dati.dict()
+        input_dict["mcc_rating"] = mcc_rating
+
+        # Chiamata API
+        response = evoluto_capitaleaziendale_it__jit_plugin.analizza_azienda(input_dict)
 
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
