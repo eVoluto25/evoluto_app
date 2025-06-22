@@ -188,31 +188,101 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 async def analizza_azienda(dati: InputDati):
     logger.info("[FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
     output_analisi = []
-    logger.info("Dati ricevuti: %s", dati.json())
+    logger.info(f"Dati ricevuti: {dati.json()}")
 
     try:
+        # Verifica se i dati aziendali sono completi
         if not dati.anagrafica or not dati.bilancio:
             logger.warning("⚠️ [VALIDAZIONE] Dati anagrafica o bilancio mancanti")
             raise HTTPException(status_code=400, detail="Dati incompleti")
-        if not dati.risposte_test:
-            logger.warning("⚠️  [VALIDAZIONE] risposte_test mancante")
-        raise HTTPException(status_code=400, detail="Test strategico mancante")
 
-        logger.info("Validazione superata, calcolo z_score e mcc_rating")
-    
+        # Verifica che risposte_test siano presenti e siano utilizzabili
+        if not dati.risposte_test:
+            logger.error("❌ [VALIDAZIONE] Risposte del test mancanti. Test strategico è obbligatorio.")
+            raise HTTPException(status_code=400, detail="Test strategico mancante")
+        
+        # Altrimenti usiamo le risposte per il calcolo
+        risposte_test = dati.risposte_test
+        logger.info(f"Risposte test strategico: {risposte_test}")
+
+        # Calcolo Z-Score e MCC
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
         logger.info(f"📊 Z-Score calcolato: {z_score}, MCC rating calcolato: {mcc_rating}")
 
-        input_dict = dati.dict()
-        input_dict["mcc_rating"] = mcc_rating
+        # Calcolare le tematiche attive in base alle risposte del test
+        tematiche_attive = calcola_tematiche_attive(risposte_test)
+        logger.info(f"[DEBUG] Tematiche attive calcolate: {tematiche_attive}")
 
-        logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+        # Calcolo e creazione dei bilanci da valutare
+        bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
+        logger.info(f"📊 Bilanci da valutare per simulazione: {bilanci_da_valutare}")
+
+        # Simulazione se necessaria
+        if necessita_simulazione(z_score, mcc_rating):
+            macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
+            logger.info(f"🏁 Avvio simulazione: macro area attuale = {macro_area_attuale}")
+            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
+
+            z_sim = stima_z_score(bilancio_simulato)
+            mcc_sim = stima_mcc(bilancio_simulato)
+            macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
+            logger.info(f"🎯 Macro-area simulata assegnata: {macro_area_sim}")
+
+            # Creazione azienda simulata
+            azienda_simulata = {
+                "codice_ateco": dati.anagrafica.codice_ateco,
+                "regione": dati.anagrafica.regione,
+                "dimensione": dimensione_azienda(dati.anagrafica),
+                "ebitda": bilancio_simulato.ebitda,
+                "immobilizzazioni": bilancio_simulato.immobilizzazioni,
+                "macro_area": macro_area_sim,
+                "tematiche_attive": tematiche_attive
+            }
+            logger.info(f"📦 Azienda simulata creata: {azienda_simulata}")
+
+            # Recupero bandi per simulazione
+            bandi = recupera_bandi_filtrati(
+                macro_area=macro_area_sim,
+                codice_ateco=dati.anagrafica.codice_ateco,
+                regione=dati.anagrafica.regione,
+                forma_giuridica=dati.anagrafica.forma_giuridica
+            )
+            top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
+            logger.info(f"✅ Classificazione completata: {len(top_bandi_sim)} bandi selezionati")
+
+            # Aggiunta simulata all'output
+            output_analisi.append({
+                "tipo": "simulato",
+                "macro_area": macro_area_sim,
+                "z_score": z_sim,
+                "mcc": mcc_sim,
+                "bandi": top_bandi_sim
+            })
+
+            # Aggiunta dei bilanci simulati per future valutazioni
+            bilanci_da_valutare.append({
+                "tipo": "simulato",
+                "bilancio": bilancio_simulato,
+                "z_score": z_sim,
+                "mcc": mcc_sim
+            })
+
+        # Classificazione bandi
+        bandi_finali = recupera_bandi_filtrati(
+            macro_area=assegna_macro_area(dati.bilancio, mcc_rating),
+            codice_ateco=dati.anagrafica.codice_ateco,
+            regione=dati.anagrafica.regione
+        )
+
+        top_bandi = classifica_bandi_avanzata(bandi_finali, azienda_simulata, tematiche_attive, estensione=False)
+
+        # Aggiungi l'output finale
+        return {"analisi": output_analisi, "bandi": top_bandi}
 
     except Exception as e:
-        import traceback
-        logger.error("Errore dettagliato:\n%s", traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Errore interno: {str(e)}")
+        logger.exception("Errore durante l'elaborazione")
+        raise HTTPException(status_code=500, detail=str(e))
 
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
