@@ -210,7 +210,9 @@ async def analizza_azienda(dati: InputDati):
         logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
+        import traceback
+        logger.error("Errore dettagliato:\n%s", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Errore interno: {str(e)}")
 
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
