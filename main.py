@@ -2,7 +2,6 @@ import json
 from query_supabase import recupera_dettagli_bando
 from query_supabase import recupera_bandi_filtrati
 from query_supabase import somma_agevolazioni_macroarea
-from models import RisposteTest
 from classifica_bandi import classifica_bandi_avanzata
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import PlainTextResponse
@@ -216,8 +215,7 @@ async def analizza_azienda(dati: InputDati):
             logger.info(f"📌 Estendi ricerca: {estendi_ricerca} (Z-Score: {z_score}, MCC: {mcc_rating})")
             estendi_ricerca = True
 
-        risposte_obj = RisposteTest(**dati.risposte_test)
-        tematiche_attive = calcola_tematiche_attive(risposte_obj)
+        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
         logger.info(f"[DEBUG] Tematiche attive calcolate: {tematiche_attive}")
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
