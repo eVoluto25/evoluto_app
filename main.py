@@ -491,10 +491,6 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 
         return risultati_finali
 
-    except Exception as e:
-        logger.exception("Errore durante l'elaborazione")
-        raise HTTPException(status_code=500, detail=str(e))
-
 def interpreta_z_score(z):
     if z > 0.20:
         return "✅ Eccellente"
