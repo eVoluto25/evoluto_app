@@ -197,6 +197,8 @@ async def analizza_azienda(dati: InputDati):
         if not dati.risposte_test:
             logger.warning("⚠️  [VALIDAZIONE] risposte_test mancante")
         raise HTTPException(status_code=400, detail="Test strategico mancante")
+
+        logger.info("Validazione superata, calcolo z_score e mcc_rating")
     
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
