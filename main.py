@@ -392,11 +392,11 @@ async def analizza_azienda(dati: InputDati):
                     "indici_plus": indici_plus
                 })
 
-        return risultati_finali
+            return risultati_finali
 
-    except Exception as e:
-        logger.exception("Errore durante l'elaborazione")
-        raise HTTPException(status_code=500, detail=str(e))
+        except Exception as e:
+            logger.exception("Errore durante l'elaborazione")
+            raise HTTPException(status_code=500, detail=str(e))
 
 def interpreta_z_score(z):
     if z > 0.20:
