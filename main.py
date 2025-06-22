@@ -165,22 +165,24 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
     logger.info(f"[DEBUG] Inizio calcolo tematiche attive con risposte: {risposte_test}")
-            mappa = {
-            "crisi_impresa": "Crisi d’impresa",
-            "sostegno_liquidita": "Sostegno liquidità",
-            "sostegno_investimenti": "Sostegno investimenti",
-            "transizione_ecologica": "Transizione ecologica",
-            "innovazione_ricerca": "Innovazione e ricerca"
-            }
+    
+    mappa = {
+         "crisi_impresa": "Crisi d’impresa",
+         "sostegno_liquidita": "Sostegno liquidità",
+         "sostegno_investimenti": "Sostegno investimenti",
+         "transizione_ecologica": "Transizione ecologica",
+         "innovazione_ricerca": "Innovazione e ricerca"
+   }
             
-            temi_attivi = []
-            for key, tema in mappa.items():
-                valore = getattr(risposte_test, key, "C")
-                logger.info(f"[DEBUG] Controllo tema '{tema}' con valore '{valore}'")
-                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-                    temi_attivi.append(tema)
-            logger.info(f"🟦 Tematiche attive calcolate: {tematiche_attive}")
-            return temi_attivi
+   temi_attivi = []
+   for key, tema in mappa.items():
+       valore = getattr(risposte_test, key, "C")
+       logger.info(f"[DEBUG] Controllo tema '{tema}' con valore '{valore}'")
+       if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+           temi_attivi.append(tema)
+           
+   logger.info(f"🟦 Tematiche attive calcolate: {tematiche_attive}")
+   return temi_attivi
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
