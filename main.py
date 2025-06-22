@@ -164,31 +164,32 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
-
     print(">>> Debug: entrato in calcola_tematiche_attive")
     logger.info(">>> Debug: entrato in calcola_tematiche_attive")
 
     print(f">>> Debug: risposte_test = {risposte_test}")
     logger.info(f">>> Debug: risposte_test = {risposte_test}")
-    
-            mappa = {
-            "crisi_impresa": "Crisi d’impresa",
-            "sostegno_liquidita": "Sostegno liquidità",
-            "sostegno_investimenti": "Sostegno investimenti",
-            "transizione_ecologica": "Transizione ecologica",
-            "innovazione_ricerca": "Innovazione e ricerca"
-            }
-            
-            temi_attivi = []
-            for key, tema in mappa.items():
-                valore = getattr(risposte_test, key, "C")
 
-                print(f">>> Debug: key={key}, valore={getattr(risposte_test, key, 'C')}")
-                logger.info(f">>> Debug: key={key}, valore={getattr(risposte_test, key, 'C')}")
-                
-                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-                    temi_attivi.append(tema)
-            return temi_attivi
+    mappa = {
+        "crisi_impresa": "Crisi d’impresa",
+        "sostegno_liquidità": "Sostegno liquidità",
+        "sostegno_investimenti": "Sostegno investimenti",
+        "transizione_ecologica": "Transizione ecologica",
+        "innovazione_ricerca": "Innovazione e ricerca"
+    }
+
+    temi_attivi = []
+
+    for key, tema in mappa.items():
+        valore = getattr(risposte_test, key, "C")
+
+        print(f">>> Debug: key={key}, valore={valore}")
+        logger.info(f">>> Debug: key={key}, valore={valore}")
+
+        if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+            temi_attivi.append(tema)
+
+    return temi_attivi
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
