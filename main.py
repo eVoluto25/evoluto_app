@@ -50,7 +50,13 @@ class Bilancio(BaseModel):
     ebitda: Optional[float] = 0
     totale_attivo: Optional[float] = 0
     immobilizzazioni: Optional[float] = 0
-    ricavi_anno_prec: Optional[float] = None
+    ricavi_anno_prec: Optional[float] = 0
+    debiti: Optional[float] = 0
+    cassa: Optional[float] = 0
+    crediti: Optional[float] = 0
+    ebit: Optional[float] = 0
+    attivo_circolante: Optional[float] = 0
+    passivo_corrente: Optional[float] = 0
 
 class RisposteTest(BaseModel):
     crisi_impresa: Optional[str] = None
@@ -63,6 +69,14 @@ class InputDati(BaseModel):
     anagrafica: Anagrafica
     bilancio: Bilancio
     risposte_test: RisposteTest
+
+def converti_in_numeri(data):
+    """
+    Converte i valori numerici nei dati in ingresso in numeri (float).
+    """
+    for key, value in data.items():
+        data[key] = float(value) if isinstance(value, (str, int)) else value
+    return data
 
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
@@ -191,6 +205,8 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
+    # Applica la funzione di conversione ai dati di bilancio
+    dati.bilancio = converti_in_numeri(dati.bilancio)
     logger.info("[FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
     output_analisi = []
     logger.info(f"Dati ricevuti: {dati.json()}")
@@ -205,6 +221,10 @@ async def analizza_azienda(dati: InputDati):
         if not dati.risposte_test:
             logger.error("❌ [VALIDAZIONE] Risposte del test mancanti. Test strategico è obbligatorio.")
             raise HTTPException(status_code=400, detail="Test strategico mancante")
+
+        # Applica la funzione di conversione ai dati di bilancio
+        dati.bilancio = converti_in_numeri(dati.bilancio)
+        logger.info(f"Bilancio convertito: {dati.bilancio}")
         
         # Altrimenti usiamo le risposte per il calcolo
         risposte_test = dati.risposte_test
