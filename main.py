@@ -194,6 +194,9 @@ async def analizza_azienda(dati: InputDati):
         if not dati.anagrafica or not dati.bilancio:
             logger.warning("⚠️ [VALIDAZIONE] Dati anagrafica o bilancio mancanti")
             raise HTTPException(status_code=400, detail="Dati incompleti")
+        if not dati.risposte_test:
+            logger.warning("⚠️  [VALIDAZIONE] risposte_test mancante")
+        raise HTTPException(status_code=400, detail="Test strategico mancante")
     
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
