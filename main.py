@@ -200,30 +200,17 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
             temi_attivi.append(tema)
 
     logger.info(f"🧠 Tematiche attive calcolate: {temi_attivi}")
-    return temi_attivi
+    return temi_attivi 
 
-@app.post("/analizza-azienda")
-async def analizza_azienda(dati: InputDati):
-    # Applica la funzione di conversione ai dati di bilancio
-    dati.bilancio = converti_in_numeri(dati.bilancio)
-    logger.info("[FASTAPI] Endpoint /analizza-azienda attivo e in ascolto")
-    output_analisi = []
-    logger.info(f"Dati ricevuti: {dati.json()}")
-
-    try:
-        # Verifica se i dati aziendali sono completi
-        if not dati.anagrafica or not dati.bilancio:
-            logger.warning("⚠️ [VALIDAZIONE] Dati anagrafica o bilancio mancanti")
-            raise HTTPException(status_code=400, detail="Dati incompleti")
-
-        # Verifica che risposte_test siano presenti e siano utilizzabili
-        if not dati.risposte_test:
-            logger.error("❌ [VALIDAZIONE] Risposte del test mancanti. Test strategico è obbligatorio.")
-            raise HTTPException(status_code=400, detail="Test strategico mancante")
-
-        # Applica la funzione di conversione ai dati di bilancio
-        dati.bilancio = converti_in_numeri(dati.bilancio)
-        logger.info(f"Bilancio convertito: {dati.bilancio}")
+    @app.post("/analizza-azienda")
+    async def analizza_azienda(request: Request):
+        try:
+            body = await request.body()
+            print("▶️ RAW BODY DEBUG:", body)
+            return {"ok": True}
+        except Exception as e:
+            print("❌ ERRORE DEBUG:", str(e))
+            return {"errore": str(e)}
         
         # Altrimenti usiamo le risposte per il calcolo
         risposte_test = dati.risposte_test
