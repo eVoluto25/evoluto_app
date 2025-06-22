@@ -8,6 +8,8 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None, regione: Optional[str] = None, forma_giuridica: Optional[str] = None):
+
+    print(f">>> Debug: macro_area passata = {macro_area}")  
     tabella = {
         "Crisi": "bandi_crisi",
         "Sviluppo": "bandi_crescita",
@@ -18,7 +20,7 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
     print(f">>> Debug: codice_ateco = {codice_ateco}, regione = {regione}, forma_giuridica = {forma_giuridica}")
 
     if not tabella:
-        print(">>> Debug: tabella non trovata, ritorno []")
+        print(">>> Debug: macro_area non valida, nessuna tabella associata")  
         return []
 
     query = supabase.table(tabella).select("*")
