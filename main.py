@@ -221,7 +221,6 @@ async def analizza_azienda(dati: InputDati):
             mcc_sim = stima_mcc(bilancio_simulato)
             macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
 
-
             azienda_simulata = {
                 "codice_ateco": dati.anagrafica.codice_ateco,
                 "regione": dati.anagrafica.regione,
