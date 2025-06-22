@@ -164,6 +164,7 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
+logger.info(f"[DEBUG] Inizio calcolo tematiche attive con risposte: {risposte_test}")
             mappa = {
             "crisi_impresa": "Crisi d’impresa",
             "sostegno_liquidita": "Sostegno liquidità",
@@ -175,6 +176,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
             temi_attivi = []
             for key, tema in mappa.items():
                 valore = getattr(risposte_test, key, "C")
+                logger.info(f"[DEBUG] Controllo tema '{tema}' con valore '{valore}'")
                 if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
                     temi_attivi.append(tema)
             logger.info(f"🟦 Tematiche attive calcolate: {tematiche_attive}")
