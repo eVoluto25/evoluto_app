@@ -137,6 +137,7 @@ def calcola_indici_plus(bilancio: Bilancio) -> dict:
     }
 
 def assegna_macro_area(z_score: float, mcc_rating: float) -> str:
+       print(f"Tipo di bilancio: {type(bilancio)}")
     if z_score >= 2.5 and mcc_rating <= 3:
         print("# Macro area assegnata: Espansione (z ≥ 2.5 e MCC ≤ 3)")
         return "Espansione"
