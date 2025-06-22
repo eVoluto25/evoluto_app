@@ -182,30 +182,23 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     output_analisi = []
-    logger.info("Dati ricevuti: %s", dati.json())
-
-    input_dict = dati.dict()
-    input_dict["mcc_rating"] = dati.mcc_rating
-    logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
-    print(">>> Avvio calcolo MCC")
+    logger.info("Dati ricevuti: %s", dati.json()
     try:
-        dati.mcc_rating = stima_mcc(dati.bilancio)  
+        z_score = stima_z_score(dati.bilancio)
+        mcc_rating = stima_mcc(dati.bilancio)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore MCC: {str(e)}")
-    try:
+        raise HTTPException(status_code=500, detail=f"Errore nel calcolo Z-Score o MCC: {str(e)}")
+
+    print(f">>> Z-Score calcolato: {z_score}")
+    print(f">>> MCC calcolato: {mcc_rating}")
+
         if not dati.anagrafica or not dati.bilancio:
             raise HTTPException(status_code=400, detail="Dati incompleti")
 
-        z_score = stima_z_score(dati.bilancio)
-        print(f">>> Z-Score calcolato: {z_score}")
-
-        mcc_rating = stima_mcc(dati.bilancio)
-        print(f">>> MCC calcolato: {mcc_rating}")
-
-        # Converti in dict e aggiungi mcc_rating
-        print(">>> Invio input_dict a analizza_azienda():")
         input_dict = dati.dict()
         input_dict["mcc_rating"] = mcc_rating
+        input_dict["z_score"] = z_score  
+        logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
 
         # Chiamata API
         response = evoluto_capitaleaziendale_it__jit_plugin.analizza_azienda(input_dict)
