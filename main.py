@@ -348,48 +348,49 @@ async def analizza_azienda(dati: InputDati):
         # ✅ Costruzione dell’output testuale
         risultati_finali = []
 
-        for analisi in bilanci_da_valutare:
-            bilancio_corrente = analisi["bilancio"]
-            z_score = analisi["z_score"]
-            mcc_rating = analisi["mcc"]
+        try:
+            for analisi in bilanci_da_valutare:
+                bilancio_corrente = analisi["bilancio"]
+                z_score = analisi["z_score"]
+                mcc_rating = analisi["mcc"]
 
-            macro_area = assegna_macro_area(bilancio_corrente)
-            dimensione = dimensione_azienda(dati.anagrafica)
-            indici_plus = calcola_indici_plus(bilancio_corrente)
+                macro_area = assegna_macro_area(bilancio_corrente)
+                dimensione = dimensione_azienda(dati.anagrafica)
+                indici_plus = calcola_indici_plus(bilancio_corrente)
 
-            top_bandi = classifica_bandi_filtrati(
-                bilancio=bilancio_corrente,
-                macro_area=macro_area,
-                dimensione=dimensione,
-                mcc_rating=mcc_rating,
-                z_score=z_score,
-               temi_attivi=calcola_tematiche_attive(dati.risposte_test)
-            )
+                top_bandi = classifica_bandi_filtrati(
+                    bilancio=bilancio_corrente,
+                    macro_area=macro_area,
+                    dimensione=dimensione,
+                    mcc_rating=mcc_rating,
+                    z_score=z_score,
+                    temi_attivi=calcola_tematiche_attive(dati.risposte_test)
+                )
 
-            output_finale = genera_output_finale(
-                top_bandi,
-                macro_area,
-                dimensione,
-                mcc_rating,
-                z_score,
-                numero_bandi_filtrati=len(top_bandi),
-                totale_agevolazioni_macroarea=None,
-                indici_plus=indici_plus
-            )
+                output_finale = genera_output_finale(
+                    top_bandi,
+                    macro_area,
+                    dimensione,
+                    mcc_rating,
+                    z_score,
+                    numero_bandi_filtrati=len(top_bandi),
+                    totale_agevolazioni_macroarea=None,
+                    indici_plus=indici_plus
+                )
 
-            risultati_finali.append({
-                "tipo": analisi["tipo"],
-                "macro_area": macro_area,
-                "macro_area_interpretata": interpreta_macro_area(macro_area),
-                "dimensione": dimensione,
-                "indice_z_evoluto": z_score,
-                "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
-                "indice_mcc_evoluto": mcc_rating,
-                "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
-                "bandi_filtrati": top_bandi[:3],
-                "output_finale": output_finale,
-                "indici_plus": indici_plus
-            })
+                risultati_finali.append({
+                    "tipo": analisi["tipo"],
+                    "macro_area": macro_area,
+                    "macro_area_interpretata": interpreta_macro_area(macro_area),
+                    "dimensione": dimensione,
+                    "indice_z_evoluto": z_score,
+                    "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
+                    "indice_mcc_evoluto": mcc_rating,
+                    "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
+                    "bandi_filtrati": top_bandi[:3],
+                    "output_finale": output_finale,
+                    "indici_plus": indici_plus
+                })
 
         return risultati_finali
 
