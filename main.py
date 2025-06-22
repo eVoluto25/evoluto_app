@@ -50,13 +50,7 @@ class Bilancio(BaseModel):
     ebitda: Optional[float] = 0
     totale_attivo: Optional[float] = 0
     immobilizzazioni: Optional[float] = 0
-    ricavi_anno_prec: Optional[float] = 0
-    debiti: Optional[float] = 0
-    cassa: Optional[float] = 0
-    crediti: Optional[float] = 0
-    ebit: Optional[float] = 0
-    attivo_circolante: Optional[float] = 0
-    passivo_corrente: Optional[float] = 0
+    ricavi_anno_prec: Optional[float] = None
 
 class RisposteTest(BaseModel):
     crisi_impresa: Optional[str] = None
@@ -70,28 +64,16 @@ class InputDati(BaseModel):
     bilancio: Bilancio
     risposte_test: RisposteTest
 
-def converti_in_numeri(data):
-    """
-    Converte i valori numerici nei dati in ingresso in numeri (float).
-    """
-    for key, value in data.items():
-        data[key] = float(value) if isinstance(value, (str, int)) else value
-    return data
-
 # Indicatori economico-finanziari
 def stima_z_score(bilancio: Bilancio):
     if not bilancio.totale_attivo or bilancio.totale_attivo == 0:
         return 0
     return round((bilancio.ebitda + bilancio.utile_netto) / bilancio.totale_attivo, 2)
 
-    print(f"Tipo di z_score: {type(z_score)}")
-
 def stima_mcc(bilancio: Bilancio):
     if not bilancio.ricavi or bilancio.ricavi == 0:
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
-
-    print(f"Tipo di mcc_rating: {type(mcc_rating)}")
 
 def necessita_simulazione(z_score, mcc_rating):
     soglia_z = 2.5
@@ -182,139 +164,64 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
-    logger.info(f"[DEBUG] Inizio calcolo tematiche attive con risposte: {risposte_test}")
+            mappa = {
+            "crisi_impresa": "Crisi d’impresa",
+            "sostegno_liquidita": "Sostegno liquidità",
+            "sostegno_investimenti": "Sostegno investimenti",
+            "transizione_ecologica": "Transizione ecologica",
+            "innovazione_ricerca": "Innovazione e ricerca"
+            }
+            
+            temi_attivi = []
+            for key, tema in mappa.items():
+                valore = getattr(risposte_test, key, "C")
+                if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+                    temi_attivi.append(tema)
+            return temi_attivi
 
-    mappa = {
-        "crisi_impresa": "Crisi d’impresa",
-        "sostegno_liquidita": "Sostegno liquidità",
-        "sostegno_investimenti": "Sostegno investimenti",
-        "transizione_ecologica": "Transizione ecologica",
-        "innovazione_ricerca": "Innovazione e ricerca"
-    }
+@app.post("/analizza-azienda")
+async def analizza_azienda(dati: InputDati):
+    output_analisi = []
+    logger.info("Dati ricevuti: %s", dati.json())
 
-    temi_attivi = []
-    for key, tema in mappa.items():
-        valore = getattr(risposte_test, key, "C")
-        logger.info(f"[DEBUG] Controllo tema '{tema}' con valore '{valore}'")
-        if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-            temi_attivi.append(tema)
+    input_dict = dati.dict()
+    input_dict["mcc_rating"] = dati.mcc_rating
+    logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+    try:
+        dati.mcc_rating = stima_mcc(dati.bilancio)  
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore MCC: {str(e)}")
+    try:
+        if not dati.anagrafica or not dati.bilancio:
+            raise HTTPException(status_code=400, detail="Dati incompleti")
 
-    logger.info(f"🧠 Tematiche attive calcolate: {temi_attivi}")
-    return temi_attivi 
-
-    @app.post("/analizza-azienda")
-    async def analizza_azienda(request: Request):
-        try:
-            body = await request.body()
-            print("▶️ RAW BODY DEBUG:", body)
-            return {"ok": True}
-        except Exception as e:
-            print("❌ ERRORE DEBUG:", str(e))
-            return {"errore": str(e)}
-        
-        # Altrimenti usiamo le risposte per il calcolo
-        risposte_test = dati.risposte_test
-        logger.info(f"Risposte test strategico: {risposte_test}")
-
-        # Calcolo Z-Score e MCC
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
-        logger.info(f"📊 Z-Score calcolato: {z_score}, MCC rating calcolato: {mcc_rating}")
 
-        # Calcolare le tematiche attive in base alle risposte del test
-        tematiche_attive = calcola_tematiche_attive(risposte_test)
-        logger.info(f"[DEBUG] Tematiche attive calcolate: {tematiche_attive}")
+        # Converti in dict e aggiungi mcc_rating
+        input_dict = dati.dict()
+        input_dict["mcc_rating"] = mcc_rating
 
-        # Calcolo e creazione dei bilanci da valutare
-        bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
-        logger.info(f"📊 Bilanci da valutare per simulazione: {bilanci_da_valutare}")
-
-        # Simulazione se necessaria
-        if necessita_simulazione(z_score, mcc_rating):
-            z_score = stima_z_score(dati.bilancio)
-            mcc_rating = stima_mcc(dati.bilancio)
-            macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
-            logger.info(f"🏁 Avvio simulazione: macro area attuale = {macro_area_attuale}")
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
-
-            z_sim = stima_z_score(bilancio_simulato)
-            mcc_sim = stima_mcc(bilancio_simulato)
-            macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
-            logger.info(f"🎯 Macro-area simulata assegnata: {macro_area_sim}")
-
-            # Creazione azienda simulata
-            azienda_simulata = {
-                "codice_ateco": dati.anagrafica.codice_ateco,
-                "regione": dati.anagrafica.regione,
-                "dimensione": dimensione_azienda(dati.anagrafica),
-                "ebitda": bilancio_simulato.ebitda,
-                "immobilizzazioni": bilancio_simulato.immobilizzazioni,
-                "macro_area": macro_area_sim,
-                "tematiche_attive": tematiche_attive
-            }
-            logger.info(f"📦 Azienda simulata creata: {azienda_simulata}")
-
-            # Recupero bandi per simulazione
-            bandi = recupera_bandi_filtrati(
-                macro_area=macro_area_sim,
-                codice_ateco=dati.anagrafica.codice_ateco,
-                regione=dati.anagrafica.regione,
-                forma_giuridica=dati.anagrafica.forma_giuridica
-            )
-            top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
-            logger.info(f"✅ Classificazione completata: {len(top_bandi_sim)} bandi selezionati")
-
-            # Aggiunta simulata all'output
-            output_analisi.append({
-                "tipo": "simulato",
-                "macro_area": macro_area_sim,
-                "z_score": z_sim,
-                "mcc": mcc_sim,
-                "bandi": top_bandi_sim
-            })
-
-            # Aggiunta dei bilanci simulati per future valutazioni
-            bilanci_da_valutare.append({
-                "tipo": "simulato",
-                "bilancio": bilancio_simulato,
-                "z_score": z_sim,
-                "mcc": mcc_sim
-            })
-
-        # Classificazione bandi
-        bandi_finali = recupera_bandi_filtrati(
-            macro_area=assegna_macro_area(dati.bilancio, mcc_rating),
-            codice_ateco=dati.anagrafica.codice_ateco,
-            regione=dati.anagrafica.regione
-        )
-
-        top_bandi = classifica_bandi_avanzata(bandi_finali, azienda_simulata, tematiche_attive, estensione=False)
-
-        # Aggiungi l'output finale
-        return {"analisi": output_analisi, "bandi": top_bandi}
+        # Chiamata API
+        response = evoluto_capitaleaziendale_it__jit_plugin.analizza_azienda(input_dict)
 
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
-            logger.info(f"📌 Estendi ricerca: {estendi_ricerca} (Z-Score: {z_score}, MCC: {mcc_rating})")
             estendi_ricerca = True
 
-        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
-        logger.info(f"[DEBUG] Tematiche attive calcolate: {tematiche_attive}")
+        tematiche_attive = calcola_tematiche_attive(dati)
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
-        logger.info(f"📊 Bilanci da valutare per simulazione: {bilanci_da_valutare}")
 
         dimensione = dimensione_azienda(dati.anagrafica)
 
         if necessita_simulazione(z_score, mcc_rating):
             macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
-            logger.info(f"🏁 Avvio simulazione: macro area attuale = {macro_area_attuale}")
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
 
             z_sim = stima_z_score(bilancio_simulato)
             mcc_sim = stima_mcc(bilancio_simulato)
             macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
-            logger.info(f"🎯 Macro-area simulata assegnata: {macro_area_sim}")
 
 
             azienda_simulata = {
@@ -326,9 +233,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
                 "macro_area": macro_area_sim,
                 "tematiche_attive": tematiche_attive
             }
-            logger.info(f"📦 Azienda simulata creata: {azienda_simulata}")
-            
-            logger.info(f"📤 Avvio classificazione bandi con dati: azienda={azienda_simulata}, bilanci={bilanci_da_valutare}, tematiche={tematiche_attive}")
+
             bandi = recupera_bandi_filtrati(
                 macro_area=macro_area_sim,
                 codice_ateco=dati.anagrafica.codice_ateco,
@@ -338,7 +243,6 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 
             # 🔍 Estensione attiva per sfruttare anche bandi con altre forme
             top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
-            logger.info(f"✅ Classificazione completata: {len(top_bandi_sim)} bandi selezionati")
 
             print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
             print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
@@ -490,6 +394,10 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
             })
 
         return risultati_finali
+
+    except Exception as e:
+        logger.exception("Errore durante l'elaborazione")
+        raise HTTPException(status_code=500, detail=str(e))
 
 def interpreta_z_score(z):
     if z > 0.20:
