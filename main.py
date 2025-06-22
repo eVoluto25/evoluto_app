@@ -235,6 +235,8 @@ async def analizza_azienda(dati: InputDati):
                 "macro_area": macro_area_sim,
                 "tematiche_attive": tematiche_attive
             }
+            logger.info(f"📦 Azienda simulata creata: {azienda_simulata}")
+            
             logger.info(f"📤 Avvio classificazione bandi con dati: azienda={azienda_simulata}, bilanci={bilanci_da_valutare}, tematiche={tematiche_attive}")
             bandi = recupera_bandi_filtrati(
                 macro_area=macro_area_sim,
