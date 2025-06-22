@@ -195,6 +195,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 async def analizza_azienda(dati: InputDati):
     output_analisi = []
     logger.info("Dati ricevuti: %s", dati.json())
+
     try:
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
@@ -207,230 +208,136 @@ async def analizza_azienda(dati: InputDati):
     if not dati.anagrafica or not dati.bilancio:
         raise HTTPException(status_code=400, detail="Dati incompleti")
 
-        input_dict = dati.dict()
-        input_dict["mcc_rating"] = mcc_rating
-        input_dict["z_score"] = z_score  
-        logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+    input_dict = dati.dict()
+    input_dict["mcc_rating"] = mcc_rating
+    input_dict["z_score"] = z_score
+    logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+    print(">>> Debug: input_dict completato e pronto")
+    logger.info(">>> Debug: input_dict completato e pronto")
 
-        print(">>> Debug: input_dict completato e pronto")
-        logger.info(">>> Debug: input_dict completato e pronto")
+    estendi_ricerca = z_score >= 0.2 and mcc_rating >= 7
 
-        estendi_ricerca = False
-        if z_score >= 0.2 and mcc_rating >= 7:
-            estendi_ricerca = True
+    print(">>> Debug: inizio calcolo tematiche attive")
+    logger.info(">>> Debug: inizio calcolo tematiche attive")
+    tematiche_attive = calcola_tematiche_attive(dati)
 
-        print(">>> Debug: inizio calcolo tematiche attive")
-        logger.info(">>> Debug: inizio calcolo tematiche attive")
+    print(">>> Debug: assegnazione macro area e preparazione bilanci")
+    logger.info(">>> Debug: assegnazione macro area e preparazione bilanci")
 
-        tematiche_attive = calcola_tematiche_attive(dati)
+    bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
+    print(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
+    logger.info(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
 
-        print(">>> Debug: assegnazione macro area e preparazione bilanci")
-        logger.info(">>> Debug: assegnazione macro area e preparazione bilanci")
+    dimensione = dimensione_azienda(dati.anagrafica)
 
-        bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
-        print(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
-        logger.info(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
+    if necessita_simulazione(z_score, mcc_rating):
+        macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
+        bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
 
-        dimensione = dimensione_azienda(dati.anagrafica)
+        z_sim = stima_z_score(bilancio_simulato)
+        print(f">>> Debug: z_sim = {z_sim}")
+        logger.info(f">>> Debug: z_sim = {z_sim}")
 
-        if necessita_simulazione(z_score, mcc_rating):
-            macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
+        mcc_sim = stima_mcc(bilancio_simulato)
+        print(f">>> Debug: mcc_sim = {mcc_sim}")
+        logger.info(f">>> Debug: mcc_sim = {mcc_sim}")
 
-            z_sim = stima_z_score(bilancio_simulato)
-            print(f">>> Debug: z_sim = {z_sim}")
-            logger.info(f">>> Debug: z_sim = {z_sim}")
-            
-            mcc_sim = stima_mcc(bilancio_simulato)
-            print(f">>> Debug: mcc_sim = {mcc_sim}")
-            logger.info(f">>> Debug: mcc_sim = {mcc_sim}")
-            
-            macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
-            print(f">>> Debug: macro_area_sim = {macro_area_sim}")
-            logger.info(f">>> Debug: macro_area_sim = {macro_area_sim}")
+        macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
+        print(f">>> Debug: macro_area_sim = {macro_area_sim}")
+        logger.info(f">>> Debug: macro_area_sim = {macro_area_sim}")
 
-            azienda_simulata = {
-                "codice_ateco": dati.anagrafica.codice_ateco,
-                "regione": dati.anagrafica.regione,
-                "dimensione": dimensione,
-                "ebitda": bilancio_simulato.ebitda,
-                "immobilizzazioni": bilancio_simulato.immobilizzazioni,
-                "macro_area": macro_area_sim,
-                "tematiche_attive": tematiche_attive
-            }
-
-            print(">>> Debug: inizio recupero bandi filtrati")
-            logger.info(">>> Debug: inizio recupero bandi filtrati")
-            
-            bandi = recupera_bandi_filtrati(
-                macro_area=macro_area_sim,
-                codice_ateco=dati.anagrafica.codice_ateco,
-                regione=dati.anagrafica.regione,
-                forma_giuridica=dati.anagrafica.forma_giuridica
-            )
-
-            # 🔍 Estensione attiva per sfruttare anche bandi con altre forme
-            top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
-
-            print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
-            print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
-
-            output_analisi.append({
-                "tipo": "simulato",
-                "macro_area": macro_area_sim,
-                "z_score": z_sim,
-                "mcc": mcc_sim,
-                "bandi": top_bandi_sim
-            })
-
-            # ✅ AGGIUNGIAMO ANCHE QUESTO
-            bilanci_da_valutare.append({
-                "tipo": "simulato",
-                "bilancio": bilancio_simulato,
-                "z_score": z_sim,
-                "mcc": mcc_sim
-            })
-
-        # 🔁 Unione bandi reali + simulati (se vuoi prendere i migliori)
-        top_bandi = []
-        top_bandi = top_bandi + top_bandi_sim
-        top_bandi = sorted(top_bandi, key=lambda b: b.get("punteggio_totale", 0), reverse=True)[:3]
-
-        macro_area_attuale = assegna_macro_area(dati.bilancio, dati.mcc_rating)
-
-        if necessita_simulazione(z_score, mcc_rating):
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
-            z_sim = stima_z_score(bilancio_simulato)
-            mcc_sim = stima_mcc(bilancio_simulato)
-            bilanci_da_valutare.append({
-                "tipo": "simulato",
-                "bilancio": bilancio_simulato,
-                "z_score": z_sim,
-                "mcc": mcc_sim
-            })
-
-        output_analisi = []
-
-        for item in bilanci_da_valutare:
-            print(f">>> Debug: avvio ciclo per analisi tipo {item['tipo']}")
-            logger.info(f">>> Debug: avvio ciclo per analisi tipo {item['tipo']}")
-            
-            bilancio_corrente = item["bilancio"]
-            z_score_corrente = item["z_score"]
-            mcc_corrente = item["mcc"]
-
-            macro_area = assegna_macro_area(dati.bilancio)
-            dimensione = dimensione_azienda(dati.anagrafica)
-            indici_plus = calcola_indici_plus(dati.bilancio)
-
-            output_analisi.append({
-                "tipo": item["tipo"],
-                "macro_area": macro_area,
-                "dimensione": dimensione,
-                "mcc_rating": mcc_corrente,
-                "z_score": z_score_corrente,
-                "indici_plus": indici_plus,
-                "bilancio": bilancio_corrente
-            })
-
-        bandi = recupera_bandi_filtrati(
-            macro_area=macro_area,
-            codice_ateco=dati.anagrafica.codice_ateco,
-            regione=dati.anagrafica.regione
-        )    
-
-        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
-
-        azienda = {
+        azienda_simulata = {
             "codice_ateco": dati.anagrafica.codice_ateco,
             "regione": dati.anagrafica.regione,
             "dimensione": dimensione,
-            "ebitda": dati.bilancio.ebitda,
-            "immobilizzazioni": dati.bilancio.immobilizzazioni,
-            "macro_area": macro_area,
+            "ebitda": bilancio_simulato.ebitda,
+            "immobilizzazioni": bilancio_simulato.immobilizzazioni,
+            "macro_area": macro_area_sim,
             "tematiche_attive": tematiche_attive
         }
-        
-        top_bandi = classifica_bandi_avanzata(bandi, azienda, tematiche_attive, estensione=estendi_ricerca)
-        
-        numero_bandi_filtrati = len(bandi)
-        
-        print(f"📊 Bandi totali filtrati da Supabase: {len(bandi)}")
-        print(f"📋 Titoli bandi recuperati: {[b.get('Titolo', '--') for b in bandi]}")
 
-        totale_agevolazioni_macroarea = sum(
-            float(b.get("Agevolazione_Concedibile_max", 0)) 
-            for b in bandi 
-            if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float))
+        print(">>> Debug: inizio recupero bandi filtrati")
+        logger.info(">>> Debug: inizio recupero bandi filtrati")
+
+        bandi = recupera_bandi_filtrati(
+            macro_area=macro_area_sim,
+            codice_ateco=dati.anagrafica.codice_ateco,
+            regione=dati.anagrafica.regione,
+            forma_giuridica=dati.anagrafica.forma_giuridica
         )
 
-        print(f"🏆 Top bandi selezionati: {len(top_bandi)}")
-        print(f"🏷️ Titoli top bandi: {[b.get('Titolo', '--') for b in top_bandi]}")
+        top_bandi_sim = classifica_bandi_avanzata(bandi, azienda_simulata, tematiche_attive, estensione=True)
+
+        print(f"\n🧪 Top bandi da simulazione: {len(top_bandi_sim)}")
+        print(f"   Titoli bandi simulati: {[b.get('Titolo', '---') for b in top_bandi_sim]}")
+
+        output_analisi.append({
+            "tipo": "simulato",
+            "macro_area": macro_area_sim,
+            "z_score": z_sim,
+            "mcc": mcc_sim,
+            "bandi": top_bandi_sim
+        })
+
+        bilanci_da_valutare.append({
+            "tipo": "simulato",
+            "bilancio": bilancio_simulato,
+            "z_score": z_sim,
+            "mcc": mcc_sim
+        })
+
+    risultati_finali = []
+
+    try:
+        for analisi in bilanci_da_valutare:
+            bilancio_corrente = analisi["bilancio"]
+            z_score = analisi["z_score"]
+            mcc_rating = analisi["mcc"]
+
+            macro_area = assegna_macro_area(bilancio_corrente)
+            dimensione = dimensione_azienda(dati.anagrafica)
+            indici_plus = calcola_indici_plus(bilancio_corrente)
+
+            top_bandi = classifica_bandi_filtrati(
+                bilancio=bilancio_corrente,
+                macro_area=macro_area,
+                dimensione=dimensione,
+                mcc_rating=mcc_rating,
+                z_score=z_score,
+                temi_attivi=tematiche_attive
+            )
+
+            output_finale = genera_output_finale(
+                top_bandi,
+                macro_area,
+                dimensione,
+                mcc_rating,
+                z_score,
+                numero_bandi_filtrati=len(top_bandi),
+                totale_agevolazioni_macroarea=None,
+                indici_plus=indici_plus
+            )
+
+            risultati_finali.append({
+                "tipo": analisi["tipo"],
+                "macro_area": macro_area,
+                "macro_area_interpretata": interpreta_macro_area(macro_area),
+                "dimensione": dimensione,
+                "indice_z_evoluto": z_score,
+                "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
+                "indice_mcc_evoluto": mcc_rating,
+                "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
+                "bandi_filtrati": top_bandi[:3],
+                "output_finale": output_finale,
+                "indici_plus": indici_plus
+            })
+
+        return risultati_finali
+
+    except Exception as e:
+        logger.exception("Errore durante l'elaborazione")
+        raise HTTPException(status_code=500, detail=str(e))
         
-        totale_agevolazioni_macroarea = sum(
-            float(b.get("Agevolazione_Concedibile_max", 0) or 0)
-            for b in top_bandi
-            if isinstance(b.get("Agevolazione_Concedibile_max", 0), (int, float, str))
-        )
-
-        for bando in top_bandi[:3] or []:
-            titolo = bando.get("Titolo") or bando.get("titolo") or "Bando senza titolo"
-            dettagli_supabase = recupera_dettagli_bando(bando.get("ID_Incentivo", ""))
-            bando["dettagli_gpt"] = dettagli_supabase
-
-        # ✅ Costruzione dell’output testuale
-        risultati_finali = []
-
-        try:
-            for analisi in bilanci_da_valutare:
-                bilancio_corrente = analisi["bilancio"]
-                z_score = analisi["z_score"]
-                mcc_rating = analisi["mcc"]
-
-                macro_area = assegna_macro_area(bilancio_corrente)
-                dimensione = dimensione_azienda(dati.anagrafica)
-                indici_plus = calcola_indici_plus(bilancio_corrente)
-
-                top_bandi = classifica_bandi_filtrati(
-                    bilancio=bilancio_corrente,
-                    macro_area=macro_area,
-                    dimensione=dimensione,
-                    mcc_rating=mcc_rating,
-                    z_score=z_score,
-                    temi_attivi=calcola_tematiche_attive(dati.risposte_test)
-                )
-
-                output_finale = genera_output_finale(
-                    top_bandi,
-                    macro_area,
-                    dimensione,
-                    mcc_rating,
-                    z_score,
-                    numero_bandi_filtrati=len(top_bandi),
-                    totale_agevolazioni_macroarea=None,
-                    indici_plus=indici_plus
-                )
-
-                risultati_finali.append({
-                    "tipo": analisi["tipo"],
-                    "macro_area": macro_area,
-                    "macro_area_interpretata": interpreta_macro_area(macro_area),
-                    "dimensione": dimensione,
-                    "indice_z_evoluto": z_score,
-                    "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
-                    "indice_mcc_evoluto": mcc_rating,
-                    "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
-                    "bandi_filtrati": top_bandi[:3],
-                    "output_finale": output_finale,
-                    "indici_plus": indici_plus
-                })
-
-            return risultati_finali
-
-        except Exception as e:
-            logger.exception("Errore durante l'elaborazione")
-            raise HTTPException(status_code=500, detail=str(e))
-
 def interpreta_z_score(z):
     if z > 0.20:
         return "✅ Eccellente"
