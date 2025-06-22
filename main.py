@@ -177,6 +177,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
                 valore = getattr(risposte_test, key, "C")
                 if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
                     temi_attivi.append(tema)
+            logger.info(f"🟦 Tematiche attive calcolate: {tematiche_attive}")
             return temi_attivi
 
 @app.post("/analizza-azienda")
