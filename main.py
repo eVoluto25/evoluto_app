@@ -216,6 +216,8 @@ async def analizza_azienda(dati: InputDati):
         logger.info(">>> Debug: assegnazione macro area e preparazione bilanci")
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
+        print(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
+        logger.info(f">>> Debug: bilanci_da_valutare = {bilanci_da_valutare}")
 
         dimensione = dimensione_azienda(dati.anagrafica)
 
