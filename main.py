@@ -70,10 +70,14 @@ def stima_z_score(bilancio: Bilancio):
         return 0
     return round((bilancio.ebitda + bilancio.utile_netto) / bilancio.totale_attivo, 2)
 
+    print(f"Tipo di z_score: {type(z_score)}")
+
 def stima_mcc(bilancio: Bilancio):
     if not bilancio.ricavi or bilancio.ricavi == 0:
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
+
+    print(f"Tipo di mcc_rating: {type(mcc_rating)}")
 
 def necessita_simulazione(z_score, mcc_rating):
     soglia_z = 2.5
