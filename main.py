@@ -200,9 +200,6 @@ async def analizza_azienda(dati: InputDati):
         input_dict["z_score"] = z_score  
         logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
 
-        print(">>> Chiamata a analizza_azienda() in corso...")
-        response = evoluto_capitaleaziendale_it__jit_plugin.analizza_azienda(input_dict)
-
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
             estendi_ricerca = True
