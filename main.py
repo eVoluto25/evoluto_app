@@ -131,6 +131,8 @@ def calcola_indici_plus(bilancio: Bilancio) -> dict:
         "Cash Ratio": safe_div(getattr(bilancio, "liquidita", 0), getattr(bilancio, "passivo_corrente", 0)),
         "ROS": safe_div(getattr(bilancio, "ebit", 0), bilancio.ricavi)
     }
+    
+logger.info(f"z_score: {z_score}, mcc_rating: {mcc_rating}")
 
 def assegna_macro_area(z_score: float, mcc_rating: float) -> str:
     if z_score >= 2.5 and mcc_rating <= 3:
