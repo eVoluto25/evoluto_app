@@ -220,6 +220,8 @@ async def analizza_azienda(dati: InputDati):
 
         # Simulazione se necessaria
         if necessita_simulazione(z_score, mcc_rating):
+            z_score = stima_z_score(dati.bilancio)
+            mcc_rating = stima_mcc(dati.bilancio)
             macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
             logger.info(f"🏁 Avvio simulazione: macro area attuale = {macro_area_attuale}")
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
