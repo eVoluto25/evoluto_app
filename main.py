@@ -293,10 +293,6 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
         # Aggiungi l'output finale
         return {"analisi": output_analisi, "bandi": top_bandi}
 
-    except Exception as e:
-        logger.exception("Errore durante l'elaborazione")
-        raise HTTPException(status_code=500, detail=str(e))
-
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
             logger.info(f"📌 Estendi ricerca: {estendi_ricerca} (Z-Score: {z_score}, MCC: {mcc_rating})")
