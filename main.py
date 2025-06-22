@@ -192,8 +192,8 @@ async def analizza_azienda(dati: InputDati):
     print(f">>> Z-Score calcolato: {z_score}")
     print(f">>> MCC calcolato: {mcc_rating}")
 
-        if not dati.anagrafica or not dati.bilancio:
-            raise HTTPException(status_code=400, detail="Dati incompleti")
+    if not dati.anagrafica or not dati.bilancio:
+        raise HTTPException(status_code=400, detail="Dati incompleti")
 
         input_dict = dati.dict()
         input_dict["mcc_rating"] = mcc_rating
