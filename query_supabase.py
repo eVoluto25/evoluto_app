@@ -14,18 +14,29 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
         "Espansione": "bandi_espansione"
     }.get(macro_area)
 
+    print(f">>> Debug: macro_area = {macro_area}, tabella = {tabella}")
+    print(f">>> Debug: codice_ateco = {codice_ateco}, regione = {regione}, forma_giuridica = {forma_giuridica}")
+
     if not tabella:
+        print(">>> Debug: tabella non trovata, ritorno []")
         return []
 
     query = supabase.table(tabella).select("*")
     if codice_ateco:
         query = query.eq("Codici_ATECO", codice_ateco)
+        print(f">>> Debug: filtro Codici_ATECO = {codice_ateco}")
+        
     if regione:
         query = query.eq("Regioni", regione)
+        print(f">>> Debug: filtro Regione = {regione}")
+        
     if forma_giuridica and tabella == "bandi_disponibili":
         query = query.eq("Forma_giuridica", forma_giuridica)
+        print(f">>> Debug: filtro Forma_giuridica = {forma_giuridica}")
         
-    response = query.execute() 
+    result = query.execute().data
+    print(f">>> Debug: risultati trovati = {len(result)}")
+    return result
     
     bandi = []
     for row in response.data:
