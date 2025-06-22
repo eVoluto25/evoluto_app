@@ -187,6 +187,7 @@ async def analizza_azienda(dati: InputDati):
     input_dict = dati.dict()
     input_dict["mcc_rating"] = dati.mcc_rating
     logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+    print(">>> Avvio calcolo MCC")
     try:
         dati.mcc_rating = stima_mcc(dati.bilancio)  
     except Exception as e:
@@ -196,9 +197,13 @@ async def analizza_azienda(dati: InputDati):
             raise HTTPException(status_code=400, detail="Dati incompleti")
 
         z_score = stima_z_score(dati.bilancio)
+        print(f">>> Z-Score calcolato: {z_score}")
+
         mcc_rating = stima_mcc(dati.bilancio)
+        print(f">>> MCC calcolato: {mcc_rating}")
 
         # Converti in dict e aggiungi mcc_rating
+        print(">>> Invio input_dict a analizza_azienda():")
         input_dict = dati.dict()
         input_dict["mcc_rating"] = mcc_rating
 
