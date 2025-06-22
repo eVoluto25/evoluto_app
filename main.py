@@ -164,7 +164,7 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
-logger.info(f"[DEBUG] Inizio calcolo tematiche attive con risposte: {risposte_test}")
+    logger.info(f"[DEBUG] Inizio calcolo tematiche attive con risposte: {risposte_test}")
             mappa = {
             "crisi_impresa": "Crisi d’impresa",
             "sostegno_liquidita": "Sostegno liquidità",
