@@ -238,8 +238,16 @@ async def analizza_azienda(dati: InputDati):
             bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
 
             z_sim = stima_z_score(bilancio_simulato)
+            print(f">>> Debug: z_sim = {z_sim}")
+            logger.info(f">>> Debug: z_sim = {z_sim}")
+            
             mcc_sim = stima_mcc(bilancio_simulato)
+            print(f">>> Debug: mcc_sim = {mcc_sim}")
+            logger.info(f">>> Debug: mcc_sim = {mcc_sim}")
+            
             macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
+            print(f">>> Debug: macro_area_sim = {macro_area_sim}")
+            logger.info(f">>> Debug: macro_area_sim = {macro_area_sim}")
 
             azienda_simulata = {
                 "codice_ateco": dati.anagrafica.codice_ateco,
@@ -251,6 +259,9 @@ async def analizza_azienda(dati: InputDati):
                 "tematiche_attive": tematiche_attive
             }
 
+            print(">>> Debug: inizio recupero bandi filtrati")
+            logger.info(">>> Debug: inizio recupero bandi filtrati")
+            
             bandi = recupera_bandi_filtrati(
                 macro_area=macro_area_sim,
                 codice_ateco=dati.anagrafica.codice_ateco,
