@@ -200,11 +200,20 @@ async def analizza_azienda(dati: InputDati):
         input_dict["z_score"] = z_score  
         logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
 
+        print(">>> Debug: input_dict completato e pronto")
+        logger.info(">>> Debug: input_dict completato e pronto")
+
         estendi_ricerca = False
         if z_score >= 0.2 and mcc_rating >= 7:
             estendi_ricerca = True
 
+        print(">>> Debug: inizio calcolo tematiche attive")
+        logger.info(">>> Debug: inizio calcolo tematiche attive")
+
         tematiche_attive = calcola_tematiche_attive(dati)
+
+        print(">>> Debug: assegnazione macro area e preparazione bilanci")
+        logger.info(">>> Debug: assegnazione macro area e preparazione bilanci")
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
 
@@ -278,6 +287,9 @@ async def analizza_azienda(dati: InputDati):
         output_analisi = []
 
         for item in bilanci_da_valutare:
+            print(f">>> Debug: avvio ciclo per analisi tipo {item['tipo']}")
+            logger.info(f">>> Debug: avvio ciclo per analisi tipo {item['tipo']}")
+            
             bilancio_corrente = item["bilancio"]
             z_score_corrente = item["z_score"]
             mcc_corrente = item["mcc"]
