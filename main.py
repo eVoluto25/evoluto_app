@@ -209,6 +209,7 @@ async def analizza_azienda(dati: InputDati):
             estendi_ricerca = True
 
         tematiche_attive = calcola_tematiche_attive(dati)
+        logger.info(f"[DEBUG] Tematiche attive calcolate: {tematiche_attive}")
 
         bilanci_da_valutare = [{"tipo": "reale", "bilancio": dati.bilancio, "z_score": z_score, "mcc": mcc_rating}]
         logger.info(f"📊 Bilanci da valutare per simulazione: {bilanci_da_valutare}")
