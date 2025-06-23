@@ -1,9 +1,20 @@
-
 def genera_output_simulazione(risposte_test, bandi_simulati):
     # Verifica se le prime 3 risposte sono tutte "C"
     if all(r == "C" for r in risposte_test[:3]):
-        return "\n⚠️ **Simulazione non disponibile**: le risposte indicano una situazione critica su tutti i fronti finanziari.\n"
-
+    logger.warning("❌ Analisi simulata non disponibile a causa delle risposte ricevute.")
+    return {
+        "tipo": "simulata",
+        "macro_area": None,
+        "macro_area_interpretata": "Simulazione non eseguibile",
+        "dimensione": None,
+        "indice_z_evoluto": "C",
+        "indice_z_evoluto_interpretato": "Non disponibile",
+        "indice_mcc_evoluto": "C",
+        "indice_mcc_evoluto_interpretato": "Non disponibile",
+        "bandi_filtrati": [],
+        "output_finale": "🔒 Simulazione non disponibile: le risposte alle domande non permettono una previsione attendibile di miglioramento.",
+        "indici_plus": {}
+    }
     # Mappatura delle combinazioni a macro aree e indici simulati
     mappa_simulazioni = {
         "espansione": {
