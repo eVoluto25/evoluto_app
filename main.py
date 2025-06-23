@@ -307,6 +307,22 @@ def genera_output_finale(
     output += f"- Cash Ratio: {indici_plus.get('Cash Ratio', 'Non disponibile')}\n"
     output += f"- ROS (Return on Sales): {indici_plus.get('ROS', 'Non disponibile')}\n"
 
+        # BLOCCO OPZIONALE PER SIMULAZIONE
+    if indici_plus.get("simulazione"):
+
+        output += "\n\n📈 **Simulazione eVoluto: Potenziale accesso a bandi superiori**\n"
+        output += f"- Nuova Macro Area simulata: **{indici_plus['simulazione'].get('macro_area', '--')}**\n"
+        output += f"- 🧮 Z-score simulato: {indici_plus['simulazione'].get('z_score', '--')}\n"
+        output += f"- 📊 MCC simulato: {indici_plus['simulazione'].get('mcc_rating', '--')}\n"
+
+        output += "\n📊 **Indici simulati di supporto**\n"
+        output += f"- ROE simulato: {indici_plus['simulazione'].get('ROE', '—')}\n"
+        output += f"- Debt/Equity simulato: {indici_plus['simulazione'].get('Debt/Equity Ratio', '—')}\n"
+        output += f"- Current Ratio simulato: {indici_plus['simulazione'].get('Current Ratio', '—')}\n"
+        output += f"- Quick Ratio simulato: {indici_plus['simulazione'].get('Quick Ratio', '—')}\n"
+        output += f"- Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '—')}\n"
+        output += f"- ROS simulato: {indici_plus['simulazione'].get('ROS', '—')}\n"
+
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     
     for i, bando in enumerate(bandi[:3], 1):
