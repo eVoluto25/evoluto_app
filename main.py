@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 from typing import Dict
+from indicatori import stima_z_score, stima_mcc
 from logica_macroarea import assegna_macro_area
 from simulazione_analisi import esegui_simulazione, necessita_simulazione
 import uvicorn
