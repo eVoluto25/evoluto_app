@@ -80,4 +80,13 @@ def esegui_simulazione(bilancio_corrente, codice_ateco, regione, dimensione, tem
         "indici_plus": calcola_indici_plus(bilancio_sim)
     }
 
-    return azienda_sim
+    return {
+    "macro_area": macro_area_sim,
+    "z_score": z_sim,
+    "mcc_rating": mcc_sim,
+    "dimensione": dimensione,
+    "output": bandi_sim,
+    "top_bandi": top_bandi_sim,
+    "indici_plus": calcola_indici_plus(bilancio_sim),
+    "azienda_simulata": azienda_sim
+}
