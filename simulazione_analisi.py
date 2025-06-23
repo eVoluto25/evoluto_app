@@ -67,13 +67,10 @@ def esegui_simulazione(bilancio_corrente, codice_ateco, regione, dimensione, tem
         tematiche_attive,
         estensione=True
     )
+    
+    # 6. Aggiunta al dizionario simulato
+    azienda_sim["top_bandi"] = top_bandi_sim
+    azienda_sim["output"] = top_bandi_sim
+    azienda_sim["indici_plus"] = calcola_indici_plus(bilancio_sim)
 
-    return {
-    "macro_area": macro_area_sim,
-    "z_score": z_sim,
-    "mcc_rating": mcc_sim,
-    "dimensione": dimensione,
-    "output": output,
-    "top_bandi": top_bandi_sim,
-    "indici_plus": calcola_indici_plus(bilancio_simulato)
-}
+    return azienda_sim
