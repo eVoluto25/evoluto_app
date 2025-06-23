@@ -1,48 +1,51 @@
-from utils import interpreta_macro_area, interpreta_mcc, interpreta_z_score
-from query_supabase import recupera_dettagli_bando
-from loguru import logger
 
+def genera_output_simulazione(risposte_test, bandi_simulati):
+    # Verifica se le prime 3 risposte sono tutte "C"
+    if all(r == "C" for r in risposte_test[:3]):
+        return "\n⚠️ **Simulazione non disponibile**: le risposte indicano una situazione critica su tutti i fronti finanziari.\n"
 
-def genera_output_simulazione(bandi_simulati, indici_simulati):
-    if not bandi_simulati or not indici_simulati:
-        return ""
+    # Mappatura delle combinazioni a macro aree e indici simulati
+    mappa_simulazioni = {
+        "espansione": {
+            "macro_area": "Espansione e Transizione",
+            "mcc_rating": "A",
+            "z_score": "A"
+        },
+        "sviluppo": {
+            "macro_area": "Crescita e Sviluppo",
+            "mcc_rating": "B",
+            "z_score": "B"
+        },
+        "crisi": {
+            "macro_area": "Crisi o Risanamento Aziendale",
+            "mcc_rating": "C",
+            "z_score": "C"
+        }
+    }
 
-    output = "\n\n\n⚙️ **Simulazione eVoluto: Potenziale accesso a bandi superiori**\n"
-    output += f"- Nuova Macro Area simulata: **{indici_simulati.get('macro_area', '--')}** ({interpreta_macro_area(indici_simulati.get('macro_area'))})\n"
-    output += f"- 🧮 Z-score simulato: {indici_simulati.get('z_score', '--')} ({interpreta_z_score(indici_simulati.get('z_score'))})\n"
-    output += f"- 📊 MCC simulato: {indici_simulati.get('mcc_rating', '--')} ({interpreta_mcc(indici_simulati.get('mcc_rating'))})\n"
+    # Logica di classificazione
+    risposta_crisi = risposte_test[:3].count("C")
+    if risposta_crisi == 0:
+        scenario = "espansione"
+    elif risposta_crisi == 1:
+        scenario = "sviluppo"
+    else:
+        scenario = "crisi"
 
-    output += "\n\n📊 **Indici simulati di supporto**\n"
-    output += f"- ROE simulato: {indici_simulati.get('ROE', '--')}\n"
-    output += f"- Debt/Equity simulato: {indici_simulati.get('Debt/Equity Ratio', '--')}\n"
-    output += f"- Current Ratio simulato: {indici_simulati.get('Current Ratio', '--')}\n"
-    output += f"- Quick Ratio simulato: {indici_simulati.get('Quick Ratio', '--')}\n"
-    output += f"- Cash Ratio simulato: {indici_simulati.get('Cash Ratio', '--')}\n"
-    output += f"- ROS simulato: {indici_simulati.get('ROS', '--')}\n"
+    simulazione = mappa_simulazioni[scenario]
+    output = f"\n\n🔄 **Simulazione: scenario migliorato**\n"
+    output += f"- Macro Area simulata: **{simulazione['macro_area']}**\n"
+    output += f"- MCC simulato: **{simulazione['mcc_rating']}**\n"
+    output += f"- Z-Score simulato: **{simulazione['z_score']}**\n"
 
-    output += "\n\n📑 **Top 3 Bandi selezionati in base alla simulazione**\n"
-
+    output += "\n\n📑 **Top 3 Bandi in caso di miglioramento**\n"
     for i, bando in enumerate(bandi_simulati[:3], 1):
-        ID_Incentivo = bando.get("ID_Incentivo")
-        logger.info(f"▶️ Recupero dettagli simulati per ID_Incentivo: {ID_Incentivo}")
-
-        if isinstance(ID_Incentivo, int) or (isinstance(ID_Incentivo, str) and ID_Incentivo.isdigit()):
-            try:
-                dettagli_estesi = recupera_dettagli_bando(int(ID_Incentivo))
-                logger.info(f"✅ Dettagli simulati ottenuti per ID {ID_Incentivo}: {dettagli_estesi}")
-                bando.update(dettagli_estesi)
-            except Exception as e:
-                logger.error(f"❌ Errore durante recupero dettagli simulati per ID {ID_Incentivo}: {e}")
-        else:
-            logger.warning(f"⚠️ ID_Incentivo simulato non valido o mancante: {ID_Incentivo}")
-
-        output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
+        output += f"\n🔹 **{i}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
         output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
         output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
         output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-
         dettagli = bando.get("dettagli_gpt", {})
         output += f"- 📋 Dettagli: {dettagli.get('Descrizione', '—')}\n"
         output += f"- 🗓️ Note di apertura/chiusura: {dettagli.get('Note_di_apertura_chiusura', '—')}\n"
