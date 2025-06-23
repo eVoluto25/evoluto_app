@@ -323,6 +323,12 @@ def genera_output_finale(
         output += f"- Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '—')}\n"
         output += f"- ROS simulato: {indici_plus['simulazione'].get('ROS', '—')}\n"
 
+        # ▶️ Output bandi simulati
+        output += genera_output_simulazione(
+            bandi_simulati=indici_plus["simulazione"].get("bandi", []),
+            indici_simulati=indici_plus["simulazione"]
+        )
+
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     
     for i, bando in enumerate(bandi[:3], 1):
