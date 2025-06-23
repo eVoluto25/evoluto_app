@@ -1,4 +1,5 @@
 import json
+from fastapi import Request
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
 from query_supabase import recupera_dettagli_bando
 from query_supabase import recupera_bandi_filtrati
