@@ -287,7 +287,7 @@ async def analizza_azienda(dati: InputDati):
                 regione=dati.anagrafica.regione
             )
 
-            top_bandi = classifica_bandi_filtrati(
+            top_bandi = classifica_bandi_avanzata(
                 bilancio=bilancio_corrente,
                 macro_area=macro_area,
                 dimensione=dimensione,
