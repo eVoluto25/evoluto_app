@@ -3,7 +3,6 @@ from main import assegna_macro_area
 from rating import calcola_rating_mcc_zscore
 from recupera_bandi import recupera_bandi_filtrati
 
-
 def necessita_simulazione(z_score, mcc_rating):
     soglia_z = 2.5
     soglia_mcc = 7
