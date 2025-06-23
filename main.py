@@ -231,7 +231,7 @@ async def analizza_azienda(dati: InputDati):
                 "indici_plus": indici_plus
             })
 
-        if simulazione:
+        if analisi['tipo'] == "simulato":
             risultati_finali.append({
                 "tipo": "simulata",
                 "macro_area": simulazione["macro_area"],
