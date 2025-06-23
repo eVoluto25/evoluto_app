@@ -231,19 +231,19 @@ async def analizza_azienda(dati: InputDati):
                 "indici_plus": indici_plus
             })
 
-        if analisi['tipo'] == "simulato":
+        if analisi["tipo"] == "simulato":
             risultati_finali.append({
                 "tipo": "simulata",
-                "macro_area": simulazione["macro_area"],
-                "macro_area_interpretata": interpreta_macro_area(simulazione["macro_area"]),
-                "dimensione": simulazione["dimensione"],
-                "indice_z_evoluto": simulazione["z_score"],
-                "indice_z_evoluto_interpretato": interpreta_z_score(simulazione["z_score"]),
-                "indice_mcc_evoluto": simulazione["mcc_rating"],
-                "indice_mcc_evoluto_interpretato": interpreta_mcc(simulazione["mcc_rating"]),
-                "bandi_filtrati": simulazione["top_bandi"][:3],
-                "output_finale": simulazione["output"],
-                "indici_plus": simulazione["indici_plus"]
+                "macro_area": analisi["macro_area"],
+                "macro_area_interpretata": interpreta_macro_area(analisi["macro_area"]),
+                "dimensione": analisi["dimensione"],
+                "indice_z_evoluto": analisi["z_score"],
+                "indice_z_evoluto_interpretato": interpreta_z_score(analisi["z_score"]),
+                "indice_mcc_evoluto": analisi["mcc_rating"],
+                "indice_mcc_evoluto_interpretato": interpreta_mcc(analisi["mcc_rating"]),
+                "bandi_filtrati": analisi["top_bandi"][:3],
+                "output_finale": analisi["output"],
+                "indici_plus": analisi["indici_plus"]
         })
 
         return risultati_finali
