@@ -162,79 +162,63 @@ async def analizza_azienda(dati: InputDati):
         risultati_finali = []
 
         for analisi in bilanci_da_valutare:
-            print(f">>> Analisi tipo: {analisi['tipo']}")
-            bilancio_corrente = analisi["bilancio"]
-            z_score = analisi["z_score"]
-            mcc_rating = analisi["mcc"]
-            macro_area = assegna_macro_area(z_score, mcc_rating)
-            dimensione = dimensione_azienda(dati.anagrafica)
-            indici_plus = calcola_indici_plus(bilancio_corrente)
+    print(f">>> Analisi tipo: {analisi['tipo']}")
+    bilancio_corrente = analisi["bilancio"]
+    z_score = analisi["z_score"]
+    mcc_rating = analisi["mcc"]
+    macro_area = assegna_macro_area(z_score, mcc_rating)
+    dimensione = dimensione_azienda(dati.anagrafica)
+    indici_plus = calcola_indici_plus(bilancio_corrente)
 
-            bandi = recupera_bandi_filtrati(
-                macro_area=macro_area,
-                codice_ateco=dati.anagrafica.codice_ateco,
-                regione=dati.anagrafica.regione
-            )
+    bandi = recupera_bandi_filtrati(
+        macro_area=macro_area,
+        codice_ateco=dati.anagrafica.codice_ateco,
+        regione=dati.anagrafica.regione
+    )
 
-            azienda = {
-                "bilancio": bilancio_corrente,
-                "macro_area": macro_area,
-                "dimensione": dimensione,
-                "mcc_rating": mcc_rating,
-                "z_score": z_score
-            }
+    azienda = {
+        "bilancio": bilancio_corrente,
+        "macro_area": macro_area,
+        "dimensione": dimensione,
+        "mcc_rating": mcc_rating,
+        "z_score": z_score
+    }
 
-            top_bandi = classifica_bandi_avanzata(
-                bandi,
-                azienda,
-                tematiche_attive,
-                estensione=True
-            )
+    top_bandi = classifica_bandi_avanzata(
+        bandi,
+        azienda,
+        tematiche_attive,
+        estensione=True
+    )
 
-            for bando in top_bandi[:3]:
-                dettagli_supabase = recupera_dettagli_bando(bando.get("ID_Incentivo", ""))
-                bando["dettagli_gpt"] = dettagli_supabase
+    for bando in top_bandi[:3]:
+        dettagli_supabase = recupera_dettagli_bando(bando.get("ID_Incentivo", ""))
+        bando["dettagli_gpt"] = dettagli_supabase
 
-            output_finale = genera_output_finale(
-                bandi=top_bandi,
-                macro_area=macro_area,
-                dimensione=dimensione,
-                mcc_rating=mcc_rating,
-                z_score=z_score,
-                numero_bandi_filtrati=len(top_bandi),
-                totale_agevolazioni_macroarea=None,
-                indici_plus=indici_plus
-            )
+    output_finale = genera_output_finale(
+        bandi=top_bandi,
+        macro_area=macro_area,
+        dimensione=dimensione,
+        mcc_rating=mcc_rating,
+        z_score=z_score,
+        numero_bandi_filtrati=len(top_bandi),
+        totale_agevolazioni_macroarea=None,
+        indici_plus=indici_plus
+    )
 
-            risultati_finali.append({
-                "tipo": analisi["tipo"],
-                "macro_area": macro_area,
-                "macro_area_interpretata": interpreta_macro_area(macro_area),
-                "dimensione": dimensione,
-                "indice_z_evoluto": z_score,
-                "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
-                "indice_mcc_evoluto": mcc_rating,
-                "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
-                "bandi_filtrati": top_bandi[:3],
-                "output_finale": output_finale,
-                "indici_plus": indici_plus
-            })
-
-        if analisi["tipo"] == "simulato":
-            risultati_finali.append({
-                "tipo": "simulata",
-                "macro_area": analisi["macro_area"],
-                "macro_area_interpretata": interpreta_macro_area(analisi["macro_area"]),
-                "dimensione": analisi["dimensione"],
-                "indice_z_evoluto": analisi["z_score"],
-                "indice_z_evoluto_interpretato": interpreta_z_score(analisi["z_score"]),
-                "indice_mcc_evoluto": analisi["mcc_rating"],
-                "indice_mcc_evoluto_interpretato": interpreta_mcc(analisi["mcc_rating"]),
-                "bandi_filtrati": analisi["top_bandi"][:3],
-                "output_finale": analisi["output"],
-                "indici_plus": analisi["indici_plus"]
-        })
-
+    risultati_finali.append({
+        "tipo": analisi["tipo"] if analisi["tipo"] == "reale" else "simulata",
+        "macro_area": macro_area,
+        "macro_area_interpretata": interpreta_macro_area(macro_area),
+        "dimensione": dimensione,
+        "indice_z_evoluto": z_score,
+        "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
+        "indice_mcc_evoluto": mcc_rating,
+        "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
+        "bandi_filtrati": top_bandi[:3],
+        "output_finale": output_finale,
+        "indici_plus": indici_plus
+    })
         return risultati_finali
 
     except Exception as e:
