@@ -156,22 +156,6 @@ async def analizza_azienda(dati: InputDati):
         dimensione = dimensione_azienda(dati.anagrafica)
         macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
 
-        top_bandi_sim = []
-
-        bandi_sim = recupera_bandi_filtrati(
-            macro_area=macro_area_sim,
-            codice_ateco=dati.anagrafica.codice_ateco,
-            regione=dati.anagrafica.regione,
-            forma_giuridica=dati.anagrafica.forma_giuridica
-        )
-
-        top_bandi_sim = classifica_bandi_avanzata(
-            bandi_sim, azienda_simulata, tematiche_attive, estensione=True
-        )
-
-        print(f"✓ Top bandi simulati: {len(top_bandi_sim)}")
-        logger.info(f"✓ Top bandi simulati: {len(top_bandi_sim)}")
-
         bilanci_da_valutare.append({
             "tipo": "simulato",
             "bilancio": bilancio_simulato,
