@@ -108,8 +108,21 @@ def punteggio_spesa_compatibile(spesa, immobilizzazioni):
         return 1
 
 def codice_ateco_compatibile(codice_azienda, codici_bando):
-    return "tutti" in codici_bando.lower() or any(codice.strip() in codici_bando for codice in codice_azienda)
+    codici_bando = codici_bando.lower().strip()
 
+    if "tutti i settori economici ammissibili a ricevere aiuti" in codici_bando:
+        return True
+
+    codici = [c.strip() for c in codici_bando.split(";") if c.strip()]
+    
+    if codice_azienda in codici:
+        return True
+
+    if any(codice_azienda.startswith(c[:2]) for c in codici if len(c) >= 2):
+        return True
+
+    return False
+    
 def regione_compatibile(regione_azienda, regioni_bando):
     if isinstance(regioni_bando, str):
         regioni_bando = [r.strip().lower() for r in regioni_bando.split(",")]
