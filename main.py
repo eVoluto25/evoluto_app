@@ -107,7 +107,8 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
     temi_attivi = []
 
     for key, tema in mappa.items():
-        valore = getattr(risposte_test, key, "C")
+        risposte_dict = risposte_test.dict()
+        valore = risposte_dict.get(key, None)
 
         print(f">>> Debug: key={key}, valore={valore}")
         logger.info(f">>> Debug: key={key}, valore={valore}")
