@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 from typing import Dict
+from simulazione_analisi import esegui_simulazione, necessita_simulazione
 import uvicorn
 import logging
 
@@ -204,22 +205,6 @@ async def analizza_azienda(dati: InputDati):
 
         top_bandi_sim = []
 
-        if necessita_simulazione(z_score, mcc_rating):
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
-            z_sim = stima_z_score(bilancio_simulato)
-            mcc_sim = stima_mcc(bilancio_simulato)
-            macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
-
-            azienda_simulata = {
-                "codice_ateco": dati.anagrafica.codice_ateco,
-                "regione": dati.anagrafica.regione,
-                "dimensione": dimensione,
-                "ebitda": bilancio_simulato.ebitda,
-                "immobilizzazioni": bilancio_simulato.immobilizzazioni,
-                "macro_area": macro_area_sim,
-                "tematiche_attive": tematiche_attive
-            }
-
             bandi_sim = recupera_bandi_filtrati(
                 macro_area=macro_area_sim,
                 codice_ateco=dati.anagrafica.codice_ateco,
@@ -301,6 +286,21 @@ async def analizza_azienda(dati: InputDati):
                 "output_finale": output_finale,
                 "indici_plus": indici_plus
             })
+
+        if simulazione:
+            risultati_finali.append({
+                "tipo": "simulata",
+                "macro_area": simulazione["macro_area"],
+                "macro_area_interpretata": interpreta_macro_area(simulazione["macro_area"]),
+                "dimensione": simulazione["dimensione"],
+                "indice_z_evoluto": simulazione["z_score"],
+                "indice_z_evoluto_interpretato": interpreta_z_score(simulazione["z_score"]),
+                "indice_mcc_evoluto": simulazione["mcc_rating"],
+                "indice_mcc_evoluto_interpretato": interpreta_mcc(simulazione["mcc_rating"]),
+                "bandi_filtrati": simulazione["top_bandi"][:3],
+                "output_finale": simulazione["output"],
+                "indici_plus": simulazione["indici_plus"]
+        })
 
         return risultati_finali
 
