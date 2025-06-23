@@ -90,25 +90,17 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
     return "Grande impresa"
 
 def calcola_tematiche_attive(risposte_test: RisposteTest):
-    print(">>> Debug: entrato in calcola_tematiche_attive")
     logger.info(">>> Debug: entrato in calcola_tematiche_attive")
 
-    print(f">>> Debug: risposte_test = {risposte_test}")
-    logger.info(f">>> Debug: risposte_test = {risposte_test}")
-
-    mappa = {
-    "crisi_impresa": "Crisi d’impresa",
-    "sostegno_liquidita": "Sostegno liquidità",
-    "sostegno_investimenti": "Sostegno investimenti",
-    "transizione_ecologica": "Transizione ecologica",
-    "innovazione_ricerca": "Innovazione e ricerca"
-}
-
+    risposte_dict = risposte_test.dict()
     temi_attivi = []
 
-    for key, tema in mappa.items():
-        risposte_dict = risposte_test.dict()
-        valore = risposte_dict.get(key, None)
+    for key, valore in risposte_dict.items():
+        logger.info(f">>> Debug: key={key}, valore={valore}")
+        if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
+            temi_attivi.append(key)
+
+    return temi_attivi
 
         print(f">>> Debug: key={key}, valore={valore}")
         logger.info(f">>> Debug: key={key}, valore={valore}")
