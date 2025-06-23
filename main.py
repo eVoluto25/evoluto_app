@@ -75,35 +75,6 @@ def stima_mcc(bilancio: Bilancio):
         return 0
     return round((bilancio.utile_netto / bilancio.ricavi) * 100, 2)
 
-def necessita_simulazione(z_score, mcc_rating):
-    soglia_z = 2.5
-    soglia_mcc = 7
-    return z_score < soglia_z or mcc_rating < soglia_mcc
-
-def genera_bilancio_simulato(bilancio: Bilancio, macro_area_attuale: str) -> Bilancio:
-    bilancio_simulato = bilancio.copy()
-
-    # STEP 1: Se sei in Crisi, prova a simulare il passaggio a Sviluppo
-    if macro_area_attuale == "Crisi":
-        # Aumenta EBITDA per spingere lo Z-score oltre 1.8
-        if bilancio_simulato.ebitda < 0.1 * bilancio_simulato.totale_attivo:
-            bilancio_simulato.ebitda = round(0.12 * bilancio_simulato.totale_attivo, 2)
-
-        # Aumenta utile netto per ridurre MCC (verso 5)
-        if bilancio_simulato.utile_netto < 0.07 * bilancio_simulato.ricavi:
-            bilancio_simulato.utile_netto = round(0.08 * bilancio_simulato.ricavi, 2)
-
-    # STEP 2: Se sei in Sviluppo, prova ad arrivare a Espansione
-    elif macro_area_attuale == "Sviluppo":
-        if bilancio_simulato.ebitda < 0.14 * bilancio_simulato.totale_attivo:
-            bilancio_simulato.ebitda = round(0.18 * bilancio_simulato.totale_attivo, 2)
-
-        if bilancio_simulato.utile_netto < 0.09 * bilancio_simulato.ricavi:
-            bilancio_simulato.utile_netto = round(0.10 * bilancio_simulato.ricavi, 2)
-
-    # In tutti i casi ritorna il bilancio simulato
-    return bilancio_simulato
-
 def calcola_indici_plus(bilancio: Bilancio) -> dict:
     try:
         patrimonio_netto = bilancio.totale_attivo - sum([
