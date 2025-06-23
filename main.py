@@ -287,13 +287,19 @@ async def analizza_azienda(dati: InputDati):
                 regione=dati.anagrafica.regione
             )
 
+            azienda = {
+                "bilancio": bilancio_corrente,
+                "macro_area": macro_area,
+                "dimensione": dimensione,
+                "mcc_rating": mcc_rating,
+                "z_score": z_score
+            }
+
             top_bandi = classifica_bandi_avanzata(
-                bilancio=bilancio_corrente,
-                macro_area=macro_area,
-                dimensione=dimensione,
-                mcc_rating=mcc_rating,
-                z_score=z_score,
-                temi_attivi=tematiche_attive
+                bandi,
+                azienda,
+                tematiche_attive,
+                estensione=True
             )
 
             for bando in top_bandi[:3]:
