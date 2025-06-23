@@ -144,7 +144,7 @@ async def analizza_azienda(dati: InputDati):
         }]
 
         dimensione = dimensione_azienda(dati.anagrafica)
-        macro_area = assegna_macro_area(z_score, mcc_rating)
+        macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
 
         # Verifica se serve simulazione
         if necessita_simulazione(z_score, mcc_rating):
