@@ -102,14 +102,6 @@ def calcola_tematiche_attive(risposte_test: RisposteTest):
 
     return temi_attivi
 
-        print(f">>> Debug: key={key}, valore={valore}")
-        logger.info(f">>> Debug: key={key}, valore={valore}")
-
-        if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-            temi_attivi.append(tema)
-
-    return temi_attivi
-
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
