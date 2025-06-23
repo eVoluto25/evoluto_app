@@ -13,6 +13,7 @@ from typing import Optional
 from typing import Dict
 from indicatori import stima_z_score, stima_mcc
 from logica_macroarea import assegna_macro_area
+from output_simulazione import genera_output_simulazione
 from simulazione_analisi import necessita_simulazione, genera_bilancio_simulato
 import uvicorn
 import logging
@@ -145,21 +146,23 @@ async def analizza_azienda(dati: InputDati):
 
         dimensione = dimensione_azienda(dati.anagrafica)
         macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
-
-        # Verifica se serve simulazione
-        if necessita_simulazione(z_score, mcc_rating):
-            bilancio_simulato = genera_bilancio_simulato(dati.bilancio, macro_area_attuale)
-            z_sim = stima_z_score(bilancio_simulato)
-            mcc_sim = stima_mcc(bilancio_simulato)
-
-            bilanci_da_valutare.append({
-                "tipo": "simulato",
-                "bilancio": bilancio_simulato,
-                "z_score": z_sim,
-                "mcc": mcc_sim
-        })
         
         risultati_finali = []
+
+        # === ANALISI SIMULATA BASATA SU RISPOSTE TESTUALI ===
+        from output_simulazione import genera_output_simulazione
+
+        bandi_simulati = recupera_bandi_filtrati(
+            macro_area="espansione",  # default placeholder
+            codice_ateco=dati.anagrafica.codice_ateco,
+            regione=dati.anagrafica.regione
+        )
+
+        output_simulato = genera_output_simulazione(dati.risposte_test, bandi_simulati)
+
+        if isinstance(output_simulato, dict) and output_simulato.get("macro_area"):
+            risultati_finali.append(output_simulato)
+            logger.info(">>> Output simulazione testuale aggiunto ai risultati finali")
 
         for analisi in bilanci_da_valutare:
             print(f">>> Analisi tipo: {analisi['tipo']}")
