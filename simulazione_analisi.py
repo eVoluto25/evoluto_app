@@ -1,6 +1,6 @@
 from logica_macroarea import assegna_macro_area
 from classifica_bandi import classifica_bandi_avanzata
-from rating import calcola_rating_mcc_zscore
+from utils import calcola_rating_mcc_zscore
 from recupera_bandi import recupera_bandi_filtrati
 
 def necessita_simulazione(z_score, mcc_rating):
