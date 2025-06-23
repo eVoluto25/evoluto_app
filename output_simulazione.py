@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 def genera_output_simulazione(risposte_test, bandi_simulati):
     logger.info(f">>> Tipo risposte_test: {type(risposte_test)}")
     logger.info(f">>> Contenuto risposte_test: {risposte_test}")
