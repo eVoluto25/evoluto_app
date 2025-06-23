@@ -2,6 +2,7 @@ from logica_macroarea import assegna_macro_area
 from classifica_bandi import classifica_bandi_avanzata
 from main import stima_z_score, stima_mcc
 from recupera_bandi import recupera_bandi_filtrati
+from indicatori import stima_z_score, stima_mcc
 
 def necessita_simulazione(z_score, mcc_rating):
     soglia_z = 2.5
