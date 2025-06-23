@@ -104,17 +104,6 @@ def calcola_indici_plus(bilancio: Bilancio) -> dict:
         "ROS": safe_div(getattr(bilancio, "ebit", 0), bilancio.ricavi)
     }
 
-def assegna_macro_area(z_score: float, mcc_rating: float) -> str:
-    if z_score >= 2.5 and mcc_rating <= 3:
-        print("# Macro area assegnata: Espansione (z ≥ 2.5 e MCC ≤ 3)")
-        return "Espansione"
-    elif 1.8 <= z_score < 2.5 and 4 <= mcc_rating <= 6:
-        print("# Macro area assegnata: Sviluppo (1.8 ≤ z < 2.5 e 4 ≤ MCC ≤ 6)")
-        return "Sviluppo"
-    else:
-        print("# Macro area assegnata: Crisi (z < 1.8 o MCC ≥ 7)")
-        return "Crisi"
-    
 def interpreta_macro_area(macro_area: str) -> str:
     if macro_area == "Espansione":
         return "🚀 Fase di crescita: investimenti e sviluppo"
@@ -395,3 +384,14 @@ def genera_output_finale(
     if __name__ == "__main__":
         import uvicorn
         uvicorn.run("main:app", host="0.0.0.0", port=8000)
+
+    def assegna_macro_area(z_score: float, mcc_rating: float) -> str:
+    if z_score >= 2.5 and mcc_rating <= 3:
+        print("# Macro area assegnata: Espansione (z ≥ 2.5 e MCC ≤ 3)")
+        return "Espansione"
+    elif 1.8 <= z_score < 2.5 and 4 <= mcc_rating <= 6:
+        print("# Macro area assegnata: Sviluppo (1.8 ≤ z < 2.5 e 4 ≤ MCC ≤ 6)")
+        return "Sviluppo"
+    else:
+        print("# Macro area assegnata: Crisi (z < 1.8 o MCC ≥ 7)")
+        return "Crisi"
