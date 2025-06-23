@@ -1,10 +1,13 @@
-def genera_output_simulazione(risposte_test: dict, bandi_simulati):
-    try:
-        prime_tre = list(risposte_test.values())[:3]
-    except Exception as e:
-        logger.error(f"Errore estraendo le prime tre risposte: {e}")
-        prime_tre = []
+import logging
+logger = logging.getLogger(__name__)
+logger.info(f">>> Tipo risposte_test: {type(risposte_test)}")
+logger.info(f">>> Contenuto risposte_test: {risposte_test}")
 
+def genera_output_simulazione(risposte_test, bandi_simulati):
+    if hasattr(risposte_test, "dict"):
+        risposte_test = risposte_test.dict()
+
+    prime_tre = list(risposte_test.values())[0:3]
     risposta_crisi = prime_tre.count("C")
 
     if risposta_crisi == 3:
