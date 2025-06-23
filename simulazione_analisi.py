@@ -1,5 +1,5 @@
 from classifica_bandi import classifica_bandi_avanzata
-from logica_macroarea import assegna_macro_area
+from main import assegna_macro_area
 from rating import calcola_rating_mcc_zscore
 from recupera_bandi import recupera_bandi_filtrati
 
