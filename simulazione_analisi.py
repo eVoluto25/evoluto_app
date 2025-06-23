@@ -38,7 +38,8 @@ def esegui_simulazione(bilancio_corrente, codice_ateco, regione, dimensione, tem
     bilancio_sim = genera_bilancio_simulato(bilancio_corrente, macro_area_attuale)
 
     # 2. Calcola rating simulato
-    z_sim, mcc_sim = calcola_rating_mcc_zscore(bilancio_sim)
+    z_sim = stima_z_score(bilancio_simulato)
+    mcc_sim = stima_mcc(bilancio_simulato)
 
     # 3. Nuova macro area
     macro_area_sim = assegna_macro_area(z_sim, mcc_sim)
