@@ -151,15 +151,14 @@ async def analizza_azienda(dati: InputDati):
         risultati_finali = []
 
         # === ANALISI SIMULATA BASATA SU RISPOSTE TESTUALI ===
-        from output_simulazione import genera_output_simulazione
-
+       
         bandi_simulati = recupera_bandi_filtrati(
             macro_area="espansione",  # default placeholder
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )
 
-        output_simulato = genera_output_simulazione(dati.risposte_test, bandi_simulati)
+        output_simulato = genera_output_simulazione(dati.risposte_test.dict(), bandi_simulati)
 
         if isinstance(output_simulato, dict) and output_simulato.get("macro_area"):
             risultati_finali.append(output_simulato)
