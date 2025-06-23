@@ -370,7 +370,7 @@ def genera_output_finale(
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
     output += f"- **Bandi disponibili da fonte Ministeriale in linea con il profilo aziendale:** {numero_bandi_filtrati}\n"
-    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{totale_agevolazioni_macroarea:,.0f}\n"
+    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{(totale_agevolazioni_macroarea or 0):.0f}\n"
     output += f"- Dimensione: **{dimensione}**\n"
     output += f"📊 **Indice MCC-eVoluto:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
     output += f"🧮 **Indice Z-eVoluto:** {z_score:.2f} ({interpreta_z_score(z_score)})\n"
