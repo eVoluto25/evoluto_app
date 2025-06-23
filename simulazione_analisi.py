@@ -68,9 +68,11 @@ def esegui_simulazione(bilancio_corrente, codice_ateco, regione, dimensione, tem
     )
 
     return {
-        "macro_area_sim": macro_area_sim,
-        "bandi_sim": top_bandi_sim,
-        "z_score_sim": z_sim,
-        "mcc_sim": mcc_sim,
-        "bilancio_sim": bilancio_sim
-    }
+    "macro_area": macro_area_sim,
+    "z_score": z_sim,
+    "mcc_rating": mcc_sim,
+    "dimensione": dimensione,
+    "output": output,
+    "top_bandi": top_bandi_sim,
+    "indici_plus": calcola_indici_plus(bilancio_simulato)
+}
