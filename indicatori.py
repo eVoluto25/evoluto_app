@@ -1,3 +1,5 @@
+from main import Bilancio
+
 def stima_z_score(bilancio: Bilancio):
     if not bilancio.totale_attivo or bilancio.totale_attivo == 0:
         return 0
