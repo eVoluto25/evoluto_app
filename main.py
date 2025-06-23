@@ -118,8 +118,9 @@ async def analizza_azienda(dati: InputDati):
             raise HTTPException(status_code=400, detail="Dati incompleti")
 
         input_dict = dati.dict()
-        for key, value in dati.risposte_test.items():
-            logger.info(f">>> Risposta test – {key}: {value}")
+        risposte_test_dict = dati.risposte_test.dict()
+        for key, value in risposte_test_dict.items():
+            logger.info(f">>> Risposta test - {key}: {value}")
             
         input_dict["mcc_rating"] = mcc_rating
         input_dict["z_score"] = z_score
