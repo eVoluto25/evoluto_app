@@ -157,7 +157,10 @@ async def analizza_azienda(dati: InputDati):
             codice_ateco=dati.anagrafica.codice_ateco,
             regione=dati.anagrafica.regione
         )
-
+        
+        print(f">>> Debug: risposte_test è {type(dati.risposte_test)}")
+        print(f">>> Debug: contenuto = {dati.risposte_test}")
+        
         output_simulato = genera_output_simulazione(dati.risposte_test.dict(), bandi_simulati)
 
         if isinstance(output_simulato, dict) and output_simulato.get("macro_area"):
