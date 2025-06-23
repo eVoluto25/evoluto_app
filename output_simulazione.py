@@ -2,6 +2,8 @@ def genera_output_simulazione(risposte_test, bandi_simulati):
     # Verifica se le prime 3 risposte sono tutte "C"
     prime_tre = list(risposte_test.values())[:3]
     risposta_crisi = prime_tre.count("C")
+    
+    if risposta_crisi == 3:
         logger.warning("⚠️ Analisi simulata non disponibile a causa delle risposte ricevute.")
         return {
             "tipo": "simulata",
