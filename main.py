@@ -140,8 +140,8 @@ async def analizza_azienda(dati: InputDati):
         bilanci_da_valutare = [{
             "tipo": "reale",
             "bilancio": dati.bilancio,
-            "z_score": z_score,
-            "mcc": mcc_rating
+            "z_score": converti_z_score_lettera(z_score),
+            "mcc": converti_mcc_lettera(mcc_rating)
         }]
 
         dimensione = dimensione_azienda(dati.anagrafica)
