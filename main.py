@@ -140,7 +140,7 @@ async def analizza_azienda(dati: InputDati):
         }]
 
         dimensione = dimensione_azienda(dati.anagrafica)
-        macro_area_attuale = assegna_macro_area(z_score, mcc_rating)
+        macro_area = analisi.get("macro_area") or analisi.get("azienda_simulata", {}).get("macro_area")
 
         # Verifica se serve simulazione
         if necessita_simulazione(z_score, mcc_rating):
