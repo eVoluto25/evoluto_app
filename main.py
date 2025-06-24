@@ -313,7 +313,8 @@ def genera_output_finale(
     z_score,
     numero_bandi_filtrati,
     totale_agevolazioni_macroarea=None,
-    indici_plus=None
+    indici_plus=None,
+    dati: dict
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
