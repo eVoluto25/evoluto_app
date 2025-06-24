@@ -193,10 +193,10 @@ async def analizza_azienda(dati: InputDati):
                 codice_ateco=dati.anagrafica.codice_ateco,
                 regione=dati.anagrafica.regione
             )
+            
             logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
 
             azienda = {
-                azienda = {
                 "bilancio": bilancio_corrente,
                 "macro_area": macro_area,
                 "dimensione": dimensione,
