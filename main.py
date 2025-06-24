@@ -1,5 +1,6 @@
 import json
 from fastapi import Request
+from pages.recupera_dettagli_estesi import recupera_dettagli_estesi
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
 from supabase_client import recupera_bando
 from query_supabase import TABELLE_SUPABASE
@@ -244,7 +245,7 @@ async def analizza_azienda(dati: InputDati):
                     bando["dettagli_gpt"] = dettagli_supabase
 
                     # Recupero approfondimenti da tabella completa
-                    dettagli_estesi = recupera_dettagli_bando(str(ID_Incentivo), forma_giuridica_azienda)
+                    dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), forma_giuridica_azienda)
                     bando.update(dettagli_estesi)
 
                     logger.info(f"✅ Dettagli completi ottenuti per ID {ID_Incentivo}")
