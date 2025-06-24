@@ -264,9 +264,9 @@ async def analizza_azienda(dati: InputDati):
                 mcc_rating=mcc_rating,
                 z_score=z_score,
                 numero_bandi_filtrati=len(top_bandi),
-                totale_agevolazioni_macroarea=None,
                 indici_plus=indici_plus,
-                dati=dic
+                dati=dic,
+                totale_agevolazioni_macroarea=None
             )
 
             risultati_finali.append({
