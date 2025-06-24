@@ -15,8 +15,8 @@ def genera_output_simulazione(risposte_test, bandi_simulati):
         logger.warning("⚠️ Analisi simulata non disponibile a causa delle risposte ricevute.")
         return {
             "tipo": "simulata",
-            "macro_area": None,
-            "macro_area_interpretata": "Simulazione non eseguibile",
+            "macro_area": "simulazione_non_eseguibile",
+            "macro_area_interpretata": "❌ Simulazione non disponibile",
             "dimensione": None,
             "indice_z_evoluto": bilancio.get("z_score_letter", "C"),
             "indice_z_evoluto_interpretato": bilancio.get("z_score", "Non disponibile"),
