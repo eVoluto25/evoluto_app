@@ -379,7 +379,7 @@ def genera_output_finale(
 
         if ID_Incentivo:
             logger.info(f"🟩 Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
-            dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), dati.anagrafica.forma_giuridica)
+            dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), dati['anagrafica']['forma_giuridica'])
             bando.update(dettagli_estesi)
         else:
             logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {ID_Incentivo}")
