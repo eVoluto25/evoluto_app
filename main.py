@@ -194,14 +194,21 @@ async def analizza_azienda(dati: InputDati):
             logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
 
             azienda = {
+                azienda = {
                 "bilancio": bilancio_corrente,
                 "macro_area": macro_area,
                 "dimensione": dimensione,
                 "mcc_rating": mcc_rating,
                 "z_score": z_score,
                 "codice_ateco": dati.anagrafica.codice_ateco,
-                "regione": dati.anagrafica.regione
+                "regione": dati.anagrafica.regione,
+                "ebitda": bilancio_corrente.get("ebitda", 0),
+                "utile_netto": bilancio_corrente.get("utile_netto", 0),
+                "totale_attivo": bilancio_corrente.get("totale_attivo", 0),
+                "immobilizzazioni": bilancio_corrente.get("immobilizzazioni", 0),
+                "ricavi": bilancio_corrente.get("ricavi", 0)
             }
+            
             logger.debug(f">>> Dati azienda pronti: {azienda}")
 
             top_bandi = classifica_bandi_avanzata(
