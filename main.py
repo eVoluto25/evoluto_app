@@ -164,6 +164,7 @@ async def analizza_azienda(dati: InputDati):
         print(f">>> Debug: contenuto = {dati.risposte_test}")
         
         output_simulato = genera_output_simulazione(dati.risposte_test.dict(), bandi_simulati)
+        logger.debug(f">>> Output simulazione generato: {output_simulato}")
 
         if isinstance(output_simulato, dict):
             risultati_finali.append(output_simulato)
