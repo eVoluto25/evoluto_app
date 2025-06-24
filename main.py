@@ -370,10 +370,14 @@ def genera_output_finale(
     
     for i, bando in enumerate(bandi[:3], 1):
         ID_Incentivo = bando.get("ID_Incentivo")
-        logger.info(f"▶️ Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
 
+        if ID_Incentivo:
+            logger.info(f"🟩 Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
+            dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), dati.anagrafica.forma_giuridica)
+            bando.update(dettagli_estesi)
         else:
             logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {ID_Incentivo}")
+        
         output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
         output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
         output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
