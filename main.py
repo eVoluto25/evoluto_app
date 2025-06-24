@@ -372,13 +372,6 @@ def genera_output_finale(
         ID_Incentivo = bando.get("ID_Incentivo")
         logger.info(f"▶️ Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
 
-        if isinstance(ID_Incentivo, int) or (isinstance(ID_Incentivo, str) and ID_Incentivo.isdigit()):
-            try:
-                dettagli_estesi = recupera_dettagli_bando(int(ID_Incentivo), dati.anagrafica.forma_giuridica)
-                logger.info(f"✅ Dettagli ottenuti per ID {ID_Incentivo}: {dettagli_estesi}")
-                bando.update(dettagli_estesi)
-            except Exception as e:
-                logger.error(f"❌ Errore durante il recupero dettagli per ID {ID_Incentivo}: {e}")
         else:
             logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {ID_Incentivo}")
         output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
