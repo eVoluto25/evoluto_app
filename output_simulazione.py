@@ -46,13 +46,11 @@ def genera_output_simulazione(risposte_test, bandi_simulati):
         }
     }
 
-    # Logica di classificazione corretta
-    risposte = [
-        risposte_test.sostegno_liquidita,
-        risposte_test.sostegno_investimenti,
-        risposte_test.transizione_ecologica
-    ]
-    risposta_crisi = risposte.count("C")
+    risposta_crisi = [
+        risposte_test["sostegno_liquidita"],
+        risposte_test["sostegno_investimenti"],
+        risposte_test["transizione_ecologica"]
+    ].count("C")
 
     if risposta_crisi == 0:
         scenario = "espansione"
