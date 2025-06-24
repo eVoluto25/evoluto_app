@@ -25,12 +25,16 @@ def recupera_bandi_filtrati(macro_area: str, codice_ateco: Optional[str] = None,
 
     query = supabase.table(tabella).select("*")
     if codice_ateco:
-        query = query.eq("Codici_ATECO", codice_ateco)
-        print(f">>> Debug: filtro Codici_ATECO = {codice_ateco}")
-        
+        query = query.or_(
+            f"Codici_ATECO.ilike.%{codice_ateco}%,Codici_ATECO.ilike.%tutti%"
+        )
+        print(f">>> Debug: filtro Codici_ATECO = {codice_ateco} (con fallback su 'tutti')")
+
     if regione:
-        query = query.eq("Regioni", regione)
-        print(f">>> Debug: filtro Regione = {regione}")
+        query = query.or_(
+            f"Regioni.ilike.%{regione}%,Regioni.ilike.%tutte%"
+        )
+        print(f">>> Debug: filtro Regione = {regione} (con fallback su 'tutte')")
         
     if forma_giuridica and tabella == "bandi_disponibili":
         query = query.eq("Forma_giuridica", forma_giuridica)
