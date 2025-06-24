@@ -265,7 +265,7 @@ async def analizza_azienda(dati: InputDati):
                 z_score=z_score,
                 numero_bandi_filtrati=len(top_bandi),
                 totale_agevolazioni_macroarea=None,
-                indici_plus=indici_plus
+                indici_plus=indici_plus,
                 dati=dic
             )
 
