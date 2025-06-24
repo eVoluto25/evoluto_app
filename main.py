@@ -215,7 +215,6 @@ async def analizza_azienda(dati: InputDati):
 
             dic = {
                 "anagrafica": dati.anagrafica,
-                "visura": dati.visura
             }
 
             z_score_lettera = interpreta_z_score(z_score)
