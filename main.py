@@ -213,6 +213,11 @@ async def analizza_azienda(dati: InputDati):
                 "ricavi": bilancio_corrente.ricavi
             }
 
+            dic = {
+                "anagrafica": dati.anagrafica,
+                "visura": dati.visura
+            }
+
             z_score_lettera = interpreta_z_score(z_score)
             mcc_lettera = interpreta_mcc(mcc_rating)
             
