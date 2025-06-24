@@ -4,7 +4,6 @@ from pages.recupera_dettagli_estesi import recupera_dettagli_estesi
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
 from supabase_client import recupera_bando
 from query_supabase import TABELLE_SUPABASE
-from query_supabase import recupera_dettagli_bando
 from query_supabase import recupera_bandi_filtrati
 from query_supabase import somma_agevolazioni_macroarea
 from classifica_bandi import classifica_bandi_avanzata
