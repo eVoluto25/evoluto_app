@@ -230,7 +230,7 @@ async def analizza_azienda(dati: InputDati):
 
             for bando in top_bandi[:3]:
                 ID_Incentivo = bando.get("ID_Incentivo", "")
-                dettagli_supabase = recupera_bando(tabella_macroarea, ID_Incentivo)
+                dettagli_supabase = recupera_bando(tabella, ID_Incentivo)
                 bando["dettagli_gpt"] = dettagli_supabase
 
             output_finale = genera_output_finale(
