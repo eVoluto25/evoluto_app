@@ -261,6 +261,7 @@ async def analizza_azienda(dati: InputDati):
                 numero_bandi_filtrati=len(top_bandi),
                 totale_agevolazioni_macroarea=None,
                 indici_plus=indici_plus
+                dati=dic
             )
 
             risultati_finali.append({
