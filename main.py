@@ -1,7 +1,7 @@
 import json
 from fastapi import Request
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
-from query_supabase import recupera_dettagli_bando
+from supabase_client import recupera_bando
 from query_supabase import recupera_bandi_filtrati
 from query_supabase import somma_agevolazioni_macroarea
 from classifica_bandi import classifica_bandi_avanzata
@@ -230,7 +230,7 @@ async def analizza_azienda(dati: InputDati):
 
             for bando in top_bandi[:3]:
                 ID_Incentivo = bando.get("ID_Incentivo", "")
-                dettagli_supabase = recupera_dettagli_bando(ID_Incentivo, forma_giuridica_azienda)
+                dettagli_supabase = recupera_bando(tabella_macroarea, ID_Incentivo)
                 bando["dettagli_gpt"] = dettagli_supabase
 
             output_finale = genera_output_finale(
