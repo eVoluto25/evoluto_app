@@ -174,6 +174,12 @@ async def analizza_azienda(dati: InputDati):
             bilancio_corrente = analisi["bilancio"]
             z_score = analisi["z_score"]
             mcc_rating = analisi["mcc"]
+
+            # Conversione in lettere
+            z_score_lettera = converti_z_score_lettera(z_score)
+            mcc_lettera = converti_mcc_lettera(mcc_rating)
+
+            # Macro area
             macro_area = assegna_macro_area(z_score, mcc_rating)
             dimensione = dimensione_azienda(dati.anagrafica)
             indici_plus = calcola_indici_plus(bilancio_corrente)
@@ -219,10 +225,12 @@ async def analizza_azienda(dati: InputDati):
                 "macro_area": macro_area,
                 "macro_area_interpretata": interpreta_macro_area(macro_area),
                 "dimensione": dimensione,
-                "indice_z_evoluto": z_score,
-                "indice_z_evoluto_interpretato": interpreta_z_score(z_score),
-                "indice_mcc_evoluto": mcc_rating,
-                "indice_mcc_evoluto_interpretato": interpreta_mcc(mcc_rating),
+                "z_score": z_score,
+                "z_score_lettera": z_score_lettera,
+                "z_score_interpretato": interpreta_z_score(z_score),
+                "mcc_rating": mcc_rating,
+                "mcc_lettera": mcc_lettera,
+                "mcc_rating_interpretato": interpreta_mcc(mcc_rating),
                 "bandi_filtrati": top_bandi[:3],
                 "output_finale": output_finale,
                 "indici_plus": indici_plus
