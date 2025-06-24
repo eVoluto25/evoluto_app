@@ -228,12 +228,12 @@ async def analizza_azienda(dati: InputDati):
             )
             logger.debug(f">>> Top bandi selezionati: {[bando.get('ID_Incentivo', '') for bando in top_bandi]}")
 
-            forma_giuridica_azienda = dati.anagrafica.forma_giuridica.lower()
-
             tabella = TABELLE_SUPABASE.get(macro_area)
             if not tabella:
                 logger.error(f"Macro area '{macro_area}' non gestita. Nessuna tabella trovata.")
                 return {"errore": f"Macro area non valida: {macro_area}"}
+
+            forma_giuridica_azienda = dati.anagrafica.forma_giuridica.lower()
 
             for bando in top_bandi[:3]:
                 ID_Incentivo = bando.get("ID_Incentivo", "")
