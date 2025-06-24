@@ -210,6 +210,9 @@ async def analizza_azienda(dati: InputDati):
                 "immobilizzazioni": bilancio_corrente.immobilizzazioni,
                 "ricavi": bilancio_corrente.ricavi
             }
+
+            z_score_lettera = interpreta_z_score(z_score)
+            mcc_lettera = interpreta_mcc(mcc_rating)
             
             logger.debug(f">>> Dati azienda pronti: {azienda}")
             logger.debug(f">>> Z-Score: {z_score} → Lettera: {z_score_lettera}, Interpretazione: {interpreta_z_score(z_score)}")
@@ -331,11 +334,18 @@ def genera_output_finale(
             indici_simulati=indici_plus["simulazione"]
         )
 
-        logger.debug(">>> Analisi simulata attivata")
-        logger.debug(f">>> Quick Ratio simulato: {indici_plus['simulazione'].get('Quick Ratio', '-')}")
-        logger.debug(f">>> Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '-')}")
-        logger.debug(f">>> ROS simulato: {indici_plus['simulazione'].get('ROS', '-')}")
-        logger.debug(f">>> Output simulazione:\n{output}")
+        if macro_area.lower() in ["crisi", "sviluppo"] and tipo == "reale":
+            logger.debug(f">>> Analisi simulata attivata per macro area: {macro_area}")
+
+            output_simulazione = genera_output_simulazione(
+                bandi_simulati=indici_plus.get("simulazione", {}).get("bandi", []),
+                indici_simulati=indici_plus.get("simulazione", {})
+            )
+
+            logger.debug(f">>> Quick Ratio simulato: {indici_plus['simulazione'].get('Quick Ratio', '-')}")
+            logger.debug(f">>> Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '-')}")
+            logger.debug(f">>> ROS simulato: {indici_plus['simulazione'].get('ROS', '-')}")
+            logger.debug(f">>> Output simulazione:\n{output_simulazione}")
 
     output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
     
