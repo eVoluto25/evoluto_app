@@ -184,6 +184,8 @@ async def analizza_azienda(dati: InputDati):
             macro_area = assegna_macro_area(z_score, mcc_rating)
             dimensione = dimensione_azienda(dati.anagrafica)
             indici_plus = calcola_indici_plus(bilancio_corrente)
+
+            print(f">>> Debug: macro_area FINALE da passare ai bandi = {macro_area}")
             
             logger.debug(">>> Inizio recupero bandi filtrati")
             bandi = recupera_bandi_filtrati(
