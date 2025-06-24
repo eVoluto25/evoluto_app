@@ -184,20 +184,25 @@ async def analizza_azienda(dati: InputDati):
             macro_area = assegna_macro_area(z_score, mcc_rating)
             dimensione = dimensione_azienda(dati.anagrafica)
             indici_plus = calcola_indici_plus(bilancio_corrente)
-
+            
+            logger.debug(">>> Inizio recupero bandi filtrati")
             bandi = recupera_bandi_filtrati(
                 macro_area=macro_area,
                 codice_ateco=dati.anagrafica.codice_ateco,
                 regione=dati.anagrafica.regione
             )
+            logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
 
             azienda = {
                 "bilancio": bilancio_corrente,
                 "macro_area": macro_area,
                 "dimensione": dimensione,
                 "mcc_rating": mcc_rating,
-                "z_score": z_score
+                "z_score": z_score,
+                "codice_ateco": dati.anagrafica.codice_ateco,
+                "regione": dati.anagrafica.regione
             }
+            logger.debug(f">>> Dati azienda pronti: {azienda}")
 
             top_bandi = classifica_bandi_avanzata(
                 bandi,
@@ -205,6 +210,7 @@ async def analizza_azienda(dati: InputDati):
                 tematiche_attive,
                 estensione=True
             )
+            logger.debug(f">>> Top bandi selezionati: {[bando.get('ID_Incentivo', '') for bando in top_bandi]}")
 
             for bando in top_bandi[:3]:
                 dettagli_supabase = recupera_dettagli_bando(bando.get("ID_Incentivo", ""))
