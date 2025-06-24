@@ -204,11 +204,11 @@ async def analizza_azienda(dati: InputDati):
                 "z_score": z_score,
                 "codice_ateco": dati.anagrafica.codice_ateco,
                 "regione": dati.anagrafica.regione,
-                "ebitda": bilancio_corrente.get("ebitda", 0),
-                "utile_netto": bilancio_corrente.get("utile_netto", 0),
-                "totale_attivo": bilancio_corrente.get("totale_attivo", 0),
-                "immobilizzazioni": bilancio_corrente.get("immobilizzazioni", 0),
-                "ricavi": bilancio_corrente.get("ricavi", 0)
+                "ebitda": bilancio_corrente.ebitda,
+                "utile_netto": bilancio_corrente.utile_netto,
+                "totale_attivo": bilancio_corrente.totale_attivo,
+                "immobilizzazioni": bilancio_corrente.immobilizzazioni,
+                "ricavi": bilancio_corrente.ricavi
             }
             
             logger.debug(f">>> Dati azienda pronti: {azienda}")
