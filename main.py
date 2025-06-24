@@ -237,8 +237,20 @@ async def analizza_azienda(dati: InputDati):
 
             for bando in top_bandi[:3]:
                 ID_Incentivo = bando.get("ID_Incentivo", "")
-                dettagli_supabase = recupera_bando(tabella, ID_Incentivo)
-                bando["dettagli_gpt"] = dettagli_supabase
+    
+                try:
+                    # Recupero da tabella macro-area
+                    dettagli_supabase = recupera_bando(tabella, ID_Incentivo)
+                    bando["dettagli_gpt"] = dettagli_supabase
+
+                    # Recupero approfondimenti da tabella completa
+                    dettagli_estesi = recupera_dettagli_bando(str(ID_Incentivo), forma_giuridica_azienda)
+                    bando.update(dettagli_estesi)
+
+                    logger.info(f"✅ Dettagli completi ottenuti per ID {ID_Incentivo}")
+
+                except Exception as e:
+                    logger.error(f"Errore durante il recupero dettagli per ID {ID_Incentivo}: {e}")
 
             output_finale = genera_output_finale(
                 bandi=top_bandi,
