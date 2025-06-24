@@ -224,7 +224,7 @@ async def analizza_azienda(dati: InputDati):
             for bando in top_bandi[:3]:
                 dettagli_supabase = recupera_dettagli_bando(
                 bando.get("ID_Incentivo", ""),
-                dati.anagrafica.forma_giuridica
+                forma_giuridica_azienda=dati.anagrafica.forma_giuridica
                 )
                 bando["dettagli_gpt"] = dettagli_supabase
 
