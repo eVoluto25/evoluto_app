@@ -318,9 +318,9 @@ def genera_output_finale(
     mcc_rating,
     z_score,
     numero_bandi_filtrati,
+    dati: dict,
     totale_agevolazioni_macroarea=None,
-    indici_plus=None,
-    dati: dict
+    indici_plus=None
 ):
     output = "📌 **Analisi Aziendale**\n"
     output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
