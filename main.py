@@ -355,7 +355,7 @@ def genera_output_finale(
 
         if isinstance(ID_Incentivo, int) or (isinstance(ID_Incentivo, str) and ID_Incentivo.isdigit()):
             try:
-                dettagli_estesi = recupera_dettagli_bando(int(ID_Incentivo))
+                dettagli_estesi = recupera_dettagli_bando(int(ID_Incentivo), dati.anagrafica.forma_giuridica)
                 logger.info(f"✅ Dettagli ottenuti per ID {ID_Incentivo}: {dettagli_estesi}")
                 bando.update(dettagli_estesi)
             except Exception as e:
