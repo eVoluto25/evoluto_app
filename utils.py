@@ -14,8 +14,16 @@ def carica_dati_azienda(contenuto_email: str) -> dict:
         print(f"Errore nel parsing JSON: {e}")
         return {}
 
-def salva_top5_bandi(dati_azienda: dict, top5_bandi: list) -> None:
-    dati_azienda["top5_bandi"] = top5_bandi
+def punteggio_da_risposte(risposte_lettere: List[str]) -> int:
+    """
+    Converte una lista di risposte multiple (A–E) in un punteggio complessivo.
+    A = 5, B = 4, C = 3, D = 2, E = 1. Qualsiasi altro valore = 0.
+    """
+    mapping = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
+    return sum(mapping.get(r.upper(), 0) for r in risposte_lettere)
+
+def salva_top5_bandi(dati_azienda: dict, top3_bandi: list) -> None:
+    dati_azienda["top3_bandi"] = top3_bandi
 
 def supabase_insert(tabella, dati):
     return supabase.table(tabella).insert(dati).execute()
