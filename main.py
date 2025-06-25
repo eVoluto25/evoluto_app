@@ -95,21 +95,28 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
     Converte le risposte multiple choice in una lista di tematiche attive aziendali.
     Ogni lettera A–E corrisponde a una risposta su una delle 10 domande chiave.
     """
+
     mapping_tematica = {
-        0: "AI",                      # Domanda 1
-        1: "Cybersecurity",           # Domanda 2
-        2: "Sostenibilità ambientale",# Domanda 3
-        3: "Efficientamento energetico", # Domanda 4
-        4: "Internazionalizzazione",  # Domanda 5
-        5: "Innovazione di prodotto", # Domanda 6
-        6: "Gestione della crisi",    # Domanda 7
-        7: "Inclusione e coesione",   # Domanda 8
-        8: "Liquidità",               # Domanda 9
-        9: "Ottimizzazione fiscale"   # Domanda 10
+        "crisi_impresa": "Gestione della crisi",
+        "sostegno_liquidita": "Liquidità",
+        "sostegno_investimenti": "Efficientamento energetico",
+        "transizione_ecologica": "Sostenibilità ambientale",
+        "innovazione_ricerca": "Innovazione di prodotto",
+        "efficientamento_produttivo": "AI",
+        "digitalizzazione": "Internazionalizzazione",
+        "cybersecurity": "Cybersecurity",
+        "ottimizzazione_fiscale": "Ottimizzazione fiscale",
+        "nuovi_mercati_export": "Inclusione e coesione"
     }
 
-    risposte = risposte_test
     tematiche_attive = []
+
+    for chiave, tematica in mapping_tematica.items():
+        risposta = risposte_test.get(chiave, "")
+        if risposta.upper() == "A":
+            tematiche_attive.append(tematica)
+
+    return tematiche_attive
 
     for i, risposta in enumerate(risposte[:10]):  # massimo 10 domande
         if risposta.upper() == "A":
