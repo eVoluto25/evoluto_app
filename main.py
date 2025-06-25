@@ -15,3 +15,18 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def leggi_bandi_attivi():
     response = supabase.table("bandi_attivi_filtrati").select("*").execute()
     return response.data
+
+@app.get("/bandi-sostegno")
+def get_bandi_sostegno():
+    response = supabase.table("bandi_sostegno").select("*").execute()
+    return response.data
+
+@app.get("/bandi-innovazione")
+def get_bandi_innovazione():
+    response = supabase.table("bandi_innovazione").select("*").execute()
+    return response.data
+
+@app.get("/bandi-transizione")
+def get_bandi_transizione():
+    response = supabase.table("bandi_transizione").select("*").execute()
+    return response.data
