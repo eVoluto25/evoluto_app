@@ -169,41 +169,6 @@ async def analizza_azienda(dati: InputDati):
         macro_area_attuale = assegna_macro_area(z_score, mcc_rating, dati.bilancio.utile_netto, dati.bilancio.ebitda)
         
         risultati_finali = []
-
-        # === ANALISI SIMULATA BASATA SU RISPOSTE TESTUALI ===
-       
-        bandi_simulati = recupera_bandi_filtrati(
-            macro_area="espansione",  # default placeholder
-            codice_ateco=dati.anagrafica.codice_ateco,
-            regione=dati.anagrafica.regione
-        )
-        
-        print(f">>> Debug: risposte_test è {type(dati.risposte_test)}")
-        print(f">>> Debug: contenuto = {dati.risposte_test}")
-        
-        output_simulato = genera_output_simulazione(dati.risposte_test.dict(), bandi_simulati)
-        logger.debug(f">>> Output simulazione generato: {output_simulato}")
-
-        if isinstance(output_simulato, dict):
-            risultati_finali.append(output_simulato)
-            logger.info(">>> Output simulazione testuale aggiunto ai risultati finali")
-
-        for analisi in bilanci_da_valutare:
-            print(f">>> Analisi tipo: {analisi['tipo']}")
-            bilancio_corrente = analisi["bilancio"]
-            z_score = analisi["z_score"]
-            mcc_rating = analisi["mcc"]
-
-            # Conversione in lettere
-            z_score_lettera = converti_z_score_lettera(z_score)
-            mcc_lettera = converti_mcc_lettera(mcc_rating)
-
-            # Macro area
-            macro_area = assegna_macro_area(z_score, mcc_rating)
-            dimensione = dimensione_azienda(dati.anagrafica)
-            indici_plus = calcola_indici_plus(bilancio_corrente)
-
-            print(f">>> Debug: macro_area FINALE da passare ai bandi = {macro_area}")
             
             logger.debug(">>> Inizio recupero bandi filtrati")
             bandi = recupera_bandi_filtrati(
@@ -213,32 +178,6 @@ async def analizza_azienda(dati: InputDati):
             )
             
             logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
-
-            azienda = {
-                "bilancio": bilancio_corrente,
-                "macro_area": macro_area,
-                "dimensione": dimensione,
-                "mcc_rating": mcc_rating,
-                "z_score": z_score,
-                "codice_ateco": dati.anagrafica.codice_ateco,
-                "regione": dati.anagrafica.regione,
-                "ebitda": bilancio_corrente.ebitda,
-                "utile_netto": bilancio_corrente.utile_netto,
-                "totale_attivo": bilancio_corrente.totale_attivo,
-                "immobilizzazioni": bilancio_corrente.immobilizzazioni,
-                "ricavi": bilancio_corrente.ricavi
-            }
-
-            dic = {
-                "anagrafica": dati.anagrafica,
-            }
-
-            z_score_lettera = interpreta_z_score(z_score)
-            mcc_lettera = interpreta_mcc(mcc_rating)
-            
-            logger.debug(f">>> Dati azienda pronti: {azienda}")
-            logger.debug(f">>> Z-Score: {z_score} → Lettera: {z_score_lettera}, Interpretazione: {interpreta_z_score(z_score)}")
-            logger.debug(f">>> MCC: {mcc_rating} → Lettera: {mcc_lettera}, Interpretazione: {interpreta_mcc(mcc_rating)}")
 
             top_bandi = classifica_bandi_avanzata(
                 bandi,
@@ -255,22 +194,6 @@ async def analizza_azienda(dati: InputDati):
 
             forma_giuridica_azienda = dati.anagrafica.forma_giuridica.lower()
 
-            for bando in top_bandi[:3]:
-                ID_Incentivo = bando.get("ID_Incentivo", "")
-    
-                try:
-                    # Recupero da tabella macro-area
-                    dettagli_supabase = recupera_bando(tabella, ID_Incentivo)
-                    bando["dettagli_gpt"] = dettagli_supabase
-
-                    # Recupero approfondimenti da tabella completa
-                    dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), forma_giuridica_azienda)
-                    bando.update(dettagli_estesi)
-
-                    logger.info(f"✅ Dettagli completi ottenuti per ID {ID_Incentivo}")
-
-                except Exception as e:
-                    logger.error(f"Errore durante il recupero dettagli per ID {ID_Incentivo}: {e}")
 
             output_finale = genera_output_finale(
                 bandi=top_bandi,
