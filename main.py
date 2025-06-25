@@ -92,18 +92,34 @@ def dimensione_azienda(anagrafica: Anagrafica) -> str:
         return "Media Impresa"
     return "Grande impresa"
 
-def calcola_tematiche_attive(risposte_test: RisposteTest):
-    logger.info(">>> Debug: entrato in calcola_tematiche_attive")
+def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
+    """
+    Converte le risposte multiple choice in una lista di tematiche attive aziendali.
+    Ogni lettera A–E corrisponde a una risposta su una delle 10 domande chiave.
+    """
+    mapping_tematica = {
+        0: "AI",                      # Domanda 1
+        1: "Cybersecurity",           # Domanda 2
+        2: "Sostenibilità ambientale",# Domanda 3
+        3: "Efficientamento energetico", # Domanda 4
+        4: "Internazionalizzazione",  # Domanda 5
+        5: "Innovazione di prodotto", # Domanda 6
+        6: "Gestione della crisi",    # Domanda 7
+        7: "Inclusione e coesione",   # Domanda 8
+        8: "Liquidità",               # Domanda 9
+        9: "Ottimizzazione fiscale"   # Domanda 10
+    }
 
-    risposte_dict = risposte_test.dict()
-    temi_attivi = []
+    risposte = risposte_test.risposte
+    tematiche_attive = []
 
-    for key, valore in risposte_dict.items():
-        logger.info(f">>> Debug: key={key}, valore={valore}")
-        if isinstance(valore, str) and valore.strip().upper() in ("A", "B"):
-            temi_attivi.append(key)
+    for i, risposta in enumerate(risposte[:10]):  # massimo 10 domande
+        if risposta.upper() == "A":
+            tematica = mapping_tematica.get(i)
+            if tematica:
+                tematiche_attive.append(tematica)
 
-    return temi_attivi
+    return tematiche_attive
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
