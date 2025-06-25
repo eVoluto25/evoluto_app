@@ -13,6 +13,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.get("/bandi-attivi")
 def leggi_bandi_attivi():
+    print(">>> CHIAMATA RICEVUTA SU /bandi-attivi <<<")
     response = supabase.table("bandi_attivi_filtrati").select("*").execute()
     return response.data
 
