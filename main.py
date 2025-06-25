@@ -31,3 +31,8 @@ def get_bandi_innovazione():
 def get_bandi_transizione():
     response = supabase.table("bandi_transizione").select("*").execute()
     return response.data
+
+@app.get("/bandi-digitalizzazione")
+def get_bandi_digitalizzazione():
+    response = supabase.table("bandi_digitalizzazione").select("*").execute()
+    return response.data
