@@ -236,6 +236,10 @@ except Exception as e:
         totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
     )
 
+try:
+    dati = dati.dict()
+    totale_agevolazioni_macroarea = totale_agevolazioni_macroarea
+
     risultati_finali.append({
         "tipo": "reale",
         "macro_area": macro_area_attuale,
@@ -254,9 +258,9 @@ except Exception as e:
 
     return risultati_finali
 
-    except Exception as e:
-        logger.exception("Errore durante l'elaborazione")
-        raise HTTPException(status_code=500, detail=str(e))
+except Exception as e:
+    logger.exception("Errore durante l'elaborazione")
+    raise HTTPException(status_code=500, detail=str(e))
         
 def interpreta_z_score(z):
     if z > 0.20:
