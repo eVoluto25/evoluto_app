@@ -97,24 +97,27 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
     """
 
     mapping_tematica = {
-        "crisi_impresa": "Gestione della crisi",
-        "sostegno_liquidita": "Liquidità",
-        "sostegno_investimenti": "Efficientamento energetico",
-        "transizione_ecologica": "Sostenibilità ambientale",
-        "innovazione_ricerca": "Innovazione di prodotto",
-        "efficientamento_produttivo": "AI",
-        "digitalizzazione": "Internazionalizzazione",
-        "cybersecurity": "Cybersecurity",
-        "ottimizzazione_fiscale": "Ottimizzazione fiscale",
-        "nuovi_mercati_export": "Inclusione e coesione"
+        0: "AI",
+        1: "Cybersecurity",
+        2: "Sostenibilità ambientale",
+        3: "Efficientamento energetico",
+        4: "Internazionalizzazione",
+        5: "Innovazione di prodotto",
+        6: "Gestione della crisi",
+        7: "Inclusione e coesione",
+        8: "Liquidità",
+        9: "Ottimizzazione fiscale"
     }
+
+    risposte = list(risposte_test.values())  # <- QUESTO è il punto giusto
 
     tematiche_attive = []
 
-    for chiave, tematica in mapping_tematica.items():
-        risposta = risposte_test.get(chiave, "")
+    for i, risposta in enumerate(risposte[:10]):  # massimo 10 domande
         if risposta.upper() == "A":
-            tematiche_attive.append(tematica)
+            tematica = mapping_tematica.get(i)
+            if tematica:
+                tematiche_attive.append(tematica)
 
     return tematiche_attive
 
