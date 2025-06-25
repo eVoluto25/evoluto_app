@@ -17,7 +17,7 @@ class Bilancio(BaseModel):
     ricavi_anno_prec: Optional[float] = 0
 
 class RisposteTest(BaseModel):
-    risposte: List[str]  # Esempio: ["A", "C", "B", "D", "A"]
+    risposte: List[str]  # Es: ["A", "B", "C", "A", "E", "D", "B", "C", "A", "B"]
 
 class InputDati(BaseModel):
     anagrafica: Anagrafica
