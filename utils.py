@@ -16,13 +16,12 @@ def carica_dati_azienda(contenuto_email: str) -> dict:
 
 def punteggio_da_risposte(risposte_lettere: List[str]) -> int:
     """
-    Converte una lista di risposte multiple (A–E) in un punteggio complessivo.
-    A = 5, B = 4, C = 3, D = 2, E = 1. Qualsiasi altro valore = 0.
+    Converte 10 risposte (A–E) in punteggio (massimo 50).
     """
     mapping = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
     return sum(mapping.get(r.upper(), 0) for r in risposte_lettere)
 
-def salva_top5_bandi(dati_azienda: dict, top3_bandi: list) -> None:
+def salva_top3_bandi(dati_azienda: dict, top3_bandi: list) -> None:
     dati_azienda["top3_bandi"] = top3_bandi
 
 def supabase_insert(tabella, dati):
