@@ -125,6 +125,8 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
 
+    print("📩 DATI RICEVUTI:", dati.dict())
+
     try:
         z_score = stima_z_score(dati.bilancio)
         mcc_rating = stima_mcc(dati.bilancio)
