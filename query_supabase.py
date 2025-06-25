@@ -7,6 +7,11 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+TABELLE_SUPABASE = {
+    "sostegno": "bandi_sostegno",
+    "innovazione": "bandi_innovazione"
+}
+
 def recupera_bandi_completi(macroarea: str, codice_ateco: str, dimensione: str, oggi: str) -> List[dict]:
     tabella = "bandi_sostegno" if macroarea == "Sostegno" else "bandi_innovazione"
 
