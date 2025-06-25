@@ -324,8 +324,7 @@ def interpreta_mcc(mcc):
     return "🔴 Critica"
 
 
-# OUTPUT TESTUALE GPT
-def genera_output_finale(
+def genera_output_finale_professionale(
     bandi,
     macro_area,
     dimensione,
@@ -336,84 +335,62 @@ def genera_output_finale(
     totale_agevolazioni_macroarea=None,
     indici_plus=None
 ):
-    output = "📌 **Analisi Aziendale**\n"
-    output += f"- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})\n"
-    output += f"- **Bandi disponibili da fonte Ministeriale in linea con il profilo aziendale:** {numero_bandi_filtrati}\n"
-    output += f"\n Totale agevolazioni disponibili per aziende in **{macro_area}**: €{(totale_agevolazioni_macroarea or 0):.0f}\n"
-    output += f"- Dimensione: **{dimensione}**\n"
-    output += f"📊 **Indice MCC-eVoluto:** {mcc_rating} ({interpreta_mcc(mcc_rating)})\n"
-    output += f"🧮 **Indice Z-eVoluto:** {z_score:.2f} ({interpreta_z_score(z_score)})\n"
-    output += f"\n\n📊 **Indici extra di supporto**\n"
-    output += f"- ROE (Return on Equity): {indici_plus.get('ROE', 'Non disponibile')}\n"
-    output += f"- Debt/Equity Ratio: {indici_plus.get('Debt/Equity Ratio', 'Non disponibile')}\n"
-    output += f"- Current Ratio: {indici_plus.get('Current Ratio', 'Non disponibile')}\n"
-    output += f"- DSO (Days Sales Outstanding): {indici_plus.get('DSO', 'Non disponibile')}\n"
-    output += f"- Quick Ratio: {indici_plus.get('Quick Ratio', 'Non disponibile')}\n"
-    output += f"- Cash Ratio: {indici_plus.get('Cash Ratio', 'Non disponibile')}\n"
-    output += f"- ROS (Return on Sales): {indici_plus.get('ROS', 'Non disponibile')}\n"
+    output = f"""📌 **Analisi Aziendale – Risultato Preliminare**
 
-        # BLOCCO OPZIONALE PER SIMULAZIONE
-    if indici_plus.get("simulazione"):
+**📍 Profilo azienda**
+- Macro Area: **{macro_area}** ({interpreta_macro_area(macro_area)})
+- Dimensione: **{dimensione}**
+- Regione: {dati['anagrafica'].get('regione', '—')}
+- Codice ATECO: {dati['anagrafica'].get('codice_ateco', '—')}
 
-        output += "\n\n📈 **Simulazione eVoluto: Potenziale accesso a bandi superiori**\n"
-        output += f"- Nuova Macro Area simulata: **{indici_plus['simulazione'].get('macro_area', '--')}**\n"
-        output += f"- 🧮 Z-score simulato: {indici_plus['simulazione'].get('z_score', '--')}\n"
-        output += f"- 📊 MCC simulato: {indici_plus['simulazione'].get('mcc_rating', '--')}\n"
+**📊 Indicatori principali**
+- MCC-eVoluto: {mcc_rating} ({interpreta_mcc(mcc_rating)})
+- Z-eVoluto: {z_score:.2f} ({interpreta_z_score(z_score)})
+"""
 
-        output += "\n📊 **Indici simulati di supporto**\n"
-        output += f"- ROE simulato: {indici_plus['simulazione'].get('ROE', '—')}\n"
-        output += f"- Debt/Equity simulato: {indici_plus['simulazione'].get('Debt/Equity Ratio', '—')}\n"
-        output += f"- Current Ratio simulato: {indici_plus['simulazione'].get('Current Ratio', '—')}\n"
-        output += f"- Quick Ratio simulato: {indici_plus['simulazione'].get('Quick Ratio', '—')}\n"
-        output += f"- Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '—')}\n"
-        output += f"- ROS simulato: {indici_plus['simulazione'].get('ROS', '—')}\n"
+    if indici_plus:
+        output += "\n**📈 Indicatori di supporto**\n"
+        for nome in ["Debt/Equity Ratio", "Current Ratio", "ROS"]:
+            output += f"- {nome}: {indici_plus.get(nome, '—')}\n"
 
-        # ▶️ Output bandi simulati
-        output += genera_output_simulazione(
-            bandi_simulati=indici_plus["simulazione"].get("bandi", []),
-            indici_simulati=indici_plus["simulazione"]
-        )
+    output += f"""
+**📋 Bandi compatibili**
+- Trovati: **{numero_bandi_filtrati}**
+- Risorse disponibili in macro area: **€{(totale_agevolazioni_macroarea or 0):,.0f}**
 
-        if macro_area.lower() in ["crisi", "sviluppo"] and tipo == "reale":
-            logger.debug(f">>> Analisi simulata attivata per macro area: {macro_area}")
+---
 
-            output_simulazione = genera_output_simulazione(
-                bandi_simulati=indici_plus.get("simulazione", {}).get("bandi", []),
-                indici_simulati=indici_plus.get("simulazione", {})
-            )
+📑 **Top 3 incentivi selezionati**
+"""
+    output = ""
+    output += "📚 🧠 **Elaborazione dati eseguita dal sistema eVoluto** – *non costituisce istruttoria definitiva*\n\n"
+    for i, b in enumerate(bandi[:3], 1):
+        ID = b.get("ID_Incentivo", "—")
+        titolo = b.get("Titolo", "—")
+        obiettivo = b.get("Obiettivo_finalita", "—")
+        apertura = b.get("Data_apertura", "—")
+        chiusura = b.get("Data_chiusura", "—")
+        forma = b.get("Forma_agevolazione", "—")
+        soggetto = b.get("Soggetto_Concedente", "—")
+        spesa_max = b.get("Spesa_Ammessa_max", "—")
+        agevolazione_max = b.get("Agevolazione_Concedibile_max", "—")
+        regioni = b.get("Regioni", "—")
+        ateco = b.get("Codici_ATECO", "").strip().lower()
 
-            logger.debug(f">>> Quick Ratio simulato: {indici_plus['simulazione'].get('Quick Ratio', '-')}")
-            logger.debug(f">>> Cash Ratio simulato: {indici_plus['simulazione'].get('Cash Ratio', '-')}")
-            logger.debug(f">>> ROS simulato: {indici_plus['simulazione'].get('ROS', '-')}")
-            logger.debug(f">>> Output simulazione:\n{output_simulazione}")
+        settore = "✅ Tutti i settori" if "tutti" in ateco else "⚠️ Settori specifici"
 
-    output += "\n\n📑 **Top 3 Bandi Selezionati**\n"
-    
-    for i, bando in enumerate(bandi[:3], 1):
-        ID_Incentivo = bando.get("ID_Incentivo")
-
-        if ID_Incentivo:
-            logger.info(f"🟩 Recupero dettagli per ID_Incentivo: {ID_Incentivo}")
-            dettagli_estesi = recupera_dettagli_estesi(str(ID_Incentivo), dati['anagrafica']['forma_giuridica'])
-            bando.update(dettagli_estesi)
-        else:
-            logger.warning(f"⚠️ ID_Incentivo non valido o mancante: {ID_Incentivo}")
+        output += f"""
+🔹 **{i}. {titolo}** (ID: `{ID}`)
+- 🎯 Obiettivo: {obiettivo}
+- 🏛️ Ente promotore: {soggetto}
+- 💶 Agevolazione: fino a **{agevolazione_max} €**
+- 🧾 Forma: {forma}
+- 📍 Ambito: {regioni} – {settore}
+- ⏳ Scadenza: {chiusura}
+- 🔗 [Link ufficiale]({b.get('Link_istituzionale', '—')})
+"""
         
-        output += f"\n🔹 **{i+1}. {bando.get('Titolo', '—')}** (ID: `{bando.get('ID_Incentivo', 'N/D')}`)\n"
-        output += f"- 🎯 Obiettivo: {bando.get('Obiettivo_finalita', '--')}\n"
-        output += f"- 💶 Spesa ammessa max: {bando.get('Spesa_Ammessa_max', '--')} €\n"
-        output += f"- 🧮 Agevolazione concedibile: {bando.get('Agevolazione_Concedibile_max', '--')} €\n"
-        output += f"- 🧾 Forma agevolazione: {bando.get('Forma_agevolazione', '--')}\n"
-        output += f"- ⏳ Scadenza: {bando.get('Data_chiusura', '--')}\n"
-        # ✅ Inclusione dei dettagli estesi (dettagli_gpt)
-        dettagli = bando.get("dettagli_gpt", {})
-        output += f"- 📋 Dettagli: {dettagli.get('Descrizione', '—')}\n"
-        output += f"- 🗓️ Note di apertura/chiusura: {dettagli.get('Note_di_apertura_chiusura', '—')}\n"
-        output += f"- 🏢 Tipologia soggetto: {dettagli.get('Tipologia_Soggetto', '—')}\n"
-        output += f"- 📊 Stanziamento incentivo: {dettagli.get('Stanziamento_incentivo', '—')} €\n"
-        output += f"- 🌐 Verifica online: {dettagli.get('Link_istituzionale', '—')}\n"
-        
-        return output or ""
+    return output or ""
 
     # Endpoint di controllo per uptime
     @app.head("/ping")
