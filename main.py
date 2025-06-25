@@ -74,13 +74,11 @@ def calcola_indici_plus(bilancio: Bilancio) -> dict:
     }
 
 def interpreta_macro_area(macro_area: str) -> str:
-    if macro_area == "Espansione":
-        return "🚀 Fase di crescita: investimenti e sviluppo"
-    elif macro_area == "Sviluppo":
-        return "📈 Fase di consolidamento e ottimizzazione"
-    elif macro_area == "Crisi":
-        return "⚠️ Stato critico: rilancio e risanamento"
-    return "⚙️ Stato non classificato"
+    if macro_area == "Innovazione":
+        return "🟢 Azienda con margini di crescita e innovazione"
+    elif macro_area == "Sostegno":
+        return "🔵 Azienda in fase critica: focus su liquidità o ristrutturazione"
+    return "⚠️ Stato non classificato"
 
 def dimensione_azienda(anagrafica: Anagrafica) -> str:
     if anagrafica.numero_dipendenti is None:
