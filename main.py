@@ -1,4 +1,5 @@
 import json
+from utils import punteggio_da_risposte
 from fastapi import Request
 from pages.recupera_dettagli_estesi import recupera_dettagli_estesi
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
