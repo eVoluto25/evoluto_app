@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 class Anagrafica(BaseModel):
     codice_ateco: Optional[str] = None
     regione: Optional[str] = None
     forma_giuridica: Optional[str] = None
     numero_dipendenti: Optional[int] = None
-    attivita_prevalente: Optional[str] = None
+    attività_prevalente: Optional[str] = None
 
 class Bilancio(BaseModel):
     ricavi: Optional[float] = 0
@@ -14,14 +14,10 @@ class Bilancio(BaseModel):
     ebitda: Optional[float] = 0
     totale_attivo: Optional[float] = 0
     immobilizzazioni: Optional[float] = 0
-    ricavi_anno_prec: Optional[float] = None
+    ricavi_anno_prec: Optional[float] = 0
 
 class RisposteTest(BaseModel):
-    crisi_impresa: Optional[str] = None
-    sostegno_liquidita: Optional[str] = None
-    sostegno_investimenti: Optional[str] = None
-    transizione_ecologica: Optional[str] = None
-    innovazione_ricerca: Optional[str] = None
+    risposte: List[str]  # Esempio: ["A", "C", "B", "D", "A"]
 
 class InputDati(BaseModel):
     anagrafica: Anagrafica
