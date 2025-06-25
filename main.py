@@ -108,7 +108,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
         9: "Ottimizzazione fiscale"   # Domanda 10
     }
 
-    risposte = risposte_test.risposte
+    risposte = risposte_test
     tematiche_attive = []
 
     for i, risposta in enumerate(risposte[:10]):  # massimo 10 domande
