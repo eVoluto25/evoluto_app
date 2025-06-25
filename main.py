@@ -126,51 +126,73 @@ async def analizza_azienda(dati: InputDati):
 
     print("📩 DATI RICEVUTI:", dati.dict())
 
-    try:
-        z_score = stima_z_score(dati.bilancio)
-        mcc_rating = stima_mcc(dati.bilancio)
-        print(f">>> Z-Score calcolato: {z_score}")
-        print(f">>> MCC calcolato: {mcc_rating}")
-        logger.info(f">>> Z-Score calcolato: {z_score}")
-        logger.info(f">>> MCC calcolato: {mcc_rating}")
-    
-        if not dati.anagrafica or not dati.bilancio:
-            raise HTTPException(status_code=400, detail="Dati incompleti")
+try:
+    z_score = stima_z_score(dati.bilancio)
+    mcc_rating = stima_mcc(dati.bilancio)
+    print(f">>> Z-Score calcolato: {z_score}")
+    print(f">>> MCC calcolato: {mcc_rating}")
+    logger.info(f">>> Z-Score calcolato: {z_score}")
+    logger.info(f">>> MCC calcolato: {mcc_rating}")
 
-        input_dict = dati.dict()
-        risposte_test_dict = dati.risposte_test.dict()
-        for key, value in risposte_test_dict.items():
-            logger.info(f">>> Risposta test - {key}: {value}")
-            
-        input_dict["mcc_rating"] = mcc_rating
-        input_dict["z_score"] = z_score
-        logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
-        print(">>> Debug: input_dict completato e pronto")
-        logger.info(">>> Debug: input_dict completato e pronto")
+    if not dati.anagrafica or not dati.bilancio:
+        raise HTTPException(status_code=400, detail="Dati incompleti")
 
-        estendi_ricerca = False
-        if z_score >= 0.2 and mcc_rating >= 7:
-            estendi_ricerca = True
+    input_dict = dati.dict()
+    risposte_test_dict = dati.risposte_test.dict()
+    for key, value in risposte_test_dict.items():
+        logger.info(f">>> Risposta test - {key}: {value}")
 
-        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
-        print(">>> Debug: calcolate tematiche attive")
-        logger.info(">>> Debug: calcolate tematiche attive")
+    input_dict["mcc_rating"] = mcc_rating
+    input_dict["z_score"] = z_score
+    logger.info(f"[DEBUG] Input ricevuto completo: {input_dict}")
+    print(">>> Debug: input_dict completato e pronto")
+    logger.info(">>> Debug: input_dict completato e pronto")
 
-        bilanci_da_valutare = [{
-            "tipo": "reale",
-            "bilancio": dati.bilancio,
-            "z_score": z_score,
-            "z_score_letter": converti_z_score_lettera(z_score),
-            "mcc": mcc_rating,
-            "mcc_letter": converti_mcc_lettera(mcc_rating)
-        }]
-        
-        dimensione = dimensione_azienda(dati.anagrafica)
-        macro_area_attuale = assegna_macro_area(z_score, mcc_rating, dati.bilancio.utile_netto, dati.bilancio.ebitda)
-        
-        risultati_finali = []
+    estendi_ricerca = False
+    if z_score >= 0.2 and mcc_rating >= 7:
+        estendi_ricerca = True
+
+    tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
+    print(">>> Debug: calcolate tematiche attive")
+    logger.info(">>> Debug: calcolate tematiche attive")
+
+    bilanci_da_valutare = [{
+        "tipo": "reale",
+        "bilancio": dati.bilancio,
+        "z_score": z_score,
+        "z_score_letter": converti_z_score_lettera(z_score),
+        "mcc": mcc_rating,
+        "mcc_letter": converti_mcc_lettera(mcc_rating)
+    }]
+
+    dimensione = dimensione_azienda(dati.anagrafica)
+    macro_area_attuale = assegna_macro_area(z_score, mcc_rating, dati.bilancio.utile_netto, dati.bilancio.ebitda)
+
+    risultati_finali = []
 
     logger.debug(">>> Inizio recupero bandi filtrati")
+
+    bandi = recupera_bandi_filtrati(
+        macro_area=macro_area_attuale,
+        codice_ateco=dati.anagrafica.codice_ateco,
+        regione=dati.anagrafica.regione
+    )
+
+except Exception as e:
+    logger.error(f"Errore in fase di analisi: {e}")
+    raise
+
+    
+
+    bandi = recupera_bandi_filtrati(
+        macro_area=macro_area_attuale,
+        codice_ateco=dati.anagrafica.codice_ateco,
+        regione=dati.anagrafica.regione
+    )
+
+except Exception as e:
+    logger.error(f"Errore in fase di analisi: {e}")
+    raise
     
     bandi = recupera_bandi_filtrati(
         macro_area=macro_area_attuale,
