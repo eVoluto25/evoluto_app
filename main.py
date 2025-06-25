@@ -5,7 +5,7 @@ from pages.recupera_dettagli_estesi import recupera_dettagli_estesi
 from models import Bilancio, Anagrafica, RisposteTest, InputDati
 from supabase_client import recupera_bando
 from query_supabase import TABELLE_SUPABASE
-from query_supabase import recupera_bandi_filtrati
+from query_supabase import recupera_bandi_completi
 from query_supabase import somma_agevolazioni_macroarea
 from classifica_bandi import classifica_bandi_avanzata
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -17,8 +17,6 @@ from typing import Dict
 from indicatori import converti_z_score_lettera, converti_mcc_lettera
 from indicatori import stima_z_score, stima_mcc
 from logica_macroarea import assegna_macro_area
-from output_simulazione import genera_output_simulazione
-from simulazione_analisi import necessita_simulazione, genera_bilancio_simulato
 import uvicorn
 import logging
 
