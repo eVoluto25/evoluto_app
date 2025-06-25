@@ -162,7 +162,7 @@ async def analizza_azienda(dati: InputDati):
             "z_score": z_score,
             "z_score_letter": converti_z_score_lettera(z_score),
             "mcc": mcc_rating,
-            "mcc_letter": converti_mcc_lettera(mcc_rating),
+            "mcc_letter": converti_mcc_lettera(mcc_rating)
         }]
         
         dimensione = dimensione_azienda(dati.anagrafica)
@@ -171,6 +171,7 @@ async def analizza_azienda(dati: InputDati):
         risultati_finali = []
 
     logger.debug(">>> Inizio recupero bandi filtrati")
+    
     bandi = recupera_bandi_filtrati(
         macro_area=macro_area_attuale,
         codice_ateco=dati.anagrafica.codice_ateco,
