@@ -168,62 +168,68 @@ async def analizza_azienda(dati: InputDati):
         dimensione = dimensione_azienda(dati.anagrafica)
         macro_area_attuale = assegna_macro_area(z_score, mcc_rating, dati.bilancio.utile_netto, dati.bilancio.ebitda)
         
-        risultati_finali = []
-            
-            logger.debug(">>> Inizio recupero bandi filtrati")
-            bandi = recupera_bandi_filtrati(
-                macro_area=macro_area,
-                codice_ateco=dati.anagrafica.codice_ateco,
-                regione=dati.anagrafica.regione
-            )
-            
-            logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
+    risultati_finali = []
 
-            top_bandi = classifica_bandi_avanzata(
-                bandi,
-                azienda,
-                tematiche_attive,
-                estensione=True
-            )
-            logger.debug(f">>> Top bandi selezionati: {[bando.get('ID_Incentivo', '') for bando in top_bandi]}")
+    logger.debug(">>> Inizio recupero bandi filtrati")
+    bandi = recupera_bandi_filtrati(
+        macro_area=macro_area_attuale,
+        codice_ateco=dati.anagrafica.codice_ateco,
+        regione=dati.anagrafica.regione
+    )
 
-            tabella = TABELLE_SUPABASE.get(macro_area)
-            if not tabella:
-                logger.error(f"Macro area '{macro_area}' non gestita. Nessuna tabella trovata.")
-                return {"errore": f"Macro area non valida: {macro_area}"}
+    logger.debug(f">>> Bandi filtrati trovati: {len(bandi)}")
 
-            forma_giuridica_azienda = dati.anagrafica.forma_giuridica.lower()
+    top_bandi = classifica_bandi_avanzata(
+        bandi,
+        azienda=dati,
+        tematiche_attive=tematiche_attive,
+        estensione=True
+    )
 
+    logger.debug(f">>> Top bandi selezionati: {[bando.get('ID_Incentivo', '') for bando in top_bandi]}")
 
-            output_finale = genera_output_finale(
-                bandi=top_bandi,
-                macro_area=macro_area,
-                dimensione=dimensione,
-                mcc_rating=mcc_rating,
-                z_score=z_score,
-                numero_bandi_filtrati=len(top_bandi),
-                indici_plus=indici_plus,
-                dati=dic,
-                totale_agevolazioni_macroarea=None
-            )
+    tabella = TABELLE_SUPABASE.get(macro_area_attuale)
+    if not tabella:
+        logger.error(f"Macro area '{macro_area_attuale}' non gestita. Nessuna tabella trovata.")
+        return {"errore": f"Macro area non valida: {macro_area_attuale}"}
 
-            risultati_finali.append({
-                "tipo": analisi["tipo"],
-                "macro_area": macro_area,
-                "macro_area_interpretata": interpreta_macro_area(macro_area),
-                "dimensione": dimensione,
-                "z_score": z_score,
-                "z_score_lettera": z_score_lettera,
-                "z_score_interpretato": interpreta_z_score(z_score),
-                "mcc_rating": mcc_rating,
-                "mcc_lettera": mcc_lettera,
-                "mcc_rating_interpretato": interpreta_mcc(mcc_rating),
-                "bandi_filtrati": top_bandi[:3],
-                "output_finale": output_finale,
-                "indici_plus": indici_plus
-            })
+    forma_giuridica_azienda = dati.anagrafica.forma_giuridica.lower()
 
-            return risultati_finali
+    # Calcolo indici avanzati
+    indici_plus = calcola_indici_plus(dati.bilancio)
+
+    # Calcolo totale agevolazioni disponibili per la macro area
+    totale_agevolazioni_macroarea = somma_agevolazioni_macroarea(macro_area_attuale)
+
+    output_finale = genera_output_finale_professionale(
+        bandi=top_bandi,
+        macro_area=macro_area_attuale,
+        dimensione=dimensione,
+        mcc_rating=mcc_rating,
+        z_score=z_score,
+        numero_bandi_filtrati=len(top_bandi),
+        indici_plus=indici_plus,
+        dati=dati.dict(),
+        totale_agevolazioni_macroarea=totale_agevolazioni_macroarea
+    )
+
+    risultati_finali.append({
+        "tipo": "reale",
+        "macro_area": macro_area_attuale,
+        "macro_area_interpretata": interpreta_macro_area(macro_area_attuale),
+        "dimensione": dimensione,
+        "z_score": z_score,
+        "z_score_lettera": converti_z_score_lettera(z_score),
+        "z_score_interpretato": interpreta_z_score(z_score),
+        "mcc_rating": mcc_rating,
+        "mcc_lettera": converti_mcc_lettera(mcc_rating),
+        "mcc_rating_interpretato": interpreta_mcc(mcc_rating),
+        "bandi_filtrati": top_bandi[:3],
+        "output_finale": output_finale,
+        "indici_plus": indici_plus
+    })
+
+    return risultati_finali
 
     except Exception as e:
         logger.exception("Errore durante l'elaborazione")
