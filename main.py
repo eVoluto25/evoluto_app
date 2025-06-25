@@ -118,14 +118,6 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
 
     return tematiche_attive
 
-    for i, risposta in enumerate(risposte[:10]):  # massimo 10 domande
-        if risposta.upper() == "A":
-            tematica = mapping_tematica.get(i)
-            if tematica:
-                tematiche_attive.append(tematica)
-
-    return tematiche_attive
-
 @app.post("/analizza-azienda")
 async def analizza_azienda(dati: InputDati):
     logger.info("Dati ricevuti: %s", dati.json())
