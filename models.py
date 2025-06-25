@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 class Anagrafica(BaseModel):
     codice_ateco: Optional[str] = None
