@@ -17,16 +17,7 @@ class Bilancio(BaseModel):
     ricavi_anno_prec: Optional[float] = 0
 
 class RisposteTest(BaseModel):
-    ai: Optional[str]
-    cybersecurity: Optional[str]
-    sostenibilità: Optional[str]
-    efficientamento_energetico: Optional[str]
-    internazionalizzazione: Optional[str]
-    innovazione: Optional[str]
-    crisi: Optional[str]
-    inclusione: Optional[str]
-    liquidità: Optional[str]
-    fisco: Optional[str]
+    risposte: Dict[str, str]
 
 class InputDati(BaseModel):
     anagrafica: Anagrafica
