@@ -65,7 +65,7 @@ def classifica_bandi_avanzata(lista_bandi, azienda, tematiche_attive, estensione
             "scadenza": punteggio_scadenza(b.get("Data_chiusura", "")) * 2,
             "agevolazione_vs_ebitda": punteggio_agevolazione_vs_ebitda(float(b.get("Agevolazione_Concedibile_max", 0) or 0), ebitda) * 3,
             "spesa_compatibile": punteggio_spesa_compatibile(b.get("Spesa_Ammessa_max", 0), immobilizzazioni) * 3,
-            "test": punteggio_test * 0.3  # Max 15
+            "test": punteggio_test_bando(tematiche_bando, tematiche_attive) * 0.3  # Max 15
         }
 
         totale = round(sum(punteggi.values()), 2)
