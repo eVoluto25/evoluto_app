@@ -109,7 +109,7 @@ def calcola_tematiche_attive(risposte_test: RisposteTest) -> list[str]:
         "fisco": "Ottimizzazione fiscale"
     }
 
-    risposte_dict = risposte_test.dict()
+    risposte_dict = risposte_test.risposte
     tematiche_attive = []
 
     for i, (key, risposta) in enumerate(risposte_dict.items()):
