@@ -168,7 +168,7 @@ async def analizza_azienda(dati: InputDati):
         dimensione = dimensione_azienda(dati.anagrafica)
         macro_area_attuale = assegna_macro_area(z_score, mcc_rating, dati.bilancio.utile_netto, dati.bilancio.ebitda)
         
-    risultati_finali = []
+        risultati_finali = []
 
     logger.debug(">>> Inizio recupero bandi filtrati")
     bandi = recupera_bandi_filtrati(
