@@ -153,7 +153,7 @@ async def analizza_azienda(dati: InputDati):
         if z_score >= 0.2 and mcc_rating >= 7:
             estendi_ricerca = True
 
-        tematiche_attive = calcola_tematiche_attive(dati)
+        tematiche_attive = calcola_tematiche_attive(dati.risposte_test)
         print(">>> Debug: calcolate tematiche attive")
         logger.info(">>> Debug: calcolate tematiche attive")
 
