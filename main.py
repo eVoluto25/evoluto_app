@@ -65,8 +65,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
 
         if df_filtrati.empty:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
-
-    try:   
+  
         colonne_da_esporre = [
             "Titolo", "Descrizione", "Obiettivo_Finalita",
             "Data_chiusura", "Forma_agevolazione", "Regioni",
