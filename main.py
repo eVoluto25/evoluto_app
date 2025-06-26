@@ -67,6 +67,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
 
        # ✅ Output mirato
+    try:   
         colonne_da_esporre = [
             "Titolo", "Descrizione", "Obiettivo_Finalita",
             "Data_chiusura", "Forma_agevolazione", "Regioni",
@@ -79,11 +80,6 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         logger.info(f"👉 Colonne da esporre: {colonne_da_esporre}")
         logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
 
-        colonne_mancanti = set(colonne_da_esporre) - set(df_filtrati.columns)
-        
-        logger.warning(f"⚠️ Colonne mancanti nel risultato Supabase: {colonne_mancanti}")
-
-        # ❌ Blocca se mancano le colonne fondamentali
         colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
         if not colonne_fondamentali.issubset(set(colonne_presenti)):
             logger.error(f"❌ Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}")
