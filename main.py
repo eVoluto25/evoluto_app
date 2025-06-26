@@ -77,12 +77,15 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         colonne_mancanti = set(colonne_da_esporre) - set(df_filtrati.columns)
         logger.warning(f"⚠️ Colonne mancanti nel risultato Supabase: {colonne_mancanti}")
 
-        # ❌ Blocca solo se mancano le colonne fondamentali
+        # ❌ Blocca se mancano le colonne fondamentali
         colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
-        if not colonne_fondamentali.issubset(colonne_presenti):
-            raise HTTPException(status_code=500, detail="Errore: colonne fondamentali mancanti nei dati dei bandi.")
+        if not colonne_fondamentali.issubset(set(colonne_presenti)):
+            raise HTTPException(
+                status_code=500,
+                detail=f"Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}"
+            )
 
-        # Estrai solo le colonne effettivamente presenti
+        # ✅ Estrai solo le colonne effettivamente presenti
         df_finale = df_filtrati[colonne_presenti].head(3)
         return {"bandi": df_finale.to_dict(orient="records")}
 
