@@ -6,16 +6,18 @@ import pandas as pd
 import requests
 import os
 import logging
+
+# 🔧 Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# 🔐 Variabili ambiente (Render/Supabase)
+# 🔐 Variabili ambiente
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# 🧾 Input atteso da GPT (dopo lettura bilancio)
+# 🧾 Input atteso da GPT
 class AziendaInput(BaseModel):
     codice_ateco: str
     regione: str
@@ -25,72 +27,63 @@ class AziendaInput(BaseModel):
 # 🔗 Endpoint principale
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
-    try:
-        logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
-        # ✅ Selezione dinamica della tabella
-        if input_data.macroarea == "sostegno":
-            tabella = "bandi_sostegno"
-        elif input_data.macroarea == "innovazione":
-            tabella = "bandi_innovazione"
-        else:
-            raise HTTPException(status_code=400, detail="Macroarea non valida")
+    logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
 
-        logger.info(f"✅ Macroarea selezionata: {tabella}")
+    # ✅ Selezione tabella per macroarea
+    if input_data.macroarea == "sostegno":
+        tabella = "bandi_sostegno"
+    elif input_data.macroarea == "innovazione":
+        tabella = "bandi_innovazione"
+    else:
+        raise HTTPException(status_code=400, detail="Macroarea non valida")
 
-        logger.info(f"📲 Interrogata la Macroarea → {SUPABASE_URL}/{tabella}")
+    logger.info(f"✅ Macroarea selezionata: {tabella}")
 
-        # ✅ Recupero dati da Supabase
-        headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}"
-        }
-        response = requests.get(f"{SUPABASE_URL}/{tabella}", headers=headers)
-        if response.status_code != 200:
-            logger.info(f"✅ Risposta della Macroarea OK - {len(response.json())} bandi trovati")
-        else:
-            logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
-            raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
+    # ✅ Recupero dati da Supabase
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    url = f"{SUPABASE_URL}/{tabella}"
+    logger.info(f"📡 Chiamata a Supabase: {url}")
+    response = requests.get(url, headers=headers)
 
-        df = pd.DataFrame(response.json())
-        if df.empty:
-            return {"bandi": [], "messaggio": "Nessun bando disponibile"}
+    if response.status_code != 200:
+        logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
+        raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
 
-        # ✅ Filtro sui dati
-        df_filtrati = filtra_bandi(
-            df,
-            codice_ateco=input_data.codice_ateco,
-            regione=input_data.regione,
-            dimensione=input_data.dimensione
-        )
+    dati = response.json()
+    logger.info(f"📥 Dati ricevuti: {len(dati)} record")
+    df = pd.DataFrame(dati)
 
-        if df_filtrati.empty:
-            return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
+    if df.empty:
+        return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
-    try:   
-        colonne_da_esporre = [
-            "Titolo", "Descrizione", "Obiettivo_Finalita",
-            "Data_chiusura", "Forma_agevolazione", "Regioni",
-        ]
+    # ✅ Filtro bandi
+    df_filtrati = filtra_bandi(
+        df,
+        codice_ateco=input_data.codice_ateco,
+        regione=input_data.regione,
+        dimensione=input_data.dimensione
+    )
 
-        # ⚠️ Controllo colonne mancanti
-        colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
-        
-        logger.info(f"👉 Colonne disponibili in df_filtrati: {df_filtrati.columns.tolist()}")
-        logger.info(f"👉 Colonne da esporre: {colonne_da_esporre}")
-        logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
+    if df_filtrati.empty:
+        return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
 
-        colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
-        if not colonne_fondamentali.issubset(set(colonne_presenti)):
-            logger.error(f"❌ Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}"
-            )
+    # ✅ Colonne da restituire
+    colonne_da_esporre = [
+        "Titolo", "Descrizione", "Obiettivo_Finalita",
+        "Data_chiusura", "Forma_agevolazione", "Regioni"
+    ]
+    colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
 
-        # ✅ Estrai solo le colonne effettivamente presenti
-        logger.info(f"✅ Colonne presenti nel DataFrame filtrato: {colonne_presenti}")
-        df_finale = df_filtrati[colonne_presenti].head(3)
-        return {"bandi": df_finale.to_dict(orient="records")}
+    logger.info(f"👉 Colonne presenti: {df_filtrati.columns.tolist()}")
+    logger.info(f"👉 Colonne da esporre: {colonne_presenti}")
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
+    if not colonne_fondamentali.issubset(df_filtrati.columns):
+        raise HTTPException(status_code=500, detail="Dati incompleti nei bandi filtrati")
+
+    # ✅ Output
+    bandi_output = df_filtrati[colonne_presenti].head(3).to_dict(orient="records")
+    return {"bandi": bandi_output}
