@@ -58,18 +58,29 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         if isinstance(dati_json, dict):
             dati_json = [dati_json]
 
-        df = pd.DataFrame(dati_json)
- 
+        try:
+            df = pd.DataFrame(dati_json)
+            logger.info(f"✅ DataFrame creato: {df.shape[0]} righe, {df.shape[1]} colonne")
+            logger.info(f"🔍 Colonne presenti nel DataFrame: {df.columns.tolist()}")
+        except Exception as e:
+            logger.error(f"❌ Errore nella creazione del DataFrame: {str(e)}")
+            raise HTTPException(status_code=500, detail="Errore nella lettura dei dati dai bandi")
+
         if df.empty:
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
         # ✅ Filtro sui dati
-        df_filtrati = filtra_bandi(
-            df,
-            codice_ateco=input_data.codice_ateco,
-            regione=input_data.regione,
-            dimensione=input_data.dimensione
-        )
+        try:
+            df_filtrati = filtra_bandi(
+                df,
+                codice_ateco=input_data.codice_ateco,
+                regione=input_data.regione,
+                dimensione=input_data.dimensione
+            )
+            logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
+        except Exception as e:
+            logger.error(f"❌ Errore nel filtraggio dei bandi: {str(e)}")
+            raise HTTPException(status_code=500, detail="Errore nel filtraggio dei bandi")
 
         if df_filtrati.empty:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
