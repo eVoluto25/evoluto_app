@@ -69,10 +69,13 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         # ✅ Output mirato
         colonne_da_esporre = [
             "Titolo", "Descrizione", "Obiettivo_Finalita",
-            "Data_apertura", "Data_chiusura", "Dimensioni",
-            "Forma_agevolazione", "Codici_ATECO", "Regioni", "Ambito_territoriale"
+            "Data_chiusura", "Forma_agevolazione", "Regioni",  
         ]
-        df_finale = df_filtrati[colonne_da_esporre].head(3)
+        colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
+        colonne_mancanti = set(colonne_da_esporre) - set(df_filtrati.columns)
+        logger.warning(f"⚠️ Colonne mancanti nel risultato Supabase: {colonne_mancanti}")
+
+        df_finale = df_filtrati[colonne_presenti].head(3)
 
         return {"bandi": df_finale.to_dict(orient="records")}
 
