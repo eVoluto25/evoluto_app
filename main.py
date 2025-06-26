@@ -46,7 +46,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}"
         }
-        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/{tabella}"
+        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/{tabella}?select=*"
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
