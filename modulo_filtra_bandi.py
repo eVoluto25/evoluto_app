@@ -31,10 +31,12 @@ def filtra_bandi(
     # ✅ Filtro per codice ATECO
     if codice_ateco:
         df = df[df["codici_ateco"].str.contains(codice_ateco, na=False, case=False)]
+        logger.info(f"📌 Dopo filtro ATECO: {len(df)} righe")
 
     # ✅ Filtro per regione
     if regione:
         df = df[df["regioni"].str.contains(regione, na=False, case=False)]
+        logger.info(f"📌 Dopo filtro Regione: {len(df)} righe")
 
     # ✅ Filtro per dimensione (parsing JSON)
     if dimensione:
@@ -47,10 +49,12 @@ def filtra_bandi(
             df["dimensioni"] = [[] for _ in range(len(df))]
 
         df = df[df["dimensioni"].apply(lambda x: dimensione in x)]
+        logger.info(f"📌 Dopo filtro Dimensione: {len(df)} righe")
 
     # ✅ Filtro per forma agevolazione
     if forma_agevolazione:
         df = df[df["forma_agevolazione"].str.contains(forma_agevolazione, na=False, case=False)]
+        logger.info(f"📌 Dopo filtro Forma agevolazione: {len(df)} righe")
 
     # 📦 Colonne da restituire
     colonne_da_restituire = [
