@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from fastapi import FastAPI
 from supabase import create_client, Client
 
@@ -7,6 +8,23 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI()
+
+def prepara_output_per_gpt(df_input: pd.DataFrame) -> dict:
+    campi_richiesti = [
+        "Titolo",
+        "Descrizione",
+        "Obiettivo_Finalita",
+        "Data_apertura",
+        "Data_chiusura",
+        "Dimensioni",
+        "Tipologia_Soggetto",
+        "Forma_agevolazione",
+        "Codici_ATECO",
+        "Regioni",
+        "Ambito_territoriale"
+    ]
+    output = df_input[campi_richiesti].to_dict(orient="records")
+    return {"bandi_rilevanti": output}
 
 # Connessione Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -20,7 +38,8 @@ def leggi_bandi_attivi():
             "esito": "nessun_bando",
             "messaggio": "Nessun bando attivo disponibile."
         }
-    return {"data": response.data, "esito": "ok"}
+    df = pd.DataFrame(response.data)
+    return prepara_output_per_gpt(df)
 
 
 @app.get("/bandi-sostegno")
@@ -32,8 +51,8 @@ def get_bandi_sostegno():
             "esito": "nessun_bando",
             "messaggio": "Nessun bando disponibile nella categoria sostegno."
         }
-    return {"data": response.data, "esito": "ok"}
-
+    df = pd.DataFrame(response.data)
+    return prepara_output_per_gpt(df)
 
 @app.get("/bandi-innovazione")
 def get_bandi_innovazione():
@@ -44,8 +63,8 @@ def get_bandi_innovazione():
             "esito": "nessun_bando",
             "messaggio": "Nessun bando disponibile nella categoria innovazione."
         }
-    return {"data": response.data, "esito": "ok"}
-
+    df = pd.DataFrame(response.data)
+    return prepara_output_per_gpt(df)
 
 @app.get("/bandi-transizione")
 def get_bandi_transizione():
@@ -56,7 +75,8 @@ def get_bandi_transizione():
             "esito": "nessun_bando",
             "messaggio": "Nessun bando disponibile nella categoria transizione."
         }
-    return {"data": response.data, "esito": "ok"}
+    df = pd.DataFrame(response.data)
+    return prepara_output_per_gpt(df)
 
 
 @app.get("/bandi-digitalizzazione")
@@ -68,4 +88,5 @@ def get_bandi_digitalizzazione():
             "esito": "nessun_bando",
             "messaggio": "Nessun bando disponibile nella categoria digitalizzazione."
         }
-    return {"data": response.data, "esito": "ok"}
+    df = pd.DataFrame(response.data)
+    return prepara_output_per_gpt(df)
