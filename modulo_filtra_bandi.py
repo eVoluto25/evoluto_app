@@ -1,9 +1,8 @@
-
 import pandas as pd
 
 def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_agevolazione=None, max_results=5):
     """
-    Filtra i bandi sulla base di codice ATECO, regione, dimensione azienda e forma agevolazione.
+    Filtra i bandi sulla base di codice ATECO, regione, dimensione azienda.
     Restituisce solo le colonne rilevanti.
     """
     if codice_ateco:
@@ -12,8 +11,6 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
         df = df[df["Regioni"].str.contains(regione, na=False, case=False)]
     if dimensione:
         df = df[df["Dimensioni"].str.contains(dimensione, na=False, case=False)]
-    if forma_agevolazione:
-        df = df[df["Forma_agevolazione"].str.contains(forma_agevolazione, na=False, case=False)]
 
     colonne_da_restituire = [
         "Titolo", "Descrizione", "Obiettivo_Finalita",
