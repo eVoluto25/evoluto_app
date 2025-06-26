@@ -48,13 +48,18 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         }
         url = f"{SUPABASE_URL.rstrip('/')}/{tabella}"
         response = requests.get(url, headers=headers)
+
         if response.status_code != 200:
-            logger.info(f"✅ Risposta della Macroarea OK - {len(response.json())} bandi trovati")
-        else:
             logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
             raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
 
-        df = pd.DataFrame(response.json())
+        # 🩹 Fix struttura dati
+        dati_json = response.json()
+        if isinstance(dati_json, dict):
+            dati_json = [dati_json]
+
+        df = pd.DataFrame(dati_json)
+ 
         if df.empty:
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
