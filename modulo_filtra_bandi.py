@@ -5,19 +5,24 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
     Filtra i bandi sulla base di codice ATECO, regione, dimensione azienda.
     Restituisce solo le colonne rilevanti.
     """
+    # Normalizza nomi colonne a lowercase
+    df.columns = [col.lower() for col in df.columns]
+
     if codice_ateco:
-        df = df[df["Codici_ATECO"].str.contains(codice_ateco, na=False, case=False)]
+        df = df[df["codici_ateco"].str.contains(codice_ateco, na=False, case=False)]
     if regione:
-        df = df[df["Regioni"].str.contains(regione, na=False, case=False)]
+        df = df[df["regioni"].str.contains(regione, na=False, case=False)]
     if dimensione:
-        df = df[df["Dimensioni"].str.contains(dimensione, na=False, case=False)]
+        df = df[df["dimensioni"].str.contains(dimensione, na=False, case=False)]
 
     colonne_da_restituire = [
-        "Titolo", "Descrizione", "Obiettivo_Finalita",
-        "Data_apertura", "Data_chiusura",
-        "Dimensioni", "Forma_agevolazione",
-        "Codici_ATECO", "Regioni", "Ambito_territoriale"
+        "titolo", "descrizione", "obiettivo_finalita",
+        "data_apertura", "data_chiusura",
+        "dimensioni", "forma_agevolazione",
+        "codici_ateco", "regioni", "ambito_territoriale"
     ]
 
-    df = df[colonne_da_restituire].dropna(how='all').head(max_results)
+    df = df[col for col in colonne_da_restituire if col in df.columns]
+    df = df.dropna(how="all").head(max_results)
+
     return df.to_dict(orient="records")
