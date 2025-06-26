@@ -29,9 +29,22 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
             df[col] = df[col].apply(safe_parse_list)
 
     # Filtro ATECO
-    if codice_ateco and "codici_ateco" in df.columns:
-        logger.info(f"🔍 Filtro codice ATECO: {codice_ateco}")
-        df = df[df["codici_ateco"].apply(lambda lst: "tutti i settori" in lst or codice_ateco in lst)]
+    if codice_ateco:
+    logger.info(f"✅ Filtro codice ATECO: {codice_ateco}")
+    
+    def match_ateco(val):
+        try:
+            if isinstance(val, float) or pd.isna(val):
+                return False
+            if isinstance(val, str) and "tutti i settori" in val.lower():
+                return True
+            lista_codici = safe_parse_list(val)
+            return any(codice_ateco in str(cod) for cod in lista_codici)
+        except Exception as e:
+            logger.warning(f"⚠️ Errore parsing codice ATECO: {val} -> {e}")
+            return False
+
+    df = df[df["codici_ateco"].apply(match_ateco)]
 
     # Filtro Regione
     if regione and "regioni" in df.columns:
