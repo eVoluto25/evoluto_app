@@ -80,6 +80,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         # ❌ Blocca se mancano le colonne fondamentali
         colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
         if not colonne_fondamentali.issubset(set(colonne_presenti)):
+            logger.error(f"❌ Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}")
             raise HTTPException(
                 status_code=500,
                 detail=f"Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}"
