@@ -1,106 +1,67 @@
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel
+from typing import List, Optional
+import pandas as pd
+import requests
 import os
-from fastapi import FastAPI
-from supabase import create_client, Client
-
-# Connessione a Supabase
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+from modulo_filtra_bandi import filtra_bandi
 
 app = FastAPI()
 
-# -------- API: Bandi di Sostegno --------
-@app.get("/bandi-sostegno")
-def get_bandi_sostegno():
+# 🔐 Variabili ambiente (Render/Supabase)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# 🧾 Modello dati ricevuti da GPT
+class AziendaInput(BaseModel):
+    codice_ateco: str
+    regione: str
+    dimensione: str
+    forma_agevolazione: Optional[str] = None
+
+# 🔗 Endpoint principale
+@app.post("/filtra-bandi")
+async def filtra_bandi_per_azienda(input_data: AziendaInput):
     try:
-        response = supabase.table("bandi_sostegno").select(
-            "Titolo,Descrizione,Obiettivo_Finalita,Data_apertura,Data_chiusura,"
-            "Dimensioni,Tipologia_Soggetto,Forma_agevolazione,Codici_ATECO,Regioni,Ambito_territoriale"
-        ).execute()
-
-        print(">>> [DEBUG SOSTEGNO] Risposta Supabase:", response)
-        print(">>> [DEBUG SOSTEGNO] Dati:", response.data)
-
-        if not response.data:
-            return {
-                "data": [],
-                "esito": "nessun_bando",
-                "messaggio": "Nessun bando disponibile."
-            }
-
-        return {
-            "data": response.data,
-            "esito": "ok"
+        # ✅ Recupero tabella bandi da Supabase
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}"
         }
+
+        response = requests.get(f"{SUPABASE_URL}/bandi_view", headers=headers)
+        if response.status_code != 200:
+            raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
+
+        df = pd.DataFrame(response.json())
+        if df.empty:
+            raise HTTPException(status_code=404, detail="Nessun bando disponibile")
+
+        # ✅ Applico il filtro
+        df_filtrati = filtra_bandi(
+            df,
+            codice_ateco=input_data.codice_ateco,
+            regione=input_data.regione,
+            dimensione=input_data.dimensione,
+            forma_agevolazione=input_data.forma_agevolazione
+        )
+
+        if df_filtrati.empty:
+            return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
+
+        # ✅ Seleziono solo le colonne rilevanti
+        colonne_da_esporre = [
+            "Titolo", "Descrizione", "Obiettivo_Finalita",
+            "Data_apertura", "Data_chiusura", "Dimensioni",
+            "Forma_agevolazione", "Codici_ATECO", "Regioni", "Ambito_territoriale"
+        ]
+        df_finale = df_filtrati[colonne_da_esporre].head(3)
+        return {"bandi": df_finale.to_dict(orient="records")}
 
     except Exception as e:
-        print(f">>> [ERRORE API SOSTEGNO]: {e}")
-        return {
-            "data": [],
-            "esito": "errore",
-            "messaggio": str(e)
-        }
+        raise HTTPException(status_code=500, detail=str(e))
 
-# -------- API: Bandi di Transizione --------
-@app.get("/bandi-transizione")
-def get_bandi_transizione():
-    try:
-        response = supabase.table("bandi_transizione").select(
-            "Titolo,Descrizione,Obiettivo_Finalita,Data_apertura,Data_chiusura,"
-            "Dimensioni,Tipologia_Soggetto,Forma_agevolazione,Codici_ATECO,Regioni,Ambito_territoriale"
-        ).execute()
-
-        print(">>> [DEBUG TRANSIZIONE] Risposta Supabase:", response)
-        print(">>> [DEBUG TRANSIZIONE] Dati:", response.data)
-
-        if not response.data:
-            return {
-                "data": [],
-                "esito": "nessun_bando",
-                "messaggio": "Nessun bando disponibile."
-            }
-
-        return {
-            "data": response.data,
-            "esito": "ok"
-        }
-
-    except Exception as e:
-        print(f">>> [ERRORE API TRANSIZIONE]: {e}")
-        return {
-            "data": [],
-            "esito": "errore",
-            "messaggio": str(e)
-        }
-
-# -------- API: Bandi di Digitalizzazione --------
-@app.get("/bandi-digitalizzazione")
-def get_bandi_digitalizzazione():
-    try:
-        response = supabase.table("bandi_digitalizzazione").select(
-            "Titolo,Descrizione,Obiettivo_Finalita,Data_apertura,Data_chiusura,"
-            "Dimensioni,Tipologia_Soggetto,Forma_agevolazione,Codici_ATECO,Regioni,Ambito_territoriale"
-        ).execute()
-
-        print(">>> [DEBUG DIGITALIZZAZIONE] Risposta Supabase:", response)
-        print(">>> [DEBUG DIGITALIZZAZIONE] Dati:", response.data)
-
-        if not response.data:
-            return {
-                "data": [],
-                "esito": "nessun_bando",
-                "messaggio": "Nessun bando disponibile."
-            }
-
-        return {
-            "data": response.data,
-            "esito": "ok"
-        }
-
-    except Exception as e:
-        print(f">>> [ERRORE API DIGITALIZZAZIONE]: {e}")
-        return {
-            "data": [],
-            "esito": "errore",
-            "messaggio": str(e)
-        }
+# ✅ Endpoint di test base
+@app.get("/")
+def root():
+    return {"status": "eVoluto API attiva"}
