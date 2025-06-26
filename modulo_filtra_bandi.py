@@ -22,7 +22,7 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
         "codici_ateco", "regioni", "ambito_territoriale"
     ]
 
-    df = df[col for col in colonne_da_restituire if col in df.columns]
+    df = df[[col for col in colonne_da_restituire if col in df.columns]]
     df = df.dropna(how="all").head(max_results)
 
     return df.to_dict(orient="records")
