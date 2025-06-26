@@ -1,10 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Literal
+from modulo_filtra_bandi import filtra_bandi
 import pandas as pd
 import requests
 import os
-from modulo_filtra_bandi import filtra_bandi
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -13,6 +16,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # 🧾 Input atteso da GPT (dopo lettura bilancio)
+logger.info(f"✅ Ricevuti dati da GPT: {input_data.dict()}")
 class AziendaInput(BaseModel):
     codice_ateco: str
     regione: str
@@ -31,6 +35,10 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         else:
             raise HTTPException(status_code=400, detail="Macroarea non valida")
 
+        logger.info(f"📦 Tabella selezionata: {tabella}")
+
+        logger.info(f"🌐 Chiamata a Supabase → {SUPABASE_URL}/{tabella}")
+
         # ✅ Recupero dati da Supabase
         headers = {
             "apikey": SUPABASE_KEY,
@@ -38,6 +46,9 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         }
         response = requests.get(f"{SUPABASE_URL}/{tabella}", headers=headers)
         if response.status_code != 200:
+            logger.info(f"✅ Risposta Supabase OK - {len(response.json())} bandi trovati")
+        else:
+            logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
             raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
 
         df = pd.DataFrame(response.json())
