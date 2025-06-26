@@ -75,6 +75,10 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         colonne_mancanti = set(colonne_da_esporre) - set(df_filtrati.columns)
         logger.warning(f"⚠️ Colonne mancanti nel risultato Supabase: {colonne_mancanti}")
 
+        # 🔒 Protezione da crash se nessuna colonna è presente
+        if not colonne_presenti:
+            return {"bandi": [], "messaggio": "Errore: nessuna colonna disponibile nei risultati Supabase"}
+
         df_finale = df_filtrati[colonne_presenti].head(3)
 
         return {"bandi": df_finale.to_dict(orient="records")}
