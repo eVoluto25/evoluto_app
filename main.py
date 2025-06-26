@@ -13,26 +13,59 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.get("/bandi-attivi")
 def leggi_bandi_attivi():
-    print(">>> CHIAMATA RICEVUTA SU /bandi-attivi <<<")
     response = supabase.table("bandi_attivi_filtrati").select("*").execute()
-    return response.data
+    if not response.data:
+        return {
+            "data": [],
+            "esito": "nessun_bando",
+            "messaggio": "Nessun bando attivo disponibile."
+        }
+    return {"data": response.data, "esito": "ok"}
+
 
 @app.get("/bandi-sostegno")
 def get_bandi_sostegno():
     response = supabase.table("bandi_sostegno").select("*").execute()
-    return response.data
+    if not response.data:
+        return {
+            "data": [],
+            "esito": "nessun_bando",
+            "messaggio": "Nessun bando disponibile nella categoria sostegno."
+        }
+    return {"data": response.data, "esito": "ok"}
+
 
 @app.get("/bandi-innovazione")
 def get_bandi_innovazione():
     response = supabase.table("bandi_innovazione").select("*").execute()
-    return response.data
+    if not response.data:
+        return {
+            "data": [],
+            "esito": "nessun_bando",
+            "messaggio": "Nessun bando disponibile nella categoria innovazione."
+        }
+    return {"data": response.data, "esito": "ok"}
+
 
 @app.get("/bandi-transizione")
 def get_bandi_transizione():
     response = supabase.table("bandi_transizione").select("*").execute()
-    return response.data
+    if not response.data:
+        return {
+            "data": [],
+            "esito": "nessun_bando",
+            "messaggio": "Nessun bando disponibile nella categoria transizione."
+        }
+    return {"data": response.data, "esito": "ok"}
+
 
 @app.get("/bandi-digitalizzazione")
 def get_bandi_digitalizzazione():
     response = supabase.table("bandi_digitalizzazione").select("*").execute()
-    return response.data
+    if not response.data:
+        return {
+            "data": [],
+            "esito": "nessun_bando",
+            "messaggio": "Nessun bando disponibile nella categoria digitalizzazione."
+        }
+    return {"data": response.data, "esito": "ok"}
