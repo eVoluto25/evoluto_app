@@ -8,6 +8,10 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
     # Normalizza nomi colonne a lowercase
     df.columns = [col.lower() for col in df.columns]
 
+    print(f">>> Codice ATECO richiesto: {codice_ateco}")
+    print(f">>> Esempi da colonna codici_ateco:")
+    print(df["codici_ateco"].dropna().unique()[:10])
+
     if codice_ateco:
         df = df[df["codici_ateco"].str.contains(codice_ateco, na=False, case=False)]
     if regione:
