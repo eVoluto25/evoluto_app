@@ -87,6 +87,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             )
 
         # ✅ Estrai solo le colonne effettivamente presenti
+        logger.info(f"✅ Colonne presenti nel DataFrame filtrato: {colonne_presenti}")
         df_finale = df_filtrati[colonne_presenti].head(3)
         return {"bandi": df_finale.to_dict(orient="records")}
 
