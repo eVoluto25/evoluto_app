@@ -42,8 +42,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             df,
             codice_ateco=input_data.codice_ateco,
             regione=input_data.regione,
-            dimensione=input_data.dimensione,
-            forma_agevolazione=input_data.forma_agevolazione
+            dimensione=input_data.dimensione
         )
 
         if df_filtrati.empty:
