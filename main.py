@@ -22,12 +22,11 @@ class AziendaInput(BaseModel):
     dimensione: str
     macroarea: Literal["sostegno", "innovazione"]
 
-logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
-logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
-
 # 🔗 Endpoint principale
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
+logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
+logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
     try:
         logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
         # ✅ Selezione dinamica della tabella
