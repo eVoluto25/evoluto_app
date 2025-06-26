@@ -26,7 +26,7 @@ class AziendaInput(BaseModel):
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     try:
-        logger.info(f"✅ Ricevuti dati da GPT: {input_data.dict()}")
+        logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
         # ✅ Selezione dinamica della tabella
         if input_data.macroarea == "sostegno":
             tabella = "bandi_sostegno"
@@ -35,9 +35,9 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         else:
             raise HTTPException(status_code=400, detail="Macroarea non valida")
 
-        logger.info(f"📦 Tabella selezionata: {tabella}")
+        logger.info(f"✅ Macroarea selezionata: {tabella}")
 
-        logger.info(f"🌐 Chiamata a Supabase → {SUPABASE_URL}/{tabella}")
+        logger.info(f"📲 Interrogata la Macroarea → {SUPABASE_URL}/{tabella}")
 
         # ✅ Recupero dati da Supabase
         headers = {
@@ -46,7 +46,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         }
         response = requests.get(f"{SUPABASE_URL}/{tabella}", headers=headers)
         if response.status_code != 200:
-            logger.info(f"✅ Risposta Supabase OK - {len(response.json())} bandi trovati")
+            logger.info(f"✅ Risposta della Macroarea OK - {len(response.json())} bandi trovati")
         else:
             logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
             raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
@@ -74,7 +74,13 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
 
         # ⚠️ Controllo colonne mancanti
         colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
+        
+        logger.info(f"👉 Colonne disponibili in df_filtrati: {df_filtrati.columns.tolist()}")
+        logger.info(f"👉 Colonne da esporre: {colonne_da_esporre}")
+        logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
+
         colonne_mancanti = set(colonne_da_esporre) - set(df_filtrati.columns)
+        
         logger.warning(f"⚠️ Colonne mancanti nel risultato Supabase: {colonne_mancanti}")
 
         # ❌ Blocca se mancano le colonne fondamentali
