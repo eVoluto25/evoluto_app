@@ -84,3 +84,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
 
         # Estrai solo le colonne effettivamente presenti
         df_finale = df_filtrati[colonne_presenti].head(3)
+        return {"bandi": df_finale.to_dict(orient="records")}
+
+     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
