@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Literal
 import pandas as pd
 import requests
 import os
@@ -12,32 +12,39 @@ app = FastAPI()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# 🧾 Modello dati ricevuti da GPT
+# 🧾 Input atteso da GPT (dopo lettura bilancio)
 class AziendaInput(BaseModel):
     codice_ateco: str
     regione: str
     dimensione: str
-    forma_agevolazione: Optional[str] = None
+    macroarea: Literal["sostegno", "innovazione"]
 
 # 🔗 Endpoint principale
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     try:
-        # ✅ Recupero tabella bandi da Supabase
+        # ✅ Selezione dinamica della tabella
+        if input_data.macroarea == "sostegno":
+            tabella = "bandi_sostegno"
+        elif input_data.macroarea == "innovazione":
+            tabella = "bandi_innovazione"
+        else:
+            raise HTTPException(status_code=400, detail="Macroarea non valida")
+
+        # ✅ Recupero dati da Supabase
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}"
         }
-
-        response = requests.get(f"{SUPABASE_URL}/bandi_view", headers=headers)
+        response = requests.get(f"{SUPABASE_URL}/{tabella}", headers=headers)
         if response.status_code != 200:
             raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
 
         df = pd.DataFrame(response.json())
         if df.empty:
-            raise HTTPException(status_code=404, detail="Nessun bando disponibile")
+            return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
-        # ✅ Applico il filtro
+        # ✅ Filtro sui dati
         df_filtrati = filtra_bandi(
             df,
             codice_ateco=input_data.codice_ateco,
@@ -48,19 +55,15 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         if df_filtrati.empty:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
 
-        # ✅ Seleziono solo le colonne rilevanti
+        # ✅ Output mirato
         colonne_da_esporre = [
             "Titolo", "Descrizione", "Obiettivo_Finalita",
             "Data_apertura", "Data_chiusura", "Dimensioni",
             "Forma_agevolazione", "Codici_ATECO", "Regioni", "Ambito_territoriale"
         ]
         df_finale = df_filtrati[colonne_da_esporre].head(3)
+
         return {"bandi": df_finale.to_dict(orient="records")}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# ✅ Endpoint di test base
-@app.get("/")
-def root():
-    return {"status": "eVoluto API attiva"}
