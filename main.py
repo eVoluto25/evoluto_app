@@ -22,6 +22,9 @@ class AziendaInput(BaseModel):
     dimensione: str
     macroarea: Literal["sostegno", "innovazione"]
 
+logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
+logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
+
 # 🔗 Endpoint principale
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
@@ -44,7 +47,8 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}"
         }
-        response = requests.get(f"{SUPABASE_URL}/{tabella}", headers=headers)
+        url = f"{SUPABASE_URL.rstrip('/')}/{tabella}"
+        response = requests.get(url, headers=headers)
         if response.status_code != 200:
             logger.info(f"✅ Risposta della Macroarea OK - {len(response.json())} bandi trovati")
         else:
