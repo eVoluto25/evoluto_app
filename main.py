@@ -16,7 +16,6 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # 🧾 Input atteso da GPT (dopo lettura bilancio)
-logger.info(f"✅ Ricevuti dati da GPT: {input_data.dict()}")
 class AziendaInput(BaseModel):
     codice_ateco: str
     regione: str
@@ -27,6 +26,7 @@ class AziendaInput(BaseModel):
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     try:
+        logger.info(f"✅ Ricevuti dati da GPT: {input_data.dict()}")
         # ✅ Selezione dinamica della tabella
         if input_data.macroarea == "sostegno":
             tabella = "bandi_sostegno"
