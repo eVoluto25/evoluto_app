@@ -77,10 +77,17 @@ def motivazione_solidita(punteggio: float) -> str:
 def riassunto_50_parole(testo):
     if not testo or len(testo.split()) < 50:
         return testo
+
     parser = PlaintextParser.from_string(testo, Tokenizer("italian"))
     summarizer = LsaSummarizer()
-    sentences = summarizer(parser.document, 5)
+    sentences = summarizer(parser.document, 5)  # max 5 frasi
     riassunto = " ".join(str(s) for s in sentences)
+
+    # Limita a 50 parole nette
+    parole = riassunto.split()
+    if len(parole) > 50:
+        riassunto = " ".join(parole[:50]) + "..."
+
     return riassunto if riassunto else testo
 
 # Funzione principale di filtraggio bandi
