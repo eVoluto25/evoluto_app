@@ -1,9 +1,5 @@
 import logging
 import pandas as pd
-import nltk
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
 
 logger = logging.getLogger(__name__)
 
@@ -74,27 +70,19 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
-# Funzione per riassumere la descrizione in max 50 parole
-def riassunto_50_parole(testo):
-    # Controllo e download del tokenizer punkt
-    try:
-        nltk.data.find("tokenizers/punkt")
-    except LookupError:
-        nltk.download("punkt")
-
-    if not testo or len(testo.split()) < 50:
+# Funzione per riassumere la descrizione in max 30 parole
+def riassunto_30_parole(testo):
+    """
+    Restituisce le prime 30 parole del testo.
+    Se il testo ha meno di 30 parole, torna intero.
+    Nessuna dipendenza esterna.
+    """
+    if not testo:
+        return ""
+    parole = testo.split()
+    if len(parole) <= 30:
         return testo
-
-    parser = PlaintextParser.from_string(testo, Tokenizer("english"))
-    summarizer = LsaSummarizer()
-    sentences = summarizer(parser.document, 5)  # max 5 frasi
-    riassunto = " ".join(str(s) for s in sentences)
-
-    parole = riassunto.split()
-    if len(parole) > 50:
-        riassunto = " ".join(parole[:50]) + "..."
-
-    return riassunto if riassunto else testo
+    return " ".join(parole[:30]) + "..."
 
 # Funzione principale di filtraggio bandi
 def filtra_bandi(
