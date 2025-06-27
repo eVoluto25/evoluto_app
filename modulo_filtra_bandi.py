@@ -1,9 +1,76 @@
 import logging
 import pandas as pd
-from criteri_scoring import MCC_RATING_PUNTEGGIO, Z_SCORE_PUNTEGGIO, motivazione_solidita
+
+# Dizionario di punteggio MCC
+MCC_RATING_PUNTEGGIO = {
+    "AAA": 10,
+    "AA": 9,
+    "A": 8,
+    "BBB": 7,
+    "BB": 6,
+    "B": 4,
+    "CCC": 2
+}
+
+# Intervalli di punteggio Z-Score
+Z_SCORE_PUNTEGGIO = [
+    (-9999, 0, 2),
+    (0, 1.8, 4),
+    (1.8, 2.99, 7),
+    (3, 9999, 10)
+]
 
 logger = logging.getLogger(__name__)
 
+# Funzione per calcolare il punteggio Z-Score
+def punteggio_zscore(z_score: float) -> int:
+    for min_val, max_val, score in Z_SCORE_PUNTEGGIO:
+        if min_val <= z_score <= max_val:
+            return score
+    return 5
+
+# Funzione per assegnare il livello di coerenza solidità
+def livello_coerenza_solidita(punteggio: float) -> str:
+    if punteggio >= 9:
+        return "Eccellente 🟢"
+    elif punteggio >= 7:
+        return "Alta 🟢"
+    elif punteggio >= 5:
+        return "Media 🟡"
+    elif punteggio >= 3:
+        return "Bassa 🟠"
+    else:
+        return "Critica 🔴"
+
+# Funzione per generare la motivazione
+def motivazione_solidita(punteggio: float) -> str:
+    if punteggio >= 9:
+        return (
+            "Secondo l'analisi del sistema eVoluto, l'azienda presenta una solidità ECCELLENTE. "
+            "Il bando è pienamente coerente con la struttura economico-finanziaria e rappresenta un'opportunità prioritaria di sviluppo. 🟢"
+        )
+    elif punteggio >= 7:
+        return (
+            "Secondo l'analisi del sistema eVoluto, l'azienda mostra una solidità ALTA. "
+            "Il bando è coerente con le performance aziendali e può supportare investimenti strategici. 🟢"
+        )
+    elif punteggio >= 5:
+        return (
+            "Secondo l'analisi del sistema eVoluto, l'azienda possiede una solidità MEDIA. "
+            "La partecipazione al bando è possibile, ma si consiglia un'attenta valutazione della capacità di cofinanziamento. 🟡"
+        )
+    elif punteggio >= 3:
+        return (
+            "Secondo l'analisi del sistema eVoluto, l'azienda evidenzia una solidità BASSA. "
+            "Il bando potrebbe presentare criticità in fase di candidatura, si raccomanda cautela. 🟠"
+        )
+    else:
+        return (
+            "Secondo l'analisi del sistema eVoluto, l'azienda mostra una solidità CRITICA. "
+            "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
+        )
+
+# Funzione principale di filtraggio bandi
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
@@ -52,7 +119,7 @@ def filtra_bandi(
         lambda x: priorita_obiettivo(x, obiettivo_preferenziale)
     )
 
-    # Punteggio solidità
+    # Calcola punteggio solidità e motivazione
     mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
     z_punteggio = punteggio_zscore(z_score)
     media_punteggio = (mcc_punteggio + z_punteggio) / 2
@@ -75,7 +142,6 @@ def filtra_bandi(
     for _, row in df_sorted.iterrows():
         risultati.append({
             "titolo": row.get("Titolo", ""),
-            "descrizione": row.get("Descrizione", ""),
             "data": str(row.get("Data_chiusura", "")),
             "coerenza_solidita": coerenza,
             "motivazione": motivazione,
