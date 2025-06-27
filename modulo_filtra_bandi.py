@@ -83,7 +83,8 @@ def filtra_bandi(
             "descrizione": row.get("Descrizione", ""),
             "data": str(row.get("Data_chiusura", "")),
             "coerenza_solidita": coerenza,
-            "motivazione": motivazione
+            "motivazione": motivazione,
+            "descrizione": row.get("Descrizione", "")
         })
 
     return risultati
