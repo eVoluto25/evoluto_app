@@ -54,7 +54,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             codice_ateco=input_data.codice_ateco,
             regione=input_data.regione,
             dimensione=input_data.dimensione,
-            forma_agevolazione=input_data.forma_agevolazione,
+            macroarea=input_data.macroarea,
             max_results=5
         )
         logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
