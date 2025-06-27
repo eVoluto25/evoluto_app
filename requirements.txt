@@ -21,3 +21,4 @@ gunicorn
 pydantic
 beautifulsoup4
 sumy
+nltk
