@@ -70,7 +70,7 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
-# Funzione principale di filtraggio bandi
+# Funzione principale di filtraggio bandi con priorità progressiva
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
@@ -85,7 +85,16 @@ def filtra_bandi(
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
-    # Filtro Regione
+    # Escludi bandi chiusi
+    oggi = pd.Timestamp.today()
+    df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
+    df = df[df["Data_chiusura_parsed"].notnull() & (df["Data_chiusura_parsed"] >= oggi)]
+
+    if df.empty:
+        logger.info(">>> Nessun bando aperto.")
+        return []
+
+    # Funzione robusta per verificare regione
     def match_regione(campo, regione):
         if campo is None:
             return False
@@ -96,25 +105,46 @@ def filtra_bandi(
             return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
         return False
 
-    df = df[df["Regioni"].apply(lambda x: match_regione(x, regione))]
+    # Fase 1: Regione + Obiettivo preferenziale
+    df_step1 = df[
+        df["Regioni"].apply(lambda x: match_regione(x, regione))
+        &
+        df["Obiettivo_Finalita"].apply(lambda x: obiettivo_preferenziale.lower() in x.lower() if isinstance(x, str) else False)
+        &
+        df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+    ]
 
-    # Filtro Dimensione
-    df = df[df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)]
-    logger.info(f">>> Dopo filtro Dimensione: {len(df)} bandi")
+    if not df_step1.empty:
+        df_selected = df_step1.copy()
+        logger.info(">>> Fase 1: trovati %s bandi", len(df_selected))
+    else:
+        # Fase 2: Regione con qualsiasi obiettivo
+        df_step2 = df[
+            df["Regioni"].apply(lambda x: match_regione(x, regione))
+            &
+            df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+        ]
+        if not df_step2.empty:
+            df_selected = df_step2.copy()
+            logger.info(">>> Fase 2: trovati %s bandi", len(df_selected))
+        else:
+            # Fase 3: Tutti i bandi con qualsiasi obiettivo
+            df_selected = df[
+                df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+            ]
+            logger.info(">>> Fase 3: trovati %s bandi", len(df_selected))
 
-    if df.empty:
+    if df_selected.empty:
         return []
 
-    # Escludi bandi chiusi
-    oggi = pd.Timestamp.today()
-    df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
-    df = df[df["Data_chiusura_parsed"].notnull() & (df["Data_chiusura_parsed"] >= oggi)]
-    logger.info(f">>> Dopo esclusione bandi chiusi: {len(df)} bandi")
+    # Calcola punteggio solidità
+    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
+    z_punteggio = punteggio_zscore(z_score)
+    media_punteggio = (mcc_punteggio + z_punteggio) / 2
+    coerenza = livello_coerenza_solidita(media_punteggio)
+    motivazione = motivazione_solidita(media_punteggio)
 
-    if df.empty:
-        return []
-
-    # Priorità Obiettivo Preferito
+    # Priorità obiettivo
     def priorita_obiettivo(obiettivo_bando, obiettivo_scelto):
         if (
             isinstance(obiettivo_bando, str)
@@ -124,29 +154,23 @@ def filtra_bandi(
             return 1
         return 2
 
-    df["Priorita_Obiettivo"] = df["Obiettivo_Finalita"].apply(
+    df_selected["Priorita_Obiettivo"] = df_selected["Obiettivo_Finalita"].apply(
         lambda x: priorita_obiettivo(x, obiettivo_preferenziale)
     )
-
-    # Calcola punteggio solidità e motivazione
-    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
-    z_punteggio = punteggio_zscore(z_score)
-    media_punteggio = (mcc_punteggio + z_punteggio) / 2
-    coerenza = livello_coerenza_solidita(media_punteggio)
-    motivazione = motivazione_solidita(media_punteggio)
+    df_selected["Punteggio_Solidita"] = media_punteggio
 
     # Ordinamento
-    df_sorted = df.sort_values(
-        by=["Priorita_Obiettivo", "Data_chiusura_parsed"],
-        ascending=[True, True]
+    df_sorted = df_selected.sort_values(
+        by=["Priorita_Obiettivo", "Punteggio_Solidita", "Data_chiusura_parsed"],
+        ascending=[True, False, True]
     ).head(max_results)
 
-    # Log titoli bandi
+    # Log titoli
     logger.info("✅ Titoli bandi selezionati:")
     for idx, titolo in enumerate(df_sorted["Titolo"].tolist(), start=1):
         logger.info(f"  {idx}. {titolo}")
 
-    # Costruisci lista di dizionari da restituire
+    # Output
     risultati = []
     for _, row in df_sorted.iterrows():
         risultati.append({
