@@ -1,11 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Literal
-from modulo_filtra_bandi import filtra_bandi
+from modulo_filtra_bandi_clean import filtra_bandi
 import pandas as pd
 import requests
 import os
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class AziendaInput(BaseModel):
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
     logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
+
     try:
         logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
         # ✅ Selezione dinamica della tabella
@@ -38,7 +40,6 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             raise HTTPException(status_code=400, detail="Macroarea non valida")
 
         logger.info(f"✅ Macroarea selezionata: {tabella}")
-
         logger.info(f"📲 Interrogata la Macroarea → {SUPABASE_URL}/{tabella}")
 
         # ✅ Recupero dati da Supabase
@@ -84,31 +85,29 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
 
         if df_filtrati.empty:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
-  
+
         colonne_da_esporre = [
             "Titolo", "Descrizione", "Obiettivo_Finalita",
             "Data_chiusura", "Forma_agevolazione", "Regioni",
         ]
 
-        # ⚠️ Controllo colonne mancanti
         colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
-        
+
         logger.info(f"👉 Colonne disponibili in df_filtrati: {df_filtrati.columns.tolist()}")
         logger.info(f"👉 Colonne da esporre: {colonne_da_esporre}")
         logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
 
         colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
         if not colonne_fondamentali.issubset(set(colonne_presenti)):
-            logger.error(f"❌ Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}"
-            )
+            logger.error(f"❌ Errore: colonne fondamentali mancanti")
+            raise HTTPException(status_code=500, detail="Colonne fondamentali mancanti")
 
-        # ✅ Estrai solo le colonne effettivamente presenti
-        logger.info(f"✅ Colonne presenti nel DataFrame filtrato: {colonne_presenti}")
-        df_finale = df_filtrati[colonne_presenti].head(3)
-        return {"bandi": df_finale.to_dict(orient="records")}
+        # ✅ Output finale
+        return {
+            "bandi": df_filtrati[colonne_presenti].to_dict(orient="records"),
+            "totale": len(df_filtrati)
+        }
 
     except Exception as e:
+        logger.error(f"❌ Errore generale: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
