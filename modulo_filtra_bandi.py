@@ -32,6 +32,8 @@ def filtra_bandi(
     # Filtro Regione
     df = df[df["Regioni"].apply(lambda x: regione in x if isinstance(x, list) else False)]
     logger.info(f">>> Dopo filtro Regione: {len(df)} bandi")
+    logger.info(f"*** Codici ATECO presenti dopo filtro Regione: {df['Codici_ATECO'].tolist()}")
+
 
     # Filtro Codice ATECO (match parziale)
     def match_codice_ateco(lista_ateco, codice):
