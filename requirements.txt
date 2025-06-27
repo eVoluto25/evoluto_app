@@ -20,3 +20,4 @@ fpdf
 gunicorn
 pydantic
 beautifulsoup4
+sumy
