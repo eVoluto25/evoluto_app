@@ -1,11 +1,6 @@
 import logging
 import pandas as pd
-from criteri_scoring import (
-    MCC_RATING_PUNTEGGIO,
-    punteggio_zscore,
-    livello_coerenza_solidita,
-    motivazione_solidita
-)
+from criteri_scoring import MCC_RATING_PUNTEGGIO, Z_SCORE_PUNTEGGIO, motivazione_solidita
 
 logger = logging.getLogger(__name__)
 
