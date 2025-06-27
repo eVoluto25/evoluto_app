@@ -29,7 +29,7 @@ def punteggio_zscore(z_score: float) -> int:
             return score
     return 5
 
-# Funzione per assegnare il livello di coerenza solidità
+# Funzione per assegnare livello coerenza solidità
 def livello_coerenza_solidita(punteggio: float) -> str:
     if punteggio >= 9:
         return "Eccellente 🟢"
@@ -127,23 +127,15 @@ def filtra_bandi(
             return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
         return False
 
-    # Filtro settore (prima priorità)
-    def match_settore(bando_settore, settore_azienda):
-        if bando_settore is None:
-            return False
-        if isinstance(bando_settore, str):
-            bando_settore_norm = bando_settore.lower()
-            if "tutti i settori" in bando_settore_norm:
-                return True
-            return settore_azienda.lower() in bando_settore_norm
-        return False
-
-    df = df[
-        df["Settore_Attività"].apply(lambda x: match_settore(x, settore_principale))
-    ]
-    logger.info(">>> Dopo filtro settore: %s bandi", len(df))
-    if df.empty:
-        return []
+    # Funzione priorità settore
+    def priorita_settore(bando_settore, settore_azienda):
+        if not isinstance(bando_settore, str) or not bando_settore:
+            return 2
+        if "tutti i settori" in bando_settore.lower():
+            return 2
+        if settore_azienda.lower() in bando_settore.lower():
+            return 1
+        return 3
 
     # Filtro in base a solidità
     if solidita_critica:
@@ -191,25 +183,19 @@ def filtra_bandi(
     if df_selected.empty:
         return []
 
-    # Priorità obiettivo
-    def priorita_obiettivo(obiettivo_bando, obiettivo_scelto):
-        if (
-            isinstance(obiettivo_bando, str)
-            and isinstance(obiettivo_scelto, str)
-            and obiettivo_scelto.lower() in obiettivo_bando.lower()
-        ):
-            return 1
-        return 2
-
+    # Priorità colonne
     df_selected["Priorita_Obiettivo"] = df_selected["Obiettivo_Finalita"].apply(
-        lambda x: priorita_obiettivo(x, obiettivo_preferenziale)
+        lambda x: 1 if obiettivo_preferenziale.lower() in str(x).lower() else 2
+    )
+    df_selected["Priorita_Settore"] = df_selected["Settore_Attività"].apply(
+        lambda x: priorita_settore(x, settore_principale)
     )
     df_selected["Punteggio_Solidita"] = media_punteggio
 
     # Ordinamento
     df_sorted = df_selected.sort_values(
-        by=["Priorita_Obiettivo", "Punteggio_Solidita", "Data_chiusura_parsed"],
-        ascending=[True, False, True]
+        by=["Priorita_Settore", "Priorita_Obiettivo", "Punteggio_Solidita", "Data_chiusura_parsed"],
+        ascending=[True, True, False, True]
     ).head(max_results)
 
     # Log titoli
