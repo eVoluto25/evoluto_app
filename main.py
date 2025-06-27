@@ -22,20 +22,6 @@ class AziendaInput(BaseModel):
     mcc_rating: str  # Esempio: "BBB", "AA", ecc.
     z_score: float   # Esempio: -1.2, 0.5, ecc.
 
-
-# ✅ Funzione di normalizzazione
-def normalizza_codici_ateco(x):
-    """
-    Rende uniforme il campo Codici_ATECO in lista di stringhe.
-    """
-    if isinstance(x, list):
-        return [i.strip() for i in x if i]
-    if x is None:
-        return []
-    if isinstance(x, str):
-        return [x.strip()]
-    return []
-
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
@@ -62,14 +48,6 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         if df.empty:
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
-        # ✅ Normalizza i codici ATECO
-        df["Codici_ATECO"] = df["Codici_ATECO"].apply(normalizza_codici_ateco)
-
-        # 🔍 Log di debug per vedere i dati veri
-        logger.info("*** Contenuto normalizzato Codici_ATECO:")
-        for idx, riga in enumerate(df["Codici_ATECO"].tolist()):
-            logger.info(f"Riga {idx}: {riga}")
-
         # ✅ Filtra i bandi
         df_filtrati = filtra_bandi(
             df,
@@ -78,7 +56,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
-            max_results=5
+            max_results=3
         )
 
         logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
