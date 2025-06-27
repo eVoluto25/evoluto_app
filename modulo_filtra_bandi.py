@@ -1,4 +1,5 @@
 import logging
+import pandas as pd
 from typing import List
 from supabase import create_client, Client
 from pathlib import Path
