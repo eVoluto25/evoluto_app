@@ -54,6 +54,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             regione=input_data.regione,
             dimensione=input_data.dimensione,
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
+            settore_principale=input_data.settore_principale, 
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
             max_results=5
