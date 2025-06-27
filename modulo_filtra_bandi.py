@@ -1,5 +1,8 @@
 import logging
 import pandas as pd
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
 
 # Dizionario di punteggio MCC
 MCC_RATING_PUNTEGGIO = {
@@ -70,21 +73,29 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
+# Funzione per riassumere la descrizione in max 50 parole
+def riassunto_50_parole(testo):
+    if not testo or len(testo.split()) < 50:
+        return testo
+    parser = PlaintextParser.from_string(testo, Tokenizer("italian"))
+    summarizer = LsaSummarizer()
+    sentences = summarizer(parser.document, 5)
+    riassunto = " ".join(str(s) for s in sentences)
+    return riassunto if riassunto else testo
+
 # Funzione principale di filtraggio bandi
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
     dimensione: str,
     obiettivo_preferenziale: str,
-    settore_principale: str,
     mcc_rating: str,
     z_score: float,
-    max_results: int = 5
+    max_results: int = 20
 ) -> list:
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro dimensione: %s", dimensione)
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
-    logger.info(">>> Settore principale: %s", settore_principale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
     # Calcola punteggi solidità
@@ -116,7 +127,7 @@ def filtra_bandi(
         logger.info(">>> Nessun bando con scadenza oltre 60 giorni.")
         return []
 
-    # Funzione robusta per match regione
+    # Funzione match regione
     def match_regione(campo, regione):
         if campo is None:
             return False
@@ -127,17 +138,7 @@ def filtra_bandi(
             return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
         return False
 
-    # Funzione priorità settore
-    def priorita_settore(bando_settore, settore_azienda):
-        if not isinstance(bando_settore, str) or not bando_settore:
-            return 2
-        if "tutti i settori" in bando_settore.lower():
-            return 2
-        if settore_azienda.lower() in bando_settore.lower():
-            return 1
-        return 3
-
-    # Filtro in base a solidità
+    # Filtro solidità critica
     if solidita_critica:
         df_selected = df[
             df["Regioni"].apply(lambda x: match_regione(x, regione))
@@ -183,19 +184,16 @@ def filtra_bandi(
     if df_selected.empty:
         return []
 
-    # Priorità colonne
+    # Priorità Obiettivo
     df_selected["Priorita_Obiettivo"] = df_selected["Obiettivo_Finalita"].apply(
         lambda x: 1 if obiettivo_preferenziale.lower() in str(x).lower() else 2
-    )
-    df_selected["Priorita_Settore"] = df_selected["Settore_Attività"].apply(
-        lambda x: priorita_settore(x, settore_principale)
     )
     df_selected["Punteggio_Solidita"] = media_punteggio
 
     # Ordinamento
     df_sorted = df_selected.sort_values(
-        by=["Priorita_Settore", "Priorita_Obiettivo", "Punteggio_Solidita", "Data_chiusura_parsed"],
-        ascending=[True, True, False, True]
+        by=["Priorita_Obiettivo", "Punteggio_Solidita", "Data_chiusura_parsed"],
+        ascending=[True, False, True]
     ).head(max_results)
 
     # Log titoli
@@ -206,6 +204,7 @@ def filtra_bandi(
     # Output
     risultati = []
     for _, row in df_sorted.iterrows():
+        descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
         risultati.append({
             "titolo": row.get("Titolo", ""),
             "data": str(row.get("Data_chiusura", "")),
@@ -213,7 +212,7 @@ def filtra_bandi(
             "motivazione": motivazione,
             "forma_agevolazione": row.get("Forma_agevolazione", ""),
             "costi_ammessi": row.get("Costi_Ammessi", ""),
-            "descrizione": row.get("Descrizione", "")
+            "descrizione": descrizione_ridotta
         })
 
     return risultati
