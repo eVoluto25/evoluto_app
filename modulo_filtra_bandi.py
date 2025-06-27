@@ -25,50 +25,12 @@ def filtra_bandi(
     max_results: int = 5
 ) -> pd.DataFrame:
     logger.info(">>> Filtro regione: %s", regione)
-    logger.info(">>> Filtro codice ATECO: %s", codice_ateco)
     logger.info(">>> Filtro dimensione: %s", dimensione)
     logger.info(">>> Macroarea: %s", macroarea)
 
     # Filtro Regione
     df = df[df["Regioni"].apply(lambda x: regione in x if isinstance(x, list) else False)]
     logger.info(f">>> Dopo filtro Regione: {len(df)} bandi")
-
-    logger.info(f"*** Codici ATECO presenti dopo filtro Regione: {df['Codici_ATECO'].tolist()}")
-
-    # Filtro Codice ATECO
-    def match_codice_ateco(lista_ateco, codice):
-        """
-        Restituisce True se:
-        - Il codice ATECO passato è coerente con i codici nel dataset.
-        - Oppure se il campo contiene 'Tutti i settori'.
-        """
-        if lista_ateco is None:
-            return False
-
-        if isinstance(lista_ateco, str):
-            if "tutti i settori" in lista_ateco.lower():
-                return True
-            return False
-
-        codice_normalizzato = codice.strip().replace(".", "").lower()
-
-        for c in lista_ateco:
-            if not c:
-                continue
-            c_norm = c.strip().replace(".", "").lower()
-            if "tutti i settori" in c_norm:
-                return True
-            if c_norm.startswith(codice_normalizzato):
-                return True
-            if codice_normalizzato.startswith(c_norm):
-                return True
-            if codice_normalizzato in c_norm:
-                return True
-
-        return False
-
-    df = df[df["Codici_ATECO"].apply(lambda x: match_codice_ateco(x, codice_ateco))]
-    logger.info(f">>> Dopo filtro Codice ATECO: {len(df)} bandi")
 
     # Filtro Dimensione
     df = df[df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)]
@@ -86,6 +48,17 @@ def filtra_bandi(
     if df.empty:
         return df
 
+    # Log bandi aperti a tutti i settori
+    df["Aperti_Tutti_Settori"] = df["Codici_ATECO"].apply(
+        lambda x: (
+            isinstance(x, str) and "tutti i settori" in x.lower()
+        ) or (
+            isinstance(x, list) and any("tutti i settori" in str(i).lower() for i in x)
+        )
+    )
+    n_tutti_settori = df["Aperti_Tutti_Settori"].sum()
+    logger.info(f"✅ Bandi aperti a tutti i settori: {n_tutti_settori}")
+
     # Priorità Macroarea
     df["Priorita_Macroarea"] = df["Obiettivo_Finalita"].apply(
         lambda x: priorita_macroarea(x, macroarea)
@@ -102,6 +75,11 @@ def filtra_bandi(
         ascending=[True, True, True]
     ).head(max_results)
 
+    # Log titoli dei bandi selezionati
+    logger.info("✅ Titoli bandi selezionati:")
+    for idx, titolo in enumerate(df_sorted["Titolo"].tolist(), start=1):
+        logger.info(f"  {idx}. {titolo}")
+
     # Restituisci solo le colonne richieste
     colonne_restituite = [
         "Titolo",
@@ -111,7 +89,9 @@ def filtra_bandi(
         "Forma_agevolazione",
         "Dimensioni",
         "Regioni",
-        "Codici_ATECO"
+        "Codici_ATECO",
+        "Aperti_Tutti_Settori"
     ]
     colonne_presenti = [col for col in colonne_restituite if col in df_sorted.columns]
+
     return df_sorted[colonne_presenti]
