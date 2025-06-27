@@ -10,10 +10,15 @@ def safe_parse_list(val):
             return val
         if pd.isna(val):
             return []
+        if isinstance(val, str):
+            # se contiene la parola "tutti", lo interpretiamo come lista universale
+            if "tutti" in val.lower():
+                return ["tutti"]
         return ast.literal_eval(val)
     except Exception as e:
         logger.warning(f"⚠️ Errore parsing campo lista: {val} -> {e}")
         return []
+
 
 def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_agevolazione=None, max_results=5):
     logger.info("🔍 Entrata nella funzione filtra_bandi")
