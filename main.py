@@ -16,11 +16,11 @@ JSON_URL = "https://raw.githubusercontent.com/eVoluto25/evoluto_app/refs/heads/m
 
 # 🧾 Input atteso da GPT (dopo lettura bilancio)
 class AziendaInput(BaseModel):
-    codice_ateco: str
-    regione: str
-    dimensione: str
-    macroarea: Literal["sostegno", "innovazione"]
-    forma_agevolazione: str | None = None  # opzionale
+    dimensione: str  # Esempio: "Microimpresa", "Piccola Impresa", ecc.
+    regione: str     # Esempio: "Lombardia", "Lazio", ecc.
+    obiettivo_preferenziale: str  # Esempio: "Innovazione", "Sostegno", ecc.
+    mcc_rating: str  # Esempio: "BBB", "AA", ecc.
+    z_score: float   # Esempio: -1.2, 0.5, ecc.
 
 
 # ✅ Funzione di normalizzazione
