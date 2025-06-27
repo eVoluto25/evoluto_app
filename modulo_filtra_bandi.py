@@ -76,6 +76,7 @@ def filtra_bandi(
     regione: str,
     dimensione: str,
     obiettivo_preferenziale: str,
+    settore_principale: str,
     mcc_rating: str,
     z_score: float,
     max_results: int = 5
@@ -83,6 +84,7 @@ def filtra_bandi(
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro dimensione: %s", dimensione)
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
+    logger.info(">>> Settore principale: %s", settore_principale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
     # Calcola punteggi solidità
@@ -125,9 +127,26 @@ def filtra_bandi(
             return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
         return False
 
+    # Filtro settore (prima priorità)
+    def match_settore(bando_settore, settore_azienda):
+        if bando_settore is None:
+            return False
+        if isinstance(bando_settore, str):
+            bando_settore_norm = bando_settore.lower()
+            if "tutti i settori" in bando_settore_norm:
+                return True
+            return settore_azienda.lower() in bando_settore_norm
+        return False
+
+    df = df[
+        df["Settore_Attività"].apply(lambda x: match_settore(x, settore_principale))
+    ]
+    logger.info(">>> Dopo filtro settore: %s bandi", len(df))
+    if df.empty:
+        return []
+
     # Filtro in base a solidità
     if solidita_critica:
-        # Solo bandi di sostegno
         df_selected = df[
             df["Regioni"].apply(lambda x: match_regione(x, regione))
             &
