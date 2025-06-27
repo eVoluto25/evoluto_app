@@ -205,7 +205,7 @@ def filtra_bandi(
     # Output
     risultati = []
     for _, row in df_sorted.iterrows():
-        descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
+        descrizione_ridotta = riassunto_30_parole(row.get("Descrizione", ""))
         risultati.append({
             "titolo": row.get("Titolo", ""),
             "data": str(row.get("Data_chiusura", "")),
