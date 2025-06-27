@@ -30,7 +30,7 @@ def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_age
 
     # Filtro ATECO
     if codice_ateco:
-    logger.info(f"✅ Filtro codice ATECO: {codice_ateco}")
+        logger.info(f"✅ Filtro codice ATECO: {codice_ateco}")
     
     def match_ateco(val):
         try:
