@@ -3,7 +3,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-# Mappatura delle tematiche per priorità macroarea
+# Mappa macroaree
 MAPPATURA_MACROAREA = {
     "innovazione": ["Innovazione", "Digitalizzazione", "Ricerca", "Transizione"],
     "sostegno": ["Sostegno", "Crisi", "Liquidità", "Inclusione"]
@@ -29,22 +29,30 @@ def filtra_bandi(
     logger.info(">>> Filtro dimensione: %s", dimensione)
     logger.info(">>> Macroarea: %s", macroarea)
 
-    # Filtra per Regione
+    # Filtro Regione
     df = df[df["Regioni"].apply(lambda x: regione in x if isinstance(x, list) else False)]
     logger.info(f">>> Dopo filtro Regione: {len(df)} bandi")
 
-    # Filtra per Codice ATECO
-    df = df[df["Codici_ATECO"].apply(lambda x: codice_ateco in x if isinstance(x, list) else False)]
-    logger.info(f">>> Dopo filtro Codice ATECO: {len(df)} bandi")
+    # Filtro Codice ATECO (match parziale)
+    def match_codice_ateco(lista_ateco, codice):
+        if not isinstance(lista_ateco, list):
+            return False
+        for c in lista_ateco:
+            if c.startswith(codice):
+                return True
+        return False
 
-    # Filtra per Dimensione
+    df = df[df["Codici_ATECO"].apply(lambda x: match_codice_ateco(x, codice_ateco))]
+    logger.info(f">>> Dopo filtro Codice ATECO (parziale): {len(df)} bandi")
+
+    # Filtro Dimensione
     df = df[df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)]
     logger.info(f">>> Dopo filtro Dimensione: {len(df)} bandi")
 
     if df.empty:
         return df
 
-    # Escludi bandi già chiusi
+    # Escludi bandi chiusi
     oggi = pd.Timestamp.today()
     df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
     df = df[df["Data_chiusura_parsed"] >= oggi]
@@ -58,7 +66,7 @@ def filtra_bandi(
         lambda x: priorita_macroarea(x, macroarea)
     )
 
-    # Priorità Forma Agevolazione (Fondo perduto prima)
+    # Priorità Fondo Perduto
     df["Priorita_Forma"] = df["Forma_agevolazione"].apply(
         lambda x: 1 if x and "fondo perduto" in x.lower() else 2
     )
