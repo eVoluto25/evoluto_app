@@ -70,19 +70,19 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
-# Funzione per riassumere la descrizione in max 30 parole
-def riassunto_30_parole(testo):
+# Funzione per riassumere la descrizione in max 50 parole
+def riassunto_50_parole(testo):
     """
-    Restituisce le prime 30 parole del testo.
-    Se il testo ha meno di 30 parole, torna intero.
+    Restituisce le prime 50 parole del testo.
+    Se il testo ha meno di 50 parole, torna intero.
     Nessuna dipendenza esterna.
     """
     if not testo:
         return ""
     parole = testo.split()
-    if len(parole) <= 30:
+    if len(parole) <= 50:
         return testo
-    return " ".join(parole[:30]) + "..."
+    return " ".join(parole[:50]) + "..."
 
 # Funzione principale di filtraggio bandi
 def filtra_bandi(
@@ -92,7 +92,7 @@ def filtra_bandi(
     obiettivo_preferenziale: str,
     mcc_rating: str,
     z_score: float,
-    max_results: int = 20
+    max_results: int = 25
 ) -> list:
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro dimensione: %s", dimensione)
@@ -205,7 +205,7 @@ def filtra_bandi(
     # Output
     risultati = []
     for _, row in df_sorted.iterrows():
-        descrizione_ridotta = riassunto_30_parole(row.get("Descrizione", ""))
+        descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
         risultati.append({
             "titolo": row.get("Titolo", ""),
             "data": str(row.get("Data_chiusura", "")),
