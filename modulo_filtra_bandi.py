@@ -86,8 +86,17 @@ def filtra_bandi(
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
     # Filtro Regione
-    df = df[df["Regioni"].apply(lambda x: regione in x if isinstance(x, list) else False)]
-    logger.info(f">>> Dopo filtro Regione: {len(df)} bandi")
+    def match_regione(campo, regione):
+        if campo is None:
+            return False
+        if isinstance(campo, list):
+            return regione in campo or "Tutte le regioni" in campo
+        if isinstance(campo, str):
+            campo_norm = campo.lower()
+            return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
+        return False
+
+    df = df[df["Regioni"].apply(lambda x: match_regione(x, regione))]
 
     # Filtro Dimensione
     df = df[df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)]
