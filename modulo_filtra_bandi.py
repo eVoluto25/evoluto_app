@@ -10,7 +10,7 @@ SUPABASE_KEY = "your-anon-key"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def filtra_bandi_clean(
+def filtra_bandi(
     regione: str,
     codice_ateco: str,
     dimensione: str,
