@@ -56,13 +56,18 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
-            max_results=3
+            max_results=5
         )
 
-        logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
-
-        if df_filtrati.empty:
+        # ✅ Controllo corretto
+        if not df_filtrati:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
+
+        # ✅ Ritorna direttamente la lista
+        return {
+            "bandi": df_filtrati,
+            "totale": len(df_filtrati)
+        }
 
         # ✅ Colonne da esporre (originali dal JSON)
         colonne_da_esporre = [
