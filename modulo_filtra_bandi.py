@@ -1,78 +1,61 @@
+modulo_filtrato_clean = '''
 import pandas as pd
-import ast
 import logging
 
 logger = logging.getLogger(__name__)
 
-def safe_parse_list(val):
-    try:
-        if isinstance(val, list):
-            return val
-        if pd.isna(val):
-            return []
-        if isinstance(val, str):
-            # se contiene la parola "tutti", lo interpretiamo come lista universale
-            if "tutti" in val.lower():
-                return ["tutti"]
-        return ast.literal_eval(val)
-    except Exception as e:
-        logger.warning(f"⚠️ Errore parsing campo lista: {val} -> {e}")
-        return []
-
-
 def filtra_bandi(df, codice_ateco=None, regione=None, dimensione=None, forma_agevolazione=None, max_results=5):
     logger.info("🔍 Entrata nella funzione filtra_bandi")
 
-    # Normalizza colonne
+    # Normalizza nomi colonne
     df.columns = [col.lower() for col in df.columns]
     logger.info(f"📊 DataFrame iniziale: {len(df)} righe")
 
-    # Parsa le colonne liste (solo se esistono)
-    for col in ["codici_ateco", "regioni", "dimensioni", "forma_agevolazione"]:
-        if col in df.columns:
-            logger.info(f"🔄 Parsing colonna '{col}'")
-            df[col] = df[col].apply(safe_parse_list)
+    # Usa solo colonne pulite
+    if 'codici_ateco_clean' in df.columns:
+        df['codici_ateco'] = df['codici_ateco_clean']
+    if 'regioni_clean' in df.columns:
+        df['regioni'] = df['regioni_clean']
+    if 'dimensioni_clean' in df.columns:
+        df['dimensioni'] = df['dimensioni_clean']
+    if 'forma_agevolazione_clean' in df.columns:
+        df['forma_agevolazione'] = df['forma_agevolazione_clean']
 
     # Filtro codice ATECO
     if codice_ateco:
-        try:
-            def match_codice_ateco(lista):
-                if isinstance(lista, list) and len(lista) > 0:
-                    if "tutti" in [x.strip().lower() for x in lista]:
-                        return True
-                    return any(codice_ateco.startswith(str(c).strip()) for c in lista)
-                return False
+        def match_codice_ateco(lista):
+            if isinstance(lista, list) and len(lista) > 0:
+                if "tutti" in [x.strip().lower() for x in lista]:
+                    return True
+                return any(str(codice_ateco).startswith(str(c).strip()) for c in lista)
+            return False
+        df = df[df["codici_ateco"].apply(match_codice_ateco)]
+        logger.info(f"✅ Filtro codice ATECO: {codice_ateco}")
 
-            df = df[df["codici_ateco"].apply(match_codice_ateco)]
-            logger.info(f"✅ Filtro codice ATECO: {codice_ateco}")
-        except Exception as e:
-            logger.warning(f"⚠️ Errore parsing codice ATECO: {codice_ateco} -> {e}")
+    # Filtro regione
+    if regione:
+        df = df[df["regioni"].apply(lambda x: regione in x if isinstance(x, list) else False)]
+        logger.info(f"🌍 Filtro regione: {regione}")
 
+    # Filtro dimensione
+    if dimensione:
+        df = df[df["dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)]
+        logger.info(f"🏢 Filtro dimensione: {dimensione}")
 
-    # Filtro Regione
-    if regione and "regioni" in df.columns:
-        logger.info(f"🔍 Filtro regione: {regione}")
-        df = df[df["regioni"].apply(lambda lst: regione in lst)]
+    # Filtro forma agevolazione
+    if forma_agevolazione:
+        df = df[df["forma_agevolazione"].apply(lambda x: forma_agevolazione in x if isinstance(x, list) else False)]
+        logger.info(f"💶 Filtro forma agevolazione: {forma_agevolazione}")
 
-    # Filtro Dimensione
-    if dimensione and "dimensioni" in df.columns:
-        logger.info(f"🔍 Filtro dimensione: {dimensione}")
-        df = df[df["dimensioni"].apply(lambda lst: dimensione in lst)]
+    # Restituisci solo i primi N risultati
+    risultati = df.head(max_results)
+    logger.info(f"🎯 Filtro bandi completato: {len(risultati)} bandi trovati")
+    return risultati
+'''
 
-    # Filtro Forma Agevolazione
-    if forma_agevolazione and "forma_agevolazione" in df.columns:
-        logger.info(f"🔍 Filtro forma agevolazione: {forma_agevolazione}")
-        df = df[df["forma_agevolazione"].apply(lambda lst: forma_agevolazione in lst)]
+# Salvo il file aggiornato
+clean_file_path = "/mnt/data/modulo_filtra_bandi_clean.py"
+with open(clean_file_path, "w", encoding="utf-8") as f:
+    f.write(modulo_filtrato_clean)
 
-    colonne_da_restituire = [
-        "titolo", "descrizione", "obiettivo_finalita", "data_apertura", "data_chiusura",
-        "dimensioni", "forma_agevolazione", "codici_ateco", "regioni", "ambito_territoriale",
-        "spesa_ammessa_min", "spesa_ammessa_max", "agevolazione_concedibile_min",
-        "agevolazione_concedibile_max", "stanziamento_incentivo"
-    ]
-
-    df = df[[col for col in colonne_da_restituire if col in df.columns]]
-    df = df.dropna(how="all").head(max_results)
-
-    logger.info(f"✅ Filtro bandi completato: {len(df)} bandi trovati")
-    return df.to_dict(orient="records")
+clean_file_path
