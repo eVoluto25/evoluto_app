@@ -6,6 +6,11 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
 # Dizionario di punteggio MCC
 MCC_RATING_PUNTEGGIO = {
     "AAA": 10,
