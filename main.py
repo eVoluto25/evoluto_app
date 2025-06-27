@@ -22,16 +22,14 @@ class AziendaInput(BaseModel):
     regione: str
     dimensione: str
     macroarea: Literal["sostegno", "innovazione"]
+    forma_agevolazione: str | None = None  # opzionale
 
-# 🔗 Endpoint principale
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
     logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
-
     try:
         logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
-        # ✅ Selezione dinamica della tabella
         if input_data.macroarea == "sostegno":
             tabella = "bandi_sostegno"
         elif input_data.macroarea == "innovazione":
@@ -42,7 +40,6 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         logger.info(f"✅ Macroarea selezionata: {tabella}")
         logger.info(f"📲 Interrogata la Macroarea → {SUPABASE_URL}/{tabella}")
 
-        # ✅ Recupero dati da Supabase
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}"
@@ -54,7 +51,6 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             logger.error(f"❌ Errore Supabase [{response.status_code}]: {response.text}")
             raise HTTPException(status_code=500, detail="Errore nel recupero dati da Supabase")
 
-        # 🩹 Fix struttura dati
         dati_json = response.json()
         if isinstance(dati_json, dict):
             dati_json = [dati_json]
@@ -70,13 +66,14 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         if df.empty:
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
-        # ✅ Filtro sui dati
         try:
             df_filtrati = filtra_bandi(
                 df,
                 codice_ateco=input_data.codice_ateco,
                 regione=input_data.regione,
-                dimensione=input_data.dimensione
+                dimensione=input_data.dimensione,
+                forma_agevolazione=input_data.forma_agevolazione,
+                max_results=5
             )
             logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
         except Exception as e:
@@ -87,22 +84,23 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
 
         colonne_da_esporre = [
-            "Titolo", "Descrizione", "Obiettivo_Finalita",
-            "Data_chiusura", "Forma_agevolazione", "Regioni",
+            "titolo_clean", "descrizione_clean", "obiettivo_clean",
+            "data_chiusura_clean", "dimensioni_clean",
+            "forma_agevolazione_clean", "codici_ateco_clean", "regioni_clean"
         ]
 
         colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
-
         logger.info(f"👉 Colonne disponibili in df_filtrati: {df_filtrati.columns.tolist()}")
         logger.info(f"👉 Colonne da esporre: {colonne_da_esporre}")
         logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
 
-        colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
+        colonne_fondamentali = {"titolo_clean", "obiettivo_clean", "forma_agevolazione_clean"}
         if not colonne_fondamentali.issubset(set(colonne_presenti)):
-            logger.error(f"❌ Errore: colonne fondamentali mancanti")
+            logger.error(f"❌ Errore: colonne fondamentali mancanti nei dati dei bandi: {colonne_fondamentali - set(colonne_presenti)}")
             raise HTTPException(status_code=500, detail="Colonne fondamentali mancanti")
 
-        # ✅ Output finale
+        logger.info(f"✅ Colonne presenti nel DataFrame filtrato: {colonne_presenti}")
+
         return {
             "bandi": df_filtrati[colonne_presenti].to_dict(orient="records"),
             "totale": len(df_filtrati)
