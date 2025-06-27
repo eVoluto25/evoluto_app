@@ -219,7 +219,7 @@ def filtra_bandi(
             "motivazione": motivazione,
             "forma_agevolazione": row.get("Forma_agevolazione", ""),
             "costi_ammessi": row.get("Costi_Ammessi", ""),
-            "descrizione": descrizione_ridotta
+            "descrizione": riassunto_50_parole(row.get("Descrizione", ""))
         })
 
     return risultati
