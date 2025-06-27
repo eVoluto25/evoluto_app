@@ -37,12 +37,20 @@ def filtra_bandi(
 
     # Filtro Codice ATECO (match parziale)
     def match_codice_ateco(lista_ateco, codice):
-        if not isinstance(lista_ateco, list):
-            return False
-        for c in lista_ateco:
-            if c.startswith(codice):
-                return True
+    """
+    Restituisce True se il codice ATECO passato corrisponde almeno all'inizio
+    del codice ATECO presente nel dataset.
+    """
+    if not isinstance(lista_ateco, list):
         return False
+    codice_normalizzato = codice.strip()
+    for c in lista_ateco:
+        if c.startswith(codice_normalizzato):
+            return True
+        # es: codice="68.1" matcha "68.10"
+        if c.replace(".", "").startswith(codice_normalizzato.replace(".", "")):
+            return True
+    return False
 
     df = df[df["Codici_ATECO"].apply(lambda x: match_codice_ateco(x, codice_ateco))]
     logger.info(f">>> Dopo filtro Codice ATECO (parziale): {len(df)} bandi")
