@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Literal
 from modulo_filtra_bandi import filtra_bandi
 import pandas as pd
 import requests
@@ -14,14 +13,13 @@ app = FastAPI()
 # 🔗 URL del JSON su GitHub
 JSON_URL = "https://raw.githubusercontent.com/eVoluto25/evoluto_app/refs/heads/main/opendata-export.json"
 
-# 🧾 Input atteso da GPT (dopo lettura bilancio)
+# 🧾 Input atteso da GPT
 class AziendaInput(BaseModel):
-    dimensione: str  # Esempio: "Microimpresa", "Piccola Impresa", ecc.
-    regione: str     # Esempio: "Lombardia", "Lazio", ecc.
-    obiettivo_preferenziale: str  # Esempio: "Innovazione", "Sostegno", ecc.
-    settore_principale: str # Esempio: "Trasporti",  
-    mcc_rating: str  # Esempio: "BBB", "AA", ecc.
-    z_score: float   # Esempio: -1.2, 0.5, ecc.
+    dimensione: str             # Es: "Microimpresa"
+    regione: str                # Es: "Lombardia"
+    obiettivo_preferenziale: str  # Es: "Innovazione"
+    mcc_rating: str             # Es: "BBB"
+    z_score: float              # Es: -1.2
 
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
@@ -50,53 +48,23 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
         # ✅ Filtra i bandi
-        df_filtrati = filtra_bandi(
-            df,
+        bandi_filtrati = filtra_bandi(
+            df=df,
             regione=input_data.regione,
             dimensione=input_data.dimensione,
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
-            settore_principale=input_data.settore_principale, 
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
-            max_results=5
+            max_results=20
         )
 
-        # ✅ Controllo corretto
-        if not df_filtrati:
+        if not bandi_filtrati:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
 
-        # ✅ Ritorna direttamente la lista
+        # ✅ Restituisci lista finale già pronta
         return {
-            "bandi": df_filtrati,
-            "totale": len(df_filtrati)
-        }
-
-        # ✅ Colonne da esporre (originali dal JSON)
-        colonne_da_esporre = [
-            "Titolo",
-            "Descrizione",
-            "Obiettivo_Finalita",
-            "Data_chiusura",
-            "Dimensioni",
-            "Forma_agevolazione",
-            "Codici_ATECO",
-            "Regioni"
-        ]
-
-        colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
-        logger.info(f"👉 Colonne disponibili in df_filtrati: {df_filtrati.columns.tolist()}")
-        logger.info(f"👉 Colonne effettivamente presenti: {colonne_presenti}")
-
-        colonne_fondamentali = {"Titolo", "Obiettivo_Finalita", "Forma_agevolazione"}
-        if not colonne_fondamentali.issubset(set(colonne_presenti)):
-            logger.error(f"❌ Colonne fondamentali mancanti: {colonne_fondamentali - set(colonne_presenti)}")
-            raise HTTPException(status_code=500, detail="Colonne fondamentali mancanti")
-
-        logger.info(f"✅ Pronto a restituire i risultati")
-
-        return {
-            "bandi": df_filtrati[colonne_presenti].to_dict(orient="records"),
-            "totale": len(df_filtrati)
+            "bandi": bandi_filtrati,
+            "totale": len(bandi_filtrati)
         }
 
     except Exception as e:
