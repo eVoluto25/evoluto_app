@@ -22,6 +22,20 @@ class AziendaInput(BaseModel):
     macroarea: Literal["sostegno", "innovazione"]
     forma_agevolazione: str | None = None  # opzionale
 
+
+# ✅ Funzione di normalizzazione
+def normalizza_codici_ateco(x):
+    """
+    Rende uniforme il campo Codici_ATECO in lista di stringhe.
+    """
+    if isinstance(x, list):
+        return [i.strip() for i in x if i]
+    if x is None:
+        return []
+    if isinstance(x, str):
+        return [x.strip()]
+    return []
+
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
@@ -48,6 +62,14 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         if df.empty:
             return {"bandi": [], "messaggio": "Nessun bando disponibile"}
 
+        # ✅ Normalizza i codici ATECO
+        df["Codici_ATECO"] = df["Codici_ATECO"].apply(normalizza_codici_ateco)
+
+        # 🔍 Log di debug per vedere i dati veri
+        logger.info("*** Contenuto normalizzato Codici_ATECO:")
+        for idx, riga in enumerate(df["Codici_ATECO"].tolist()):
+            logger.info(f"Riga {idx}: {riga}")
+
         # ✅ Filtra i bandi
         df_filtrati = filtra_bandi(
             df,
@@ -64,9 +86,14 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
 
         # ✅ Colonne da esporre (originali dal JSON)
         colonne_da_esporre = [
-            "Titolo", "Descrizione", "Obiettivo_Finalita",
-            "Data_chiusura", "Dimensioni",
-            "Forma_agevolazione", "Codici_ATECO", "Regioni"
+            "Titolo",
+            "Descrizione",
+            "Obiettivo_Finalita",
+            "Data_chiusura",
+            "Dimensioni",
+            "Forma_agevolazione",
+            "Codici_ATECO",
+            "Regioni"
         ]
 
         colonne_presenti = [col for col in colonne_da_esporre if col in df_filtrati.columns]
