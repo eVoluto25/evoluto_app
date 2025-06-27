@@ -80,7 +80,7 @@ def riassunto_50_parole(testo):
     if not testo or len(testo.split()) < 50:
         return testo
 
-    parser = PlaintextParser.from_string(testo, Tokenizer("italian"))
+    parser = PlaintextParser.from_string(testo, Tokenizer("english"))
     summarizer = LsaSummarizer()
     sentences = summarizer(parser.document, 5)  # max 5 frasi
     riassunto = " ".join(str(s) for s in sentences)
