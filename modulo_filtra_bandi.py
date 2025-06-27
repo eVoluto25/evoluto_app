@@ -154,6 +154,8 @@ def filtra_bandi(
             "data": str(row.get("Data_chiusura", "")),
             "coerenza_solidita": coerenza,
             "motivazione": motivazione,
+            "forma_agevolazione": row.get("Forma_agevolazione", ""),
+            "costi_ammessi": row.get("Costi_Ammessi", ""),
             "descrizione": row.get("Descrizione", "")
         })
 
