@@ -1,3 +1,20 @@
+MCC_RATING_PUNTEGGIO = {
+    "AAA": 10,
+    "AA": 9,
+    "A": 8,
+    "BBB": 7,
+    "BB": 6,
+    "B": 4,
+    "CCC": 2
+}
+
+Z_SCORE_PUNTEGGIO = [
+    (-9999, 0, 2),
+    (0, 1.8, 4),
+    (1.8, 2.99, 7),
+    (3, 9999, 10)
+]
+
 def motivazione_solidita(punteggio: float) -> str:
     if punteggio >= 9:
         return (
