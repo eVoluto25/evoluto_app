@@ -23,13 +23,15 @@ def filtra_bandi_clean(
     logger.info(">>> Filtro forma agevolazione: %s", forma_agevolazione)
     logger.info(">>> Filtro obiettivo: %s", obiettivo)
 
-    query = supabase.table("bandi_disponibili") \\
-        .select("*") \\
-        .filter("regioni_clean", "cs", regione) \\
-        .filter("codici_ateco_clean", "cs", codice_ateco) \\
-        .filter("dimensioni_clean", "cs", dimensione) \\
-        .filter("forma_agevolazione_clean", "cs", forma_agevolazione) \\
-        .filter("obiettivo_clean", "eq", obiettivo)
+    query = (
+    supabase.table("bandi_disponibili")
+    .select("*")
+    .filter("regioni_clean", "cs", regione)
+    .filter("codici_ateco_clean", "cs", codice_ateco)
+    .filter("dimensioni_clean", "cs", dimensione)
+    .filter("forma_agevolazione_clean", "cs", forma_agevolazione)
+    .filter("obiettivo_clean", "eq", obiettivo)
+)
 
     response = query.execute()
     data = response.data or []
