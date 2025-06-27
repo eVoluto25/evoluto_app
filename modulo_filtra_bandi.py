@@ -5,10 +5,7 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+logger = logging.getLogger(__name__)
 
 # Dizionario di punteggio MCC
 MCC_RATING_PUNTEGGIO = {
@@ -28,8 +25,6 @@ Z_SCORE_PUNTEGGIO = [
     (1.8, 2.99, 7),
     (3, 9999, 10)
 ]
-
-logger = logging.getLogger(__name__)
 
 # Funzione per calcolare il punteggio Z-Score
 def punteggio_zscore(z_score: float) -> int:
@@ -81,6 +76,12 @@ def motivazione_solidita(punteggio: float) -> str:
 
 # Funzione per riassumere la descrizione in max 50 parole
 def riassunto_50_parole(testo):
+    # Controllo e download del tokenizer punkt
+    try:
+        nltk.data.find("tokenizers/punkt")
+    except LookupError:
+        nltk.download("punkt")
+
     if not testo or len(testo.split()) < 50:
         return testo
 
@@ -89,7 +90,6 @@ def riassunto_50_parole(testo):
     sentences = summarizer(parser.document, 5)  # max 5 frasi
     riassunto = " ".join(str(s) for s in sentences)
 
-    # Limita a 50 parole nette
     parole = riassunto.split()
     if len(parole) > 50:
         riassunto = " ".join(parole[:50]) + "..."
@@ -225,7 +225,7 @@ def filtra_bandi(
             "motivazione": motivazione,
             "forma_agevolazione": row.get("Forma_agevolazione", ""),
             "costi_ammessi": row.get("Costi_Ammessi", ""),
-            "descrizione": riassunto_50_parole(row.get("Descrizione", ""))
+            "descrizione": descrizione_ridotta
         })
 
     return risultati
