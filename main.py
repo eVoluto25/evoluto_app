@@ -73,12 +73,14 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         # ✅ Filtra i bandi
         df_filtrati = filtra_bandi(
             df,
-            codice_ateco=input_data.codice_ateco,
             regione=input_data.regione,
             dimensione=input_data.dimensione,
-            macroarea=input_data.macroarea,
+            obiettivo_preferenziale=input_data.obiettivo_preferenziale,
+            mcc_rating=input_data.mcc_rating,
+            z_score=input_data.z_score,
             max_results=5
         )
+
         logger.info(f"✅ Filtro bandi completato: {len(df_filtrati)} bandi trovati")
 
         if df_filtrati.empty:
