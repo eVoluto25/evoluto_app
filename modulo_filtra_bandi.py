@@ -70,7 +70,7 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
-# Funzione principale di filtraggio bandi con priorità progressiva
+# Funzione principale di filtraggio bandi
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
@@ -85,16 +85,36 @@ def filtra_bandi(
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
-    # Escludi bandi chiusi
+    # Calcola punteggi solidità
+    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
+    z_punteggio = punteggio_zscore(z_score)
+    media_punteggio = (mcc_punteggio + z_punteggio) / 2
+    coerenza = livello_coerenza_solidita(media_punteggio)
+    motivazione = motivazione_solidita(media_punteggio)
+
+    # Determina solidità critica
+    solidita_critica = (
+        mcc_rating.upper() in ["CCC", "B"]
+        and z_score <= 0
+    )
+    if solidita_critica:
+        logger.info(">>> Solidità critica: filtreremo solo bandi di sostegno.")
+    else:
+        logger.info(">>> Solidità non critica.")
+
+    # Escludi bandi con scadenza entro 60 giorni
     oggi = pd.Timestamp.today()
     df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
-    df = df[df["Data_chiusura_parsed"].notnull() & (df["Data_chiusura_parsed"] >= oggi)]
-
+    scadenza_limite = oggi + pd.Timedelta(days=60)
+    df = df[
+        df["Data_chiusura_parsed"].notnull()
+        & (df["Data_chiusura_parsed"] >= scadenza_limite)
+    ]
     if df.empty:
-        logger.info(">>> Nessun bando aperto.")
+        logger.info(">>> Nessun bando con scadenza oltre 60 giorni.")
         return []
 
-    # Funzione robusta per verificare regione
+    # Funzione robusta per match regione
     def match_regione(campo, regione):
         if campo is None:
             return False
@@ -105,44 +125,52 @@ def filtra_bandi(
             return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
         return False
 
-    # Fase 1: Regione + Obiettivo preferenziale
-    df_step1 = df[
-        df["Regioni"].apply(lambda x: match_regione(x, regione))
-        &
-        df["Obiettivo_Finalita"].apply(lambda x: obiettivo_preferenziale.lower() in x.lower() if isinstance(x, str) else False)
-        &
-        df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
-    ]
-
-    if not df_step1.empty:
-        df_selected = df_step1.copy()
-        logger.info(">>> Fase 1: trovati %s bandi", len(df_selected))
-    else:
-        # Fase 2: Regione con qualsiasi obiettivo
-        df_step2 = df[
+    # Filtro in base a solidità
+    if solidita_critica:
+        # Solo bandi di sostegno
+        df_selected = df[
             df["Regioni"].apply(lambda x: match_regione(x, regione))
+            &
+            df["Obiettivo_Finalita"].apply(
+                lambda x: "sostegno" in x.lower() if isinstance(x, str) else False
+            )
             &
             df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
         ]
-        if not df_step2.empty:
-            df_selected = df_step2.copy()
-            logger.info(">>> Fase 2: trovati %s bandi", len(df_selected))
+        logger.info(">>> Filtro solidità critica: trovati %s bandi.", len(df_selected))
+    else:
+        # Fase 1: Regione + Obiettivo preferenziale
+        df_step1 = df[
+            df["Regioni"].apply(lambda x: match_regione(x, regione))
+            &
+            df["Obiettivo_Finalita"].apply(
+                lambda x: obiettivo_preferenziale.lower() in x.lower() if isinstance(x, str) else False
+            )
+            &
+            df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+        ]
+        if not df_step1.empty:
+            df_selected = df_step1.copy()
+            logger.info(">>> Fase 1: trovati %s bandi.", len(df_selected))
         else:
-            # Fase 3: Tutti i bandi con qualsiasi obiettivo
-            df_selected = df[
+            # Fase 2: Regione con qualsiasi obiettivo
+            df_step2 = df[
+                df["Regioni"].apply(lambda x: match_regione(x, regione))
+                &
                 df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
             ]
-            logger.info(">>> Fase 3: trovati %s bandi", len(df_selected))
+            if not df_step2.empty:
+                df_selected = df_step2.copy()
+                logger.info(">>> Fase 2: trovati %s bandi.", len(df_selected))
+            else:
+                # Fase 3: Tutti i bandi con qualsiasi regione
+                df_selected = df[
+                    df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+                ]
+                logger.info(">>> Fase 3: trovati %s bandi.", len(df_selected))
 
     if df_selected.empty:
         return []
-
-    # Calcola punteggio solidità
-    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
-    z_punteggio = punteggio_zscore(z_score)
-    media_punteggio = (mcc_punteggio + z_punteggio) / 2
-    coerenza = livello_coerenza_solidita(media_punteggio)
-    motivazione = motivazione_solidita(media_punteggio)
 
     # Priorità obiettivo
     def priorita_obiettivo(obiettivo_bando, obiettivo_scelto):
