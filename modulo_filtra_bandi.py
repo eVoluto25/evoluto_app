@@ -11,12 +11,13 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def filtra_bandi(
+    df: pd.DataFrame,
     regione: str,
     codice_ateco: str,
     dimensione: str,
     forma_agevolazione: str,
-    obiettivo: str
-) -> List[dict]:
+    max_results: int = 5
+) -> pd.DataFrame:
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro codice ATECO: %s", codice_ateco)
     logger.info(">>> Filtro dimensione: %s", dimensione)
