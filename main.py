@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Literal
-from modulo_filtra_bandi_clean import filtra_bandi
+from modulo_filtra_bandi import filtra_bandi
 import pandas as pd
 import requests
 import os
