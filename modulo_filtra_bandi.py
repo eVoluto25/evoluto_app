@@ -92,7 +92,7 @@ def filtra_bandi(
     obiettivo_preferenziale: str,
     mcc_rating: str,
     z_score: float,
-    max_results: int = 40
+    max_results: int = 50
 ) -> list:
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro dimensione: %s", dimensione)
