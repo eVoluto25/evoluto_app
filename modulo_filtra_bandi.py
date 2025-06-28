@@ -205,15 +205,20 @@ def filtra_bandi(
     # Output
     risultati = []
     for _, row in df_sorted.iterrows():
+        punteggio = row.get("Punteggio_Solidita", 0)
+        motivazione = motivazione_solidita(punteggio)
+        
         descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
+        
         risultati.append({
             "titolo": row.get("Titolo", ""),
             "data": str(row.get("Data_chiusura", "")),
-            "coerenza_solidita": coerenza,
+            "coerenza_solidità": coerenza,
+            "percentuale_ammissibilità": row.get("Percentuale_ammissibilità", ""), 
             "motivazione": motivazione,
             "forma_agevolazione": row.get("Forma_agevolazione", ""),
-            "costi_ammessi": row.get("Costi_Ammessi", ""),
-            "descrizione": descrizione_ridotta
-        })
+            "costi_ammessi": row.get("Costi_Ammessi1", ""),
+            "descrizione": row.get("Descrizione_sintetica", descrizione_ridotta)
+    })
 
     return risultati
