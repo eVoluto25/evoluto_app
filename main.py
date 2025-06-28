@@ -55,7 +55,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
-            max_results=30
+            max_results=40
         )
 
         if not bandi_filtrati:
