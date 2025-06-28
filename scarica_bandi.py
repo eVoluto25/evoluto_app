@@ -32,6 +32,10 @@ df["data_chiusura_clean"] = pd.to_datetime(df["data_chiusura_clean"], errors="co
 df_filtrato = df[df["data_chiusura_clean"] >= pd.Timestamp.today()]
 
 # Salva JSON
+# Converte tutte le colonne di tipo datetime in stringa ISO
+for col in df_filtrato.select_dtypes(include=["datetime64[ns]"]).columns:
+    df_filtrato[col] = df_filtrato[col].dt.strftime("%Y-%m-%d")
+    
 with open("opendata-export.json", "w", encoding="utf-8") as f:
     json.dump(df_filtrato.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
 
