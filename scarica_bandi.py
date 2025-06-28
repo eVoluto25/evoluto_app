@@ -2,7 +2,7 @@ import requests
 import json
 import pandas as pd
 
-# Intestazioni di autenticazione con la tua anon key
+# Intestazioni di autenticazione con la tua anon key corretta
 headers = {
     "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyYm55b2Rsa3JlaGVtbGF6dGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMjE3ODgsImV4cCI6MjA2Mjg5Nzc4OH0.e1haV4Y8yma9L36bcjy0V7rB6dg3SDPzfwKSyX22Bfk",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyYm55b2Rsa3JlaGVtbGF6dGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMjE3ODgsImV4cCI6MjA2Mjg5Nzc4OH0.e1haV4Y8yma9L36bcjy0V7rB6dg3SDPzfwKSyX22Bfk"
@@ -11,21 +11,21 @@ headers = {
 # Endpoint della tabella principale
 url = "https://arbnyodlkrehemlaztal.supabase.co/rest/v1/bandi_disponibili"
 
-# Richiesta GET ai dati
+# Richiesta GET
 response = requests.get(url, headers=headers, timeout=30)
-response.raise_for_status()  # Solleva eccezione se non 200
+response.raise_for_status()
 
 # Converti in JSON
 data = response.json()
 
-# Converte in DataFrame per filtrare
+# Converte in DataFrame
 df = pd.DataFrame(data)
 
 # Verifica che la colonna Data_chiusura esista
 if "Data_chiusura" not in df.columns:
     raise ValueError("La colonna 'Data_chiusura' non è presente nei dati.")
 
-# Converte la colonna Data_chiusura in datetime
+# Converte Data_chiusura in datetime
 df["Data_chiusura"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
 
 # Filtra i bandi con data di chiusura >= oggi
