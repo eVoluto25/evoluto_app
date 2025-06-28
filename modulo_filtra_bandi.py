@@ -118,7 +118,7 @@ def filtra_bandi(
 
     # Escludi bandi con scadenza entro 60 giorni
     oggi = pd.Timestamp.today()
-    df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura"], errors="coerce")
+    df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura_clean"], errors="coerce")
     scadenza_limite = oggi + pd.Timedelta(days=60)
     df = df[
         df["Data_chiusura_parsed"].notnull()
