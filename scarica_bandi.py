@@ -8,7 +8,7 @@ headers = {
 }
 
 # Endpoint della view
-url = "https://arbnyodlkrehemlaztal.supabase.co/rest/v1/bandi_attivi"
+url = "https://arbnyodlkrehmelaztal.supabase.co/rest/v1/bandi_disponibili"
 
 # Richiesta GET
 response = requests.get(url, headers=headers)
