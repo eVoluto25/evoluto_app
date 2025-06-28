@@ -92,7 +92,7 @@ def filtra_bandi(
     obiettivo_preferenziale: str,
     mcc_rating: str,
     z_score: float,
-    max_results: int = 30
+    max_results: int = 40
 ) -> list:
     logger.info(">>> Filtro regione: %s", regione)
     logger.info(">>> Filtro dimensione: %s", dimensione)
@@ -207,6 +207,7 @@ def filtra_bandi(
     for _, row in df_sorted.iterrows():
         punteggio = row.get("Punteggio_Solidita", 0)
         motivazione = motivazione_solidita(punteggio)
+        livello_coerenza = livello_coerenza_solidita(punteggio)
         
         descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
         
