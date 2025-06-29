@@ -116,16 +116,16 @@ def filtra_bandi(
     else:
         logger.info(">>> Solidità non critica.")
 
-    # Escludi bandi con scadenza entro 60 giorni
+    # Escludi bandi con scadenza entro 45 giorni
     oggi = pd.Timestamp.today()
     df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura_clean"], errors="coerce")
-    scadenza_limite = oggi + pd.Timedelta(days=60)
+    scadenza_limite = oggi + pd.Timedelta(days=45)
     df = df[
         df["Data_chiusura_parsed"].notnull()
         & (df["Data_chiusura_parsed"] >= scadenza_limite)
     ]
     if df.empty:
-        logger.info(">>> Nessun bando con scadenza oltre 60 giorni.")
+        logger.info(">>> Nessun bando con scadenza oltre 45 giorni.")
         return []
 
     # Funzione match regione
