@@ -219,7 +219,7 @@ def filtra_bandi(
             "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
             "motivazione": motivazione,  
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
-            "costi_ammessi": row.get("Costi_Ammessi1", ""),
+            "costi_ammessi": row.get("Costi_Ammessi", ""),
             "descrizione": descrizione_ridotta
         })
 
