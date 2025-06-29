@@ -118,7 +118,7 @@ def filtra_bandi(
 
     # Escludi bandi con scadenza entro 45 giorni
     oggi = pd.Timestamp.today()
-    df["Data_chiusura_parsed"] = pd.to_datetime(df["Data_chiusura_clean"], errors="coerce")
+    df["Data_chiusura_parsed"] = pd.to_datetime(df["data_chiusura_clean"], errors="coerce")
     scadenza_limite = oggi + pd.Timedelta(days=45)
     df = df[
         df["Data_chiusura_parsed"].notnull()
@@ -142,25 +142,25 @@ def filtra_bandi(
     # Filtro solidità critica
     if solidita_critica:
         df_selected = df[
-            df["Regioni"].apply(lambda x: match_regione(x, regione))
+            df["regioni_clean"].apply(lambda x: match_regione(x, regione))
             &
-            df["Obiettivo_Finalita"].apply(
+            df["obiettivo_clean"].apply(
                 lambda x: "sostegno" in x.lower() if isinstance(x, str) else False
             )
             &
-            df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+            df["dimensioni_clean"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
         ]
         logger.info(">>> Filtro solidità critica: trovati %s bandi.", len(df_selected))
     else:
         # Fase 1: Regione + Obiettivo preferenziale
         df_step1 = df[
-            df["Regioni"].apply(lambda x: match_regione(x, regione))
+            df["regioni_clean"].apply(lambda x: match_regione(x, regione))
             &
-            df["Obiettivo_Finalita"].apply(
+            df["obiettivo_clean"].apply(
                 lambda x: obiettivo_preferenziale.lower() in x.lower() if isinstance(x, str) else False
             )
             &
-            df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+            df["dimensioni_clean"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
         ]
         if not df_step1.empty:
             df_selected = df_step1.copy()
@@ -168,9 +168,9 @@ def filtra_bandi(
         else:
             # Fase 2: Regione con qualsiasi obiettivo
             df_step2 = df[
-                df["Regioni"].apply(lambda x: match_regione(x, regione))
+                df["regioni_clean"].apply(lambda x: match_regione(x, regione))
                 &
-                df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+                df["dimensioni_clean"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
             ]
             if not df_step2.empty:
                 df_selected = df_step2.copy()
@@ -178,7 +178,7 @@ def filtra_bandi(
             else:
                 # Fase 3: Tutti i bandi con qualsiasi regione
                 df_selected = df[
-                    df["Dimensioni"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
+                    df["dimensioni_clean"].apply(lambda x: dimensione in x if isinstance(x, list) else False)
                 ]
                 logger.info(">>> Fase 3: trovati %s bandi.", len(df_selected))
 
@@ -186,7 +186,7 @@ def filtra_bandi(
         return []
 
     # Priorità Obiettivo
-    df_selected["Priorita_Obiettivo"] = df_selected["Obiettivo_Finalita"].apply(
+    df_selected["Priorita_Obiettivo"] = df_selected["obiettivo_clean"].apply(
         lambda x: 1 if obiettivo_preferenziale.lower() in str(x).lower() else 2
     )
     df_selected["Punteggio_Solidita"] = media_punteggio
@@ -199,7 +199,7 @@ def filtra_bandi(
 
     # Log titoli
     logger.info("✅ Titoli bandi selezionati:")
-    for idx, titolo in enumerate(df_sorted["Titolo"].tolist(), start=1):
+    for idx, titolo in enumerate(df_sorted["titolo_clean"].tolist(), start=1):
         logger.info(f"  {idx}. {titolo}")
 
     # Output
@@ -209,18 +209,18 @@ def filtra_bandi(
         motivazione = motivazione_solidita(punteggio)
         livello_coerenza = livello_coerenza_solidita(punteggio)
         
-        descrizione_ridotta = riassunto_50_parole(row.get("Descrizione", ""))
-        
+        descrizione_ridotta = riassunto_50_parole(row.get("descrizione_clean", ""))
+
         risultati.append({
-            "titolo": row.get("Titolo", ""),
-            "data": str(row.get("Data_chiusura", "")),
+            "titolo": row.get("titolo_clean", ""),
+            "data": str(row.get("data_chiusura_clean", "")),
             "coerenza_solidita": livello_coerenza,
-            "obiettivo_finalita": row.get("Obiettivo_Finalita", ""),
-            "percentuale_ammissibilità": row.get("Percentuale_ammissibilità", ""),
+            "obiettivo_finalita": row.get("obiettivo_clean", ""),
+            "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
             "motivazione": motivazione,  
-            "forma_agevolazione": row.get("Forma_agevolazione", ""),
+            "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
             "costi_ammessi": row.get("Costi_Ammessi1", ""),
-            "descrizione": row.get("Descrizione_sintetica", descrizione_ridotta)
-    })
+            "descrizione": descrizione_ridotta
+        })
 
     return risultati
