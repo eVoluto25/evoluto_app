@@ -215,6 +215,7 @@ def filtra_bandi(
             "titolo": row.get("Titolo", ""),
             "data": str(row.get("Data_chiusura", "")),
             "coerenza_solidita": livello_coerenza,
+            "obiettivo_finalita": row.get("Obiettivo_Finalita", ""),
             "percentuale_ammissibilità": row.get("Percentuale_ammissibilità", ""),
             "motivazione": motivazione,  
             "forma_agevolazione": row.get("Forma_agevolazione", ""),
