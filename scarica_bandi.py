@@ -29,7 +29,9 @@ if "data_chiusura_clean" not in df.columns:
 df["data_chiusura_clean"] = pd.to_datetime(df["data_chiusura_clean"], errors="coerce")
 
 # Filtro bandi attivi
-df_filtrato = df[df["data_chiusura_clean"] >= pd.Timestamp.today()]
+df_filtrato = df[
+    df["data_chiusura_clean"].isna() | (df["data_chiusura_clean"] >= pd.Timestamp.today())
+]
 
 # Salva JSON
 # Converte tutte le colonne di tipo datetime in stringa ISO
