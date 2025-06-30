@@ -214,7 +214,7 @@ def filtra_bandi(
         # Gestione data: se vuota, scrivi testo personalizzato
         data_chiusura = row.get("data_chiusura_clean", "")
         if not data_chiusura or data_chiusura.strip() == "":
-        data_chiusura = "BANDO DISPONIBILE FINO AD ESAURIMENTO RISORSE"
+        data_chiusura = "bando disponibile fino ad esaurimento fondi. Verificare residuo stanziamento."
 
         risultati.append({
             "titolo": row.get("titolo_clean", ""),
