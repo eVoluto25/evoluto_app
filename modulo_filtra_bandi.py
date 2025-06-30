@@ -208,16 +208,21 @@ def filtra_bandi(
         punteggio = row.get("Punteggio_Solidita", 0)
         motivazione = motivazione_solidita(punteggio)
         livello_coerenza = livello_coerenza_solidita(punteggio)
-        
+
         descrizione_ridotta = riassunto_50_parole(row.get("descrizione_clean", ""))
+
+        # Gestione data: se vuota, scrivi testo personalizzato
+        data_chiusura = row.get("data_chiusura_clean", "")
+        if not data_chiusura or data_chiusura.strip() == "":
+        data_chiusura = "BANDO DISPONIBILE FINO AD ESAURIMENTO RISORSE"
 
         risultati.append({
             "titolo": row.get("titolo_clean", ""),
-            "data": str(row.get("data_chiusura_clean", "")),
+            "data": data_chiusura,
             "coerenza_solidita": livello_coerenza,
             "obiettivo_finalita": row.get("obiettivo_clean", ""),
             "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
-            "motivazione": motivazione,  
+            "motivazione": motivazione,
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
             "costi_ammessi": row.get("Costi_Ammessi", ""),
             "descrizione": descrizione_ridotta
