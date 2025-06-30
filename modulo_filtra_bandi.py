@@ -121,9 +121,9 @@ def filtra_bandi(
     df["Data_chiusura_parsed"] = pd.to_datetime(df["data_chiusura_clean"], errors="coerce")
     scadenza_limite = oggi + pd.Timedelta(days=45)
     df = df[
-        df["Data_chiusura_parsed"].notnull()
-        & (df["Data_chiusura_parsed"] >= scadenza_limite)
-    ]
+        (df["Data_chiusura_parsed"].isna())
+        | (df["Data_chiusura_parsed"] >= scadenza_limite)
+    ]    
     if df.empty:
         logger.info(">>> Nessun bando con scadenza oltre 45 giorni.")
         return []
