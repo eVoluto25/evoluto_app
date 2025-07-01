@@ -22,3 +22,4 @@ pydantic
 beautifulsoup4
 sumy
 nltk
+rapidfuzz
