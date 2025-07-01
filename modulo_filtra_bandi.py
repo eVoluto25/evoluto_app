@@ -250,13 +250,14 @@ def filtra_bandi(
             "semaforo_punteggio_totale": semaforo_punteggio(row.get("Punteggio_Totale", 0)),
             "priorita_obiettivo": row.get("Priorita_Obiettivo", 2),
             "semaforo_priorita_obiettivo": semaforo_priorita(row.get("Priorita_Obiettivo", 2)),
-            "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
+            "percentuale_ammissibilità": row.get("percentuale_ammissibilità") or "Non definita",
             "motivazione": motivazione_solidita(media_punteggio),
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
             "costi_ammessi": row.get("Costi_Ammessi", ""),
             "descrizione": descrizione_ridotta
         })
-
+        
+    logger.info(f"✅ JSON finale mandato a GPT: {risultati}")
     logger.info(f"✅ Bandi selezionati e inviati a eVoluto: {len(risultati)}.")
     
     return risultati
