@@ -262,7 +262,7 @@ def filtra_bandi(
             "punteggio_totale": row.get("Punteggio_Totale", 0),
             "semaforo_punteggio_totale": semaforo_punteggio(row.get("Punteggio_Totale", 0)),
             "priorita_obiettivo": row.get("Priorita_Obiettivo", 2),
-            "semaforo_priorita_obiettivo": semaforo_priorita(row.get("Priorita_Obiettivo", 2))
+            "semaforo_priorita_obiettivo": semaforo_priorita(row.get("Priorita_Obiettivo", 2)),
             "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
             "motivazione": motivazione_solidita(media_punteggio),
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
