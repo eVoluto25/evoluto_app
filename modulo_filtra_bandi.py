@@ -40,6 +40,21 @@ def livello_coerenza_solidita(punteggio: float) -> str:
     else:
         return "Critica 🔴"
 
+def semaforo_punteggio(punteggio: float) -> str:
+    if punteggio >= 13:
+        return "🟢 Ottimo"
+    elif punteggio >= 10:
+        return "🟡 Buono"
+    elif punteggio >= 7:
+        return "🟠 Medio"
+    else:
+        return "🔴 Basso"
+
+def semaforo_priorita(priorita: int) -> str:
+    if priorita == 1:
+        return "🟢 Alta coerenza"
+    return "🟡 Coerenza parziale"
+
 def motivazione_solidita(punteggio: float) -> str:
     if punteggio >= 9:
         return (
@@ -244,6 +259,10 @@ def filtra_bandi(
             "data": data_chiusura,
             "coerenza_solidita": livello_coerenza_solidita(media_punteggio),
             "obiettivo_finalita": row.get("obiettivo_list", []),
+            "punteggio_totale": row.get("Punteggio_Totale", 0),
+            "semaforo_punteggio_totale": semaforo_punteggio(row.get("Punteggio_Totale", 0)),
+            "priorita_obiettivo": row.get("Priorita_Obiettivo", 2),
+            "semaforo_priorita_obiettivo": semaforo_priorita(row.get("Priorita_Obiettivo", 2))
             "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
             "motivazione": motivazione_solidita(media_punteggio),
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
