@@ -99,18 +99,9 @@ def parse_list_field(x):
         return []
 
 def obiettivo_simile(lista_obiettivi, target):
-    """
-    Verifica se un obiettivo della lista è simile al target (fuzzy match >=80).
-    """
     return any(fuzz.partial_ratio(o.lower(), target.lower()) >= 80 for o in lista_obiettivi)
 
 def punteggio_forma_agevolazione(forma):
-    """
-    Punteggio aggiuntivo per la forma dell'agevolazione.
-    Fondo perduto: 3
-    Fondo + prestito: 2
-    Solo prestito: 1
-    """
     if not forma:
         return 1
     forma = forma.lower()
@@ -123,12 +114,6 @@ def punteggio_forma_agevolazione(forma):
     return 1
 
 def punteggio_scadenza(data):
-    """
-    Priorità in base alla scadenza.
-    >=180 giorni: 3
-    90-179 giorni: 2
-    <90 giorni: 1
-    """
     if pd.isna(data):
         return 3
     giorni = (data - pd.Timestamp.today()).days
@@ -153,15 +138,16 @@ def filtra_bandi(
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
+    # Pulizia stringhe
+    df["titolo_clean"] = df["Titolo"].astype(str).str.strip()
+    df["descrizione_clean"] = df["Descrizione"].astype(str).str.strip()
+    df["data_chiusura_clean"] = df["Data_chiusura"].astype(str).str.strip()
+    df["forma_agevolazione_clean"] = df["Forma_agevolazione"].astype(str).str.strip()
+
     # Parsing liste
     df["dimensioni_list"] = df["Dimensioni"].apply(parse_list_field)
     df["regioni_list"] = df["Regioni"].apply(parse_list_field)
     df["obiettivo_list"] = df["Obiettivo_Finalita"].apply(parse_list_field)
-
-    # Pulizia stringhe
-    df["titolo_clean"] = df["Titolo"].astype(str).str.strip()
-    df["descrizione_clean"] = df["Descrizione"].astype(str).str.strip()
-    df["forma_agevolazione_clean"] = df["Forma_Agevolazione"].astype(str).str.strip()
 
     obiettivo_clean = obiettivo_preferenziale.strip()
     dimensione_clean = dimensione.strip()
