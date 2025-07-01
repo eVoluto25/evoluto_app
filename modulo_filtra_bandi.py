@@ -256,8 +256,8 @@ def filtra_bandi(
             "costi_ammessi": row.get("Costi_Ammessi", ""),
             "descrizione": descrizione_ridotta
         })
-        
+
     logger.info(f"✅ JSON finale mandato a GPT: {risultati}")
     logger.info(f"✅ Bandi selezionati e inviati a eVoluto: {len(risultati)}.")
-    
+
     return risultati
