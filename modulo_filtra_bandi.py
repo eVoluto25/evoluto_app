@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import ast
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,14 @@ def riassunto_50_parole(testo):
         return testo
     return " ".join(parole[:50]) + "..."
 
+def parse_list_field(x):
+    if pd.isna(x):
+        return []
+    try:
+        return ast.literal_eval(x)
+    except Exception:
+        return []
+
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
@@ -87,21 +96,23 @@ def filtra_bandi(
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
 
-    # Pulizia e normalizzazione colonne
-    df["regioni_clean"] = df["Regioni"].astype(str).str.strip().str.lower()
-    df["dimensioni_clean"] = df["Dimensioni"].astype(str).str.strip().str.lower()
-    df["obiettivo_clean"] = df["Obiettivo_Finalita"].astype(str).str.strip().str.lower()
+    # Parsing liste
+    df["dimensioni_list"] = df["Dimensioni"].apply(parse_list_field)
+    df["regioni_list"] = df["Regioni"].apply(parse_list_field)
+    df["obiettivo_list"] = df["Obiettivo_Finalita"].apply(parse_list_field)
+
+    # Pulizia stringhe
     df["titolo_clean"] = df["Titolo"].astype(str).str.strip()
     df["descrizione_clean"] = df["Descrizione"].astype(str).str.strip()
 
-    dimensione_clean = dimensione.strip().lower()
-    obiettivo_clean = obiettivo_preferenziale.strip().lower()
+    obiettivo_clean = obiettivo_preferenziale.strip()
+    dimensione_clean = dimensione.strip()
+    regione_clean = regione.strip()
 
-    # Calcola punteggi solidità
+    # Punteggio solidità
     mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
     z_punteggio = punteggio_zscore(z_score)
     media_punteggio = (mcc_punteggio + z_punteggio) / 2
-
     coerenza = livello_coerenza_solidita(media_punteggio)
     motivazione = motivazione_solidita(media_punteggio)
 
@@ -114,6 +125,7 @@ def filtra_bandi(
     else:
         logger.info(">>> Solidità non critica.")
 
+    # Scadenza
     oggi = pd.Timestamp.today()
     df["Data_chiusura_parsed"] = pd.to_datetime(df["data_chiusura_clean"], errors="coerce")
     scadenza_limite = oggi + pd.Timedelta(days=45)
@@ -125,60 +137,55 @@ def filtra_bandi(
         logger.info(">>> Nessun bando con scadenza oltre 45 giorni.")
         return []
 
-    def match_regione(campo, regione):
-        if campo is None:
+    def match_regione(l, regione):
+        if not l:
             return False
-        if isinstance(campo, list):
-            return regione in campo or "tutte le regioni" in campo
-        if isinstance(campo, str):
-            campo_norm = campo.lower()
-            return (regione.lower() in campo_norm) or ("tutte le regioni" in campo_norm)
-        return False
+        return (regione in l) or ("Tutte le regioni" in [s.lower() for s in l])
 
     if solidita_critica:
         df_selected = df[
-            df["regioni_clean"].apply(lambda x: match_regione(x, regione))
+            df["regioni_list"].apply(lambda l: match_regione(l, regione_clean))
             &
-            df["obiettivo_clean"].apply(
-                lambda x: "sostegno" in x if isinstance(x, str) else False
-            )
+            df["obiettivo_list"].apply(lambda l: any("sostegno" in s.lower() for s in l))
             &
-            (df["dimensioni_clean"] == dimensione_clean)
+            df["dimensioni_list"].apply(lambda l: dimensione_clean in l)
         ]
         logger.info(">>> Filtro solidità critica: trovati %s bandi.", len(df_selected))
     else:
+        # Fase 1: regione + obiettivo
         df_step1 = df[
-            df["regioni_clean"].apply(lambda x: match_regione(x, regione))
+            df["regioni_list"].apply(lambda l: match_regione(l, regione_clean))
             &
-            df["obiettivo_clean"].apply(
-                lambda x: obiettivo_clean in x if isinstance(x, str) else False
-            )
+            df["obiettivo_list"].apply(lambda l: obiettivo_clean in l)
             &
-            (df["dimensioni_clean"] == dimensione_clean)
+            df["dimensioni_list"].apply(lambda l: dimensione_clean in l)
         ]
         if not df_step1.empty:
             df_selected = df_step1.copy()
             logger.info(">>> Fase 1: trovati %s bandi.", len(df_selected))
         else:
+            # Fase 2: regione
             df_step2 = df[
-                df["regioni_clean"].apply(lambda x: match_regione(x, regione))
+                df["regioni_list"].apply(lambda l: match_regione(l, regione_clean))
                 &
-                (df["dimensioni_clean"] == dimensione_clean)
+                df["dimensioni_list"].apply(lambda l: dimensione_clean in l)
             ]
             if not df_step2.empty:
                 df_selected = df_step2.copy()
                 logger.info(">>> Fase 2: trovati %s bandi.", len(df_selected))
             else:
+                # Fase 3: solo dimensione
                 df_selected = df[
-                    (df["dimensioni_clean"] == dimensione_clean)
+                    df["dimensioni_list"].apply(lambda l: dimensione_clean in l)
                 ]
                 logger.info(">>> Fase 3: trovati %s bandi.", len(df_selected))
 
     if df_selected.empty:
         return []
 
-    df_selected["Priorita_Obiettivo"] = df_selected["obiettivo_clean"].apply(
-        lambda x: 1 if obiettivo_clean in str(x) else 2
+    # Priorità obiettivo
+    df_selected["Priorita_Obiettivo"] = df_selected["obiettivo_list"].apply(
+        lambda l: 1 if obiettivo_clean in l else 2
     )
     df_selected["Punteggio_Solidita"] = media_punteggio
 
@@ -196,18 +203,17 @@ def filtra_bandi(
         punteggio = row.get("Punteggio_Solidita", 0)
         motivazione = motivazione_solidita(punteggio)
         livello_coerenza = livello_coerenza_solidita(punteggio)
-
         descrizione_ridotta = riassunto_50_parole(row.get("descrizione_clean", ""))
 
         data_chiusura = row.get("data_chiusura_clean", "")
-        if not data_chiusura or data_chiusura.strip() == "":
+        if not data_chiusura or str(data_chiusura).strip() == "":
             data_chiusura = "bando disponibile fino ad esaurimento fondi. Verificare residuo stanziamento."
 
         risultati.append({
             "titolo": row.get("titolo_clean", ""),
             "data": data_chiusura,
             "coerenza_solidita": livello_coerenza,
-            "obiettivo_finalita": row.get("obiettivo_clean", ""),
+            "obiettivo_finalita": row.get("obiettivo_list", []),
             "percentuale_ammissibilità": row.get("percentuale_ammissibilità", ""),
             "motivazione": motivazione,
             "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
