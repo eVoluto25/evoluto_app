@@ -137,6 +137,7 @@ def filtra_bandi(
     logger.info(">>> Filtro dimensione: %s", dimensione)
     logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
     logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
+    logger.info(f"✅ Dataset caricato: {df.shape[0]} righe totali.")
 
     # Pulizia stringhe
     df["titolo_clean"] = df["Titolo"].astype(str).str.strip()
@@ -256,4 +257,6 @@ def filtra_bandi(
             "descrizione": descrizione_ridotta
         })
 
+    logger.info(f"✅ Bandi selezionati e inviati a eVoluto: {len(risultati)}.")
+    
     return risultati
