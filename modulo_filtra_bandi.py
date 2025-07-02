@@ -242,20 +242,18 @@ def filtra_bandi(
         if not data_chiusura or str(data_chiusura).strip() == "":
             data_chiusura = "bando disponibile fino ad esaurimento fondi. Verificare residuo stanziamento."
         risultati.append({
-            "titolo": row.get("titolo_clean", ""),
-            "data": data_chiusura,
-            "coerenza_solidita": livello_coerenza_solidita(media_punteggio),
-            "obiettivo_finalita": row.get("obiettivo_list", []),
-            "punteggio_totale": row.get("Punteggio_Totale", 0),
-            "semaforo_punteggio_totale": semaforo_punteggio(row.get("Punteggio_Totale", 0)),
-            "priorita_obiettivo": row.get("Priorita_Obiettivo", 2),
-            "semaforo_priorita_obiettivo": semaforo_priorita(row.get("Priorita_Obiettivo", 2)),
-            "percentuale_ammissibilità": row.get("percentuale_ammissibilità") or "Non definita",
-            "motivazione": motivazione_solidita(media_punteggio),
-            "forma_agevolazione": row.get("forma_agevolazione_clean", ""),
-            "costi_ammessi": row.get("Costi_Ammessi", ""),
-            "descrizione": descrizione_ridotta
-        })
+            "Titolo Bando": row.get("titolo_clean", ""),
+            "Data Scadenza": data_chiusura,
+            "Solidità Aziendale VS Bando": livello_coerenza_solidita(media_punteggio),
+            "Motivazione Solidità": motivazione_solidita(media_punteggio),
+            "Obiettivo Bando": row.get("obiettivo_list", []),
+            "Scoring": f"{row.get('Punteggio_Totale', 0)} {semaforo_punteggio(row.get('Punteggio_Totale', 0))}",
+            "Prioritario SI/NO": "SI" if row.get("Priorita_Obiettivo", 2) == 1 else "NO",
+            "Percentuale Spesa": row.get("percentuale_ammissibilità") or "Non definita",
+            "Tipo Agevolazione": row.get("forma_agevolazione_clean", ""),
+           "Costi Ammessi": row.get("Costi_Ammessi", ""),
+           "Descrizione Sintetica": descrizione_ridotta
+    })
 
     logger.info(f"✅ JSON finale mandato a GPT: {risultati}")
     logger.info(f"✅ Bandi selezionati e inviati a eVoluto: {len(risultati)}.")
