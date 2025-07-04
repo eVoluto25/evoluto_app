@@ -247,7 +247,6 @@ def filtra_bandi(
             "Solidità Aziendale VS Bando": livello_coerenza_solidita(media_punteggio),
             "Motivazione Solidità": motivazione_solidita(media_punteggio),
             "Obiettivo Bando": row.get("obiettivo_list", []),
-            "Scoring": f"{row.get('Punteggio_Totale', 0)} {semaforo_punteggio(row.get('Punteggio_Totale', 0))}",
             "Prioritario SI/NO": "SI" if row.get("Priorita_Obiettivo", 2) == 1 else "NO",
             "Percentuale Spesa": row.get("percentuale_ammissibilità") or "Non definita",
             "Tipo Agevolazione": row.get("forma_agevolazione_clean", ""),
