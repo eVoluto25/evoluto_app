@@ -15,11 +15,15 @@ JSON_URL = "https://raw.githubusercontent.com/eVoluto25/evoluto_app/refs/heads/m
 
 # 🧾 Input atteso da GPT
 class AziendaInput(BaseModel):
-    dimensione: str             # Es: "Microimpresa"
-    regione: str                # Es: "Lombardia"
-    obiettivo_preferenziale: str  # Es: "Innovazione"
-    mcc_rating: str             # Es: "BBB"
-    z_score: float              # Es: -1.2
+    dimensione: str                 # Es: "Piccola Impresa"
+    regione: str                    # Es: "Lazio"
+    mcc_rating: str                 # Es: "BBB"
+    z_score: float                  # Es: 1.8
+    numero_dipendenti: int          # Es: 8
+    ebitda: float                   # Es: 249121
+    utile_netto: float              # Es: 124128
+    fatturato: float                # Es: 925439
+    obiettivo_preferenziale: str    # Es: "Digitalizzazione"
 
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
