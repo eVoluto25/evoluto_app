@@ -120,6 +120,21 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             if not bando.get("Descrizione Sintetica"):
                 bando["Descrizione Sintetica"] = "Dato non disponibile"
 
+        # 🔄 Rinomina i campi in formato compatibile con lo YAML (underscore)
+        bandi_compatibili = []
+        for bando in bandi_filtrati:
+            bando_corretto = {
+                "Titolo_Bando": bando.get("Titolo Bando"),
+                "Data_Scadenza": bando.get("Data Scadenza"),
+                "Obiettivo_Bando": bando.get("Obiettivo Bando"),
+                "Prioritario_SI_NO": bando.get("Prioritario SI/NO"),
+                "Percentuale_Spesa": bando.get("Percentuale Spesa"),
+                "Tipo_Agevolazione": bando.get("Tipo Agevolazione"),
+                "Costi_Ammessi": bando.get("Costi Ammessi"),
+                "Descrizione_Sintetica": bando.get("Descrizione Sintetica")
+            }
+            bandi_compatibili.append(bando_corretto)
+
         # ✅ Calcola scoring finale
         bandi_finali = calcola_scoring_bandi(
             bandi=bandi_filtrati,
