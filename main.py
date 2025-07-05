@@ -30,6 +30,11 @@ class AziendaInput(BaseModel):
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
     logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
+    logger.info(f"📋 input_data.dict(): {input_data.dict()}")
+    logger.info(f"🔍 numero_dipendenti: {input_data.numero_dipendenti}")
+    logger.info(f"🔍 ebitda: {input_data.ebitda}")
+    logger.info(f"🔍 utile_netto: {input_data.utile_netto}")
+    logger.info(f"🔍 fatturato: {input_data.fatturato}")
     try:
         logger.info(f"✅ Ricevuti dati da eVoluto: {input_data.dict()}")
 
