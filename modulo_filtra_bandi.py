@@ -67,13 +67,13 @@ def motivazione_solidita(punteggio: float) -> str:
             "Il bando selezionato non è consigliato senza interventi di miglioramento della situazione finanziaria. 🔴"
         )
 
-def riassunto_50_parole(testo):
+def riassunto_30_parole(testo):
     if not testo:
         return ""
     parole = testo.split()
-    if len(parole) <= 50:
+    if len(parole) <= 30:
         return testo
-    return " ".join(parole[:50]) + "..."
+    return " ".join(parole[:30]) + "..."
 
 def parse_list_field(x):
     if pd.isna(x):
@@ -218,7 +218,7 @@ def filtra_bandi(
     # Output finale
     risultati = []
     for _, row in df_sorted.iterrows():
-        descrizione_ridotta = riassunto_50_parole(row.get("descrizione_clean", ""))
+        descrizione_ridotta = riassunto_30_parole(row.get("descrizione_clean", ""))
         data_chiusura = row.get("data_chiusura_clean", "")
         if not data_chiusura or str(data_chiusura).strip() == "":
             data_chiusura = "bando disponibile fino ad esaurimento fondi. Verificare residuo stanziamento."
