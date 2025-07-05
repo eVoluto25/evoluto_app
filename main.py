@@ -175,8 +175,8 @@ async def scoring_bandi(input_data: ScoringInput):
         )
 
         return {
-            "bandi": risultati,
-            "totale": len(risultati)
+            "bandi": bandi_finali,
+            "totale": len(bandi_finali)
         }
 
     except Exception as e:
