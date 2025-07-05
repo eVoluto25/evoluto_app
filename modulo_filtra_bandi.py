@@ -97,7 +97,7 @@ def filtra_bandi(
     ebitda: float,
     utile_netto: float,
     fatturato: float,
-    max_results: int = 50
+    max_results: int = 30
 ) -> list:
     logger.info("✅ Inizio filtra_bandi() COMPLETO")
 
