@@ -97,3 +97,53 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
     except Exception as e:
         logger.error(f"❌ Errore generale: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# 🧾 Modelli per lo scoring
+from typing import List, Dict
+
+class BandoInput(BaseModel):
+    Titolo_Bando: str
+    Data_Scadenza: str
+    Obiettivo_Bando: List[str]
+    Prioritario_SI_NO: str
+    Percentuale_Spesa: float
+    Tipo_Agevolazione: str
+    Costi_Ammessi: str
+    Descrizione_Sintetica: str
+
+class AziendaScoringInput(BaseModel):
+    regione: str
+    ebitda: float
+    utile_netto: float
+    fatturato: float
+
+class ScoringInput(BaseModel):
+    azienda: AziendaScoringInput
+    bandi: List[BandoInput]
+
+
+@app.post("/scoring-bandi")
+async def scoring_bandi(input_data: ScoringInput):
+    logger.info("📡 Entrata nella funzione scoring_bandi")
+    logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
+
+    try:
+        # ✅ Calcola scoring finale usando la funzione già importata
+        risultati = calcola_scoring_bandi(
+            bandi=[b.dict() for b in input_data.bandi],
+            azienda={
+                "regione": input_data.azienda.regione,
+                "ebitda": input_data.azienda.ebitda,
+                "utile_netto": input_data.azienda.utile_netto,
+                "fatturato": input_data.azienda.fatturato
+            },
+        )
+
+        return {
+            "bandi": risultati,
+            "totale": len(risultati)
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Errore nella funzione scoring_bandi: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
