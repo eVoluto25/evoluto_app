@@ -164,7 +164,7 @@ async def scoring_bandi(input_data: ScoringInput):
 
     try:
         # ✅ Calcola scoring finale
-        risultati = calcola_scoring_bandi(
+        bandi_finali = calcola_scoring_bandi(
             bandi=[b.dict() for b in input_data.bandi],
             azienda={
                 "regione": input_data.azienda.regione,
