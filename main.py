@@ -123,17 +123,18 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
         # 🔄 Rinomina i campi in formato compatibile con lo YAML (underscore)
         bandi_compatibili = []
         for bando in bandi_filtrati:
+            bando_normalizzato = {k.replace(" ", "_"): v for k, v in bando.items()}
             bando_corretto = {
-                "Titolo_Bando": bando.get("Titolo Bando"),
-                "Data_Scadenza": bando.get("Data Scadenza"),
-                "Obiettivo_Bando": bando.get("Obiettivo Bando"),
-                "Prioritario_SI_NO": bando.get("Prioritario SI/NO"),
-                "Percentuale_Spesa": bando.get("Percentuale Spesa"),
-                "Tipo_Agevolazione": bando.get("Tipo Agevolazione"),
-                "Costi_Ammessi": bando.get("Costi Ammessi"),
-                "Descrizione_Sintetica": bando.get("Descrizione Sintetica")
-            }
-            bandi_compatibili.append(bando_corretto)
+                "Titolo_Bando": bando_normalizzato.get("Titolo_Bando"),
+                "Data_Scadenza": bando_normalizzato.get("Data_Scadenza"),
+                "Obiettivo_Bando": bando_normalizzato.get("Obiettivo_Bando"),
+                "Prioritario_SI_NO": bando_normalizzato.get("Prioritario_SI_NO"),
+                "Percentuale_Spesa": bando_normalizzato.get("Percentuale_Spesa"),
+                "Tipo_Agevolazione": bando_normalizzato.get("Tipo_Agevolazione"),
+                "Costi_Ammessi": bando_normalizzato.get("Costi_Ammessi"),
+                "Descrizione_Sintetica": bando_normalizzato.get("Descrizione_Sintetica"),
+        }
+        bandi_compatibili.append(bando_corretto)
 
         # ✅ Calcola scoring finale
         bandi_finali = calcola_scoring_bandi(
