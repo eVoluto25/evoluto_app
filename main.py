@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from modulo_filtra_bandi import filtra_bandi
+from scoring_bandi import calcola_scoring_bandi
 import pandas as pd
 import requests
 import logging
