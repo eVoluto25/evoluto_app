@@ -60,11 +60,24 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
-            max_results=50
+            max_results=30
         )
 
         if not bandi_filtrati:
             return {"bandi": [], "messaggio": "Nessun bando compatibile trovato"}
+
+        # ✅ Calcola scoring finale
+        from scoring_bandi import calcola_scoring_bandi
+
+        bandi_finali = calcola_scoring_bandi(
+            bandi=bandi_filtrati,
+            azienda={
+                "regione": input_data.regione,
+                "ebitda": 249121,  # oppure input_data.ebitda se lo ricevi
+                "utile_netto": 124128,
+                "fatturato": 925439
+            },
+        )
 
         # ✅ Restituisci lista finale già pronta
         return {
