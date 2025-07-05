@@ -40,26 +40,11 @@ def livello_coerenza_solidita(punteggio: float) -> str:
     else:
         return "Critica 🔴"
 
-def semaforo_punteggio(punteggio: float) -> str:
-    if punteggio >= 13:
-        return "🟢 Ottimo"
-    elif punteggio >= 10:
-        return "🟡 Buono"
-    elif punteggio >= 7:
-        return "🟠 Medio"
-    else:
-        return "🔴 Basso"
-
-def semaforo_priorita(priorita: int) -> str:
-    if priorita == 1:
-        return "🟢 Alta coerenza"
-    return "🟡 Coerenza parziale"
-
 def motivazione_solidita(punteggio: float) -> str:
     if punteggio >= 9:
         return (
             "Secondo l'analisi del sistema eVoluto, l'azienda presenta una solidità ECCELLENTE. "
-            "Il bando è pienamente coerente con la struttura economico-finanziaria e rappresenta un'opportunità prioritaria di sviluppo. 🟢"
+            "Il bando è pienamente coerente con la struttura economico-finanziaria e rappresenta un'opportunità prioritaria di sviluppo. 🔵"
         )
     elif punteggio >= 7:
         return (
@@ -101,29 +86,6 @@ def parse_list_field(x):
 def obiettivo_simile(lista_obiettivi, target):
     return any(fuzz.partial_ratio(o.lower(), target.lower()) >= 80 for o in lista_obiettivi)
 
-def punteggio_forma_agevolazione(forma):
-    if not forma:
-        return 1
-    forma = forma.lower()
-    if "fondo perduto" in forma:
-        return 3
-    if "prestito" in forma and "fondo" in forma:
-        return 2
-    if "prestito" in forma:
-        return 1
-    return 1
-
-def punteggio_scadenza(data):
-    if pd.isna(data):
-        return 3
-    giorni = (data - pd.Timestamp.today()).days
-    if giorni >= 180:
-        return 3
-    elif giorni >= 90:
-        return 2
-    else:
-        return 1
-
 def filtra_bandi(
     df: pd.DataFrame,
     regione: str,
@@ -131,13 +93,13 @@ def filtra_bandi(
     obiettivo_preferenziale: str,
     mcc_rating: str,
     z_score: float,
+    numero_dipendenti: int,
+    ebitda: float,
+    utile_netto: float,
+    fatturato: float,
     max_results: int = 50
 ) -> list:
-    logger.info(">>> Filtro regione: %s", regione)
-    logger.info(">>> Filtro dimensione: %s", dimensione)
-    logger.info(">>> Obiettivo preferenziale: %s", obiettivo_preferenziale)
-    logger.info(">>> MCC: %s | Z-Score: %s", mcc_rating, z_score)
-    logger.info(f"✅ Dataset caricato: {df.shape[0]} righe totali.")
+    logger.info("✅ Inizio filtra_bandi() COMPLETO")
 
     # Pulizia stringhe
     df["titolo_clean"] = df["Titolo"].astype(str).str.strip()
@@ -154,19 +116,13 @@ def filtra_bandi(
     dimensione_clean = dimensione.strip()
     regione_clean = regione.strip()
 
-    # Punteggio solidità
-    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
-    z_punteggio = punteggio_zscore(z_score)
-    media_punteggio = (mcc_punteggio + z_punteggio) / 2
-
-    solidita_critica = (
-        mcc_rating.upper() in ["CCC", "B"]
-        and z_score <= 0
+    # Solvibilità critica
+    solvibilita_critica = (
+        (ebitda + utile_netto) < 0
+        and mcc_rating.upper() in ["CCC", "B"]
     )
-    if solidita_critica:
-        logger.info(">>> Solidità critica: filtreremo solo bandi di sostegno.")
-    else:
-        logger.info(">>> Solidità non critica.")
+    if solvibilita_critica:
+        logger.info("⚠️ Solvibilità critica: filtriamo solo bandi di sostegno liquidità.")
 
     # Filtro scadenza
     oggi = pd.Timestamp.today()
@@ -176,20 +132,48 @@ def filtra_bandi(
         (df["Data_chiusura_parsed"].isna())
         | (df["Data_chiusura_parsed"] >= scadenza_limite)
     ]
+
+    # Numero massimo dipendenti
+    if "Numero_Max_Dipendenti" in df.columns:
+        df["Numero_Max_Dipendenti"] = df["Numero_Max_Dipendenti"].fillna(99999)
+        df = df[
+            numero_dipendenti <= df["Numero_Max_Dipendenti"]
+        ]
+
+    # Fatturato minimo
+    if "Fatturato_Minimo" in df.columns:
+        df["Fatturato_Minimo"] = df["Fatturato_Minimo"].fillna(0)
+        df = df[
+            fatturato >= df["Fatturato_Minimo"]
+        ]
+
+    # Cofinanziamento minimo
+    cofinanziamento_percentuale = (
+        (ebitda + utile_netto) / fatturato * 100
+        if fatturato > 0 else 0
+    )
+    if "Cofinanziamento_Minimo" in df.columns:
+        df["Cofinanziamento_Minimo"] = df["Cofinanziamento_Minimo"].fillna(0)
+        df = df[
+            df["Cofinanziamento_Minimo"] <= cofinanziamento_percentuale
+        ]
+
     if df.empty:
-        logger.info(">>> Nessun bando con scadenza oltre 45 giorni.")
+        logger.info("🚫 Nessun bando dopo i filtri preliminari.")
         return []
 
+    # Funzione compatibilità regione
     def match_regione(l, regione):
         if not l:
             return False
         return (regione in l) or ("tutte le regioni" in [s.lower() for s in l])
 
-    if solidita_critica:
+    # Filtro principale
+    if solvibilita_critica:
         df_selected = df[
             df["regioni_list"].apply(lambda l: match_regione(l, regione_clean))
             &
-            df["obiettivo_list"].apply(lambda l: any("sostegno" in s.lower() for s in l))
+            df["obiettivo_list"].apply(lambda l: any("sostegno liquidità" in s.lower() for s in l))
             &
             df["dimensioni_list"].apply(lambda l: dimensione_clean in l)
         ]
@@ -217,44 +201,41 @@ def filtra_bandi(
                 ]
 
     if df_selected.empty:
+        logger.info("🚫 Nessun bando dopo il filtro principale.")
         return []
 
-    # Priorità obiettivo
-    df_selected["Priorita_Obiettivo"] = df_selected["obiettivo_list"].apply(
-        lambda l: 1 if obiettivo_simile(l, obiettivo_clean) else 2
-    )
-    # Punteggio forma agevolazione
-    df_selected["Punteggio_Forma"] = df_selected["forma_agevolazione_clean"].apply(punteggio_forma_agevolazione)
-    # Punteggio scadenza
-    df_selected["Punteggio_Scadenza"] = df_selected["Data_chiusura_parsed"].apply(punteggio_scadenza)
-    # Punteggio totale
-    df_selected["Punteggio_Totale"] = media_punteggio + df_selected["Punteggio_Forma"] + df_selected["Punteggio_Scadenza"]
+    # Calcolo punteggio solidità
+    mcc_punteggio = MCC_RATING_PUNTEGGIO.get(mcc_rating.upper(), 5)
+    z_punteggio = punteggio_zscore(z_score)
+    media_punteggio = (mcc_punteggio + z_punteggio) / 2
 
+    # Ordinamento
     df_sorted = df_selected.sort_values(
-        by=["Priorita_Obiettivo", "Punteggio_Totale", "Data_chiusura_parsed"],
-        ascending=[True, False, True]
+        by=["Data_chiusura_parsed"],
+        ascending=True
     ).head(max_results)
 
+    # Output finale
     risultati = []
     for _, row in df_sorted.iterrows():
         descrizione_ridotta = riassunto_50_parole(row.get("descrizione_clean", ""))
         data_chiusura = row.get("data_chiusura_clean", "")
         if not data_chiusura or str(data_chiusura).strip() == "":
             data_chiusura = "bando disponibile fino ad esaurimento fondi. Verificare residuo stanziamento."
+
         risultati.append({
             "Titolo Bando": row.get("titolo_clean", ""),
             "Data Scadenza": data_chiusura,
             "Solidità Aziendale VS Bando": livello_coerenza_solidita(media_punteggio),
             "Motivazione Solidità": motivazione_solidita(media_punteggio),
             "Obiettivo Bando": row.get("obiettivo_list", []),
-            "Prioritario SI/NO": "SI" if row.get("Priorita_Obiettivo", 2) == 1 else "NO",
+            "Prioritario SI/NO": "SI" if obiettivo_simile(row.get("obiettivo_list", []), obiettivo_clean) else "NO",
             "Percentuale Spesa": row.get("percentuale_ammissibilità") or "Non definita",
             "Tipo Agevolazione": row.get("forma_agevolazione_clean", ""),
-           "Costi Ammessi": row.get("Costi_Ammessi", ""),
-           "Descrizione Sintetica": descrizione_ridotta
-    })
+            "Costi Ammessi": row.get("Costi_Ammessi", ""),
+            "Descrizione Sintetica": descrizione_ridotta
+        })
 
     logger.info(f"✅ JSON finale mandato a GPT: {risultati}")
     logger.info(f"✅ Bandi selezionati e inviati a eVoluto: {len(risultati)}.")
-
     return risultati
