@@ -60,6 +60,10 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             obiettivo_preferenziale=input_data.obiettivo_preferenziale,
             mcc_rating=input_data.mcc_rating,
             z_score=input_data.z_score,
+            numero_dipendenti=input_data.numero_dipendenti,
+            ebitda=input_data.ebitda,
+            utile_netto=input_data.utile_netto,
+            fatturato=input_data.fatturato,
             max_results=10
         )
 
