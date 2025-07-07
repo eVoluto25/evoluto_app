@@ -42,7 +42,7 @@ def get_credentials_from_supabase():
 async def authorize():
     flow = Flow.from_client_config(
         {
-            "installed": {
+            "web": {
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
                 "redirect_uris": [REDIRECT_URI],
@@ -69,7 +69,7 @@ async def oauth2callback(request: Request):
 
     flow = Flow.from_client_config(
         {
-            "installed": {
+            "web": {
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
                 "redirect_uris": [REDIRECT_URI],
