@@ -78,7 +78,7 @@ async def oauth2callback(request: Request):
 
     return JSONResponse({"message": "Autenticazione completata."})
 
-# 3️⃣ Calcola slot liberi solo Martedì/Giovedì 9–12
+# 3️⃣ Calcola slot liberi Martedì/Giovedì 9–12, in italiano
 def calculate_available_slots(events, start_date, end_date, timezone_str="Europe/Rome"):
     tz = pytz.timezone(timezone_str)
     start_dt = tz.localize(datetime.strptime(start_date, "%Y-%m-%d"))
@@ -113,9 +113,14 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
                         break
 
                 if not overlapping:
+                    # Aggiungi descrizione in italiano
                     available_slots.append({
-                        "start": proposed_start.isoformat(),
-                        "end": proposed_end.isoformat()
+                        "data": proposed_start.strftime("%d/%m/%Y"),
+                        "giorno": proposed_start.strftime("%A"),
+                        "ora_inizio": proposed_start.strftime("%H:%M"),
+                        "ora_fine": proposed_end.strftime("%H:%M"),
+                        "start_iso": proposed_start.isoformat(),
+                        "end_iso": proposed_end.isoformat()
                     })
 
                 slot += timedelta(hours=1)
@@ -124,12 +129,16 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
 
     return available_slots
 
-# 4️⃣ Endpoint per disponibilità filtrata
-@router.post("/availability")
-async def get_calendar_availability(data: dict):
-    user_id = data.get("user_id", "demo_user")
-    start = data["start_date"]  # formato: YYYY-MM-DD
-    end = data["end_date"]
+# 4️⃣ Endpoint per disponibilità filtrata (settimana corrente + successiva)
+@router.get("/availability")
+async def get_calendar_availability(user_id: str = "demo_user"):
+    # Calcola intervallo settimana corrente e successiva
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_next_week = start_of_week + timedelta(days=13)
+
+    start_str = start_of_week.isoformat()
+    end_str = end_of_next_week.isoformat()
 
     if user_id not in USER_TOKENS:
         raise HTTPException(status_code=401, detail="Token non trovato. Esegui /authorize.")
@@ -139,17 +148,17 @@ async def get_calendar_availability(data: dict):
 
     events_result = service.events().list(
         calendarId="primary",
-        timeMin=start + "T00:00:00Z",
-        timeMax=end + "T23:59:59Z",
+        timeMin=start_str + "T00:00:00Z",
+        timeMax=end_str + "T23:59:59Z",
         singleEvents=True,
         orderBy="startTime"
     ).execute()
 
     events = events_result.get("items", [])
 
-    available_slots = calculate_available_slots(events, start, end)
+    available_slots = calculate_available_slots(events, start_str, end_str)
 
-    return {"available_slots": available_slots}
+    return {"fasce_disponibili": available_slots}
 
 # 5️⃣ Crea evento con link Meet
 @router.post("/create_event")
@@ -180,4 +189,4 @@ async def create_calendar_event(data: dict):
         conferenceDataVersion=1
     ).execute()
 
-    return {"event": created_event}
+    return {"evento_creato": created_event}
