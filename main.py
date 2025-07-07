@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 import logging
 from typing import List, Dict
+from calendar_api import router as calendar_router
 
 # ✅ Configurazione logging
 logging.basicConfig(level=logging.INFO)
@@ -13,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 # ✅ Inizializza FastAPI
 app = FastAPI()
+
+app.include_router(calendar_router, prefix="/calendar")
 
 # 🔗 URL del JSON dei bandi su GitHub
 JSON_URL = "https://raw.githubusercontent.com/eVoluto25/evoluto_app/refs/heads/main/opendata-export.json"
