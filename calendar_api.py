@@ -10,23 +10,24 @@ from supabase import create_client
 
 router = APIRouter()
 
+# 🔹 Supabase client
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# 🔹 Variabili ambiente Google
 CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
-
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-# Recupera token da Supabase
+# 🔹 Recupera credenziali da Supabase
 def get_credentials_from_supabase():
     user_id = "mio_calendario"
     res = supabase.table("calendar_tokens").select("*").eq("user_id", user_id).single().execute()
     data = res.data
     if not data:
-        raise HTTPException(status_code=401, detail="Token non trovato. Esegui autorizzazione iniziale.")
+        raise HTTPException(status_code=401, detail="Token non trovato. Devi autorizzare prima.")
     return Credentials(
         token=data["access_token"],
         refresh_token=data["refresh_token"],
@@ -36,7 +37,7 @@ def get_credentials_from_supabase():
         scopes=SCOPES
     )
 
-# Avvia autorizzazione
+# 🔹 Endpoint per avviare autorizzazione
 @router.get("/calendar/authorize")
 async def authorize():
     flow = Flow.from_client_config(
@@ -52,10 +53,14 @@ async def authorize():
         scopes=SCOPES,
         redirect_uri=REDIRECT_URI
     )
-    auth_url, _ = flow.authorization_url(prompt="consent", access_type="offline", include_granted_scopes="true")
+    auth_url, _ = flow.authorization_url(
+        prompt="consent",
+        access_type="offline",
+        include_granted_scopes="true"
+    )
     return JSONResponse({"auth_url": auth_url})
 
-# Salva token in Supabase
+# 🔹 Callback per salvare token
 @router.get("/calendar/oauth2callback")
 async def oauth2callback(request: Request):
     code = request.query_params.get("code")
@@ -89,7 +94,56 @@ async def oauth2callback(request: Request):
 
     return JSONResponse({"message": "Token salvato su Supabase."})
 
-# Recupera disponibilità
+# 🔹 Calcola fasce disponibili Martedì/Giovedì 9–12
+def calculate_available_slots(events, start_date, end_date, timezone_str="Europe/Rome"):
+    tz = pytz.timezone(timezone_str)
+    start_dt = tz.localize(datetime.strptime(start_date, "%Y-%m-%d"))
+    end_dt = tz.localize(datetime.strptime(end_date, "%Y-%m-%d"))
+
+    busy_slots = []
+    for e in events:
+        busy_slots.append((
+            datetime.fromisoformat(e["start"]["dateTime"]).astimezone(tz),
+            datetime.fromisoformat(e["end"]["dateTime"]).astimezone(tz)
+        ))
+
+    valid_weekdays = [1, 3]  # Martedì=1, Giovedì=3
+    available_slots = []
+
+    curr_day = start_dt
+    while curr_day <= end_dt:
+        if curr_day.weekday() in valid_weekdays:
+            slot_start = curr_day.replace(hour=9, minute=0, second=0, microsecond=0)
+            slot_end = curr_day.replace(hour=12, minute=0, second=0, microsecond=0)
+
+            slot = slot_start
+            while slot + timedelta(hours=1) <= slot_end:
+                proposed_start = slot
+                proposed_end = slot + timedelta(hours=1)
+
+                overlapping = False
+                for busy_start, busy_end in busy_slots:
+                    if proposed_start < busy_end and proposed_end > busy_start:
+                        overlapping = True
+                        break
+
+                if not overlapping:
+                    available_slots.append({
+                        "data": proposed_start.strftime("%d/%m/%Y"),
+                        "giorno": proposed_start.strftime("%A"),
+                        "ora_inizio": proposed_start.strftime("%H:%M"),
+                        "ora_fine": proposed_end.strftime("%H:%M"),
+                        "start_iso": proposed_start.isoformat(),
+                        "end_iso": proposed_end.isoformat()
+                    })
+
+                slot += timedelta(hours=1)
+
+        curr_day += timedelta(days=1)
+
+    return available_slots
+
+# 🔹 Recupera disponibilità settimana corrente e prossima
 @router.get("/calendar/availability")
 async def get_calendar_availability():
     creds = get_credentials_from_supabase()
@@ -109,18 +163,21 @@ async def get_calendar_availability():
         singleEvents=True,
         orderBy="startTime"
     ).execute()
+
     events = events_result.get("items", [])
-    # Calcolo slot (puoi usare la tua funzione)
+    available_slots = calculate_available_slots(events, start_str, end_str)
 
-    return {"fasce_disponibili": []}
+    return {"fasce_disponibili": available_slots}
 
-# Crea evento
+# 🔹 Crea evento sul calendario
 @router.post("/calendar/create_event")
 async def create_calendar_event(data: dict):
     creds = get_credentials_from_supabase()
     service = build("calendar", "v3", credentials=creds)
+
     event = {
         "summary": data["title"],
+        "description": data.get("description", ""),
         "start": {"dateTime": data["start_time"], "timeZone": "Europe/Rome"},
         "end": {"dateTime": data["end_time"], "timeZone": "Europe/Rome"},
         "conferenceData": {
@@ -130,9 +187,11 @@ async def create_calendar_event(data: dict):
             }
         }
     }
+
     created_event = service.events().insert(
         calendarId="primary",
         body=event,
         conferenceDataVersion=1
     ).execute()
+
     return {"evento_creato": created_event}
