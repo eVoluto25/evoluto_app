@@ -184,7 +184,7 @@ class EventoInput(BaseModel):
     start_time: str
     end_time: str
     ragione_sociale: str
-    obiettivo_preferenziale: str
+    obiettivo: str
 
 # 🔹 Crea evento sul calendario con descrizione automatica
 @router.post("/create_event")
