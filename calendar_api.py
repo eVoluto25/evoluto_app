@@ -38,7 +38,7 @@ def get_credentials_from_supabase():
     )
 
 # 🔹 Endpoint per avviare autorizzazione
-@router.get("/calendar/authorize")
+@router.get("/authorize")
 async def authorize():
     flow = Flow.from_client_config(
         {
@@ -61,7 +61,7 @@ async def authorize():
     return JSONResponse({"auth_url": auth_url})
 
 # 🔹 Callback per salvare token
-@router.get("/calendar/oauth2callback")
+@router.get("/oauth2callback")
 async def oauth2callback(request: Request):
     code = request.query_params.get("code")
     if not code:
@@ -144,7 +144,7 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
     return available_slots
 
 # 🔹 Recupera disponibilità settimana corrente e prossima
-@router.get("/calendar/availability")
+@router.get("/availability")
 async def get_calendar_availability():
     creds = get_credentials_from_supabase()
     service = build("calendar", "v3", credentials=creds)
@@ -170,7 +170,7 @@ async def get_calendar_availability():
     return {"fasce_disponibili": available_slots}
 
 # 🔹 Crea evento sul calendario
-@router.post("/calendar/create_event")
+@router.post("/create_event")
 async def create_calendar_event(data: dict):
     creds = get_credentials_from_supabase()
     service = build("calendar", "v3", credentials=creds)
