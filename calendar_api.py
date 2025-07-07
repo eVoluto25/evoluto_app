@@ -90,7 +90,8 @@ async def oauth2callback(request: Request):
         "refresh_token": creds.refresh_token,
         "token_uri": creds.token_uri,
         "client_id": creds.client_id,
-        "client_secret": creds.client_secret
+        "client_secret": creds.client_secret,
+        "scopes": ",".join(creds.scopes or [])
     }
 
     clean_data = {k: v for k, v in data.items() if v is not None}
