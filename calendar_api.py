@@ -202,7 +202,7 @@ async def create_calendar_event(data: EventoInput):
         f"Telefono: {data.telefono}\n"
         f"Email: {data.email}"
         f"Azienda: {data.ragione_sociale}\n"
-        f"Obiettivo: {data.obiettivo_preferenziale}"
+        f"Obiettivo: {data.obiettivo}"
     )
 
     event = {
