@@ -183,6 +183,8 @@ class EventoInput(BaseModel):
     email: EmailStr
     start_time: str
     end_time: str
+    ragione_sociale: str
+    obiettivo_preferenziale: str
 
 # 🔹 Crea evento sul calendario con descrizione automatica
 @router.post("/create_event")
@@ -199,6 +201,8 @@ async def create_calendar_event(data: EventoInput):
         f"Giorno e ora: {data_str} ore {ora_str}\n"
         f"Telefono: {data.telefono}\n"
         f"Email: {data.email}"
+        f"Azienda: {data.ragione_sociale}\n"
+        f"Obiettivo: {data.obiettivo_preferenziale}"
     )
 
     event = {
