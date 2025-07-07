@@ -83,14 +83,20 @@ async def oauth2callback(request: Request):
     flow.fetch_token(code=code)
     creds = flow.credentials
 
-    supabase.table("calendar_tokens").upsert({
+    # Prepara i dati rimuovendo eventuali None
+    data = {
         "user_id": "mio_calendario",
         "access_token": creds.token,
         "refresh_token": creds.refresh_token,
         "token_uri": creds.token_uri,
         "client_id": creds.client_id,
         "client_secret": creds.client_secret
-    }).execute()
+    }
+
+    clean_data = {k: v for k, v in data.items() if v is not None}
+
+    # Salva su Supabase
+    supabase.table("calendar_tokens").upsert(clean_data).execute()
 
     return JSONResponse({"message": "Token salvato su Supabase."})
 
