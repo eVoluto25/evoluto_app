@@ -4,6 +4,7 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from datetime import datetime, timedelta
+from pydantic import BaseModel, EmailStr
 import pytz
 import os
 from supabase import create_client
@@ -83,7 +84,6 @@ async def oauth2callback(request: Request):
     flow.fetch_token(code=code)
     creds = flow.credentials
 
-    # Prepara i dati rimuovendo eventuali None
     data = {
         "user_id": "mio_calendario",
         "access_token": creds.token,
@@ -96,7 +96,6 @@ async def oauth2callback(request: Request):
 
     clean_data = {k: v for k, v in data.items() if v is not None}
 
-    # Salva su Supabase
     supabase.table("calendar_tokens").upsert(clean_data).execute()
 
     return JSONResponse({"message": "Token salvato su Supabase."})
@@ -176,20 +175,40 @@ async def get_calendar_availability():
 
     return {"fasce_disponibili": available_slots}
 
-# 🔹 Crea evento sul calendario
+# 🔹 Modello per creazione evento
+class EventoInput(BaseModel):
+    nome: str
+    cognome: str
+    telefono: str
+    email: EmailStr
+    start_time: str
+    end_time: str
+
+# 🔹 Crea evento sul calendario con descrizione automatica
 @router.post("/create_event")
-async def create_calendar_event(data: dict):
+async def create_calendar_event(data: EventoInput):
     creds = get_credentials_from_supabase()
     service = build("calendar", "v3", credentials=creds)
 
+    start_dt = datetime.fromisoformat(data.start_time)
+    data_str = start_dt.strftime("%d/%m/%Y")
+    ora_str = start_dt.strftime("%H:%M")
+
+    descrizione = (
+        f"Consulenza specialistica con {data.nome} {data.cognome}\n"
+        f"Giorno e ora: {data_str} ore {ora_str}\n"
+        f"Telefono: {data.telefono}\n"
+        f"Email: {data.email}"
+    )
+
     event = {
-        "summary": data["title"],
-        "description": data.get("description", ""),
-        "start": {"dateTime": data["start_time"], "timeZone": "Europe/Rome"},
-        "end": {"dateTime": data["end_time"], "timeZone": "Europe/Rome"},
+        "summary": f"Consulenza con {data.nome} {data.cognome}",
+        "description": descrizione,
+        "start": {"dateTime": data.start_time, "timeZone": "Europe/Rome"},
+        "end": {"dateTime": data.end_time, "timeZone": "Europe/Rome"},
         "conferenceData": {
             "createRequest": {
-                "requestId": "evoluto-meeting",
+                "requestId": f"evoluto-meeting-{data.nome}-{data.cognome}",
                 "conferenceSolutionKey": {"type": "hangoutsMeet"}
             }
         }
