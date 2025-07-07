@@ -1,84 +1,39 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
-from datetime import datetime, timedelta, time
+from google.oauth2.credentials import Credentials
+from datetime import datetime, timedelta
 import pytz
 import os
 
-CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+from supabase import create_client
 
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
+# Configura Supabase
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 router = APIRouter()
 
-# In-memory storage token (esempio)
-USER_TOKENS = {}
+# 🔹 Recupera sempre il tuo token unico
+def get_credentials_from_supabase():
+    user_id = "mio_calendario"
+    res = supabase.table("calendar_tokens").select("*").eq("user_id", user_id).single().execute()
+    data = res.data
 
-# 1️⃣ Avvio autorizzazione
-@router.get("/authorize")
-async def authorize(user_id: str):
-    flow = Flow.from_client_config(
-        {
-            "installed": {
-                "client_id": CLIENT_ID,
-                "client_secret": CLIENT_SECRET,
-                "redirect_uris": [REDIRECT_URI],
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-            }
-        },
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI
+    if not data:
+        raise HTTPException(status_code=401, detail="Token non trovato. Esegui autorizzazione iniziale.")
+
+    return Credentials(
+        token=data["access_token"],
+        refresh_token=data["refresh_token"],
+        token_uri=data["token_uri"],
+        client_id=data["client_id"],
+        client_secret=data["client_secret"],
+        scopes=["https://www.googleapis.com/auth/calendar"]
     )
-    auth_url, _ = flow.authorization_url(
-        prompt="consent",
-        access_type="offline",
-        include_granted_scopes="true"
-    )
-    return JSONResponse({"auth_url": auth_url})
 
-# 2️⃣ Ricezione codice OAuth
-@router.get("/oauth2callback")
-async def oauth2callback(request: Request):
-    code = request.query_params.get("code")
-
-    if not code:
-        raise HTTPException(status_code=400, detail="Codice OAuth mancante.")
-
-    flow = Flow.from_client_config(
-        {
-            "installed": {
-                "client_id": CLIENT_ID,
-                "client_secret": CLIENT_SECRET,
-                "redirect_uris": [REDIRECT_URI],
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-            }
-        },
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI
-    )
-    flow.fetch_token(code=code)
-
-    creds = flow.credentials
-
-    user_id = "demo_user"
-    USER_TOKENS[user_id] = {
-        "token": creds.token,
-        "refresh_token": creds.refresh_token,
-        "token_uri": creds.token_uri,
-        "client_id": creds.client_id,
-        "client_secret": creds.client_secret,
-        "scopes": creds.scopes,
-    }
-
-    return JSONResponse({"message": "Autenticazione completata."})
-
-# 3️⃣ Calcola slot liberi Martedì/Giovedì 9–12, in italiano
+# 🔹 Calcola slot disponibili Martedì/Giovedì 9–12
 def calculate_available_slots(events, start_date, end_date, timezone_str="Europe/Rome"):
     tz = pytz.timezone(timezone_str)
     start_dt = tz.localize(datetime.strptime(start_date, "%Y-%m-%d"))
@@ -97,7 +52,6 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
     curr_day = start_dt
     while curr_day <= end_dt:
         if curr_day.weekday() in valid_weekdays:
-            # Fascia 9–12
             slot_start = curr_day.replace(hour=9, minute=0, second=0, microsecond=0)
             slot_end = curr_day.replace(hour=12, minute=0, second=0, microsecond=0)
 
@@ -113,7 +67,6 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
                         break
 
                 if not overlapping:
-                    # Aggiungi descrizione in italiano
                     available_slots.append({
                         "data": proposed_start.strftime("%d/%m/%Y"),
                         "giorno": proposed_start.strftime("%A"),
@@ -129,22 +82,18 @@ def calculate_available_slots(events, start_date, end_date, timezone_str="Europe
 
     return available_slots
 
-# 4️⃣ Endpoint per disponibilità filtrata (settimana corrente + successiva)
+# 🔹 Endpoint per disponibilità settimana corrente + prossima
 @router.get("/availability")
-async def get_calendar_availability(user_id: str = "demo_user"):
-    # Calcola intervallo settimana corrente e successiva
+async def get_calendar_availability():
+    creds = get_credentials_from_supabase()
+    service = build("calendar", "v3", credentials=creds)
+
     today = datetime.now().date()
     start_of_week = today - timedelta(days=today.weekday())
     end_of_next_week = start_of_week + timedelta(days=13)
 
     start_str = start_of_week.isoformat()
     end_str = end_of_next_week.isoformat()
-
-    if user_id not in USER_TOKENS:
-        raise HTTPException(status_code=401, detail="Token non trovato. Esegui /authorize.")
-
-    creds = Credentials(**USER_TOKENS[user_id])
-    service = build("calendar", "v3", credentials=creds)
 
     events_result = service.events().list(
         calendarId="primary",
@@ -155,19 +104,14 @@ async def get_calendar_availability(user_id: str = "demo_user"):
     ).execute()
 
     events = events_result.get("items", [])
-
     available_slots = calculate_available_slots(events, start_str, end_str)
 
     return {"fasce_disponibili": available_slots}
 
-# 5️⃣ Crea evento con link Meet
+# 🔹 Endpoint per creazione evento
 @router.post("/create_event")
 async def create_calendar_event(data: dict):
-    user_id = data.get("user_id", "demo_user")
-    if user_id not in USER_TOKENS:
-        raise HTTPException(status_code=401, detail="Token non trovato. Esegui /authorize.")
-
-    creds = Credentials(**USER_TOKENS[user_id])
+    creds = get_credentials_from_supabase()
     service = build("calendar", "v3", credentials=creds)
 
     event = {
@@ -190,17 +134,3 @@ async def create_calendar_event(data: dict):
     ).execute()
 
     return {"evento_creato": created_event}
-
-# 6️⃣ Endpoint test Supabase per verificare connessione e query
-@router.get("/test-supabase")
-async def test_supabase():
-    from supabase import create_client
-    import os
-
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    res = supabase.table("calendar_tokens").select("*").execute()
-
-    return {"dati_calendar_tokens": res.data}
