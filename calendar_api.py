@@ -190,3 +190,17 @@ async def create_calendar_event(data: dict):
     ).execute()
 
     return {"evento_creato": created_event}
+
+# 6️⃣ Endpoint test Supabase per verificare connessione e query
+@router.get("/test-supabase")
+async def test_supabase():
+    from supabase import create_client
+    import os
+
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    res = supabase.table("calendar_tokens").select("*").execute()
+
+    return {"dati_calendar_tokens": res.data}
