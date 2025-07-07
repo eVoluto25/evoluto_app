@@ -23,3 +23,6 @@ beautifulsoup4
 sumy
 nltk
 rapidfuzz
+google-auth-oauthlib
+google-api-python-client
+pytz
