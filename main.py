@@ -8,6 +8,14 @@ import logging
 from typing import List, Dict
 from calendar_api import router as calendar_router
 
+import os
+from datetime import date
+from supabase import create_client
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 # ✅ Configurazione logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,6 +61,21 @@ class ScoringInput(BaseModel):
     azienda: AziendaScoringInput
     bandi: List[BandoInput]
 
+def aggiorna_log_giornaliero():
+    oggi = str(date.today())
+    try:
+        res = supabase.table("gpt_evoluto_giornaliero").select("*").eq("data", oggi).execute()
+        if res.data:
+            supabase.table("gpt_evoluto_giornaliero").update({
+                "conteggio": res.data[0]["conteggio"] + 1
+            }).eq("data", oggi).execute()
+        else:
+            supabase.table("gpt_evoluto_giornaliero").insert({
+                "data": oggi,
+                "conteggio": 1
+            }).execute()
+    except Exception as e:
+        logger.warning(f"⚠️ Errore logging giornaliero Supabase: {str(e)}")
 
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
