@@ -272,5 +272,5 @@ Azioni:
 
 📌 Disclaimer finale:
 Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore. I dati raccolti sono utilizzati esclusivamente per la consulenza, nel rispetto del GDPR.
-"""
-
+"""     # chiusura di fase_8
+}
