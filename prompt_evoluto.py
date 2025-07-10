@@ -101,7 +101,7 @@ Azioni:
   - Distribuzione geografica dei beneficiari📍🌎
 
 👌 Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌
-❌ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT❌"""
+❌ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT❌""",
 
     "fase_3": """
 ══════════════════════════════════════════════════════════════════════════════
