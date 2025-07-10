@@ -7,6 +7,7 @@ import requests
 import logging
 from typing import List, Dict
 from calendar_api import router as calendar_router
+from prompt_evoluto import master_flow
 
 import os
 from datetime import date
@@ -210,3 +211,11 @@ async def scoring_bandi(input_data: ScoringInput):
     except Exception as e:
         logger.error(f"❌ Errore nella funzione scoring_bandi: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+from prompt_evoluto import master_flow  
+
+@app.get("/get-fase/{fase_id}")
+async def get_fase(fase_id: str):
+    if fase_id not in master_flow:
+        raise HTTPException(status_code=404, detail="Fase non trovata")
+    return {"fase": master_flow[fase_id]}
