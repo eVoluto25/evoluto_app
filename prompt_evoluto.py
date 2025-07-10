@@ -173,14 +173,14 @@ Azioni:
   3. Forma agevolazione (fondo perduto > credito d’imposta > prestito)
   4. Solidità aziendale (utile netto, EBITDA, MCC, Z‑Score)
   5. Obiettivo coerente con fase di crescita
-  6. Probabilità stimata (basata suL CONFRONTO DEI 10 BANDI SELEZIONATI CON I 10 CRITERI PROFESSIONALI DI SCORING quindi, ogni bando deve avere la 🔐 sua percentuale personalizzata da calcolare singolarmente 🔐)
+  6. Probabilità di approvazione 🔐 (basata suL CONFRONTO DEI 10 BANDI SELEZIONATI CON I 10 CRITERI PROFESSIONALI DI SCORING quindi, ogni bando deve avere la 🔐 sua percentuale personalizzata da calcolare singolarmente 🔐)
   7. Dotazione residua
   8. Compatibilità dimensionale
   9. Coerenza delle spese ammissibili
   10. Requisiti impliciti (es. export per internazionalizzazione)
 - Assegna un punteggio 0–100 con motivazione tecnica per ogni bando
 - Seleziona i 5 bandi con punteggio più alto (≥ 80), in ordine decrescente
-- Compila per ciascuno i 13 elementi vincolanti (come nella fase 2)
+- Compila per ciascuno i 13 elementi vincolanti (come nella fase 2) 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 ✅ AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
 PROCEDI CON LA FASE 6. ✅
