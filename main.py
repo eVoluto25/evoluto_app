@@ -80,6 +80,7 @@ def aggiorna_log_giornaliero():
 @app.post("/filtra-bandi")
 async def filtra_bandi_per_azienda(input_data: AziendaInput):
     logger.info("📡 Entrata nella funzione filtra_bandi_per_azienda")
+    aggiorna_log_giornaliero()
     logger.info(f"✅ Contenuto input_data ricevuto: {input_data}")
     logger.info(f"📋 input_data.dict(): {input_data.dict()}")
     logger.info(f"🔍 numero_dipendenti: {input_data.numero_dipendenti}")
