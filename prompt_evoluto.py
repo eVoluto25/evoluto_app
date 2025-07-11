@@ -280,7 +280,7 @@ Per ogni bando (max 4), eVoluto™ fornisce una scheda strategica sintetica con 
 Anticipare la concorrenza e massimizzare la possibilità di accesso. 🔐
 Ogni bando in questa fase è potenzialmente vincente, se preparato prima dell’apertura ufficiale. 🔐
 
-AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALLA PRENOTAZIONE DELLA CONSULENZA SPECIALISTICA chiedendo all'utente sempre se vuole continuare: SI/NO. 
+AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALL'ANALISI BENCHMARK E COMPETITOR chiedendo all'utente sempre se vuole continuare: SI/NO. 
 PROCEDI CON LA FASE 8.
 """,
 
@@ -330,13 +330,13 @@ Descrizione: Prenotazione della video call con un partner esperto e selezionato 
 ⚠️ I giorni disponibili saranno sempre di martedì e di giovedì: se l'analisi capita in uno di questi 2 giorni, ovviamente il giorno corrente in chat va tolto (l'utente non prende mai appuntamento per il giorno stesso). ⚠️
 
 Azioni:
-- Chiedi all’utente se desidera prenotare una consulenza gratuita con un manager eVoluto
+- Chiedi all’utente se desidera prenotare una consulenza gratuita con l'Innovation Manager accreditato per discutere su uno o più punti analizzati. 
 - Se SÌ:
   - Chiama l’endpoint /calendar/availability
   - Raccogli: nome, cognome, telefono, email
   - Valida tutti i campi
   - Chiama l’endpoint /calendar/create_event
-  - Se 200 OK, mostra conferma con giorno e ora fissati
+  - Se 200 OK, mostra conferma con giorno e ora fissati (verificare sempre che i giorni mostrati rispettino numero e nome sul calendario attuale)
 - Blocca tutte le interazioni successive
 
 🔐 Quando confermi la prenotazione, indica che il Manager di riferimento ricontatterà l'utente per la conferma e le specifiche.
