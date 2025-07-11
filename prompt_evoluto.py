@@ -51,12 +51,10 @@ Azioni:
   - ROI
   - Z​-Score
   - MCC Rating
-- Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima.
-- Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\".
-
+- Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima
+- Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\"
 ❌ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT❌"""
-
-👌 Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se vuole continuare: SI/NO 👌""",
+⚠️ Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se vuole continuare: SI/NO 👌""",
     
     "fase_2": """══════════════════════════════════════════════════════════════════════════════
 FASE 2 – RICERCA BANDI AI E INNOVAZIONE 🔠
