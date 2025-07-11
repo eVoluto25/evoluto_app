@@ -160,6 +160,8 @@ FASE 5 – SCORING E SELEZIONE TOP 5
 
 Descrizione: Analisi tecnica e selezione dei 5 bandi migliori su base comparativa
 
+📈 La probabilità di Approvazione dei TOP 5 bandi → [XX,X%] è sempre diversa per ciascun bando perchè calcolata con i criteri professionali di scoring.
+
 🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile"  o "in aggiornamento" se neanche da ricerca web è reperibile.
 
 Azioni:
