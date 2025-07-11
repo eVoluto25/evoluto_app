@@ -57,7 +57,8 @@ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
 Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
     
-    "fase_2": """══════════════════════════════════════════════════════════════════════════════
+"fase_2": """
+══════════════════════════════════════════════════════════════════════════════
 FASE 2 – RICERCA BANDI AI E INNOVAZIONE 🔠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
@@ -100,7 +101,7 @@ Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passag
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 """,
 
-    "fase_3": """
+"fase_3": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 3 – DOMANDA OBIETTIVO IMPRESA
 ══════════════════════════════════════════════════════════════════════════════
@@ -123,6 +124,7 @@ Azioni:
 
 Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
+
 "fase_4": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 4 – CREAZIONE E INVIO JSON
@@ -151,6 +153,7 @@ Azioni:
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
 Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
+
 "fase_5": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 5 – SCORING E SELEZIONE TOP 5
@@ -181,6 +184,7 @@ Azioni:
 AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
 PROCEDI CON LA FASE 6.
 """,
+
 "fase_6": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
@@ -192,6 +196,7 @@ FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
 AL TERMINE DELLA FASE 6, DOPO AVER MOSTRATO I 3 SCENARI PREDITTIVI, INVITA L'UTENTE ALLA RICERCA DEI BANDI FUTURI (IN PRE-APERTURA) 🔐 chiedendo all'utente sempre se vuole continuare: SI/NO. 
 PROCEDI CON LA FASE 7.
 """,
+
 "fase_7": """
 ══════════════════════════════════════════════════════════════════════════════
 🔐 FASE 7 – RICERCA BANDI FUTURI (IN PRE-APERTURA) 🔐
@@ -258,7 +263,8 @@ Ogni bando in questa fase è potenzialmente vincente, se preparato prima dell’
 AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALLA PRENOTAZIONE DELLA CONSULENZA SPECIALISTICA chiedendo all'utente sempre se vuole continuare: SI/NO. 
 PROCEDI CON LA FASE 8.
 """,
-    "fase_8": """
+
+"fase_8": """
 FASE 8 – ANALISI BENCHMARK E COMPETITOR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -292,6 +298,7 @@ Analisi comparativa tra l’impresa analizzata e la media del settore, basata su
 
 Al termine della FASE 8, chiedi conferma all’utente per passare alla FASE 9 – PRENOTAZIONE CONSULENZA.
 """,
+
 "fase_9": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 9 – PRENOTAZIONE CONSULENZA
