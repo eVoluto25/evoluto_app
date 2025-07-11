@@ -1,4 +1,3 @@
-# prompt_masterflow.py
 
 master_flow = {
     "fase_1": """eVoluto™ - MASTER FLOW
@@ -100,12 +99,6 @@ Azioni:
 Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 """
-}
-
-
-# prompt_fasi_3_4_5.py
-
-master_flow = {
 
 "fase_3": """FASE 3 – DOMANDA OBIETTIVO IMPRESA
 
@@ -129,7 +122,8 @@ Azioni:
 Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
-"fase_4": """══════════════════════════════════════════════════════════════════════════════
+"fase_4": """
+══════════════════════════════════════════════════════════════════════════════
 FASE 4 – CREAZIONE E INVIO JSON
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
@@ -157,7 +151,8 @@ Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi
 Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
-"fase_5": """══════════════════════════════════════════════════════════════════════════════
+"fase_5": """
+══════════════════════════════════════════════════════════════════════════════
 FASE 5 – SCORING E SELEZIONE TOP 5
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
@@ -187,11 +182,6 @@ AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BAND
 PROCEDI CON LA FASE 6.
 """
 
-}
-
-# prompt_fasi_6_7.py
-
-master_flow = {
 "fase_6": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
@@ -270,11 +260,7 @@ Ogni bando in questa fase è potenzialmente vincente, se preparato prima dell’
 AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALLA PRENOTAZIONE DELLA CONSULENZA SPECIALISTICA chiedendo all'utente sempre se vuole continuare: SI/NO. 
 PROCEDI CON LA FASE 8.
 """
-}
 
-# prompt_fasi_8_9.py
-
-master_flow = {
 "fase_8": """
 FASE 8 – ANALISI BENCHMARK E COMPETITOR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
