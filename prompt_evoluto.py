@@ -65,42 +65,39 @@ Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se
 ══════════════════════════════════════════════════════════════════════════════
 FASE 2 – BANDI AI E INNOVAZIONE 🔠
 ══════════════════════════════════════════════════════════════════════════════
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
+🔐 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. NON ATTENDERE CONFERMA UTENTE. 🔐
 
-Descrizione: elencare fino a 3 bandi dedicati ad AI, automazione e transizione digitale.
+▶️ ISTRUZIONE DIRETTA PER GPT:
+Esegui immediatamente la ricerca online di **massimo 3 bandi attivi**, compatibili con i seguenti ambiti:
+- Intelligenza Artificiale
+- Automazione industriale
+- Transizione digitale
+- Connettività avanzata
 
-🔧 Regola automatica da attivare sempre nella FASE 2:
+📍 APPLICA BLOCCO TERRITORIALE:
+Escludi automaticamente bandi che non si applicano alla **Regione o Provincia**, sede legale dell’azienda.
 
-🔒 Blocco territoriale preventivo
-“Se la sede legale della società non rientra nella Regione di riferimento del bando, il bando è automaticamente scartato.”
+📘 Per ogni bando trovato, compila i seguenti 13 campi:
 
-️ TROVA 3 BANDI COMPATIBILI DIRETTAMENTE SUL WEB E PER CIASCUN BANDO SELEZIONATO 🔴 SEGUI SEMPRE ED ESATTAMENTE LE ISTRUZIONI SEGUENTI 🔴:
+1. Titolo del Bando  
+2. Data di Scadenza  
+3. Obiettivo  
+4. Probabilità di Approvazione Integrata [XX,X%]  
+5. Finalità della misura  
+6. Spese Ammissibili  
+7. Intensità Agevolazione (% o descrizione precisa)  
+8. Importo Minimo Ammissibile  
+9. Tempi medi di approvazione e liquidazione  
+10. Dotazione Complessiva (e residuo, se disponibile)  
+11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
+12. Motivazione Tecnica (5–8 righe)  
+13. Descrizione Dettagliata (5–10 righe)
 
-🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile" o "in aggiornamento" se neanche da ricerca web è reperibile.
-Azioni:
-- Esegui ricerca da fonti ufficiali (solo link ufficiali di siti istituzionali o enti accreditati) per bandi su:
-  - Intelligenza Artificiale
-  - Automazione industriale
-  - Transizione digitale
-  - Connettività avanzata
-- Seleziona massimo 3 bandi ⚠️ compatibili con il profilo aziendale. ⚠️
-- Per ciascun bando selezionato, compila la scheda vincolante con i 13 campi obbligatori:
-  📘 Titolo del Bando
-  🗕️ Data di Scadenza
-  🎯 Obiettivo
-  📈 Probabilità di Approvazione Integrata → [XX,X%]
-  📊 Finalità della misura
-  📋 Spese Ammissibili
-  ⚖️ Intensità Agevolazione (% o descrizione precisa)
-  💰 Importo Minimo Ammissibile
-  ⏳ Tempi medi di approvazione e liquidazione
-  🔐 Dotazione Complessiva (e residuo, se disponibile)
-  🏅 Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO
-  🧭 Motivazione Tecnica (5–8 righe, analisi professionale)
-  📝 Descrizione Dettagliata (5–10 righe, focus su benefici strategici)
+📎 FONTI AMMESSE: Solo link ufficiali (siti governativi, regionali, enti pubblici o portali accreditati).
 
-Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌
-NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
+❗NON attendere input manuale. Non fare domande all’utente. Procedi automaticamente e mostra il risultato.
+
+✅ Alla fine della fase, chiedi solo: “Vuoi procedere con la fase successiva?”
 """,
 
 "fase_3": """
