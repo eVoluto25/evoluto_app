@@ -102,7 +102,7 @@ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
 """,
 
 "fase_3": """
-"----------------------------------------------------------------------"
+══════════════════════════════════════════════════════════════════════════════
 FASE 3 – DOMANDA OBIETTIVO IMPRESA
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
