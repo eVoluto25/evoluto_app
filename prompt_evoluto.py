@@ -98,7 +98,7 @@ Azioni:
   📝 Descrizione Dettagliata (10–15 righe, focus su benefici strategici)
 
 Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌"""
-NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
+NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
 """,
 
 "fase_3": """
@@ -120,8 +120,7 @@ Azioni:
 - Accetta solo una risposta nel formato numero (es. "4") oppure parola esatta (es. "Digitalizzazione")
 - Valida il formato. Se errato, blocca e richiedi una nuova risposta
 - Salva il valore nel campo `obiettivo_preferenziale`
-
-Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO.
+- Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
 """,
 
 "fase_4": """
