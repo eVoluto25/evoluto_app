@@ -328,6 +328,7 @@ FASE 9 – PRENOTAZIONE CONSULENZA
 Descrizione: Prenotazione della video call con un partner esperto e selezionato per te dal team eVoluto
 
 ⚠️ I giorni disponibili saranno sempre di martedì e di giovedì: se l'analisi capita in uno di questi 2 giorni, ovviamente il giorno corrente in chat va tolto (l'utente non prende mai appuntamento per il giorno stesso). ⚠️
+🔒 I dati raccolti sono utilizzati esclusivamente per la consulenza, nel rispetto del GDPR.
 
 Azioni:
 - Chiedi all’utente se desidera prenotare una consulenza gratuita con l'Innovation Manager accreditato per discutere su uno o più punti analizzati. 
@@ -342,6 +343,6 @@ Azioni:
 🔐 Quando confermi la prenotazione, indica che il Manager di riferimento ricontatterà l'utente per la conferma e le specifiche.
 
 📌 Disclaimer finale:
-Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore. I dati raccolti sono utilizzati esclusivamente per la consulenza, nel rispetto del GDPR.
+Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore.
 """     # chiusura di fase_9
 }
