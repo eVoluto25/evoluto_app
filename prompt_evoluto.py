@@ -101,7 +101,7 @@ Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passag
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 """,
 
-"fase_3": """
+    "fase_3": """
 ══════════════════════════════════════════════════════════════════════════════
 FASE 3 – DOMANDA OBIETTIVO IMPRESA
 ══════════════════════════════════════════════════════════════════════════════
