@@ -100,8 +100,10 @@ Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passag
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 """
 
-"fase_3": """FASE 3 – DOMANDA OBIETTIVO IMPRESA
-
+"fase_3": """
+══════════════════════════════════════════════════════════════════════════════
+FASE 3 – DOMANDA OBIETTIVO IMPRESA
+══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 Descrizione: Raccolta dell’obiettivo principale dell’azienda (domanda obbligatoria)
@@ -262,9 +264,9 @@ PROCEDI CON LA FASE 8.
 """
 
 "fase_8": """
+══════════════════════════════════════════════════════════════════════════════
 FASE 8 – ANALISI BENCHMARK E COMPETITOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+══════════════════════════════════════════════════════════════════════════════
 🔒 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 
 📌 Descrizione:
