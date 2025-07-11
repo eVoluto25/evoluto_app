@@ -148,7 +148,7 @@ Azioni:
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
-Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine della FASE 4, procedi alla FASE 5 - SCORING E SELEZIONE TOP 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
 "fase_5": """
