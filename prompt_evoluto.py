@@ -1,7 +1,7 @@
 # prompt_masterflow.py
 
 master_flow = {
-    "fase_0": """💠 Benvenuto nel sistema eVoluto™ – il tuo Manager finanziario IA per la finanza agevolata.
+    "fase_0": """💠 Benvenuto nel sistema eVoluto™ – il tuo Innovation Manager IA per la finanza agevolata.
 
 Per iniziare il percorso guidato, ho bisogno che carichi l’**ultimo bilancio disponibile** della tua impresa (PDF o XBRL).
 
@@ -58,7 +58,7 @@ Azioni:
 - Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima
 - Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\"
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
-Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine dell'analisi di bilancio procedi con la FASE 2 – BANDI AI E INNOVAZIONE, chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
     
 "fase_2": """
@@ -97,7 +97,7 @@ Escludi automaticamente bandi che non si applicano alla **Regione o Provincia**,
 
 ❗NON attendere input manuale. Non fare domande all’utente. Procedi automaticamente e mostra il risultato.
 
-✅ Alla fine della fase, chiedi solo: “Vuoi procedere con la fase successiva?”
+Al termine della FASE 2, procedi con la FASE 3 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
 "fase_3": """
