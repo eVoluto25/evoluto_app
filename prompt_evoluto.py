@@ -178,7 +178,28 @@ Azioni:
   10. Requisiti impliciti (es. export per internazionalizzazione)
 - Assegna un punteggio 0–100 con motivazione tecnica per ogni bando
 - Seleziona i 5 bandi con punteggio più alto (≥ 80), in ordine decrescente
-- Compila per ciascuno i 13 elementi vincolanti (come nella fase 2) 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
+- Compila per ciascuno i 13 elementi vincolanti, 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
+
+📘 Per ogni bando trovato, compila i seguenti 13 campi:
+
+1. Titolo del Bando  
+2. Data di Scadenza  
+3. Obiettivo  
+4. Probabilità di Approvazione Integrata [XX,X%]  
+5. Finalità della misura  
+6. Spese Ammissibili  
+7. Intensità Agevolazione (% o descrizione precisa)  
+8. Importo Minimo Ammissibile  
+9. Tempi medi di approvazione e liquidazione  
+10. Dotazione Complessiva (e residuo, se disponibile)  
+11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
+12. Motivazione Tecnica (5–8 righe)  
+13. Descrizione Dettagliata (5–10 righe)
+
+🔐 ATTENZIONE: È vietato assegnare la stessa percentuale di approvazione a più bandi.
+Ogni bando DEVE avere una probabilità di approvazione differente, anche minima, calcolata individualmente in base all’applicazione effettiva dei 10 criteri professionali di scoring.
+La percentuale DEVE risultare da una valutazione separata su ciascun bando, tenendo conto della coerenza specifica con il profilo aziendale.
+Se due bandi ottengono lo stesso punteggio finale, la probabilità dev’essere comunque leggermente diversa per distinguerli.
 
 AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
 PROCEDI CON LA FASE 6.
