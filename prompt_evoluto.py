@@ -53,16 +53,13 @@ Azioni:
   - MCC Rating
 - Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima.
 - Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\".
-- Recupera benchmark da codice ATECO per: EBITDA, ROE, ROI, Debiti/Patrimonio Netto.
-- Confronta valori aziendali con media del settore e calcola scostamenti.
-- Redigi paragrafo tecnico (8–10 righe) di analisi comparativa.
-- Identifica 2–4 competitor con caratteristiche simili (forma giuridica, settore, dimensione, regione) e costruisci tabella comparativa con indicatori finanziari e descrizione attività. 
-⚠️ Non mostrare mai la fonte delle informazioni del web.
+
+❌ NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT❌"""
 
 👌 Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se vuole continuare: SI/NO 👌""",
     
     "fase_2": """══════════════════════════════════════════════════════════════════════════════
-FASE 2 – RICERCA BANDI AI 🔠
+FASE 2 – RICERCA BANDI AI E INNOVAZIONE 🔠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -74,12 +71,12 @@ Descrizione: Ricerca di massimo 3 bandi dedicati ad AI, automazione e transizion
 
 “Se la sede legale della società non rientra nella Regione di riferimento del bando, il bando è automaticamente scartato.”
 
-️ LA RICERCA DEI 3 BANDI DI IA COMPATIBILI DEVE ESSERE FATTA DIRETTAMENTE SUL WEB SENZA LA NECESSITA' DI COLLEGARSI A PYTHON ATTRAVERSO API ESTERNE.(RISPETTA LE LINEE GUIDA) ⚠️
+️ LA RICERCA DEI 3 BANDI COMPATIBILI DEVE ESSERE FATTA DIRETTAMENTE SUL WEB SENZA LA NECESSITA' DI COLLEGARSI A PYTHON ATTRAVERSO API ESTERNE.(RISPETTA LE LINEE GUIDA) ⚠️
 
 🔴 SEGUI SEMPRE ED ESATTAMENTE LE ISTRUZIONI SEGUENTI 🔴:
 🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile" o "in aggiornamento" se neanche da ricerca web è reperibile.
 Azioni:
-- Esegui ricerca da fonti ufficiali (no link) per bandi su:
+- Esegui ricerca da fonti ufficiali (solo link ufficiali di siti istituzionali o enti accreditati) per bandi su:
   - Intelligenza Artificiale
   - Automazione industriale
   - Transizione digitale
@@ -262,9 +259,43 @@ Ogni bando in questa fase è potenzialmente vincente, se preparato prima dell’
 ✅ AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALLA PRENOTAZIONE DELLA CONSULENZA SPECIALISTICA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
 PROCEDI CON LA FASE 8. ✅
 """,
-"fase_8": """
+    "fase_8": """
+FASE 8 – ANALISI BENCHMARK E COMPETITOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔒 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
+
+📌 Descrizione:
+Analisi comparativa tra l’impresa analizzata e la media del settore, basata su codice ATECO e indicatori finanziari chiave. Individuazione di competitor diretti con confronti su performance e caratteristiche aziendali.
+
+📊 Indicatori di benchmark:
+– EBITDA Margin
+– ROE
+– ROI
+– Debiti / Patrimonio Netto
+
+⚙️ Azioni:
+1. Recupera la media settoriale per ciascun indicatore, in base al codice ATECO aziendale.
+2. Confronta i valori dell’azienda con le medie e calcola gli scostamenti in %.
+3. Redigi un paragrafo tecnico (8–10 righe) che commenti i punti di forza e debolezza rispetto al settore.
+4. Identifica da 2 a 4 aziende competitor con caratteristiche simili:
+   – stessa forma giuridica
+   – stessa dimensione
+   – stesso settore (codice ATECO)
+   – stessa regione
+5. Costruisci una tabella comparativa con: 
+   – Denominazione fittizia
+   – EBITDA, ROE, ROI, Debiti/Patrimonio Netto
+   – Descrizione sintetica dell’attività
+
+⚠️ NON citare mai le fonti utilizzate per costruire l’analisi.
+⚠️ NON inserire link, riferimenti a siti, banche dati o contenuti web.
+
+✅ Al termine della FASE 8, chiedi conferma all’utente per passare alla FASE 9 – PRENOTAZIONE CONSULENZA.
+""",
+"fase_9": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 8 – PRENOTAZIONE CONSULENZA
+FASE 9 – PRENOTAZIONE CONSULENZA
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -286,5 +317,5 @@ Azioni:
 
 📌 Disclaimer finale:
 Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore. I dati raccolti sono utilizzati esclusivamente per la consulenza, nel rispetto del GDPR.
-"""     # chiusura di fase_8
+"""     # chiusura di fase_9
 }
