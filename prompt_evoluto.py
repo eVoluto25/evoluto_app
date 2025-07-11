@@ -97,7 +97,7 @@ Azioni:
   🧭 Motivazione Tecnica (5–8 righe, analisi professionale)
   📝 Descrizione Dettagliata (10–15 righe, focus su benefici strategici)
 
-Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌"""
+Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
 """,
 
