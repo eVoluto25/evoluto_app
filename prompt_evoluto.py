@@ -63,21 +63,19 @@ Al termine della comparazione procedi alla FASE 2 chiedendo all'utente sempre se
     
 "fase_2": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 2 – RICERCA BANDI AI E INNOVAZIONE 🔠
+FASE 2 – BANDI AI E INNOVAZIONE 🔠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
-Descrizione: Ricerca di massimo 3 bandi dedicati ad AI, automazione e transizione digitale.
+Descrizione: elencare fino a 3 bandi dedicati ad AI, automazione e transizione digitale.
+
+🔧 Regola automatica da attivare sempre nella FASE 2:
 
 🔒 Blocco territoriale preventivo
-
-🔧 Regola automatica da attivare a ogni FASE 2:
-
 “Se la sede legale della società non rientra nella Regione di riferimento del bando, il bando è automaticamente scartato.”
 
-️ LA RICERCA DEI 3 BANDI COMPATIBILI DEVE ESSERE FATTA DIRETTAMENTE SUL WEB SENZA LA NECESSITA' DI COLLEGARSI A PYTHON ATTRAVERSO API ESTERNE.(RISPETTA LE LINEE GUIDA) ⚠️
+️ TROVA 3 BANDI COMPATIBILI DIRETTAMENTE SUL WEB E PER CIASCUN BANDO SELEZIONATO 🔴 SEGUI SEMPRE ED ESATTAMENTE LE ISTRUZIONI SEGUENTI 🔴:
 
-🔴 SEGUI SEMPRE ED ESATTAMENTE LE ISTRUZIONI SEGUENTI 🔴:
 🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile" o "in aggiornamento" se neanche da ricerca web è reperibile.
 Azioni:
 - Esegui ricerca da fonti ufficiali (solo link ufficiali di siti istituzionali o enti accreditati) per bandi su:
@@ -99,7 +97,7 @@ Azioni:
   🔐 Dotazione Complessiva (e residuo, se disponibile)
   🏅 Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO
   🧭 Motivazione Tecnica (5–8 righe, analisi professionale)
-  📝 Descrizione Dettagliata (10–15 righe, focus su benefici strategici)
+  📝 Descrizione Dettagliata (5–10 righe, focus su benefici strategici)
 
 Al termine dell'elenco procedi alla FASE 3 e dopo aver rispettato tutti i passaggi, l'unica cosa che devi chiedere all'utente è se vuole continuare: SI/NO 👌
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT
