@@ -19,7 +19,6 @@ AZIENDE_TOTALE_MAX = 250
 DELAY_RANGE = (2, 4)
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
 HEADERS = {"User-Agent": USER_AGENT}
-
 FORMA_GIURIDICA_CAPITALE = ["S.r.l.", "S.p.A.", "S.a.p.a."]
 FATTURATO_MINIMO = 1_000_000
 
@@ -81,10 +80,7 @@ def scrape_infoimprese():
                     "sito_web": sito["href"] if sito else None,
                     "regione": regione,
                     "forma_giuridica": "S.r.l.",
-                    "fatturato": 1_500_000,
-                    "telefono": None,
-                    "email": None,
-                    "cellulare": None
+                    "fatturato": 1_500_000
                 }
                 risultati.append(azienda)
             time.sleep(random.uniform(*DELAY_RANGE))
@@ -105,7 +101,7 @@ def scrape_paginegialle():
                 indirizzo = box.select_one(".indirizzo")
                 telefono = box.select_one(".telefono")
                 sito = box.select_one("a.sito")
-                email = box.select_one("a[href^='mailto:']")
+                email = box.select_one("a[href^=mailto:"]")
                 azienda = {
                     "ragione_sociale": nome.text.strip() if nome else None,
                     "sede_legale": indirizzo.text.strip() if indirizzo else None,
@@ -114,8 +110,7 @@ def scrape_paginegialle():
                     "sito_web": sito['href'] if sito else None,
                     "regione": regione,
                     "forma_giuridica": "S.r.l.",
-                    "fatturato": 1_200_000,
-                    "cellulare": None
+                    "fatturato": 1_200_000
                 }
                 risultati.append(azienda)
             time.sleep(random.uniform(*DELAY_RANGE))
@@ -140,11 +135,7 @@ def scrape_reportaziende():
                     "sito_web": href,
                     "regione": regione,
                     "forma_giuridica": "S.r.l.",
-                    "fatturato": 1_300_000,
-                    "telefono": None,
-                    "email": None,
-                    "cellulare": None,
-                    "sede_legale": None
+                    "fatturato": 1_300_000
                 }
                 risultati.append(azienda)
             time.sleep(random.uniform(*DELAY_RANGE))
@@ -167,14 +158,37 @@ def scrape_opencorporates():
                     "sede_legale": dati.get("registered_address"),
                     "regione": "-",
                     "fatturato": 1_100_000,
-                    "sito_web": None,
-                    "telefono": None,
-                    "email": None,
-                    "cellulare": None
+                    "sito_web": None
                 }
                 risultati.append(azienda)
     except: pass
     return risultati
+
+# -------------------------
+# UPLOAD GOOGLE DRIVE
+# -------------------------
+def upload_to_drive(local_file_path, nome_file_drive):
+    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    SERVICE_ACCOUNT_FILE = 'credentials.json'
+    FOLDER_ID = '1bR24tO5767YsmCfQUzUf4mLMcG-vrEzk'
+
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=creds)
+
+    file_metadata = {
+        'name': nome_file_drive,
+        'parents': [FOLDER_ID]
+    }
+    media = MediaFileUpload(local_file_path, mimetype='text/csv')
+
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    print(f"📤 File caricato su Google Drive (cartella ID: {FOLDER_ID}), file ID: {file.get('id')}")
 
 # -------------------------
 # ESECUZIONE COMPLETA
@@ -182,50 +196,26 @@ def scrape_opencorporates():
 print("🚀 Avvio scraping da tutte le fonti...")
 raw_data = scrape_infoimprese() + scrape_paginegialle() + scrape_reportaziende() + scrape_opencorporates()
 
-if len(raw_data) > AZIENDE_TOTALE_MAX:
-    raw_data = raw_data[:AZIENDE_TOTALE_MAX]
-
-# Unione dei dati per evitare duplicati e completare i mancanti
-df = pd.DataFrame(raw_data)
-df = df.groupby("ragione_sociale", as_index=False).first()  # prende il primo valore non nullo per ogni campo
-
-# Normalizza e filtra
-finali = []
-for _, azienda in df.iterrows():
-    azienda = azienda.to_dict()
+dati_finali = []
+for azienda in raw_data:
     azienda["forma_giuridica"] = normalizza_forma_giuridica(azienda.get("forma_giuridica"))
     azienda["fatturato"] = pulisci_fatturato(azienda.get("fatturato"))
     if is_in_target(azienda["forma_giuridica"], azienda["fatturato"]):
         azienda = completa_dati_da_sito(azienda)
-        if azienda.get("email"):  # email obbligatoria per Brevo
+        if azienda.get("email"):  # Solo se c'è email
             azienda["data_scraping"] = datetime.now().strftime("%Y-%m-%d")
             azienda["fonte"] = azienda.get("fonte", "varie")
-            finali.append(azienda)
-
-print(f"✍️ Salvataggio dati filtrati: {len(finali)} aziende trovate in target con email")
-df_finale = pd.DataFrame(finali)
-df_finale["completezza_dati"] = df_finale.notnull().sum(axis=1)
-df_finale.to_csv("aziende_filtrate.csv", index=False, encoding="utf-8-sig")
-print("✅ File aziende_filtrate.csv generato correttamente")
+            dati_finali.append(azienda)
 
 # -------------------------
-# UPLOAD GOOGLE DRIVE
+# SALVATAGGIO CSV CON NOME GIORNALIERO
 # -------------------------
-def upload_to_drive(local_file_path, nome_file_drive):
-    SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    SERVICE_ACCOUNT_FILE = 'credentials.json'  # inserire qui il file json del service account
+data_today = datetime.now().strftime("%Y-%m-%d")
+nome_file_csv = f"aziende_filtrate_{data_today}.csv"
 
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('drive', 'v3', credentials=creds)
-
-    file_metadata = {'name': nome_file_drive}
-    media = MediaFileUpload(local_file_path, mimetype='text/csv')
-    file = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id'
-    ).execute()
-    print(f"📤 File caricato su Google Drive, ID: {file.get('id')}")
-
-upload_to_drive("aziende_filtrate.csv", "aziende_filtrate.csv")
+print(f"✍️ Salvataggio dati filtrati: {len(dati_finali)} aziende trovate in target")
+df = pd.DataFrame(dati_finali)
+df["completezza_dati"] = df.notnull().sum(axis=1)
+df.to_csv(nome_file_csv, index=False, encoding="utf-8-sig")
+upload_to_drive(nome_file_csv, nome_file_csv)
+print("✅ File caricato e processo completato")
