@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
+import json
+import os
 from bs4 import BeautifulSoup
 import pandas as pd
 import random
@@ -169,11 +171,10 @@ def scrape_opencorporates():
 # -------------------------
 def upload_to_drive(local_file_path, nome_file_drive):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    SERVICE_ACCOUNT_FILE = 'credentials.json'
     FOLDER_ID = '1bR24tO5767YsmCfQUzUf4mLMcG-vrEzk'
 
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    SERVICE_ACCOUNT_INFO = json.loads(os.getenv("GOOGLE_DRIVE_CREDENTIALS_JSON"))
+    creds = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO, scopes=SCOPES)
     service = build('drive', 'v3', credentials=creds)
 
     file_metadata = {
