@@ -173,8 +173,8 @@ def upload_to_drive(local_file_path, nome_file_drive):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
     FOLDER_ID = '1bR24tO5767YsmCfQUzUf4mLMcG-vrEzk'
 
-    SERVICE_ACCOUNT_INFO = json.loads(os.getenv("GOOGLE_DRIVE_CREDENTIALS_JSON"))
-    creds = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO, scopes=SCOPES)
+    SERVICE_ACCOUNT_FILE = 'credentials.json'
+    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     service = build('drive', 'v3', credentials=creds)
 
     file_metadata = {
