@@ -169,11 +169,11 @@ def scrape_opencorporates():
 # -------------------------
 def upload_to_drive(local_file_path, nome_file_drive):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    SERVICE_ACCOUNT_FILE = 'credentials.json'
+    SECRET_FILE_PATH = '/etc/secrets/evoluto-91fc01e6dbfd.json'  
     FOLDER_ID = '1bR24tO5767YsmCfQUzUf4mLMcG-vrEzk'
 
     creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        SECRET_FILE_PATH, scopes=SCOPES)
     service = build('drive', 'v3', credentials=creds)
 
     file_metadata = {
