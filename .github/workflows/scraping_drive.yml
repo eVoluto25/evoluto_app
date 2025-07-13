@@ -28,7 +28,7 @@ jobs:
         echo "${{ secrets.GOOGLE_DRIVE_CREDENTIALS_JSON }}" > credentials.json
 
     - name: Run scraping script
-      run: python scraper.py
+      run: python filtra_aziende.py
 
     - name: Upload CSV to Google Drive
       run: python upload_to_drive.py
