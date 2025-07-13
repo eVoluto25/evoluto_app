@@ -101,7 +101,7 @@ def scrape_paginegialle():
                 indirizzo = box.select_one(".indirizzo")
                 telefono = box.select_one(".telefono")
                 sito = box.select_one("a.sito")
-                email = box.select_one("a[href^=mailto:"]")
+                email = box.select_one("a[href^='mailto:']")
                 azienda = {
                     "ragione_sociale": nome.text.strip() if nome else None,
                     "sede_legale": indirizzo.text.strip() if indirizzo else None,
