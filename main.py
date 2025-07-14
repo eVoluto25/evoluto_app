@@ -123,7 +123,7 @@ async def filtra_bandi_per_azienda(input_data: AziendaInput):
             ebitda=input_data.ebitda,
             utile_netto=input_data.utile_netto,
             fatturato=input_data.fatturato,
-            max_results=10
+            max_results=20
         )
 
         if not bandi_filtrati:
