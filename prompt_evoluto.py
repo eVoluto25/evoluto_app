@@ -6,7 +6,7 @@ master_flow = {
 Per iniziare il percorso guidato, ho bisogno che carichi l’**ultimo bilancio disponibile** della tua impresa (PDF o XBRL).
 
 📎 **Carica ora il documento** tramite il modulo qui sotto.  
-Una volta ricevuto, attiverò automaticamente la prima delle 9 fasi operative previste dal sistema.
+Una volta ricevuto, attiverò automaticamente la prima delle 5 fasi operative previste dal sistema.
 
 ⏳ Attendo il caricamento...
 """,
@@ -106,7 +106,7 @@ Azioni:
     "fatturato": 0
   }
 - Invia il JSON all’endpoint /filtra-bandi
-- Ricevi fino a 10 bandi compatibili
+- Ricevi fino a 20 bandi compatibili
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
@@ -133,7 +133,7 @@ Azioni:
   3. Forma agevolazione (fondo perduto > credito d’imposta > prestito)
   4. Solidità aziendale (utile netto, EBITDA, MCC, Z‑Score)
   5. Obiettivo coerente con fase di crescita
-  6. Probabilità di approvazione 🔐 (basata suL CONFRONTO DEI 10 BANDI SELEZIONATI CON I 10 CRITERI PROFESSIONALI DI SCORING quindi, ogni bando deve avere la 🔐 sua percentuale personalizzata da calcolare singolarmente 🔐)
+  6. Probabilità di approvazione 🔐 (basata suL CONFRONTO DEI 20 BANDI SELEZIONATI CON I 10 CRITERI PROFESSIONALI DI SCORING quindi, ogni bando deve avere la 🔐 sua percentuale personalizzata da calcolare singolarmente 🔐)
   7. Dotazione residua
   8. Compatibilità dimensionale
   9. Coerenza delle spese ammissibili
@@ -143,6 +143,7 @@ Azioni:
 - Compila per ciascuno i 13 elementi vincolanti, 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 📘 Per ogni bando trovato, compila i seguenti 13 campi:
+🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 1. Titolo del Bando  
 2. Data di Scadenza  
