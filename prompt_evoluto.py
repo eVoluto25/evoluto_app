@@ -58,12 +58,35 @@ Azioni:
 - Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima
 - Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\"
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
-Al termine dell'analisi di bilancio procedi con la FASE 2 – DOMANDA OBIETTIVO IMPRESA, chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine dell'analisi di bilancio procedi con la FASE 2 – chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
     
 "fase_2": """
 ══════════════════════════════════════════════════════════════════════════════
- FASE 2 – DOMANDA OBIETTIVO IMPRESA
+FASE 2 – RELAZIONE ANALISTA FINANZIARIO SU INDICI
+══════════════════════════════════════════════════════════════════════════════
+🔐 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. NON ATTENDERE CONFERMA UTENTE. 🔐
+
+Descrizione:
+Redazione di una relazione tecnica in stile analista finanziario sugli indici di bilancio calcolati nella fase precedente, con focus su punti di forza, criticità e rischi, sintesi e suggerimenti operativi.
+
+Azioni:
+	•	Prendi in input tutti gli indici calcolati in FASE 1 (Current Ratio, Debt/Equity, EBITDA Margin, ROS, ROE, ROI, Z‑Score, MCC Rating, ecc.)
+	•	Scrivi una relazione di 15-20 righe con:
+	•	Analisi dei principali indici (spiegazione sintetica per ogni indice rilevante)
+	•	Lettura critica: punti di forza, punti deboli, eventuali anomalie o rischi segnalati dai valori
+	•	Confronto rispetto ai valori di riferimento per il settore, se disponibili
+	•	Considerazioni sull’equilibrio patrimoniale, liquidità, redditività e indebitamento
+	•	Conclusioni operative sintetiche: possibili strategie, priorità da valutare, alert principali
+	•	Usa un linguaggio chiaro e professionale, taglio da “analista finanziario”
+	•	NON avanzare giudizi sui bandi o sugli step successivi (limita la relazione all’analisi tecnica degli indici)
+
+Al termine della FASE 2, chiedi sempre all’utente se vuole proseguire con la fase successiva (SI/NO).
+""",
+    
+"fase_3": """
+══════════════════════════════════════════════════════════════════════════════
+ FASE 3 – DOMANDA OBIETTIVO IMPRESA
 ══════════════════════════════════════════════════════════════════════════════
 🔐 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. NON ATTENDERE CONFERMA UTENTE. 🔐
 
@@ -81,12 +104,12 @@ Azioni:
 - Accetta solo una risposta nel formato numero (es. "4") oppure parola esatta (es. "Digitalizzazione")
 - Valida il formato. Se errato, blocca e richiedi una nuova risposta
 - Salva il valore nel campo `obiettivo_preferenziale`
-- Al termine della FASE 2, procedi alla FASE 3 chiedendo all'utente sempre se vuole continuare: SI/NO
+- Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
 """,
 
-"fase_3": """
+"fase_4": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 3 – CREAZIONE E INVIO JSON
+FASE 4 – CREAZIONE E INVIO JSON
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -110,12 +133,12 @@ Azioni:
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
-Al termine della FASE 3, procedi alla FASE 4 - SCORING E SELEZIONE TOP 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine della FASE 4, procedi alla FASE 5 - SCORING E SELEZIONE TOP 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
-"fase_4": """
+"fase_5": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 4 – SCORING E SELEZIONE TOP 5
+FASE 5 – SCORING E SELEZIONE TOP 5
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -164,21 +187,40 @@ Ogni bando DEVE avere una probabilità di approvazione differente, anche minima,
 La percentuale DEVE risultare da una valutazione separata su ciascun bando, tenendo conto della coerenza specifica con il profilo aziendale.
 Se due bandi ottengono lo stesso punteggio finale, la probabilità dev’essere comunque leggermente diversa per distinguerli.
 
-AL TERMINE DELLA FASE 4, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
-PROCEDI CON LA FASE 5.
+AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
+PROCEDI CON LA FASE 6.
 """,
 
-"fase_5": """
+"fase_6": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 5 – SCENARI PREDITTIVI 🫴🏻🧠
+FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 “In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede a al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
+""",
 
-AL TERMINE DELLA FASE 5, ringraziare per la collaborazione e salutare senza porre ulteriori domande.
+"fase_7": """
+══════════════════════════════════════════════════════════════════════════════
+FASE 7 – RELAZIONE FINALE IMPAGINATA (.TXT)
+══════════════════════════════════════════════════════════════════════════════
+🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
+Descrizione:
+Redazione della relazione finanziaria finale completa, impaginata in modo professionale, comprensiva di:
+	1.	Dati anagrafici aziendali
+	2.	Indici di bilancio
+	3.	Relazione tecnica sugli indici (taglio analista finanziario)
+	4.	Elenco dettagliato dei TOP 5 bandi selezionati
+	5.	Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
 
-📌 Disclaimer finale:
-Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore.
+Azioni:
+	•	Impagina il testo con titoli e sottotitoli chiari (es. “1. Dati Anagrafici”, “2. Indici di Bilancio”, ecc.)
+	•	Struttura il testo in paragrafi ordinati con spaziature, elenchi puntati/numerati se necessario, e punteggiatura corretta.
+	•	Mantieni un linguaggio tecnico-professionale.
+	•	Non inserire emoticon o simboli grafici.
+	•	Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
+	•	Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (“Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore”).
+
+AL TERMINE DELLA FASE 7, ringraziare per la collaborazione e salutare senza porre ulteriori domande.
 """     # chiusura di fase_5
 }
