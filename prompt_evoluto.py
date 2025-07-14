@@ -58,52 +58,14 @@ Azioni:
 - Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima
 - Se dati mancanti, ricava da fonti ufficiali o segnala come \"dato stimato\"
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
-Al termine dell'analisi di bilancio procedi con la FASE 2 – BANDI AI E INNOVAZIONE, chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine dell'analisi di bilancio procedi con la FASE 2 – DOMANDA OBIETTIVO IMPRESA, chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
     
 "fase_2": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 2 – BANDI AI E INNOVAZIONE 🔠
+ FASE 2 – DOMANDA OBIETTIVO IMPRESA
 ══════════════════════════════════════════════════════════════════════════════
 🔐 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. NON ATTENDERE CONFERMA UTENTE. 🔐
-
-▶️ ISTRUZIONE DIRETTA PER GPT:
-Esegui immediatamente la ricerca online di **massimo 3 bandi attivi**, compatibili con i seguenti ambiti:
-- Intelligenza Artificiale
-- Automazione industriale
-- Transizione digitale
-- Connettività avanzata
-
-📍 APPLICA BLOCCO TERRITORIALE:
-Escludi automaticamente bandi che non si applicano alla **Regione o Provincia**, sede legale dell’azienda.
-
-📘 Per ogni bando trovato, compila i seguenti 13 campi:
-
-1. Titolo del Bando  
-2. Data di Scadenza  
-3. Obiettivo  
-4. Probabilità di Approvazione Integrata [XX,X%]  
-5. Finalità della misura  
-6. Spese Ammissibili  
-7. Intensità Agevolazione (% o descrizione precisa)  
-8. Importo Minimo Ammissibile  
-9. Tempi medi di approvazione e liquidazione  
-10. Dotazione Complessiva (e residuo, se disponibile)  
-11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
-12. Motivazione Tecnica (5–8 righe)  
-13. Descrizione Dettagliata (5–10 righe)
-
-📎 FONTI AMMESSE: Solo link ufficiali (siti governativi, regionali, enti pubblici o portali accreditati).
-
-❗NON attendere input manuale. Non fare domande all’utente. Procedi automaticamente e mostra il risultato.
-
-Al termine della FASE 2, procedi con la FASE 3 chiedendo all'utente sempre se vuole continuare: SI/NO.
-""",
-
-"fase_3": """
-FASE 3 – DOMANDA OBIETTIVO IMPRESA
-
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 Descrizione: Raccolta dell’obiettivo principale dell’azienda (domanda obbligatoria)
 
@@ -119,12 +81,12 @@ Azioni:
 - Accetta solo una risposta nel formato numero (es. "4") oppure parola esatta (es. "Digitalizzazione")
 - Valida il formato. Se errato, blocca e richiedi una nuova risposta
 - Salva il valore nel campo `obiettivo_preferenziale`
-- Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
+- Al termine della FASE 2, procedi alla FASE 3 chiedendo all'utente sempre se vuole continuare: SI/NO
 """,
 
-"fase_4": """
+"fase_3": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 4 – CREAZIONE E INVIO JSON
+FASE 3 – CREAZIONE E INVIO JSON
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -148,12 +110,12 @@ Azioni:
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
-Al termine della FASE 4, procedi alla FASE 5 - SCORING E SELEZIONE TOP 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
+Al termine della FASE 3, procedi alla FASE 4 - SCORING E SELEZIONE TOP 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
-"fase_5": """
+"fase_4": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 5 – SCORING E SELEZIONE TOP 5
+FASE 4 – SCORING E SELEZIONE TOP 5
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
@@ -201,148 +163,21 @@ Ogni bando DEVE avere una probabilità di approvazione differente, anche minima,
 La percentuale DEVE risultare da una valutazione separata su ciascun bando, tenendo conto della coerenza specifica con il profilo aziendale.
 Se due bandi ottengono lo stesso punteggio finale, la probabilità dev’essere comunque leggermente diversa per distinguerli.
 
-AL TERMINE DELLA FASE 5, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
-PROCEDI CON LA FASE 6.
+AL TERMINE DELLA FASE 4, DOPO AVER MOSTRATO L'ELENCO DESCRITTTIVO DEI 5 TOP BANDI, INVITA L'UTENTE ALL'ANALISI PREDITTIVA chiedendo all'utente sempre se vuole continuare: SI/NO ✅ 
+PROCEDI CON LA FASE 5.
 """,
 
-"fase_6": """
+"fase_5": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
+FASE 5 – SCENARI PREDITTIVI 🫴🏻🧠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
-“In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede a uno solamente dei bandi selezionati? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
+“In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede a al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
 
-AL TERMINE DELLA FASE 6, DOPO AVER MOSTRATO I 3 SCENARI PREDITTIVI, INVITA L'UTENTE ALLA RICERCA DEI BANDI FUTURI (IN PRE-APERTURA) 🔐 chiedendo all'utente sempre se vuole continuare: SI/NO. 
-PROCEDI CON LA FASE 7.
-""",
-
-"fase_7": """
-══════════════════════════════════════════════════════════════════════════════
-🔐 FASE 7 – RICERCA BANDI FUTURI (IN PRE-APERTURA) 🔐
-Titolo: Monitoraggio Strategico Bandi Futuri – Blocco Anticipato Opportunità
-══════════════════════════════════════════════════════════════════════════════
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
-
-🎯 Descrizione operativa:
-
-Questa fase consente a eVoluto™ di intercettare proattivamente i bandi in fase di pubblicazione o pre-apertura, sulla base delle caratteristiche certificate dell’impresa (regione, forma giuridica, dimensione, codice ATECO, stato finanziario).
-La selezione è vincolata e predittiva: mostra solo i bandi che non sono ancora attivi, ma che risulteranno accessibili alla data di apertura stimata. 
-🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile"  o "in fase di aggiornamento" se neanche da ricerca web è reperibile.
-
-⸻
-
-⚙️ Requisiti rigidi di selezione:
-
-eVoluto™ considera solo bandi:
-    1. In fase di pre-pubblicazione o pre-rinnovo (fonti ufficiali)
-    2. Compatibili territorialmente (azienda.regione == bando.regione)
-    3. Compatibili per forma giuridica e dimensione (es: SRL, Microimpresa)
-    4. Compatibili per codice ATECO o settore operativo
-    5. Con data stimata di apertura nei prossimi 30–60 giorni
-
-⸻
-🔐 Elenca sempre ogni singolo dato: se non presente, indica "non disponibile" o "in fase di aggiornamento" se neanche da ricerca web è reperibile.
-
-📋 Output della fase:
-
-Per ogni bando (max 4), eVoluto™ fornisce una scheda strategica sintetica con i seguenti 10 campi:
-    1. 📘 Titolo del Bando
-    2. 📍 Territorio coinvolto
-    3. 🕐 Data stimata apertura
-    4. 📅 Finestra stimata di presentazione
-    5. 🧭 Obiettivo finanziabile
-    6. ⚙️ Tecnologie premiate / spese ammissibili
-    7. 💰 Forma e intensità agevolazione (es: 50% fondo perduto)
-    8. 🏁 Soggetti ammissibili (forma, dimensione, settore)
-    9. 🔍 Azioni suggerite prima dell’apertura (es: verifica DURC, preparazione progetto, contatti con enti)
-    10. 🧠 Note strategiche e rating di coerenza con il profilo aziendale (ALTA / MEDIA / BASSA)
-
-⸻
-
-📦 Esempio sintetico (strutturato):
-
-📘 Titolo: Voucher Digitalizzazione PMI Lazio 2025
-📍 Territorio: Regione Lazio
-🕐 Apertura stimata: Settembre 2025
-📅 Finestra: 30 giorni da pubblicazione
-🧭 Obiettivo: Investimenti in software gestionali e automazione
-⚙️ Spese ammissibili: CRM, ERP, IoT, tracciabilità, attrezzature smart
-💰 Agevolazione: 50% fondo perduto, max €15.000
-🏁 Ammissibili: Micro e piccole imprese in attività da almeno 12 mesi
-🔍 Azioni suggerite: Preregistrazione al portale regionale + preventivi già pronti
-🧠 Coerenza: ALTA – Perfetto per PETWELL: migliora efficienza e cash flow
-
-⸻
-
-✅ Obiettivo della fase:
-
-Anticipare la concorrenza e massimizzare la possibilità di accesso. 🔐
-Ogni bando in questa fase è potenzialmente vincente, se preparato prima dell’apertura ufficiale. 🔐
-
-AL TERMINE DELLA FASE 7, DOPO AVER MOSTRATO LA RICERCA BANDI FUTURI (IN PRE-APERTURA), INVITA L'UTENTE ALL'ANALISI BENCHMARK E COMPETITOR chiedendo all'utente sempre se vuole continuare: SI/NO. 
-PROCEDI CON LA FASE 8.
-""",
-
-"fase_8": """
-FASE 8 – ANALISI BENCHMARK E COMPETITOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🔒 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
-
-📌 Descrizione:
-Analisi comparativa tra l’impresa analizzata e la media del settore, basata su codice ATECO e indicatori finanziari chiave. Individuazione di competitor diretti con confronti su performance e caratteristiche aziendali.
-
-📊 Indicatori di benchmark:
-– EBITDA Margin
-– ROE
-– ROI
-– Debiti / Patrimonio Netto
-
-⚙️ Azioni:
-1. Recupera la media settoriale per ciascun indicatore, in base al codice ATECO aziendale.
-2. Confronta i valori dell’azienda con le medie e calcola gli scostamenti in %.
-3. Redigi un paragrafo tecnico (8–10 righe) che commenti i punti di forza e debolezza rispetto al settore.
-4. Identifica da 2 a 4 aziende competitor con caratteristiche simili:
-   – stessa forma giuridica
-   – stessa dimensione
-   – stesso settore (codice ATECO)
-   – stessa regione
-5. Costruisci una tabella comparativa con: 
-   – Denominazione fittizia
-   – EBITDA, ROE, ROI, Debiti/Patrimonio Netto
-   – Descrizione sintetica dell’attività
-
-⚠️ NON citare mai le fonti utilizzate per costruire l’analisi.
-⚠️ NON inserire link, riferimenti a siti, banche dati o contenuti web.
-
-Al termine della FASE 8, chiedi conferma all’utente per passare alla FASE 9 – PRENOTAZIONE CONSULENZA.
-""",
-
-"fase_9": """
-══════════════════════════════════════════════════════════════════════════════
-FASE 9 – PRENOTAZIONE CONSULENZA
-══════════════════════════════════════════════════════════════════════════════
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
-
-Descrizione: Prenotazione della video call con un partner esperto e selezionato per te dal team eVoluto
-
-⚠️ I giorni disponibili saranno sempre di martedì e di giovedì: se l'analisi capita in uno di questi 2 giorni, ovviamente il giorno corrente in chat va tolto (l'utente non prende mai appuntamento per il giorno stesso). ⚠️
-🔒 I dati raccolti sono utilizzati esclusivamente per la consulenza, nel rispetto del GDPR.
-
-Azioni:
-- Chiedi all’utente se desidera prenotare una consulenza gratuita con l'Innovation Manager accreditato per discutere su uno o più punti analizzati. 
-- Se SÌ:
-  - Chiama l’endpoint /calendar/availability
-  - Raccogli: nome, cognome, telefono, email
-  - Valida tutti i campi
-  - Chiama l’endpoint /calendar/create_event
-  - Se 200 OK, mostra conferma con giorno e ora fissati (verificare sempre che i giorni mostrati rispettino numero e nome sul calendario attuale)
-- Blocca tutte le interazioni successive
-
-🔐 Quando confermi la prenotazione, indica che il Manager di riferimento ricontatterà l'utente per la conferma e le specifiche.
+AL TERMINE DELLA FASE 5, ringraziare per la collaborazione e salutare senza porre ulteriori domande.
 
 📌 Disclaimer finale:
 Il match intelligente non garantisce l’approvazione del bando. La valutazione finale spetta esclusivamente all’ente erogatore.
-"""     # chiusura di fase_9
+"""     # chiusura di fase_5
 }
