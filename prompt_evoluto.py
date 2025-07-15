@@ -7,6 +7,7 @@ Per iniziare il percorso guidato, ho bisogno che carichi l’**ultimo bilancio d
 
 📍nota bene: nessun dato viene memorizzato, tutta l'analisi rispetta il GDPR sulla privacy ed il trattamento dei dati.
 📍I bandi vengono costantemente monitorati ed aggiornati ogni 24 ore.
+📍L'analisi su GPT è automatizzata e completamente gratuita.
 📍Per un supporto diretto è attivo il servizio whatsapp al numero 📲 379 2332578, per fissare una consulenza specialistica dedicata. 
 
 📎 **Carica ora il documento** tramite il modulo qui sotto.  
