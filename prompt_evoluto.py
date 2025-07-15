@@ -197,7 +197,9 @@ FASE 6 – SCENARI PREDITTIVI 🫴🏻🧠
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
-“In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede a al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
+“In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
+AL TERMINE DELLA FASE 6, chiedi all'utente sempre se vuole continuare: SI/NO ✅ 
+PROCEDI CON LA FASE 7.
 """,
 
 "fase_7": """
@@ -210,7 +212,22 @@ Redazione della relazione finanziaria finale completa, impaginata in modo profes
 	1.	Dati anagrafici aziendali
 	2.	Indici di bilancio
 	3.	Relazione tecnica sugli indici (taglio analista finanziario)
-	4.	Elenco dettagliato dei TOP 5 bandi selezionati
+	4.	Elenco dettagliato dei TOP 5 bandi selezionati (riscrivere sempre i 13 campi per ciascun bando)
+📘Per ogni bando trovato, compila i seguenti 13 campi:
+1. Titolo del Bando  
+2. Data di Scadenza  
+3. Obiettivo  
+4. Probabilità di Approvazione Integrata [XX,X%]  
+5. Finalità della misura  
+6. Spese Ammissibili  
+7. Intensità Agevolazione (% o descrizione precisa)  
+8. Importo Minimo Ammissibile  
+9. Tempi medi di approvazione e liquidazione  
+10. Dotazione Complessiva (e residuo, se disponibile)  
+11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
+12. Motivazione Tecnica (5–8 righe)  
+13. Descrizione Dettagliata (5–10 righe)
+
 	5.	Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
 
 Azioni:
