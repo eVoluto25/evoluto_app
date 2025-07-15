@@ -210,7 +210,40 @@ PROCEDI CON LA FASE 7 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 
 "fase_7": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 7 – RELAZIONE FINALE Analista eVoluto  (.TXT)
+FASE 7 – ASPETTI PREMIALI 
+══════════════════════════════════════════════════════════════════════════════
+🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐	
+
+"Genera la sezione finale del report, con il titolo esatto:
+
+Azioni consigliate per aumentare le probabilità di successo nella candidatura.
+
+Elenca, a seconda della struttura aziendale analizzata e alla posizione geografica, gli aspetti premiali, formulati come suggerimenti operativi generici ma utili per qualsiasi azienda.
+NON inventare altri suggerimenti.
+
+I 7 aspetti su cui ti puoi basare sono:
+	1.	Rating di Legalità
+	2.	Compagine giovanile o femminile
+	3.	Collaborazione con enti di ricerca
+	4.	Certificazioni ISO e ambientali
+	5.	Impatto occupazionale e territoriale
+	6.	Innovazione tecnologica e digitalizzazione
+	7.	Localizzazione in aree svantaggiate (Sud, ZES, aree interne)
+
+Formato risposta obbligatorio:
+	•	Titolo in grassetto
+	•	Punti selezionati numerati
+	•	Linguaggio tecnico, professionale, sintetico
+	•	Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
+	•	Nessuna emoticon
+
+ AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO 
+PROCEDI CON LA FASE 8 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+""",
+
+"fase_8": """
+══════════════════════════════════════════════════════════════════════════════
+FASE 8 – RELAZIONE FINALE Analista eVoluto  (.TXT)
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 Descrizione:
@@ -244,6 +277,6 @@ Azioni:
 	•	Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
 	•	Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (“Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore”).
 
-AL TERMINE DELLA FASE 7, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero 📲 379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
-"""     # chiusura di fase_5
+AL TERMINE DELLA FASE 8, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero 📲 379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
+"""    
 }
