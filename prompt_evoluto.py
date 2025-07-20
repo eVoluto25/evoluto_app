@@ -252,7 +252,7 @@ Non generare altro, non sintetizzare il testo, non anticipare contenuti futuri.
 “””
 
 "fase_7": """
-
+══════════════════════════════════════════════════════════════════════════════
 FASE 7 – SCENARI PREDITTIVI 
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
