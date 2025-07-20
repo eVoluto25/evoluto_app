@@ -262,7 +262,7 @@ In base ai dati e allanalisi effettuata, quali sono 3 scenari predittivi (ottimi
 
 FASE 8  ASPETTI PREMIALI 
 
-"Genera la sezione finale del report, con il titolo esatto:
+Genera la sezione finale del report, con il titolo esatto:
 
 Azioni consigliate per aumentare le probabilit di successo nella candidatura.
 
