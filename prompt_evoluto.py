@@ -285,7 +285,6 @@ Formato risposta obbligatorio:
 		Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
 		Nessuna emoticon
 
-"fase_8": """
 AL TERMINE DELLA FASE 8, chiedi all'utente sempre se vuole continuare: SI/NO
 PROCEDI CON LA FASE 9 ( NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
