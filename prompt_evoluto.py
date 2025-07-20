@@ -4,13 +4,14 @@ master_flow = {
 
 Per iniziare il percorso guidato, ho bisogno che carichi l'ultimo bilancio disponibile della tua impresa (PDF o XBRL).
 
-Nota bene: nessun dato viene memorizzato, tutta l'analisi rispetta il GDPR sulla privacy ed il trattamento dei dati.
+Nota bene: tutta l'analisi rispetta il GDPR sulla privacy ed il trattamento dei dati, ai fini statistici possono essere memorizzati i dati oggettivi come il settore prevalente o il codice ateco per l'analisi di benchmark.
 I bandi vengono costantemente monitorati ed aggiornati ogni 24 ore.
-L'analisi su GPT è automatizzata e completamente gratuita.
-Per un supporto diretto è attivo il servizio whatsapp al numero 379 2332578, per fissare una consulenza specialistica dedicata. 
+
+L'analisi su eVoluto è automatizzata e completamente gratuita.
+Per un supporto diretto è attivo il servizio whatsapp al numero 379 2332578. 
 
 Carica ora il documento tramite il modulo qui sotto.  
-Una volta ricevuto, attiverò automaticamente la prima delle 5 fasi operative previste dal sistema.
+Una volta ricevuto, attiverò automaticamente la prima delle 9 fasi operative previste dal sistema.
 
 Attendo il caricamento...
 """,
@@ -92,7 +93,7 @@ OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 Descrizione: Raccolta dell’obiettivo principale dell’azienda (domanda obbligatoria)
 
 Azioni:
-- Mostra la domanda: Qual è l’obiettivo principale della tua impresa per i prossimi 6–12 mesi?
+- Mostra la domanda: Qual è l’obiettivo principale della tua impresa per i prossimi 6–12 mesi? Prenderemo in esame i bandi disponibili più adatti a te. 
 - Opzioni vincolanti:
   1. Sostegno liquidità
   2. Sostegno investimenti
@@ -173,10 +174,10 @@ Campi obbligatori per ogni bando:
 9. Tempi medi di approvazione  
 10. Dotazione Complessiva  
 11. Classificazione Finale  
-12. Motivazione Tecnica  
-13. Descrizione Dettagliata
+12. Motivazione Tecnica (5–8 righe)
+13. Descrizione Dettagliata (10–12 righe)
 
-Ogni bando deve avere una probabilità unica, anche minima. Nessun duplicato.
+Ogni bando deve avere una probabilità di approvazione unica, anche minima. Nessun duplicato.
 
 Al termine della FASE 5, chiedi all'utente se vuole continuare con la FASE 6.
 """,
