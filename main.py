@@ -253,9 +253,9 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
         risultato_benchmark = cerca_analisi_simili(data_dict)
 
         return {
-            "messaggio": risultato_benchmark["messaggio"],
-            "compatibilita_media": risultato_benchmark["compatibilita_media"],
-            "analisi_simili_trovate": risultato_benchmark["analisi_simili_trovate"]
+            "messaggio": risultato_benchmark.get("messaggio", "Nessun messaggio disponibile"),
+            "compatibilita_media": risultato_benchmark.get("compatibilita_media", 0),
+            "analisi_simili_trovate": risultato_benchmark.get("analisi_simili_trovate", [])
         }
 
     except Exception as e:
