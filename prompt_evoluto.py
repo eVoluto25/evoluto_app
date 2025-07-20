@@ -255,8 +255,6 @@ Non generare altro, non sintetizzare il testo, non anticipare contenuti futuri.
 
 FASE 7 SCENARI PREDITTIVI 
 
-OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
-
 “In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
 AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO 
 PROCEDI CON LA FASE 8 (NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
