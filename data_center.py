@@ -68,19 +68,19 @@ def cerca_analisi_simili(data):
 def render_benchmark_message(n, media, locale):
     if n == 0:
         return (
-            "\u2728 Analisi Comparativa tra Aziende Simili:\n"
-            "Non risultano ancora analisi effettuate da aziende con un profilo simile al tuo.\n"
-            "La tua analisi sarà la prima a definire il benchmark di riferimento per il tuo settore."
+            "📊 Analisi Comparativa tra Aziende Simili:\n"
+            "Non sono ancora disponibili benchmark da aziende con caratteristiche simili alla tua.\n"
+            "Questa analisi contribuirà a creare un nuovo riferimento per il tuo settore."
         )
     elif locale:
         return (
-            f"\u2728 Analisi Comparativa tra Aziende Simili:\n"
-            f"Sono state individuate {n} aziende con caratteristiche simili alla tua (ATECO, regione, dimensione e struttura finanziaria entro ±10%).\n"
-            f"La probabilità media di approvazione riscontrata sui bandi selezionati è del {round(media,1)}%."
+            "📊 Analisi Comparativa tra Aziende Simili:\n"
+            f"Sono state individuate {n} aziende con profilo simile al tuo (stesso settore, area geografica e struttura economico-finanziaria).\n"
+            f"La probabilità media di approvazione riscontrata sui bandi selezionati è pari al {round(media,1)}%."
         )
     else:
         return (
-            f"\u2728 Analisi Comparativa tra Aziende Simili:\n"
-            f"Sono state trovate {n} aziende simili per settore e struttura finanziaria in regioni differenti.\n"
-            f"La probabilità media di approvazione riscontrata rimane indicativa e utile: {round(media,1)}%."
+            "📊 Analisi Comparativa tra Aziende Simili:\n"
+            f"Sono state trovate {n} aziende simili per settore e struttura finanziaria, ma situate in regioni differenti.\n"
+            f"La probabilità media di approvazione osservata è pari al {round(media,1)}% e resta un valore utile di riferimento."
         )
