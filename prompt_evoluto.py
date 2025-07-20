@@ -256,18 +256,19 @@ Non generare altro, non sintetizzare il testo, non anticipare contenuti futuri.
 FASE 7 - SCENARI PREDITTIVI
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
-“In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
-AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO ✅ 
-PROCEDI CON LA FASE 8 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.
+
+AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO
+PROCEDI CON LA FASE 8 (NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
 
 "fase_8": """
-══════════════════════════════════════════════════════════════════════════════
+==============================================================================
 FASE 8 – ASPETTI PREMIALI 
-══════════════════════════════════════════════════════════════════════════════
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐	
+==============================================================================
+OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
-"Genera la sezione finale del report, con il titolo esatto:
+Genera la sezione finale del report, con il titolo esatto:
 
 Azioni consigliate per aumentare le probabilità di successo nella candidatura.
 
@@ -275,61 +276,62 @@ Elenca, a seconda della struttura aziendale analizzata e alla posizione geografi
 NON inventare altri suggerimenti.
 
 I 7 aspetti su cui ti puoi basare sono:
-	1.	Rating di Legalità
-	2.	Compagine giovanile o femminile
-	3.	Collaborazione con enti di ricerca
-	4.	Certificazioni ISO e ambientali
-	5.	Impatto occupazionale e territoriale
-	6.	Innovazione tecnologica e digitalizzazione
-	7.	Localizzazione in aree svantaggiate (Sud, ZES, aree interne)
+    1. Rating di Legalità
+    2. Compagine giovanile o femminile
+    3. Collaborazione con enti di ricerca
+    4. Certificazioni ISO e ambientali
+    5. Impatto occupazionale e territoriale
+    6. Innovazione tecnologica e digitalizzazione
+    7. Localizzazione in aree svantaggiate (Sud, ZES, aree interne)
 
 Formato risposta obbligatorio:
-	•	Titolo in grassetto
-	•	Punti selezionati numerati
-	•	Linguaggio tecnico, professionale, sintetico
-	•	Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
-	•	Nessuna emoticon
+    • Titolo in grassetto
+    • Punti selezionati numerati
+    • Linguaggio tecnico, professionale, sintetico
+    • Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
+    • Nessuna emoticon
 
- AL TERMINE DELLA FASE 8, chiedi all'utente sempre se vuole continuare: SI/NO 
-PROCEDI CON LA FASE 9 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+AL TERMINE DELLA FASE 8, chiedi all'utente sempre se vuole continuare: SI/NO
+PROCEDI CON LA FASE 9 (NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
 
 "fase_9": """
-══════════════════════════════════════════════════════════════════════════════
+==============================================================================
 FASE 9 – RELAZIONE FINALE Analista eVoluto  (.TXT)
-══════════════════════════════════════════════════════════════════════════════
-🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
+==============================================================================
+OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
+
 Descrizione:
 Redazione della relazione finanziaria finale completa, impaginata in modo professionale, comprensiva di:
-	1.	Dati anagrafici aziendali
-	2.	Indici di bilancio
-	3.	Relazione tecnica sugli indici (taglio analista finanziario)
-	4.	Elenco dettagliato dei TOP 5 bandi selezionati (riscrivere sempre i 13 campi per ciascun bando)
-📘Per ogni bando trovato, compila i seguenti 13 campi:
-1. Titolo del Bando  
-2. Data di Scadenza  
-3. Obiettivo  
-4. Probabilità di Approvazione Integrata [XX,X%]  
-5. Finalità della misura  
-6. Spese Ammissibili  
-7. Intensità Agevolazione (% o descrizione precisa)  
-8. Importo Minimo Ammissibile  
-9. Tempi medi di approvazione e liquidazione  
-10. Dotazione Complessiva (e residuo, se disponibile)  
-11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
-12. Motivazione Tecnica (5–8 righe)  
-13. Descrizione Dettagliata (5–10 righe)
+    1. Dati anagrafici aziendali
+    2. Indici di bilancio
+    3. Relazione tecnica sugli indici (taglio analista finanziario)
+    4. Elenco dettagliato dei TOP 5 bandi selezionati (riscrivere sempre i 13 campi per ciascun bando)
 
-	5.	Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
+Per ogni bando trovato, compila i seguenti 13 campi:
+    1. Titolo del Bando  
+    2. Data di Scadenza  
+    3. Obiettivo  
+    4. Probabilità di Approvazione Integrata [XX,X%]  
+    5. Finalità della misura  
+    6. Spese Ammissibili  
+    7. Intensità Agevolazione (% o descrizione precisa)  
+    8. Importo Minimo Ammissibile  
+    9. Tempi medi di approvazione e liquidazione  
+    10. Dotazione Complessiva (e residuo, se disponibile)  
+    11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
+    12. Motivazione Tecnica (5–8 righe)  
+    13. Descrizione Dettagliata (5–10 righe)
+
+    5. Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
 
 Azioni:
-	•	Impagina il testo con titoli e sottotitoli chiari (es. “1. Dati Anagrafici”, “2. Indici di Bilancio”, ecc.)
-	•	Struttura il testo in paragrafi ordinati con spaziature, elenchi puntati/numerati se necessario, e punteggiatura corretta.
-	•	Mantieni un linguaggio tecnico-professionale.
-	•	Non inserire emoticon o simboli grafici.
-	•	Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
-	•	Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (“Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore”).
+    • Impagina il testo con titoli e sottotitoli chiari (es. “1. Dati Anagrafici”, “2. Indici di Bilancio”, ecc.)
+    • Struttura il testo in paragrafi ordinati con spaziature, elenchi puntati/numerati se necessario, e punteggiatura corretta.
+    • Mantieni un linguaggio tecnico-professionale.
+    • Non inserire emoticon o simboli grafici.
+    • Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
+    • Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (“Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore”).
 
-AL TERMINE DELLA FASE 8, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero 📲 379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
-"""    
-}
+AL TERMINE DELLA FASE 9, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero 379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
+"""
