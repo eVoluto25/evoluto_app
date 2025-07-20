@@ -199,18 +199,72 @@ PROCEDI CON LA FASE 6.
 
 "fase_6": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 6 – SCENARI PREDITTIVI 
+FASE 6 – BENCHMARK COMPARATIVO 
+══════════════════════════════════════════════════════════════════════════════
+🔐 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. 
+
+Descrizione:
+Confronto automatico con aziende simili per settore, dimensione e struttura finanziaria, basato su dati raccolti in forma anonima dal sistema eVoluto™.
+
+📌 In questa fase **non devi scrivere nulla di tuo**, ma devi solo:
+1. **Creare un JSON completo con i dati aziendali**
+2. **Inviare il JSON all’endpoint Python `/benchmark`**
+3. **Attendere la risposta testuale di sistema**
+4. **Mostrare esattamente il messaggio ricevuto, senza commenti o interpretazioni**
+
+Azioni:
+
+1. Calcola la **media delle probabilità di approvazione integrata** dei 5 bandi selezionati in FASE 5.  
+Esempio:  
+Probabilità: 83.5%, 88.1%, 79.2%, 90.0%, 85.3%  
+→ Media: **85.2**
+
+2. Crea il seguente JSON (non mostrarlo all’utente):
+
+```json
+{
+  "ateco": "[Codice ATECO]",
+  "regione": "[Regione]",
+  "dimensione": "[Dimensione Aziendale]",
+  "forma_giuridica": "[Forma Giuridica]",
+  "fatturato": 0,
+  "ebitda": 0,
+  "utile_netto": 0,
+  "patrimonio_netto": 0,
+  "dipendenti": 0,
+  "mcc_rating": "[MCC]",
+  "z_score": 0,
+  "obiettivo_azienda": "[Obiettivo Preferenziale]",
+  "bandi_trovati": 5,
+  "probabilita_media_approvazione": 0,
+  "data_analisi": "[Data odierna]"
+}
+3. Invia il JSON a Python tramite l’endpoint /benchmark
+4. Ricevi dal sistema un messaggio generato sulla base del confronto con aziende simili
+5. Mostra il messaggio esattamente come ricevuto, senza aggiunte
+
+Formato:
+Scrivi solo il testo ricevuto da Python.
+
+Al termine della FASE 6, chiedi sempre all’utente: “Vuoi proseguire con la FASE 7?” (SI/NO)
+
+Non generare altro, non sintetizzare il testo, non anticipare contenuti futuri.
+“””
+
+"fase_7": """
+══════════════════════════════════════════════════════════════════════════════
+FASE 7 – SCENARI PREDITTIVI 
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 
 “In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato (il primo dei top 5)? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
-AL TERMINE DELLA FASE 6, chiedi all'utente sempre se vuole continuare: SI/NO ✅ 
-PROCEDI CON LA FASE 7 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO ✅ 
+PROCEDI CON LA FASE 8 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
 
-"fase_7": """
+"fase_8": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 7 – ASPETTI PREMIALI 
+FASE 8 – ASPETTI PREMIALI 
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐	
 
@@ -237,13 +291,13 @@ Formato risposta obbligatorio:
 	•	Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
 	•	Nessuna emoticon
 
- AL TERMINE DELLA FASE 7, chiedi all'utente sempre se vuole continuare: SI/NO 
-PROCEDI CON LA FASE 8 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+ AL TERMINE DELLA FASE 8, chiedi all'utente sempre se vuole continuare: SI/NO 
+PROCEDI CON LA FASE 9 (🔐 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
 
-"fase_8": """
+"fase_9": """
 ══════════════════════════════════════════════════════════════════════════════
-FASE 8 – RELAZIONE FINALE Analista eVoluto  (.TXT)
+FASE 9 – RELAZIONE FINALE Analista eVoluto  (.TXT)
 ══════════════════════════════════════════════════════════════════════════════
 🔐OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.🔐
 Descrizione:
