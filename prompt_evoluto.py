@@ -18,7 +18,7 @@ Attendo il caricamento...
     
     "fase_1": """
 
-FASE 1 – ANALISI AZIENDALE eVoluto
+FASE 1 ANALISI AZIENDALE eVoluto
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
@@ -68,7 +68,7 @@ Al termine dell'analisi di bilancio procedi con la FASE 2 (NON INVENTARE MAI IL 
     
 "fase_2": """
 
-FASE 2 – RELAZIONE ANALISTA FINANZIARIO eVoluto 
+FASE 2 RELAZIONE ANALISTA FINANZIARIO eVoluto 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. 
 
@@ -91,7 +91,7 @@ Al termine della FASE 2,(NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA) chiedi
     
 "fase_3": """
 
- FASE 3 – OBIETTIVO IMPRESA
+ FASE 3 OBIETTIVO IMPRESA
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. 
 
@@ -114,7 +114,7 @@ Azioni:
 
 "fase_4": """
 
-FASE 4 – INVIO DATI PER IL MATCHING eVoluto 
+FASE 4 INVIO DATI PER IL MATCHING eVoluto 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
@@ -144,7 +144,7 @@ Al termine della FASE 4, procedi alla FASE 5 - (NON INVENTARE MAI IL NOME DELLA 
 
 "fase_5": """
 
-FASE 5 – SCORING E SELEZIONE BANDI 
+FASE 5 SCORING E SELEZIONE BANDI 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
@@ -199,7 +199,7 @@ PROCEDI CON LA FASE 6.
 
 "fase_6": """
 
-FASE 6 – BENCHMARK COMPARATIVO 
+FASE 6 BENCHMARK COMPARATIVO 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO. 
 
@@ -253,7 +253,7 @@ Non generare altro, non sintetizzare il testo, non anticipare contenuti futuri.
 
 "fase_7": """
 
-FASE 7 – SCENARI PREDITTIVI 
+FASE 7 SCENARI PREDITTIVI 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
@@ -263,9 +263,9 @@ PROCEDI CON LA FASE 8 (NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 """,
 
 "fase_8": """
-══════════════════════════════════════════════════════════════════════════════
-FASE 8 – ASPETTI PREMIALI 
-══════════════════════════════════════════════════════════════════════════════
+
+FASE 8 ASPETTI PREMIALI 
+
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.	
 
 "Genera la sezione finale del report, con il titolo esatto:
@@ -297,7 +297,7 @@ PROCEDI CON LA FASE 9 (NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 
 "fase_9": """
 
-FASE 9 – RELAZIONE FINALE Analista eVoluto  (.TXT)
+FASE 9 RELAZIONE FINALE Analista eVoluto  (.TXT)
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 Descrizione:
@@ -331,6 +331,6 @@ Azioni:
 	•	Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
 	•	Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (“Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore”).
 
-AL TERMINE DELLA FASE 8, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero  379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
+AL TERMINE DELLA FASE 9, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto è attivo il servizio whatsapp al numero  379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
 """    
 }
