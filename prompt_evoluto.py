@@ -285,8 +285,8 @@ Formato risposta obbligatorio:
 		Nessuna chiusura, nessuna frase finale, nessun commento motivazionale
 		Nessuna emoticon
 
-AL TERMINE DELLA FASE 8, chiedi all'utente sempre se vuole continuare: SI/NO
-PROCEDI CON LA FASE 9 ( NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
+chiedi all'utente sempre se vuole continuare: SI/NO
+PROCEDI CON LA FASE SUCCESSIVA.
 """,
 
 "fase_9": """
@@ -324,6 +324,6 @@ Azioni:
 		Produci il risultato in formato testuale pronto per essere copiato in un file .txt.
 		Al termine della relazione, aggiungi eventualmente una breve nota di chiusura (Documento generato automaticamente dal sistema eVoluto. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente allente erogatore).
 
-AL TERMINE DELLA FASE 8, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto  attivo il servizio whatsapp al numero  379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
+AL TERMINE DELLA FASE 9, ringraziare per la collaborazione e salutare senza porre ulteriori domande, ricordando che per un supporto diretto  attivo il servizio whatsapp al numero  379 2332578, per fissare una consulenza specialistica dedicata con l'Innovation Manager.
 """    
 }
