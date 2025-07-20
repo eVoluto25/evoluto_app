@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from data_center import salva_su_supabase, cerca_analisi_simili
 from pydantic import BaseModel
 from modulo_filtra_bandi import filtra_bandi
 from scoring_bandi import calcola_scoring_bandi
@@ -61,6 +62,22 @@ class AziendaScoringInput(BaseModel):
 class ScoringInput(BaseModel):
     azienda: AziendaScoringInput
     bandi: List[BandoInput]
+
+class AnalisiAziendaInput(BaseModel):
+    ateco: str
+    regione: str
+    dimensione: str
+    forma_giuridica: str
+    fatturato: float
+    ebitda: float
+    utile_netto: float
+    patrimonio_netto: float
+    dipendenti: int
+    mcc_rating: str
+    z_score: float
+    obiettivo_azienda: str
+    bandi_trovati: int
+    probabilita_media_approvazione: float
 
 def aggiorna_log_giornaliero():
     oggi = str(date.today())
@@ -220,3 +237,27 @@ async def get_fase(fase_id: str):
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
     return {"fase": master_flow[fase_id]}
+
+@app.post("/analizza-azienda")
+async def analizza_azienda(input_data: AnalisiAziendaInput):
+    logger.info("📡 Entrata nella funzione analizza_azienda (FASE 6)")
+    try:
+        # ➕ Completa con data analisi
+        data_dict = input_data.dict()
+        data_dict["data_analisi"] = date.today().isoformat()
+
+        # ✅ Salva su Supabase
+        salva_su_supabase(data_dict)
+
+        # 🔍 Verifica aziende simili
+        risultato_benchmark = cerca_analisi_simili(data_dict)
+
+        return {
+            "messaggio": risultato_benchmark["messaggio"],
+            "compatibilita_media": risultato_benchmark["compatibilita_media"],
+            "analisi_simili_trovate": risultato_benchmark["analisi_simili_trovate"]
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Errore nella funzione analizza_azienda: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
