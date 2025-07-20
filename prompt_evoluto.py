@@ -185,8 +185,8 @@ OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 9. Tempi medi di approvazione e liquidazione  
 10. Dotazione Complessiva (e residuo, se disponibile)  
 11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
-12. Motivazione Tecnica (58 righe)  
-13. Descrizione Dettagliata (510 righe)
+12. Motivazione Tecnica (5 righe)  
+13. Descrizione Dettagliata (10 righe)
 
  ATTENZIONE:  vietato assegnare la stessa percentuale di approvazione a pi bandi.
 Ogni bando DEVE avere una probabilit di approvazione differente, anche minima, calcolata individualmente in base allapplicazione effettiva dei 10 criteri professionali di scoring.
@@ -311,8 +311,8 @@ Per ogni bando trovato, compila i seguenti 13 campi:
 9. Tempi medi di approvazione e liquidazione  
 10. Dotazione Complessiva (e residuo, se disponibile)  
 11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
-12. Motivazione Tecnica (58 righe)  
-13. Descrizione Dettagliata (510 righe)
+12. Motivazione Tecnica (8 righe)  
+13. Descrizione Dettagliata (10 righe)
 
 	5.	Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
 
