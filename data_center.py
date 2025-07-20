@@ -1,4 +1,3 @@
-# data_center.py
 import os
 import supabase
 from supabase import create_client
@@ -20,10 +19,9 @@ def cerca_analisi_simili(data):
     utile_min = data["utile_netto"] * 0.9
     utile_max = data["utile_netto"] * 1.1
 
-    # Primo tentativo: match con regione
     query = (
         supabase_client.table("evoluto_data_center")
-        .select("compatibilita_percentuale")
+        .select("probabilita_media_approvazione")
         .eq("ateco", data["ateco"])
         .eq("regione", data["regione"])
         .eq("dimensione", data["dimensione"])
@@ -37,10 +35,9 @@ def cerca_analisi_simili(data):
     match_locale = True
 
     if len(records) == 0:
-        # Secondo tentativo: senza regione
         query = (
             supabase_client.table("evoluto_data_center")
-            .select("compatibilita_percentuale")
+            .select("probabilita_media_approvazione")
             .eq("ateco", data["ateco"])
             .eq("dimensione", data["dimensione"])
             .gte("fatturato", fatturato_min).lte("fatturato", fatturato_max)
@@ -53,19 +50,19 @@ def cerca_analisi_simili(data):
 
     count = len(records)
 
-    if count == 0:
+    if count == 0 or not all("probabilita_media_approvazione" in r for r in records):
         return {
             "analisi_simili_trovate": 0,
-            "compatibilita_media": None,
+            "probabilita_media": None,
             "messaggio": render_benchmark_message(0, None, False)
         }
 
-    compatibilita_media = sum([r["compatibilita_percentuale"] for r in records]) / count
+    probabilita_media = sum([r["probabilita_media_approvazione"] for r in records]) / count
 
     return {
         "analisi_simili_trovate": count,
-        "compatibilita_media": round(compatibilita_media, 1),
-        "messaggio": render_benchmark_message(count, compatibilita_media, match_locale)
+        "probabilita_media": round(probabilita_media, 1),
+        "messaggio": render_benchmark_message(count, probabilita_media, match_locale)
     }
 
 def render_benchmark_message(n, media, locale):
@@ -73,17 +70,17 @@ def render_benchmark_message(n, media, locale):
         return (
             "\u2728 Analisi Comparativa tra Aziende Simili:\n"
             "Non risultano ancora analisi effettuate da aziende con un profilo simile al tuo.\n"
-            "La tua analisi sar\u00e0 la prima a definire il benchmark di riferimento per il tuo settore."
+            "La tua analisi sarà la prima a definire il benchmark di riferimento per il tuo settore."
         )
     elif locale:
         return (
             f"\u2728 Analisi Comparativa tra Aziende Simili:\n"
-            f"Sono state individuate {n} aziende con caratteristiche simili alla tua (ATECO, regione, dimensione e struttura finanziaria entro \u00b110%).\n"
-            f"La compatibilit\u00e0 media riscontrata con i bandi selezionati \u00e8 del {round(media,1)}%."
+            f"Sono state individuate {n} aziende con caratteristiche simili alla tua (ATECO, regione, dimensione e struttura finanziaria entro ±10%).\n"
+            f"La probabilità media di approvazione riscontrata sui bandi selezionati è del {round(media,1)}%."
         )
     else:
         return (
             f"\u2728 Analisi Comparativa tra Aziende Simili:\n"
             f"Sono state trovate {n} aziende simili per settore e struttura finanziaria in regioni differenti.\n"
-            f"La compatibilit\u00e0 media riscontrata rimane indicativa e utile: {round(media,1)}%."
+            f"La probabilità media di approvazione riscontrata rimane indicativa e utile: {round(media,1)}%."
         )
