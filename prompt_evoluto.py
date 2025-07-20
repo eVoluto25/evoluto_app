@@ -262,8 +262,6 @@ In base ai dati e allanalisi effettuata, quali sono 3 scenari predittivi (ottimi
 
 FASE 8  ASPETTI PREMIALI 
 
-OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.	
-
 "Genera la sezione finale del report, con il titolo esatto:
 
 Azioni consigliate per aumentare le probabilit di successo nella candidatura.
@@ -295,7 +293,6 @@ PROCEDI CON LA FASE 9 ( NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA).
 
 FASE 9  RELAZIONE FINALE Analista eVoluto  (.TXT)
 
-OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 Descrizione:
 Redazione della relazione finanziaria finale completa, impaginata in modo professionale, comprensiva di:
 	1.	Dati anagrafici aziendali
