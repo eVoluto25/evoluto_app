@@ -82,7 +82,7 @@ Azioni:
   - NON avanzare giudizi sui bandi o sugli step successivi
 
 Al termine della FASE 2, chiedi sempre all’utente se vuole proseguire con la fase successiva (SI/NO).
-"""
+""",
 
     "fase_3": """
 FASE 3 – OBIETTIVO IMPRESA
@@ -179,7 +179,7 @@ Campi obbligatori per ogni bando:
 Ogni bando deve avere una probabilità unica, anche minima. Nessun duplicato.
 
 Al termine della FASE 5, chiedi all'utente se vuole continuare con la FASE 6.
-"""
+""",
 
     "fase_6": """
 FASE 6 – BENCHMARK COMPARATIVO
@@ -250,7 +250,7 @@ Formato:
 - Nessuna chiusura, nessuna emoticon, nessuna frase motivazionale
 
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
-"""
+""",
 
     "fase_9": """
 FASE 9 – RELAZIONE FINALE Analista eVoluto (.TXT)
