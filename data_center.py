@@ -18,6 +18,8 @@ def cerca_analisi_simili(data):
     ebitda_max = data["ebitda"] * 1.1
     utile_min = data["utile_netto"] * 0.9
     utile_max = data["utile_netto"] * 1.1
+    z_score_min = data["z_score"] * 0.9
+    z_score_max = data["z_score"] * 1.1
 
     query = (
         supabase_client.table("evoluto_data_center")
@@ -28,6 +30,7 @@ def cerca_analisi_simili(data):
         .gte("fatturato", fatturato_min).lte("fatturato", fatturato_max)
         .gte("ebitda", ebitda_min).lte("ebitda", ebitda_max)
         .gte("utile_netto", utile_min).lte("utile_netto", utile_max)
+        .gte("z_score", z_score_min).lte("z_score", z_score_max)
     )
 
     result = query.execute()
@@ -43,6 +46,7 @@ def cerca_analisi_simili(data):
             .gte("fatturato", fatturato_min).lte("fatturato", fatturato_max)
             .gte("ebitda", ebitda_min).lte("ebitda", ebitda_max)
             .gte("utile_netto", utile_min).lte("utile_netto", utile_max)
+            .gte("z_score", z_score_min).lte("z_score", z_score_max)
         )
         result = query.execute()
         records = result.data if result.data else []
