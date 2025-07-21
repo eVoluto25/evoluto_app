@@ -100,6 +100,8 @@ def render_benchmark_message(n, media, locale):
             "📊 Analisi Comparativa tra Aziende Simili:\n"
             f"Sono state individuate {n} aziende con profilo simile al tuo (stesso settore, area geografica e struttura economico-finanziaria).\n"
             f"La probabilità media di approvazione riscontrata sui bandi selezionati è pari al {round(media,1)}%."
+            "Questa percentuale riflette il grado di coerenza tra il tuo profilo aziendale e gli standard di successo osservati in casi analoghi. "
+            "Maggiore è l’affinità, più elevata è la probabilità di esito positivo."
         )
     else:
         return (
