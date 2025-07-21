@@ -243,7 +243,7 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
     logger.info("📡 Entrata nella funzione analizza_azienda (FASE 6)")
     try:
         # ➕ Completa con data analisi
-        data_dict = input_data.dict()
+        data_dict = input_data.dict(exclude_unset=True)
         data_dict["data_analisi"] = date.today().isoformat()
 
         # ✅ Salva su Supabase
