@@ -245,9 +245,35 @@ Verifica ora, con il nostro Innovation Manager, se la tua azienda ha già attiva
 - ⚡ **Riduzione dei consumi e ottimizzazione energetica**
 - 📊 **Tracciamento di indicatori ESG e sostenibilità**
 
-Queste azioni generano **risparmi stimati tra il 10% e il 18% annuo** e migliorano il tuo **scoring** nei bandi.
-Sono i requisiti impliciti delle imprese che vogliono accedere a fondi, crescere in modo sostenibile e non restare indietro.
-Chi fa impresa oggi lo deve fare con consapevolezza.
+Le aziende che integrano tempestivamente queste misure ottengono benefici documentati in termini di efficienza economica, punteggio tecnico e affidabilità percepita.
+
+Segue un confronto oggettivo tra aziende adeguate e aziende non allineate:
+
+⸻
+
+Accessibilità ai bandi:
+	•	Azienda adeguata: accesso facilitato ai bandi più selettivi con fondo perduto superiore al 50%
+	•	Azienda non adeguata: rischio esclusione o ammissione con punteggio minimo
+
+Punteggio in fase di selezione:
+	•	Azienda adeguata: +20/30 punti premiali su criteri ESG, innovazione e digitalizzazione
+	•	Azienda non adeguata: penalizzazione su innovazione, sostenibilità e struttura operativa
+
+Efficienza operativa:
+	•	Azienda adeguata: riduzione dei costi tra il 10% e il 18% entro 12 mesi
+	•	Azienda non adeguata: costi fissi elevati, assenza di ottimizzazione interna
+
+Rating percepito da stakeholder:
+	•	Azienda adeguata: profilo stabile e tracciabile, governance attiva
+	•	Azienda non adeguata: profilo debole, valutazione difficile, percezione di rischio
+
+Posizionamento competitivo:
+	•	Azienda adeguata: struttura pronta per scalabilità e attrattiva sul mercato
+	•	Azienda non adeguata: difficoltà a competere con aziende già allineate
+
+Compliance normativa:
+	•	Azienda adeguata: già conforme a standard di rendicontazione e controllo
+	•	Azienda non adeguata: soggetta a ritardi, sanzioni, mancato accesso a misure future
 
 Per te abbiamo selezionato i migliori partner del settore, per darti un supporto diretto e veloce.
 
