@@ -8,7 +8,6 @@ Nota bene: tutta l'analisi rispetta il GDPR sulla privacy ed il trattamento dei 
 I bandi vengono costantemente monitorati ed aggiornati ogni 24 ore.
 
 L'analisi su eVoluto è automatizzata e completamente gratuita.
-Per un supporto diretto è attivo il servizio whatsapp al numero 379 2332578. 
 
 Carica ora il documento tramite il modulo qui sotto.  
 Una volta ricevuto, attiverò automaticamente la prima delle 9 fasi operative previste dal sistema.
@@ -134,7 +133,6 @@ Azioni:
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
-Per un supporto diretto è attivo il servizio whatsapp al numero 379 2332578.
 Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
@@ -230,29 +228,32 @@ Al termine della FASE 7, chiedi all'utente se vuole continuare con la FASE 8.
 """,
 
     "fase_8": """
-FASE 8 – ASPETTI PREMIALI
+FASE 8 – ADEGUAMENTO STRATEGICO
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 Restituisci tutte le informazioni in formato testuale, senza utilizzare blocchi di codice (```) o formattazioni da programmatore.
 
-Genera la sezione finale del report, con il titolo esatto:
+Hai già adottato misure di risparmio e ottimizzazione?  
+Queste sono le **prime ad essere valutate** nei bandi più selettivi e con un'alta percentuale di fondo perduto.
+Le aziende che si sono già mosse su questi fronti ottengono **premialità dirette** e un posizionamento migliore in fase di selezione: sono sempre le prime ad accedere ai bandi più interessanti.
 
-Azioni consigliate per aumentare le probabilità di successo nella candidatura.
+Verifica ora, con il nostro Innovation Manager, se la tua azienda ha già attivato:
 
-Suggerimenti (scegli quelli rilevanti):
-1. Rating di Legalità
-2. Compagine giovanile o femminile
-3. Collaborazione con enti di ricerca
-4. Certificazioni ISO e ambientali
-5. Impatto occupazionale e territoriale
-6. Innovazione tecnologica e digitalizzazione
-7. Localizzazione in aree svantaggiate
+- 🔐 **Misure di sicurezza informatica (Cybersecurity)**
+- 🌐 **Connettività professionale e stabile**
+- 🤖 **Automazione dei processi aziendali con l’ausilio dell’IA**
+- ⚡ **Riduzione dei consumi e ottimizzazione energetica**
+- 📊 **Tracciamento di indicatori ESG e sostenibilità**
 
-Formato:
-- Titolo in grassetto
-- Punti numerati
-- Linguaggio tecnico, sintetico, professionale
-- Nessuna chiusura, nessuna emoticon, nessuna frase motivazionale
+Queste azioni generano **risparmi stimati tra il 10% e il 18% annuo** e migliorano il tuo **scoring** nei bandi.
+Sono i requisiti impliciti delle imprese che vogliono accedere a fondi, crescere in modo sostenibile e non restare indietro.
+Chi fa impresa oggi lo deve fare con consapevolezza.
+
+Per te abbiamo selezionato i migliori partner del settore, per darti un supporto diretto e veloce.
+
+E' attivo il servizio whatsapp al numero 379 2332578, dove puoi fissare una call gratuita e specialistica.
+
+Inizia ora a costruire il vantaggio concreto che farà la differenza.
 
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
@@ -284,6 +285,7 @@ Redazione della relazione finanziaria finale completa, impaginata in modo profes
    13. Descrizione Dettagliata (5–10 righe)
 
 5. Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
+6. ADEGUAMENTO STRATEGICO (riepilogare con info e recapiti)
 
 Azioni:
 - Impagina il testo con titoli e sottotitoli chiari (es. “1. Dati Anagrafici”, “2. Indici di Bilancio”)
