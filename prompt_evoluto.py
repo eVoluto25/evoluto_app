@@ -251,7 +251,7 @@ Chi fa impresa oggi lo deve fare con consapevolezza.
 
 Per te abbiamo selezionato i migliori partner del settore, per darti un supporto diretto e veloce.
 
-E' attivo il servizio whatsapp al numero 379 2332578, dove puoi fissare una call gratuita e specialistica.
+E' attivo il servizio whatsapp al numero 379 2332578, dove puoi fissare una call gratuita e specialistica con l'Innovation Manager che ti seguirà in maniera personalizzata, studiando il tuo profilo aziendale.
 
 Inizia ora a costruire il vantaggio concreto che farà la differenza.
 
