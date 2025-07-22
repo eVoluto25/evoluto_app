@@ -218,7 +218,7 @@ Nota analitica del sistema eVoluto:
 - Le aziende considerate nel benchmark potrebbero presentare, in fase iniziale, situazioni di rating e scoring inferiori rispetto ai valori finali rilevati.
 L’incremento osservato è stato spesso associato a interventi veloci e mirati in ambito digitale o energetico (i più veloci e semplici da attuare), risultati in diversi casi determinanti ai fini dell’approvazione.
 
-Questo conferma che alcuni accorgimenti strategici, spesso sottovalutati o rimandati, possono oggi fare la differenza, sfruttando leve tecniche e premialità non visibili a prima lettura, con un impatto economico contenuto o nullo per l’azienda, ma di grande impatto.
+Questo conferma che alcuni accorgimenti strategici, spesso sottovalutati o rimandati, possono oggi fare la differenza, sfruttando leve tecniche e premialità non visibili a prima lettura, con un impatto economico contenuto o nullo per l’azienda.
 
 Al termine della FASE 6, chiedi all’utente: Vuoi proseguire con la FASE 7? (SI/NO)
 """,
