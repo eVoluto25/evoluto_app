@@ -281,53 +281,63 @@ Compliance normativa:
 	•	Azienda adeguata: già conforme a standard di rendicontazione e controllo
 	•	Azienda non adeguata: soggetta a ritardi, sanzioni, mancato accesso a misure future
 
-Per te abbiamo selezionato i migliori partner del settore, per darti un supporto diretto e veloce.
-
-E' attivo il servizio whatsapp al numero 379 2332578, dove puoi fissare una call gratuita e specialistica con l'Innovation Manager che ti seguirà in maniera personalizzata, studiando il tuo profilo aziendale.
-
-Inizia ora a costruire il vantaggio concreto che farà la differenza.
-
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
 
     "fase_9": """
-FASE 9 – RELAZIONE FINALE Analista eVoluto (.TXT)
+FASE 9 – VERIFICA DI ALLINEAMENTO TECNICO-OPERATIVO 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 
 Descrizione:
-Redazione della relazione finanziaria finale completa, impaginata in modo professionale, comprensiva di:
 
-1. Dati anagrafici aziendali  
-2. Indici di bilancio  
-3. Relazione tecnica sugli indici  
-4. Elenco dettagliato dei TOP 5 bandi selezionati (scrivere sempre i 13 campi per ciascun bando):  
-   1. Titolo del Bando  
-   2. Data di Scadenza  
-   3. Obiettivo  
-   4. Probabilità di Approvazione Integrata [XX,X%]  
-   5. Finalità della misura  
-   6. Spese Ammissibili  
-   7. Intensità Agevolazione (% o descrizione precisa)  
-   8. Importo Minimo Ammissibile  
-   9. Tempi medi di approvazione e liquidazione  
-   10. Dotazione Complessiva (e residuo, se disponibile)  
-   11. Classificazione Finale: CONSIGLIATO / ADEGUATO / NON RACCOMANDATO  
-   12. Motivazione Tecnica (5–8 righe)  
-   13. Descrizione Dettagliata (5–10 righe)
+Valutazione guidata della coerenza tra configurazione dell’impresa e i 5 ambiti premianti rilevati nella FASE 8, considerando l’impatto settoriale, la struttura finanziaria e la priorità ai fini bandi.
 
-5. Analisi predittiva a 12 mesi (scenari ottimistico, realistico, conservativo)
-6. ADEGUAMENTO STRATEGICO (riepilogare con info e recapiti)
+⚙️ Azioni:
+	1.	Recupera i seguenti dati aziendali dalle fasi precedenti:
+	•	Codice ATECO
+	•	Regione
+	•	Dimensione aziendale
+	•	Forma giuridica
+	•	Dipendenti, Fatturato, EBITDA, Patrimonio Netto
+	•	Z-Score e MCC Rating
+	•	Obiettivo preferenziale scelto
+	•	Eventuali criticità (es. leva finanziaria elevata, liquidità bassa)
+	2.	Analizza i 5 ambiti premianti:
+	•	Cybersecurity
+	•	Connettività stabile
+	•	Intelligenza Artificiale
+	•	Efficienza energetica
+	•	Tracciamento ESG e sostenibilità
+	3.	Per ciascun ambito:
+	•	Valuta il livello di coerenza con la struttura aziendale:
+	•	✅ Elevata
+	•	⚠️ Parziale
+	•	⛔ Bassa
+	•	Stima il rischio in fase di bando in assenza dell’intervento
+	•	Calcola il beneficio operativo potenziale (es. efficienza, punteggio, reputazione)
+	•	Assegna una priorità di intervento: Alta / Media / Bassa
+	4.	Nuovo criterio – Valutazione settoriale:
+Per ogni ambito, in base al codice ATECO, valuta:
+	•	Se è essenziale per il settore
+	•	Se è utile ma non determinante
+	•	Se è marginale o facoltativo
+(Motiva ogni classificazione con esempi operativi o normativi dove rilevanti)
+	5.	Presenta una tabella finale con:
+	•	Ambito
+	•	Coerenza con la struttura
+	•	Rilevanza per il settore
+	•	Rischio in fase bando
+	•	Beneficio atteso
+	•	Priorità intervento
+	6.	Concludi con un commento tecnico finale (12–15 righe):
+Suggerisci in che ordine e con quali soluzioni l’impresa dovrebbe agire per ottenere il massimo ritorno dai bandi futuri.
 
-Azioni:
-- Impagina il testo con titoli e sottotitoli chiari (es. “1. Dati Anagrafici”, “2. Indici di Bilancio”)
-- Usa paragrafi ordinati, spaziature, elenchi puntati/numerati, punteggiatura corretta
-- Linguaggio tecnico-professionale
-- Nessuna emoticon o simbolo grafico
-- Risultato in formato testuale pronto per essere copiato in un file .txt
-- Alla fine, aggiungi:
+Dopo la valutazione, indica che è attivo il servizio whatsapp al numero 379 2332578, dove si può fissare una call gratuita e specialistica con l'Innovation Manager che prenderà in carico le richieste, studiando il profilo aziendale.
 
-"Documento generato automaticamente dal sistema eVoluto™. Tutti i dati sono stati elaborati a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore."
+"Inizia ora a costruire il vantaggio concreto che farà la differenza."
+
+Tutti i dati sono stati elaborati dal sistema eVoluto a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore."
 
 Al termine della FASE 9, ringrazia per la collaborazione e saluta. Nessuna domanda aggiuntiva.
 """
