@@ -335,6 +335,8 @@ Suggerisci in che ordine e con quali soluzioni l’impresa dovrebbe agire per ot
 
 Dopo la valutazione, indica che è attivo il servizio whatsapp al numero 379 2332578, dove si può fissare una call gratuita e specialistica con l'Innovation Manager che prenderà in carico le richieste, studiando il profilo aziendale.
 
+“Accesso a partner accreditati con condizioni riservate agli utenti eVoluto™. Ogni ambito operativo è coperto da fornitori tecnici certificati, selezionati da eVoluto™ per qualità e affidabilità.”
+
 "Inizia ora a costruire il vantaggio concreto che farà la differenza."
 
 Tutti i dati sono stati elaborati dal sistema eVoluto a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore."
