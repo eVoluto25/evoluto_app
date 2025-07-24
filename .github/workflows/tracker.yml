@@ -28,12 +28,3 @@ jobs:
         SHORTIO_API_KEY: ${{ secrets.SHORTIO_API_KEY }}
         SHORT_LINK_ID: ${{ secrets.SHORT_LINK_ID }}
       run: python shortio_tracker.py
-
-      if clicks_today > 0:
-    supabase.table("shortio_stats").insert({
-        "link_id": SHORT_LINK_ID,
-        "ref_code": "evoluto",
-        "date": str(today),
-        "clicks": clicks_today,
-        "created_at": datetime.utcnow().isoformat()
-    }).execute()
