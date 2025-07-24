@@ -17,43 +17,24 @@ today = datetime.utcnow().date()
 yesterday = today - timedelta(days=1)
 
 # API Short.io – Statistiche giornaliere
-url = f"https://api.short.io/links/{SHORT_LINK_ID}/statistics/by_interval"
+url = f"https://api.short.io/links/{SHORT_LINK_ID}/statistics"
 headers = {
     "accept": "application/json",
-    "authorization": SHORTIO_API_KEY,
-    "content-type": "application/json"
+    "authorization": SHORTIO_API_KEY
 }
-payload = {
-    "from": str(yesterday),
-    "to": str(today),
-    "interval": "day"
-}
-response = requests.post(url, json=payload, headers=headers)
+response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     data = response.json()
-    stats = data.get('statistics', [])
-    clicks = stats[0]['clicks'] if stats else 0
+    clicks = data.get("clicks", 0)
 
-    # Controlla se esiste già un record per ieri
-    existing = supabase.table("shortio_stats") \
-        .select("id") \
-        .eq("link_id", SHORT_LINK_ID) \
-        .eq("date", str(yesterday)) \
-        .execute()
+    supabase.table("shortio_stats").insert({
+        "link_id": SHORT_LINK_ID,
+        "ref_code": None,
+        "date": str(today),  # puoi anche usare yesterday
+        "clicks": clicks
+    }).execute()
 
-    if existing.data:
-        print(f"⚠️ Record già presente per il {yesterday}. Nessun inserimento.")
-    else:
-        # Inserisce i dati
-        supabase.table("shortio_stats").insert({
-            "link_id": SHORT_LINK_ID,
-            "ref_code": "evoluto",
-            "date": str(yesterday),
-            "clicks": clicks,
-            "created_at": datetime.utcnow().isoformat()
-        }).execute()
-        print(f"✅ Click salvati per il {yesterday}: {clicks}")
-
+    print(f"✅ Click salvati per il {today}: {clicks}")
 else:
     print(f"❌ Errore API Short.io: {response.status_code} – {response.text}")
