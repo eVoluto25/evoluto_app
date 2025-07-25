@@ -60,6 +60,7 @@ Azioni:
 - Verifica che totale attivo = totale passivo; in caso contrario segnala incoerenza e correggi con stima
 - Se dati mancanti, ricava da fonti ufficiali o segnala come dato stimato
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine dell'analisi di bilancio procedi con la FASE 2 – chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
@@ -82,6 +83,7 @@ Azioni:
   - Usa un linguaggio chiaro e professionale
   - NON avanzare giudizi sui bandi o sugli step successivi
 
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 2, chiedi sempre all’utente se vuole proseguire con la fase successiva (SI/NO).
 """,
 
@@ -104,6 +106,8 @@ Azioni:
 - Accetta solo una risposta nel formato numero (es. "4") oppure parola esatta (es. "Digitalizzazione")
 - Valida il formato. Se errato, blocca e richiedi una nuova risposta
 - Salva il valore nel campo obiettivo_preferenziale
+
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 - Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
 """,
 
@@ -133,6 +137,8 @@ Azioni:
 - Verifica che ogni bando contenga i dati minimi richiesti
 
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
+
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
@@ -179,6 +185,7 @@ Campi obbligatori per ogni bando:
 
 Ogni bando deve avere una probabilità di approvazione unica, anche minima. Nessun duplicato.
 
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 5, chiedi all'utente se vuole continuare con la FASE 6.
 """,
 
@@ -220,6 +227,7 @@ L’incremento osservato è stato spesso associato a interventi veloci e mirati 
 
 Questo conferma che alcuni accorgimenti strategici, spesso sottovalutati o rimandati, possono oggi fare la differenza, sfruttando leve tecniche e premialità non visibili a prima lettura, con un impatto economico contenuto o nullo per l’azienda.
 
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 6, chiedi all’utente: Vuoi proseguire con la FASE 7? (SI/NO)
 """,
 
@@ -230,6 +238,7 @@ OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 
 “In base ai dati e all’analisi effettuata, quali sono 3 scenari predittivi (ottimistico, realistico, conservativo) sull’evoluzione economica dell'azienda analizzata nei prossimi 12 mesi se accede al primo bando selezionato? Includi rischi principali, leva finanziaria potenziale e impatto atteso su margini, investimenti e posizione competitiva.”
 
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 7, chiedi all'utente se vuole continuare con la FASE 8.
 """,
 
@@ -281,6 +290,7 @@ Compliance normativa:
 	•	Azienda adeguata: già conforme a standard di rendicontazione e controllo
 	•	Azienda non adeguata: soggetta a ritardi, sanzioni, mancato accesso a misure future
 
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
 
@@ -391,8 +401,7 @@ Ogni ambito operativo è coperto da fornitori tecnici certificati, selezionati p
 ℹ️ Tutti i dati sono stati elaborati dal sistema eVoluto™ a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore.
 
 ⸻
-
+L'analisi dei dati è completata.
 🙏 Grazie per la collaborazione!
-La FASE 9 è ora completata.
 """
 }
