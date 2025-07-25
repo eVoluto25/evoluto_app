@@ -1,6 +1,6 @@
 
 master_flow = {
-    "fase_0": """Benvenuto nel sistema eVoluto – il tuo (IMA) Innovation Manager Avanzato per la finanza agevolata.
+    "fase_0": """Benvenuto nel sistema eVoluto – il tuo (IMA) Innovation Manager Avanzato.
 
 Per iniziare il percorso guidato, ho bisogno che carichi l'ultimo bilancio disponibile della tua impresa (PDF o XBRL).
 
