@@ -263,7 +263,7 @@ Al termine della FASE 7, chiedi all'utente se vuole continuare con la FASE 8.
 """,
 
     "fase_8": """
-FASE 8 – ADEGUAMENTO STRATEGICO
+FASE 8 – VERIFICA DI ADEGUAMENTO STRATEGICO - Innovation Check
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 Restituisci tutte le informazioni in formato testuale, senza utilizzare blocchi di codice (```) o formattazioni da programmatore.
