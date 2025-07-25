@@ -285,21 +285,19 @@ Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
 
     "fase_9": """
-FASE 9 – VERIFICA DI ALLINEAMENTO TECNICO-OPERATIVO 
+FASE 9 – VERIFICA DI ALLINEAMENTO TECNICO-FINANZIARIO 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 Restituisci tutte le informazioni in formato testuale, senza blocchi codice o linguaggi da programmatore.
 
-⸻
+🎯 Obiettivo della fase
 
-🧾 Descrizione:
+Questa fase serve a valutare bene e con attenzione se e quanto l’impresa è pronta per realizzare gli interventi premianti suggeriti nella FASE 8, verificando:
+	•	la compatibilità tecnica con la struttura attuale dell’impresa
+	•	la rilevanza per il settore di appartenenza
+	•	la sostenibilità economica e finanziaria degli investimenti
 
-Valutazione guidata della coerenza tra la configurazione dell’impresa e i 5 ambiti premianti emersi nella FASE 8, considerando:
-	•	la priorità per i bandi
-	•	la rilevanza settoriale
-	•	e, come leva commerciale aggiuntiva, la sostenibilità finanziaria degli investimenti (con eventuale suggerimento di strumenti alternativi alla banca)
-
-L’obiettivo è identificare cosa attivare, in che ordine, e con quali modalità economiche accessibili.
+L’obiettivo è fornire una guida chiara e concreta su cosa attivare, in che ordine, e con quali formule economiche realmente accessibili.
 
 ⸻
 
@@ -319,48 +317,82 @@ L’obiettivo è identificare cosa attivare, in che ordine, e con quali modalit�
 	•	Intelligenza Artificiale
 	•	Efficienza energetica
 	•	Tracciamento ESG e sostenibilità
-	3.	Per ciascun ambito esegui:
-	•	Valutazione del livello di coerenza con la struttura aziendale:
-✅ Elevata / ⚠️ Parziale / ⛔ Bassa
-	•	Stima del rischio in fase di bando in assenza dell’intervento
-	•	Calcolo del beneficio operativo potenziale (efficienza, punteggio, reputazione)
-	•	Assegnazione della priorità d’intervento: Alta / Media / Bassa
-	4.	Valutazione settoriale specifica (basata sul Codice ATECO):
-	•	Classifica ogni ambito come:
-🔹 Essenziale per il settore
-🔸 Utile ma non determinante
-⚪ Marginale o facoltativo
-	•	Motiva la classificazione con riferimenti operativi o normativi rilevanti
-	5.	Analisi finanziaria per attivazione interventi:
-	•	Verifica se l’azienda presenta caratteristiche idonee a ottenere finanziamenti esterni anche per anticipare eventuali spese del bando (MCC rating, leva, Z-score)
-	•	Se l’impresa ha criticità finanziarie, suggerisci alternative al credito bancario come:
-	•	Soluzioni in noleggio operativo
-	•	Fintech strutturate
-	•	Operazioni tramite interventi in leasing strumentale agevolato
-	•	Sottolinea che, grazie al supporto eVoluto™, è possibile evitare strumenti bancari onerosi e agire con maggiore flessibilità economica
-	6.	Compila una tabella finale riepilogativa:
-	•	Ambito
-	•	Coerenza con la struttura
-	•	Rilevanza per il settore
-	•	Rischio in fase bando
-	•	Beneficio atteso
-	•	Priorità intervento
-	•	Modalità di attivazione consigliata (acquisto diretto / leasing / noleggio / fintech)
-	7.	Concludi con un commento tecnico (12–15 righe):
-	•	Suggerisci in che ordine attivare gli ambiti
-	•	Con quali soluzioni integrate
-	•	E con quali modalità economico-finanziarie più vantaggiose rispetto ai canali tradizionali
+	3.	Per ciascun ambito, compila la Tabella tecnica di allineamento con questi elementi: 
+ 
+                Ambito
+                Coerenza con la struttura aziendale
+                Rilevanza per il settore (basata sul codice ATECO)
+                Rischio in fase di bando (se non attivato)
+                Beneficio atteso
+                Priorità di intervento
+
+                Coerenza può essere: ✅ Elevata / ⚠️ Parziale / ⛔ Bassa
+                Rilevanza: 🔹 Essenziale / 🔸 Utile ma non determinante / ⚪ Marginale o facoltativo
+                Priorità: Alta / Media / Bassa 
+
+Motiva ogni voce in linguaggio semplice, comprensibile anche per utenti non tecnici.
+
+	4. Verifica la sostenibilità finanziaria degli interventi
+	•	Analizza i dati finanziari e valuta se l’azienda ha la solidità per accedere a un finanziamento bancario.
+	•	Se presenti criticità, suggerisci soluzioni alternative come:
+	•	Noleggio operativo
+	•	Leasing strumentale
+	•	Finanziamenti tradizionali bancari o attraverso fondi o fintech
+	•	ESCo (per impianti energetici)
+	•	Pagamento ricorrente (SaaS)
+
+        5. Compila la Tabella economico-finanziaria separata con le seguenti colonne:
+	
+	Ambito
+        Modalità di attivazione consigliata
+        Formula utilizzata
+        Durata
+        Rata o canone stimato
+
+Per ogni ambito con priorità Alta o Media, indica la modalità più sostenibile e vantaggiosa per l’azienda.
+Spiega il motivo della scelta (es. “evita esposizione bancaria”, “canone tutto incluso”, “rateizzazione accessibile con rating BB”…)
+
+6. Esegui almeno 3 o 4 simulazioni economico-finanziarie dettagliate:
+	•	Importo indicativo dell’intervento (stimato anche a grandi linee)
+	•	Modalità ipotizzata (leasing, noleggio, finanziamento)
+	•	Durata (mesi)
+	•	Tasso stimato
+	•	Rata o canone risultante
+
+📝 Nota tecnica da inserire obbligatoriamente nel prompt:
+ℹ️ Nota sulle simulazioni finanziarie
+Le simulazioni di pagamento sono basate sui Tassi Effettivi Globali Medi (TEGM) pubblicati trimestralmente dalla Banca d’Italia.
+I valori sono indicativi e non vincolanti, e non includono scontistiche o condizioni personalizzate eventualmente offerte da istituti bancari o partner tecnici.
+Le condizioni effettive saranno soggette a verifica caso per caso.
+
+7. Concludi con un commento tecnico di sintesi (12–15 righe):
+	•	Spiega in che ordine attivare gli interventi
+	•	Indica eventuali combinazioni utili (es. AI + cybersecurity)
+	•	Consiglia formule di pagamento sostenibili
+	•	Valuta se è possibile evitare strumenti bancari onerosi, grazie all’analisi effettuata
+	•	Chiudi con un messaggio pratico:
+“Sulla base della struttura attuale, l’impresa può attivare (indica il numero) interventi prioritari senza ricorso a finanziamenti bancari, riducendo tempi e costi. Gli interventi restanti meritano una valutazione più approfondita.”
+ 
+⸻
+
+Dopo la valutazione:
+
+🔹 Finale (invito + disclaimer)
+📞 Vuoi un confronto personalizzato?
+È attivo il servizio WhatsApp al numero 379 2332578, dove puoi fissare una call gratuita con un Innovation Manager dedicato, che analizzerà il tuo profilo aziendale e ti guiderà nella scelta delle migliori soluzioni.
+
+🔒 Accesso a partner accreditati con condizioni riservate agli utenti eVoluto™.
+Ogni ambito operativo è coperto da fornitori tecnici certificati, selezionati per qualità e affidabilità.
+
+🚀 Inizia ora a costruire il vantaggio concreto che farà la differenza.
 
 ⸻
 
-Dopo la valutazione, indica che è attivo il servizio whatsapp al numero 379 2332578, dove si può fissare una call gratuita e specialistica con l'Innovation Manager che prenderà in carico le richieste, studiando il profilo aziendale.
+ℹ️ Tutti i dati sono stati elaborati dal sistema eVoluto™ a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore.
 
-“Accesso a partner accreditati con condizioni riservate agli utenti eVoluto™. Ogni ambito operativo è coperto da fornitori tecnici certificati, selezionati da eVoluto™ per qualità e affidabilità.”
+⸻
 
-"Inizia ora a costruire il vantaggio concreto che farà la differenza."
-
-Tutti i dati sono stati elaborati dal sistema eVoluto a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore."
-
-Al termine della FASE 9, ringrazia per la collaborazione e saluta. Nessuna domanda aggiuntiva.
+🙏 Grazie per la collaborazione!
+La FASE 9 è ora completata.
 """
 }
