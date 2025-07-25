@@ -247,6 +247,21 @@ L’incremento osservato è stato spesso associato a interventi veloci e mirati 
 
 Questo conferma che alcuni accorgimenti strategici, spesso sottovalutati o rimandati, possono oggi fare la differenza, sfruttando leve tecniche e premialità non visibili a prima lettura, con un impatto economico contenuto o nullo per l’azienda.
 
+Integra infine un paragrafo aggiuntivo con il CONFRONTO ECONOMICO AVANZATO rispetto alle imprese dello stesso settore.
+
+Il paragrafo deve contenere:
+	1.	Stima dell’incentivo pubblico cumulabile che l’impresa può ottenere sulla base dei bandi selezionati nella FASE 5, con range minimo e massimo (es. €XX.000–€YY.000).
+	2.	Confronto con i dati medi del settore (ATECO, dimensione, regione), includendo:
+	•	valore medio ottenuto da imprese simili (es. €XX.000)
+	•	% media di successo (es. XX%)
+	•	% imprese che accedono effettivamente ai fondi (es. XX%)
+	3.	Analisi del vantaggio competitivo dell’impresa analizzata (es. rating superiore alla media, bilancio in utile, profilo idoneo, maggiore probabilità di approvazione, o eventuali penalizzazioni dovute ai valori del bilancio)
+	4.	Conclusione in linguaggio semplice e professionale:
+	•	spiegazione pratica del significato per l’imprenditore
+	•	incentivo ad attivare almeno 1 intervento per beneficiare del vantaggio competitivo già acquisito o per recuperare terreno rispetto ai competitors.
+
+Il tono deve essere professionale ma comprensibile anche da chi non ha conoscenze finanziarie.
+
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
 Al termine della FASE 6, chiedi all’utente: Vuoi proseguire con la FASE 7? (SI/NO)
 """,
