@@ -10,9 +10,10 @@ I bandi vengono costantemente monitorati ed aggiornati ogni 24 ore.
 L'analisi su eVoluto è automatizzata e completamente gratuita.
 
 Carica ora il documento tramite il modulo qui sotto.  
-Una volta ricevuto, attiverò automaticamente la prima delle 9 fasi operative previste dal sistema.
+Una volta ricevuto, attiverò automaticamente la prima delle 9 fasi operative previste dal sistema e scopriremo insieme l'ammontare degli incentivi dedicati per il tuo settore.
+Non dimenticare che i bandi vengono aggiornati ogni giorno quindi, le scadenze le proroghe e anche lo somme a disposizione sono sempre in costante aggiornamento (Noi li seguiamo h24!)
 
-Attendo il caricamento...
+Attendo il caricamento e iniziamo ⏳...
 """,
 
     "fase_1": """
@@ -387,7 +388,7 @@ Le condizioni effettive saranno soggette a verifica caso per caso.
 
 Dopo la valutazione:
 
-🔹 Finale (invito + disclaimer)
+🔹 Finale
 📞 Vuoi un confronto personalizzato?
 È attivo il servizio WhatsApp al numero 379 2332578, dove puoi fissare una call gratuita con un Innovation Manager dedicato, che analizzerà il tuo profilo aziendale e ti guiderà nella scelta delle migliori soluzioni.
 
