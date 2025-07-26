@@ -427,9 +427,31 @@ Le condizioni effettive saranno soggette a verifica caso per caso.
 2. Hai utile netto negativo ma vuoi investire? (PRIMA DI PORRE QUESTA DOMANDA VERIFICA: SE L'UTILE E' POSITIVO NON LA FARE).
 3. Vuoi migliorare l’impresa senza usare banche?
 
-👇 Per ognuna, mostra al cliente le soluzioni tecniche attivabili.
+👇 Per ognuna, mostra al cliente le soluzioni tecniche attivabili:
 
-7. Concludi con un commento tecnico di sintesi (12–15 righe):
+ domanda_1
+❓ Hai trovato un bando ma non puoi anticipare la spesa?
+💬 Se hai un intervento chiaro ma non hai liquidità per avviarlo, puoi accedere a:
+- Finanziamento ponte con garanzia MCC (fino all’80% se non già utilizzato)
+- Anticipo su fattura da parte del fornitore (invoice trading)
+- Noleggio operativo, SaaS o leasing strumentale
+- Fideiussione tecnica per sbloccare l’anticipo del contributo
+
+ domanda_2 
+❓ Hai utile netto negativo ma vuoi investire?
+💬 Anche con utile negativo, puoi attivare micro-interventi se:
+- Il canone è rateizzato e rendicontabile
+- È presente un contributo pubblico cumulabile
+- L’intervento è certificato e pre-approvabile
+
+domanda_3 
+❓ Vuoi migliorare l’impresa senza usare banche?
+💬 Se preferisci non passare da prestiti tradizionali, ci sono soluzioni che puoi attivare senza esporsi:
+- Servizi digitali in SaaS (es. gestione dati, backup, cybersecurity)
+- Interventi energetici in formula ESCo o noleggio
+- Voucher digitali e bandi cumulabili, con contributo diretto
+
+7. Concludi con un commento tecnico di sintesi (18–20 righe):
 	•	Spiega in che ordine attivare gli interventi
 	•	Indica eventuali combinazioni utili (es. AI + cybersecurity)
 	
