@@ -245,43 +245,6 @@ async def get_fase(fase_id: str):
 
     contenuto_fase = master_flow[fase_id]
 
-    if fase_id == "fase_9":
-        utile_netto = analisi_corrente.get("utile_netto")
-
-        domanda_1 = """
-❓ Hai trovato un bando ma non puoi anticipare la spesa?
-💬 Se hai un intervento chiaro ma non hai liquidità per avviarlo, puoi accedere a:
-- Finanziamento ponte con garanzia MCC (fino all’80% se non già utilizzato)
-- Anticipo su fattura da parte del fornitore (invoice trading)
-- Noleggio operativo, SaaS o leasing strumentale
-- Fideiussione tecnica per sbloccare l’anticipo del contributo
-"""
-
-        domanda_2 = """
-❓ Hai utile netto negativo ma vuoi investire?
-💬 Anche con utile negativo, puoi attivare micro-interventi se:
-- Il canone è rateizzato e rendicontabile
-- È presente un contributo pubblico cumulabile
-- L’intervento è certificato e pre-approvabile
-"""
-
-        domanda_3 = """
-❓ Vuoi migliorare l’impresa senza usare banche?
-💬 Se preferisci non passare da prestiti tradizionali, ci sono soluzioni che puoi attivare senza esporsi:
-- Servizi digitali in SaaS (es. gestione dati, backup, cybersecurity)
-- Interventi energetici in formula ESCo o noleggio
-- Voucher digitali e bandi cumulabili, con contributo diretto
-"""
-
-        # 🔁 Componi blocco domande in base all’utile
-        blocco_domande = domanda_1
-        if utile_netto is not None and utile_netto < 0:
-            blocco_domande += domanda_2
-        blocco_domande += domanda_3
-
-        # 🔁 Inserisci blocco nel prompt fase 9
-        contenuto_fase = contenuto_fase.replace("{{INSERISCI_DOMANDE}}", blocco_domande)
-
     return {"fase": contenuto_fase}
 
 @app.post("/analizza-azienda")
