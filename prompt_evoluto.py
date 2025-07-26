@@ -421,14 +421,12 @@ Le simulazioni di pagamento sono basate sui Tassi Effettivi Globali Medi (TEGM) 
 I valori sono indicativi e non vincolanti, e non includono scontistiche o condizioni personalizzate eventualmente offerte da istituti bancari o partner tecnici.
 Le condizioni effettive saranno soggette a verifica caso per caso.
 
+{{inserisci_domande}}
+
 7. Concludi con un commento tecnico di sintesi (12–15 righe):
 	•	Spiega in che ordine attivare gli interventi
 	•	Indica eventuali combinazioni utili (es. AI + cybersecurity)
-	•	Consiglia formule di pagamento sostenibili
-	•	Valuta se è possibile evitare strumenti bancari onerosi, grazie all’analisi effettuata
-	•	Chiudi con un messaggio pratico:
-“Sulla base della struttura attuale, l’impresa può attivare (indica il numero) interventi prioritari senza ricorso a finanziamenti bancari, riducendo tempi e costi. Gli interventi restanti meritano una valutazione più approfondita.”
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+	
 Al termine della FASE 9, chiedi all'utente se vuole continuare con la FASE 10.
  """,
 
