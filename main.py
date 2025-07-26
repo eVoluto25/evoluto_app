@@ -246,7 +246,7 @@ async def get_fase(fase_id: str):
     contenuto_fase = master_flow[fase_id]
 
     if fase_id == "fase_9":
-        utile_netto = analisi_corrente.get("utile_netto", 0)
+        utile_netto = analisi_corrente.get("utile_netto")
 
         domanda_1 = """
 ❓ Hai trovato un bando ma non puoi anticipare la spesa?
@@ -275,7 +275,7 @@ async def get_fase(fase_id: str):
 
         # 🔁 Componi blocco domande in base all’utile
         blocco_domande = domanda_1
-        if utile_netto < 0:
+        if utile_netto is not None and utile_netto < 0:
             blocco_domande += domanda_2
         blocco_domande += domanda_3
 
