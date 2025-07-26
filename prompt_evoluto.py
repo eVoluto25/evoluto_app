@@ -421,7 +421,13 @@ Le simulazioni di pagamento sono basate sui Tassi Effettivi Globali Medi (TEGM) 
 I valori sono indicativi e non vincolanti, e non includono scontistiche o condizioni personalizzate eventualmente offerte da istituti bancari o partner tecnici.
 Le condizioni effettive saranno soggette a verifica caso per caso.
 
-{{INSERISCI_DOMANDE}}
+📌 Per completare correttamente questa fase, verifica anche queste 3 condizioni strategiche (valide sempre):
+
+1. Hai trovato un bando ma non puoi anticipare la spesa?
+2. Hai utile netto negativo ma vuoi investire? (PRIMA DI PORRE QUESTA DOMANDA VERIFICA: SE L'UTILE E' POSITIVO NON LA FARE).
+3. Vuoi migliorare l’impresa senza usare banche?
+
+👇 Per ognuna, mostra al cliente le soluzioni tecniche attivabili.
 
 7. Concludi con un commento tecnico di sintesi (12–15 righe):
 	•	Spiega in che ordine attivare gli interventi
