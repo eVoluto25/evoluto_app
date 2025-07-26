@@ -421,7 +421,7 @@ Le simulazioni di pagamento sono basate sui Tassi Effettivi Globali Medi (TEGM) 
 I valori sono indicativi e non vincolanti, e non includono scontistiche o condizioni personalizzate eventualmente offerte da istituti bancari o partner tecnici.
 Le condizioni effettive saranno soggette a verifica caso per caso.
 
-{{inserisci_domande}}
+{{INSERISCI_DOMANDE}}
 
 7. Concludi con un commento tecnico di sintesi (12–15 righe):
 	•	Spiega in che ordine attivare gli interventi
