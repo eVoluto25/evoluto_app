@@ -290,6 +290,9 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
     try:
         # ➕ Completa con data analisi
         data_dict = input_data.dict(exclude_unset=True)
+
+        analisi_corrente["utile_netto"] = input_data.utile_netto
+        
         data_dict["data_analisi"] = date.today().isoformat()
 
         # ✅ Salva su Supabase
@@ -297,8 +300,6 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
 
         # 🔍 Verifica aziende simili
         risultato_benchmark = cerca_analisi_simili(data_dict)
-
-        analisi_corrente["utile_netto"] = input_data.utile_netto
 
         return {
             "messaggio": risultato_benchmark.get("messaggio", "Nessun messaggio disponibile"),
