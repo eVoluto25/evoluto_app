@@ -14,6 +14,11 @@ import os
 from datetime import date
 from supabase import create_client
 
+# 🔁 Variabile globale temporanea per uso interno nelle fasi
+analisi_corrente = {
+    "utile_netto": None
+}
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -234,9 +239,50 @@ from prompt_evoluto import master_flow
 @app.get("/get-fase/{fase_id}")
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
+
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
-    return {"fase": master_flow[fase_id]}
+
+    contenuto_fase = master_flow[fase_id]
+
+    if fase_id == "fase_9":
+        utile_netto = analisi_corrente.get("utile_netto", 0)
+
+        domanda_1 = """
+❓ Hai trovato un bando ma non puoi anticipare la spesa?
+💬 Se hai un intervento chiaro ma non hai liquidità per avviarlo, puoi accedere a:
+- Finanziamento ponte con garanzia MCC (fino all’80% se non già utilizzato)
+- Anticipo su fattura da parte del fornitore (invoice trading)
+- Noleggio operativo, SaaS o leasing strumentale
+- Fideiussione tecnica per sbloccare l’anticipo del contributo
+"""
+
+        domanda_2 = """
+❓ Hai utile netto negativo ma vuoi investire?
+💬 Anche con utile negativo, puoi attivare micro-interventi se:
+- Il canone è rateizzato e rendicontabile
+- È presente un contributo pubblico cumulabile
+- L’intervento è certificato e pre-approvabile
+"""
+
+        domanda_3 = """
+❓ Vuoi migliorare l’impresa senza usare banche?
+💬 Se preferisci non passare da prestiti tradizionali, ci sono soluzioni che puoi attivare senza esporsi:
+- Servizi digitali in SaaS (es. gestione dati, backup, cybersecurity)
+- Interventi energetici in formula ESCo o noleggio
+- Voucher digitali e bandi cumulabili, con contributo diretto
+"""
+
+        # 🔁 Componi blocco domande in base all’utile
+        blocco_domande = domanda_1
+        if utile_netto < 0:
+            blocco_domande += domanda_2
+        blocco_domande += domanda_3
+
+        # 🔁 Inserisci blocco nel prompt fase 9
+        contenuto_fase = contenuto_fase.replace("{{inserisci_domande}}", blocco_domande)
+
+    return {"fase": contenuto_fase}
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(input_data: AnalisiAziendaInput):
@@ -251,6 +297,8 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
 
         # 🔍 Verifica aziende simili
         risultato_benchmark = cerca_analisi_simili(data_dict)
+
+        analisi_corrente["utile_netto"] = input_data.utile_netto
 
         return {
             "messaggio": risultato_benchmark.get("messaggio", "Nessun messaggio disponibile"),
