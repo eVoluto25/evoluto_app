@@ -280,7 +280,7 @@ async def get_fase(fase_id: str):
         blocco_domande += domanda_3
 
         # 🔁 Inserisci blocco nel prompt fase 9
-        contenuto_fase = contenuto_fase.replace("{{inserisci_domande}}", blocco_domande)
+        contenuto_fase = contenuto_fase.replace("{{INSERISCI_DOMANDE}}", blocco_domande)
 
     return {"fase": contenuto_fase}
 
