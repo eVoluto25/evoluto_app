@@ -9,6 +9,7 @@ import logging
 from typing import List, Dict
 from calendar_api import router as calendar_router
 from prompt_evoluto import master_flow
+from template_pof import ISTRUZIONI_HTML
 
 import os
 from datetime import date
@@ -245,7 +246,15 @@ async def get_fase(fase_id: str):
 
     contenuto_fase = master_flow[fase_id]
 
-    return {"fase": contenuto_fase}
+    if fase_id != "fase_0":
+        return {
+            "fase": contenuto_fase,
+            "istruzioni_html": ISTRUZIONI_HTML
+        }
+    else:
+        return {
+            "fase": contenuto_fase
+        }
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(input_data: AnalisiAziendaInput):
