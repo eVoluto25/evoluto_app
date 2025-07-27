@@ -17,7 +17,7 @@ from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
 import json
 
-with open("main/checklist_fasi.json", "r") as f:
+with open("pages/checklist_fasi.json", "r") as f:
     CHECKLIST = json.load(f)
 
 # 🔁 Variabile globale temporanea per uso interno nelle fasi
