@@ -10,7 +10,7 @@ from typing import List, Dict
 from calendar_api import router as calendar_router
 from prompt_evoluto import master_flow
 from template_pof import ISTRUZIONI_HTML
-
+from pathlib import Path
 import os
 from datetime import date
 from supabase import create_client
