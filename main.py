@@ -14,6 +14,11 @@ from template_pof import ISTRUZIONI_HTML
 import os
 from datetime import date
 from supabase import create_client
+# ⬇️ Caricamento checklist_fasi.json
+import json
+
+with open("main/checklist_fasi.json", "r") as f:
+    CHECKLIST = json.load(f)
 
 # 🔁 Variabile globale temporanea per uso interno nelle fasi
 analisi_corrente = {
@@ -84,6 +89,10 @@ class AnalisiAziendaInput(BaseModel):
     obiettivo_azienda: str
     bandi_trovati: int
     probabilita_media_approvazione: float
+
+class ChecklistRequest(BaseModel):
+    fase_id: str
+    task_completati: List[str]
 
 def aggiorna_log_giornaliero():
     oggi = str(date.today())
@@ -279,3 +288,16 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
     except Exception as e:
         logger.error(f"❌ Errore nella funzione analizza_azienda: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/verifica_checklist_fase")
+async def verifica_checklist_fase(payload: ChecklistRequest):
+    logger.info(f"📋 Verifica checklist per {payload.fase_id} con task: {payload.task_completati}")
+    richiesti = CHECKLIST.get(payload.fase_id, {}).get("checklist", [])
+    mancanti = [x for x in richiesti if x not in payload.task_completati]
+
+    if mancanti:
+        logger.warning(f"❌ Fase {payload.fase_id} incompleta. Task mancanti: {mancanti}")
+        raise HTTPException(status_code=400, detail={"mancano": mancanti})
+    
+    logger.info(f"✅ Fase {payload.fase_id} completata correttamente.")
+    return {"status": "ok", "fase": payload.fase_id}
