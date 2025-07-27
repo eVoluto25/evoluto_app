@@ -1,6 +1,5 @@
-
 ISTRUZIONI_HTML = """
-✳️ Ora trascrivi questa fase in formato HTML completo, pronto per essere salvato come file `.html` e utilizzato in un documento ufficiale.
+Alla fine trascrivi questa fase in formato HTML completo, pronto per essere salvato come file `.html` e utilizzato in un documento ufficiale.
 
 Istruzioni:
 
@@ -20,5 +19,8 @@ Istruzioni:
 – Nessun riferimento al numero della fase, a GPT o a messaggi meta-conversazionali  
 – Non aggiungere introduzioni o conclusioni fuori testo
 
-❗ Restituisci solo il blocco HTML completo, già formattato e pronto per salvataggio.
+Alla fine restituisci direttamente il file in formato HTML completo, già formattato e salvalo con il nome:
+fase_[NUMERO]__[NOME-AZIENDA].html
+Sostituisci [NUMERO] con il numero reale della fase, e [NOME-AZIENDA] con il nome dell’azienda in MAIUSCOLO e trattino per spazi (es. “ACME-SRL”).
+Restituisci direttamente il file `.html` come allegato scaricabile, senza mostrare codice o anteprima.
 """
