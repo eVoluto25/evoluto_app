@@ -1,0 +1,90 @@
+{
+  "fase_0": {
+    "checklist": [
+      "istruzioni_mostrate"
+    ]
+  },
+  "fase_1": {
+    "checklist": [
+      "dati_anagrafici_estratti",
+      "dati_bilancio_estratti",
+      "indici_finanziari_calcolati",
+      "verifica_attivo_passivo_eseguita",
+      "tabella_contesto_generata",
+      "html_generato"
+    ]
+  },
+  "fase_2": {
+    "checklist": [
+      "relazione_analista_scritta",
+      "html_generato"
+    ]
+  },
+  "fase_3": {
+    "checklist": [
+      "obiettivo_raccolto",
+      "formato_validato",
+      "obiettivo_salvato",
+      "html_generato"
+    ]
+  },
+  "fase_4": {
+    "checklist": [
+      "json_creato_e_inviato",
+      "bandi_ricevuti",
+      "verifica_minimi_ok",
+      "html_generato"
+    ]
+  },
+  "fase_5": {
+    "checklist": [
+      "scoring_criteri_applicato",
+      "top_5_selezionati",
+      "campi_13_compilati",
+      "html_generato"
+    ]
+  },
+  "fase_6": {
+    "checklist": [
+      "media_probabilita_calcolata",
+      "json_benchmark_inviato",
+      "risultato_benchmark_ricevuto",
+      "confronto_economico_avanzato_aggiunto",
+      "html_generato"
+    ]
+  },
+  "fase_7": {
+    "checklist": [
+      "scenari_predittivi_generati",
+      "criticita_e_priorita_indicate",
+      "bando_prioritario_mostrato",
+      "html_generato"
+    ]
+  },
+  "fase_8": {
+    "checklist": [
+      "misure_innovazione_verificate",
+      "confronti_prestazionali_mostrati",
+      "html_generato"
+    ]
+  },
+  "fase_9": {
+    "checklist": [
+      "dati_azienda_recuperati",
+      "tabelle_allineamento_compilate",
+      "sostenibilita_verificata",
+      "simulazioni_economiche_eseguite",
+      "domande_strategiche_valutate",
+      "commento_finale_generato",
+      "html_generato"
+    ]
+  },
+  "fase_10": {
+    "checklist": [
+      "blocco_risultato_tasca_compilato",
+      "blocco_contrasto_fare_nonfare_creato",
+      "soluzioni_tecniche_presentate",
+      "html_generato"
+    ]
+  }
+}
