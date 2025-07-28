@@ -346,7 +346,7 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
         }
 
     # Se checklist ok, recupera la fase dal prompt
-    fase_dati = get_fase_prompt(fase_id)
+    fase_dati = await get_fase(fase_id)
     return fase_dati
 
 @app.post("/get-fase-con-verifica")
