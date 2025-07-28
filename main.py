@@ -334,7 +334,6 @@ async def verifica_checklist_fase(payload: ChecklistRequest):
     }
 
 async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
-    # Verifica checklist prima di proseguire
     payload = ChecklistRequest(fase_id=fase_id, task_completati=task_completati)
 
     try:
@@ -346,10 +345,12 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
             "dettagli": e.detail
         }
 
-    # Se checklist ok, recupera la fase dal prompt
-    fase_dati = await get_fase(fase_id)
-    return fase_dati
+    # ✅ Recupera fase da API ufficiale
+    risposta = get_fase_prompt({"fase_id": fase_id})
+    return risposta
 
-@app.post("/get-fase-con-verifica")
-async def get_fase_con_verifica(payload: ChecklistRequest):
-    return await recupera_fase_con_verifica(payload.fase_id, payload.task_completati)
+@app.get("/get-fase/{fase_id}")
+async def get_fase(fase_id: str):
+    logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
+    risposta = get_fase_prompt({"fase_id": fase_id})
+    return risposta
