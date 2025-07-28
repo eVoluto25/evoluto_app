@@ -251,33 +251,36 @@ from prompt_evoluto import master_flow
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
 
-    if fase_id == "fase_1":
-        risultato = await recupera_fase_con_verifica("fase_1", [
-            "dati_anagrafici_estratti",
-            "dati_bilancio_estratti",
-            "indici_finanziari_calcolati",
-            "verifica_attivo_passivo_eseguita",
-            "tabella_contesto_generata",
-            "html_generato"
-        ])
-        return risultato
-
-    # default: recupera direttamente la fase dal prompt
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
 
-    contenuto_fase = master_flow[fase_id]
-
-    if fase_id != "fase_0":
+    if fase_id == "fase_0":
         return {
-            "fase": contenuto_fase,
+            "fase": master_flow[fase_id]
+        }
+
+    # ⬇️ Carica checklist per la fase
+    task_richiesti = CHECKLIST.get(fase_id, {}).get("checklist", [])
+
+    # ⬇️ Esegui verifica checklist
+    if task_richiesti:
+        logger.info(f"🧪 Verifica checklist per {fase_id}")
+        risultato = await recupera_fase_con_verifica(fase_id, task_richiesti)
+
+        if "errore" in risultato:
+            return risultato
+
+        return {
+            "fase": risultato["fase"],
             "istruzioni_html": ISTRUZIONI_HTML
         }
-    else:
-        return {
-            "fase": contenuto_fase
-        }
 
+    # ⬇️ Se non ci sono task associati
+    return {
+        "fase": master_flow[fase_id],
+        "istruzioni_html": ISTRUZIONI_HTML
+    }
+    
 @app.post("/analizza-azienda")
 async def analizza_azienda(input_data: AnalisiAziendaInput):
     logger.info("📡 Entrata nella funzione analizza_azienda (FASE 6)")
