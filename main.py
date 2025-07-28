@@ -308,8 +308,7 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
 
 @app.post("/verifica_checklist_fase")
 async def verifica_checklist_fase(payload: ChecklistRequest):
-    logger.info(f"✅ Verifica checklist per fase {payload.fase_id}")
-    logger.info("📋 Task completati: %s", payload.task_completati)
+    logger.info("✅ Verifica checkList fase_id=%s | task_completati=%s", payload.fase_id, [str(x) for x in payload.task_completati])
 
     richiesti = CHECKLIST.get(payload.fase_id, {}).get("checklist", [])
     mancanti = [x for x in richiesti if x not in payload.task_completati]
