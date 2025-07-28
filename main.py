@@ -12,6 +12,7 @@ from prompt_evoluto import master_flow
 from template_pof import ISTRUZIONI_HTML
 from pathlib import Path
 import os
+from verifica_fasi import recupera_fase_con_verifica
 from datetime import datetime
 from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
@@ -250,6 +251,18 @@ from prompt_evoluto import master_flow
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
 
+    if fase_id == "fase_1":
+        risultato = await recupera_fase_con_verifica("fase_1", [
+            "dati_anagrafici_estratti",
+            "dati_bilancio_estratti",
+            "indici_finanziari_calcolati",
+            "verifica_attivo_passivo_eseguita",
+            "tabella_contesto_generata",
+            "html_generato"
+        ])
+        return risultato
+
+    # default: recupera direttamente la fase dal prompt
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
 
