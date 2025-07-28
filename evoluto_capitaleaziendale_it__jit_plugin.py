@@ -11,5 +11,5 @@ def verificaChecklistFase(fase_id: str, task_completati: list):
         "fase_id": fase_id,
         "task_completati": task_completati
     }
-    response = requests.post(f"{API_BASE}/get-fase-con-verifica", json=payload)
+    response = requests.post(f"{API_BASE}/verifica_checklist_fase", json=payload)
     return response.json()
