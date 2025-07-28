@@ -346,11 +346,5 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
         }
 
     # ✅ Recupera fase da API ufficiale
-    risposta = get_fase_prompt({"fase_id": fase_id})
-    return risposta
-
-@app.get("/get-fase/{fase_id}")
-async def get_fase(fase_id: str):
-    logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
-    risposta = get_fase_prompt({"fase_id": fase_id})
+    risposta = get_fase_prompt(fase_id)
     return risposta
