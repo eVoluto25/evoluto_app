@@ -315,3 +315,20 @@ async def verifica_checklist_fase(payload: ChecklistRequest):
         "status": "ok",
         "timestamp": datetime.now().isoformat()
     }
+
+async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
+    # Verifica checklist prima di proseguire
+    payload = ChecklistRequest(fase_id=fase_id, task_completati=task_completati)
+
+    try:
+        await verifica_checklist_fase(payload)
+    except HTTPException as e:
+        logger.error(f"❌ Errore checklist: {e.detail}")
+        return {
+            "errore": "Checklist incompleta",
+            "dettagli": e.detail
+        }
+
+    # Se checklist ok, recupera la fase dal prompt
+    fase_dati = get_fase_prompt(fase_id)
+    return fase_dati
