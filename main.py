@@ -12,7 +12,7 @@ from prompt_evoluto import master_flow
 from template_pof import ISTRUZIONI_HTML
 from pathlib import Path
 import os
-from datetime import date
+from datetime import datetime
 from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
 import json
@@ -291,13 +291,27 @@ async def analizza_azienda(input_data: AnalisiAziendaInput):
 
 @app.post("/verifica_checklist_fase")
 async def verifica_checklist_fase(payload: ChecklistRequest):
-    logger.info(f"📋 Verifica checklist per {payload.fase_id} con task: {payload.task_completati}")
+    logger.info(f"✅ Verifica checklist per fase {payload.fase_id} con task: {payload.task_completati}")
+
     richiesti = CHECKLIST.get(payload.fase_id, {}).get("checklist", [])
     mancanti = [x for x in richiesti if x not in payload.task_completati]
 
     if mancanti:
         logger.warning(f"❌ Fase {payload.fase_id} incompleta. Task mancanti: {mancanti}")
-        raise HTTPException(status_code=400, detail={"mancano": mancanti})
-    
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "fase_incompleta": payload.fase_id,
+                "task_mancanti": mancanti,
+                "status": "errore",
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+
     logger.info(f"✅ Fase {payload.fase_id} completata correttamente.")
-    return {"status": "ok", "fase": payload.fase_id}
+    return {
+        "fase_completata": payload.fase_id,
+        "task_completati": payload.task_completati,
+        "status": "ok",
+        "timestamp": datetime.now().isoformat()
+    }
