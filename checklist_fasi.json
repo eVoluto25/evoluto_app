@@ -54,6 +54,16 @@
     ]
   },
   "fase_7": {
+  "checklist": [
+    "tabella_confronto_costi_generata",
+    "voci_mancanti_identificate",
+    "punti_forza_rispetto_media_individuati",
+    "riepilogo_economico_compilato",
+    "html_generato"
+  ]
+}
+  
+  "fase_8": {
     "checklist": [
       "scenari_predittivi_generati",
       "criticita_e_priorita_indicate",
@@ -61,14 +71,14 @@
       "html_generato"
     ]
   },
-  "fase_8": {
+  "fase_9": {
     "checklist": [
       "misure_innovazione_verificate",
       "confronti_prestazionali_mostrati",
       "html_generato"
     ]
   },
-  "fase_9": {
+  "fase_10": {
     "checklist": [
       "dati_azienda_recuperati",
       "tabelle_allineamento_compilate",
@@ -79,7 +89,7 @@
       "html_generato"
     ]
   },
-  "fase_10": {
+  "fase_11": {
     "checklist": [
       "blocco_risultato_tasca_compilato",
       "blocco_contrasto_fare_nonfare_creato",
