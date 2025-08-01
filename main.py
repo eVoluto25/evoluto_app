@@ -348,3 +348,23 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
     # ✅ Recupera fase da API ufficiale
     risposta = get_fase_prompt({"fase_id": fase_id})
     return risposta
+
+@app.post("/notifica_fase")
+async def notifica_fase(request: Request):
+    try:
+        data = await request.json()
+        fase_id = data.get("fase_id")
+        completata = data.get("completata", False)
+        utente_id = data.get("utente_id", "anonimo")
+
+        logger.info(f"🔔 Fase completata: {fase_id} | Utente: {utente_id} | Stato: {completata}")
+
+        return {
+            "status": "ok",
+            "messaggio": f"Fase {fase_id} notificata con successo"
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Errore nella notifica della fase: {str(e)}")
+        raise HTTPException(status_code=500, detail="Errore interno nella notifica fase")
+
