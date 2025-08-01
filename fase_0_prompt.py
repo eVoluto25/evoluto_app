@@ -1,4 +1,5 @@
-FASE_0 = """testo della fase"""
+prompt_fase_0 = """
+FASE 0 – START
 
 Benvenuto nel sistema eVoluto – il tuo (IMA) Innovation Manager Avanzato.
 
