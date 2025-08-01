@@ -368,3 +368,20 @@ async def notifica_fase(request: Request):
         logger.error(f"❌ Errore nella notifica della fase: {str(e)}")
         raise HTTPException(status_code=500, detail="Errore interno nella notifica fase")
 
+# 🔔 Funzione per inviare notifica automatica al completamento della fase
+def notifica_fase_completata(fase_id: str, utente_id: str = "default"):
+    url = "https://evoluto.capitaleaziendale.it/notifica_fase"
+    payload = {
+        "fase_id": fase_id,
+        "completata": True,
+        "utente_id": utente_id
+    }
+
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        print(f"✅ Notifica inviata per la fase {fase_id}")
+        return {"status": "ok"}
+    except Exception as ex:
+        print(f"❌ Errore notifica fase: {str(ex)}")
+        return {"status": "errore", "errore": str(ex)}
