@@ -7,17 +7,23 @@ OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 
 Aggiungiamo queste 3 richieste finali:
 
-Descrivi in massimo 3 bullet:
-	•	i punti di debolezza aziendale
-	•	le priorità economiche da sistemare
-	•	i motivi per cui serve agire subito
+Inserisci questo blocco HTML **obbligatorio** usando esattamente i seguenti titoli:
+
+<h3>criticita_e_priorita_indicate</h3>
+<p>Elenca in massimo 3 bullet:</p>
+<ul>
+  <li>i punti di debolezza aziendale</li>
+  <li>le priorità economiche da sistemare</li>
+  <li>i motivi per cui serve agire subito</li>
+</ul>
 
 Indica anche esplicitamente cosa NON è utile attivare oggi, se presente tra le soluzioni standard.
 
-🟢 Mostra almeno 1 bando prioritario effettivamente compatibile diverso da quello dell'esempio nello scenario predittivo: più semplice e meno costoso, con breve motivazione tecnica.
+<h3>bando_prioritario_mostrato</h3>
+<p>🟢 Mostra almeno 1 bando prioritario effettivamente compatibile diverso da quello dell'esempio, più semplice e meno costoso, con breve motivazione tecnica. 
+Devi includere la frase esatta: <strong>"bando prioritario effettivamente compatibile"</strong> nel paragrafo.</p>
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python.  
 Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente.  
 Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
 
