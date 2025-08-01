@@ -1,15 +1,15 @@
-from fase_0 import FASE_0
-from fase_1 import FASE_1
-from fase_2 import FASE_2
-from fase_3 import FASE_3
-from fase_4 import FASE_4
-from fase_5 import FASE_5
-from fase_6 import FASE_6
-from fase_7 import FASE_7
-from fase_8 import FASE_8
-from fase_9 import FASE_9
-from fase_10 import FASE_10
-from fase_11 import FASE_11
+from fase_0_prompt import FASE_0
+from fase_1_prompt import FASE_1
+from fase_2_prompt import FASE_2
+from fase_3_prompt import FASE_3
+from fase_4_prompt import FASE_4
+from fase_5_prompt import FASE_5
+from fase_6_prompt import FASE_6
+from fase_7_prompt import FASE_7
+from fase_8_prompt import FASE_8
+from fase_9_prompt import FASE_9
+from fase_10_prompt import FASE_10
+from fase_11_prompt import FASE_11
 
 master_flow = {
     "fase_0": FASE_0,
