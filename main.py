@@ -16,6 +16,7 @@ from pathlib import Path
 import os
 from evoluto_capitaleaziendale_it__jit_plugin import getFasePrompt as get_fase_prompt
 from datetime import datetime
+from datetime import date
 from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
 import json
