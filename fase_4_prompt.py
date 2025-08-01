@@ -68,4 +68,5 @@ Payload:
 }
 
 Conferma in chat: "🌟 Fase 4 completata e notificata con successo."
+Al termine della FASE 4, chiedi all’utente: Vuoi proseguire con la FASE 5? (SI/NO)
 """
