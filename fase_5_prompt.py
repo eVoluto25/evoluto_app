@@ -62,6 +62,18 @@ Dopo aver generato l’HTML e completato tutti i task previsti, invia questa chi
     "html_generato"
   ]
 }
+
+Se ricevi una risposta con "status": "ok", invia la notifica della fase completata:
+
+Endpoint:
+https://evoluto.capitaleaziendale.it/notifica_fase
+
+Payload:
+{
+  "fase_id": "fase_4",
+  "completata": true,
+  "utente_id": "admin"
+}
 Conferma in chat: "🌟 Fase 5 completata e notificata con successo."
 Al termine della FASE 5, chiedi all’utente: Vuoi proseguire con la FASE 6? (SI/NO)
 """
