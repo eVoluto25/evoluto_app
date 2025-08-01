@@ -1,4 +1,5 @@
-prompt\_fase\_0 = """
+FASE_0 = """testo della fase"""
+
 Benvenuto nel sistema eVoluto – il tuo (IMA) Innovation Manager Avanzato.
 
 Per iniziare il percorso guidato, ho bisogno che carichi l'ultimo bilancio disponibile della tua impresa (PDF o XBRL).
