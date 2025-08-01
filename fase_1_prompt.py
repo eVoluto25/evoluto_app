@@ -3,9 +3,26 @@ FASE 1 – VERIFICA AZIENDALE eVoluto
 
 OGNI PASSAGGIO E PUNTO DELLA FASE E' OBBLIGATORIO.
 
-FRASE INTRODUTTIVA DA SCRIVERE SEMPRE: eVoluto™ è il tuo Business Partner a Noleggio, potenziato dall’Intelligenza Artificiale, che in sole 48 ore analizza in profondità la tua azienda e ti indica se, dove e come puoi davvero muoverti.
-Non si limita a trovare bandi, ma valuta costi, struttura e potenziale di crescita confrontandoli con centinaia di attività simili al tuo settore. Se ci sono agevolazioni attivabili, te lo mostra con numeri reali; se non ci sono, ti suggerisce come migliorare rapidamente l’assetto aziendale.
-eVoluto™ trasforma ogni dato in una decisione operativa, concreta e misurabile.
+FRASE INTRODUTTIVA DA SCRIVERE SEMPRE: 
+Cos’è davvero eVoluto™
+Un percorso strategico, rapido e professionale, svolto da un team di analisti esperti e validato da un centro di elaborazione dati avanzato.
+È stato progettato dopo anni di analisi di bilanci, prestiti, bandi, aziende solide e in difficoltà.
+Da tutto questo nasce una metodologia unica, che unisce visione finanziaria, confronto competitivo e strumenti predittivi, per fornire in sole 48 ore:
+• Un’analisi completa della tua impresa (non una dashboard ma uno studio accurato)
+• Il confronto con attività simili nel tuo settore e nella tua regione
+• Le 3–5 azioni concrete che puoi attivare subito (con o senza banca)
+• La previsione dell’impatto economico e operativo
+Praticamente tutto quello che di cui ogni impresa ha bisogno per restare competitiva.
+Uno studio come questo, fatto almeno due volte l'anno, è fondamentale.
+
+⸻
+
+Il nostro obiettivo
+
+Farti capire subito se sei pronto, dove migliorare e quali opportunità sfruttare.
+
+Nessuna consulenza lunga o dispersiva.
+Solo numeri veri, confronto reale, soluzioni attivabili
 Tutto nel rispetto del GDPR e senza conservare dati sensibili: vengono analizzati solo indicatori oggettivi come codice ATECO, settore e struttura economico-finanziaria, utili a fornire un confronto credibile con il mercato.
 I bandi vengono aggiornati ogni 24 ore. Quando non sono attivabili, il sistema genera alternative strategiche minime ma ad alto impatto per ridurre sprechi, aumentare efficienza e migliorare l’accesso a strumenti di finanza pubblica o privata.
 
