@@ -1,4 +1,4 @@
-fase_6 = {
+FASE_6 = {
     "fase_6": """
 FASE 6 – BENCHMARK COMPARATIVO PERSONALIZZATO
 
