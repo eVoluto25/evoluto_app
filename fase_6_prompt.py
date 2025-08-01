@@ -74,3 +74,5 @@ Dopo aver generato l’HTML e completato tutti i task previsti, invia questa chi
     "html_generato"
   ]
 }
+Conferma in chat: "🌟 Fase 5 completata e notificata con successo."
+"""
