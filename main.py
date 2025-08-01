@@ -250,37 +250,37 @@ async def scoring_bandi(input_data: ScoringInput):
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
 
-    # ✅ Controllo che la fase esista
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
 
-    # ✅ Caso speciale per la fase 0
+    # ✅ Fase 0 non ha checklist
     if fase_id == "fase_0":
         return {
             "fase": master_flow[fase_id]
         }
 
-    # ✅ Recupero checklist della fase
-    task_richiesti = CHECKLIST.get(fase_id, {}).get("checklist", [])
+    try:
+        task_richiesti = CHECKLIST.get(fase_id, {}).get("checklist", [])
+        if task_richiesti:
+            logger.info(f"🧪 Verifica checklist per {fase_id}")
+            risultato = await recupera_fase_con_verifica(fase_id, task_richiesti)
 
-    # ✅ Se esistono task da verificare
-    if task_richiesti:
-        logger.info(f"🧪 Verifica checklist per {fase_id}")
-        risultato = await recupera_fase_con_verifica(fase_id, task_richiesti)
+            if "errore" in risultato:
+                return risultato
 
-        # ❌ Se la checklist è incompleta
-        if "errore" in risultato:
-            return risultato
+            return {
+                "fase": risultato["fase"]
+            }
 
-        # ✅ Checklist superata: restituisco solo il testo della fase
+        # Nessuna checklist → restituisco direttamente
         return {
-            "fase": risultato["fase"]
+            "fase": master_flow[fase_id]
         }
 
-    # ✅ Se non ci sono task da verificare: restituisco la fase direttamente
-    return {
-        "fase": master_flow[fase_id]
-    }
+    except Exception as e:
+        logger.error(f"❌ Errore durante il recupero della fase: {str(e)}")
+        raise HTTPException(status_code=500, detail="Errore interno nella gestione della fase")
+
 
 @app.post("/analizza-azienda")
 async def analizza_azienda(input_data: AnalisiAziendaInput):
