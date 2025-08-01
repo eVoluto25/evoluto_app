@@ -7,23 +7,27 @@ Istruzioni:
 
 – Inserisci nel <head> uno stile CSS coerente con il design Apple moderno (glassmorphism):
  • Font: 'San Francisco', oppure '-apple-system', sans-serif  
- • Sfondo: sfumato color grigio chiarissimo (#f8f9fa → #e9ecef)  
+ • Sfondo: sfumato grigio chiarissimo `linear-gradient(to bottom right, #f8f9fa, #e9ecef)`  
  • Testo: colore #111  
- • Tabelle: sfondo bianco semi-trasparente (`rgba(255,255,255,0.6)`), **bordi arrotondati**, **bordo esterno più marcato** (`1px solid rgba(0, 0, 0, 0.1)`)  
- • Effetto rilievo: usa `box-shadow` ampio e `backdrop-filter: blur(20px)`  
- • Intestazioni grigio tenue (`rgba(245,245,245,0.85)`), celle con padding di almeno 16px, linee divisorie leggere  
+ • Tabelle: usa `background: rgba(255, 255, 255, 0.6)`  
+  ◦ Bordi arrotondati: `border-radius: 16px`  
+  ◦ Bordo esterno: `1px solid rgba(0, 0, 0, 0.1)`  
+  ◦ Effetto rilievo: `box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12)`  
+  ◦ Effetto vetro: `backdrop-filter: blur(20px)`  
+ • Intestazioni: `background: rgba(245,245,245,0.85)`, padding 16px  
+ • Celle: padding 16px, linee divisorie sottili `border-top: 1px solid rgba(0, 0, 0, 0.05)`
 
 – Struttura il contenuto con:
  • Titoli in <h1>, <h2>, <h3>  
- • Paragrafi chiari in <p>  
+ • Paragrafi in <p>  
  • Elenchi puntati in <ul><li>  
- • Tabelle complete in <table><tr><th><td>, con intestazioni ben evidenziate  
+ • Tabelle in <table><tr><th><td>  
 
 – Non usare:
  • Emoji o simboli grafici  
  • Colori accesi o layout scuri  
  • Riferimenti al numero della fase, a GPT o a messaggi meta-conversazionali  
- • Introduzioni o conclusioni aggiuntive fuori testo
+ • Introduzioni o conclusioni fuori testo
 
 Salva il file con il nome:
 fase_[NUMERO]__[NOME-AZIENDA].html  
