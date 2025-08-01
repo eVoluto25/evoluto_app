@@ -346,9 +346,10 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
         }
 
     # ✅ Recupera fase da API ufficiale
-    loop = asyncio.get_event_loop()
-    risposta = await loop.run_in_executor(None, get_fase_prompt, fase_id)
-
+    
+    risposta = {
+        "fase": master_flow[fase_id]
+    }
 
     # 🔔 Notifica automatica
     notifica_fase_completata(fase_id, utente_id="admin")
