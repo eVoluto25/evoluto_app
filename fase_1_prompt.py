@@ -112,4 +112,5 @@ Payload:
 }
 
 Conferma in chat: "🌟 Fase 1 completata e notificata con successo."
+Al termine della FASE 1, chiedi all’utente: Vuoi proseguire con la FASE 2? (SI/NO)
 """
