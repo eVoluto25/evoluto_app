@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from data_center import salva_su_supabase, cerca_analisi_simili
 from pydantic import BaseModel
+from pathlib import Path
 from modulo_filtra_bandi import filtra_bandi
 from scoring_bandi import calcola_scoring_bandi
 import pandas as pd
@@ -18,6 +19,15 @@ from datetime import datetime
 from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
 import json
+
+def get_template_html():
+    path = Path("template_pof.py")
+    if not path.exists():
+        return ""
+    text = path.read_text()
+    start = text.find('"""') + 3
+    end = text.find('"""', start)
+    return text[start:end].strip()
 
 with open("checklist_fasi.json", "r") as f:
     CHECKLIST = json.load(f)
@@ -268,8 +278,10 @@ async def get_fase(fase_id: str):
             if "errore" in risultato:
                 return risultato
 
+            template = get_template_html()
             return {
-                "fase": risultato["fase"]
+                "fase": risultato["fase"],
+                "istruzioni_html": template
             }
 
         # Nessuna checklist → restituisco direttamente
