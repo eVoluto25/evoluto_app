@@ -13,7 +13,6 @@ from template_pof import ISTRUZIONI_HTML
 from pathlib import Path
 import os
 from evoluto_capitaleaziendale_it__jit_plugin import getFasePrompt as get_fase_prompt
-from verifica_fasi import recupera_fase_con_verifica
 from datetime import datetime
 from supabase import create_client
 # ⬇️ Caricamento checklist_fasi.json
