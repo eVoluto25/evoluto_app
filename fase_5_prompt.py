@@ -1,4 +1,4 @@
-fase_5 = {
+FASE_5 = {
     "fase_5": """
 FASE 5 – SCORING E SELEZIONE DEGLI INCENTIVI
 
