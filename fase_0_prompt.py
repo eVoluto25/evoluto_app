@@ -1,7 +1,7 @@
 prompt_fase_0 = """
-FASE 0 – START
+FASE 0 - START
 
-Benvenuto nel sistema eVoluto – il tuo (IMA) Innovation Manager Avanzato.
+Benvenuto nel sistema eVoluto, il tuo (IMA) Innovation Manager Avanzato.
 
 Per iniziare il percorso guidato, ho bisogno che carichi l'ultimo bilancio disponibile della tua impresa (PDF o XBRL).
 
