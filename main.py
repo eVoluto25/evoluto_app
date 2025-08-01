@@ -6,6 +6,7 @@ from scoring_bandi import calcola_scoring_bandi
 import pandas as pd
 import requests
 import logging
+import asyncio
 from typing import List, Dict
 from calendar_api import router as calendar_router
 from prompt_evoluto import master_flow
@@ -345,7 +346,9 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
         }
 
     # ✅ Recupera fase da API ufficiale
-    risposta = get_fase_prompt(fase_id)
+    loop = asyncio.get_event_loop()
+    risposta = await loop.run_in_executor(None, get_fase_prompt, fase_id)
+
 
     # 🔔 Notifica automatica
     notifica_fase_completata(fase_id, utente_id="admin")
