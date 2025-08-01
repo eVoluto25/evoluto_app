@@ -61,7 +61,7 @@ POST /verifica_checklist_fase
   "fase_id": "fase_9",
   "task_completati": [
     "verifica_misure_attivate",
-    "confronto_aziende_adeguate_vs_non",
+    "confronto_aziende_adeguate_vs_aziende_non_adeguate",
     "valutazione_impatto_bandi",
     "html_generato"
   ]
