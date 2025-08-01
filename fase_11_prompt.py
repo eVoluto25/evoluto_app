@@ -2,7 +2,7 @@
 🔧FASE 11 – PIANO OPERATIVO 
 
 🎯 Agisci come un consulente strategico e tecnico-commerciale per PMI italiane.
-Il tuo compito è costruire la FASE 10 – PIANO OPERATIVO, diviso in 3 blocchi:
+Il tuo compito è costruire la FASE 11 – PIANO OPERATIVO, diviso in 3 blocchi:
 	•	🔹 RISULTATO IN TASCA (con calcoli realistici + commento commerciale)
 	•	🔻 CONTRASTO FARE / NON FARE (effetto urgenza)
 	•	🟢 OFFERTA ATTIVABILE ORA (invito all’azione)
