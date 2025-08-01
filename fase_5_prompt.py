@@ -64,4 +64,5 @@ Dopo aver generato l’HTML e completato tutti i task previsti, invia questa chi
   ]
 }
 Conferma in chat: "🌟 Fase 5 completata e notificata con successo."
+Al termine della FASE 5, chiedi all’utente: Vuoi proseguire con la FASE 6? (SI/NO)
 """
