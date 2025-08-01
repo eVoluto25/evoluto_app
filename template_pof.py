@@ -5,15 +5,19 @@ Istruzioni:
 
 – Genera un documento HTML valido e completo: includi i tag <html>, <head>, <meta charset="UTF-8">, <style> e <body>  
 
-– Inserisci nel <head> uno stile CSS coerente con il design Apple moderno (glassmorphism):
+– Inserisci nel <head> uno stile CSS coerente con il design Apple moderno (glassmorphism + effetto lucido iOS):
  • Font: 'San Francisco', oppure '-apple-system', sans-serif  
  • Sfondo: sfumato grigio chiarissimo `linear-gradient(to bottom right, #f8f9fa, #e9ecef)`  
  • Testo: colore #111  
- • Tabelle: usa `background: rgba(255, 255, 255, 0.6)`  
-  ◦ Bordi arrotondati: `border-radius: 16px`  
-  ◦ Bordo esterno: `1px solid rgba(0, 0, 0, 0.1)`  
-  ◦ Effetto rilievo: `box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12)`  
-  ◦ Effetto vetro: `backdrop-filter: blur(20px)`  
+ • Tabelle con effetto lucido:
+  ◦ background: rgba(255, 255, 255, 0.4)  
+  ◦ border-radius: 16px  
+  ◦ border: 1px solid rgba(255, 255, 255, 0.3)  
+  ◦ box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15)  
+  ◦ backdrop-filter: blur(20px) saturate(180%)  
+  ◦ background-clip: padding-box  
+  ◦ overlay lucido: `::before` con gradient semi-trasparente
+
  • Intestazioni: `background: rgba(245,245,245,0.85)`, padding 16px  
  • Celle: padding 16px, linee divisorie sottili `border-top: 1px solid rgba(0, 0, 0, 0.05)`
 
