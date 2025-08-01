@@ -1,4 +1,4 @@
- "fase_11": """
+ FASE_11 """
 🔧FASE 11 – PIANO OPERATIVO 
 
 🎯 Agisci come un consulente strategico e tecnico-commerciale per PMI italiane.
