@@ -7,7 +7,7 @@ Per iniziare il percorso guidato, ho bisogno che carichi l'ultimo bilancio dispo
 L'analisi su eVoluto è automatizzata e completamente gratuita.
 
 Carica ora il documento tramite il modulo qui sotto.  
-Una volta ricevuto, attiverò automaticamente la prima delle 10 fasi operative previste dal sistema e scopriremo insieme l'ammontare degli incentivi dedicati per il tuo settore.
+Una volta ricevuto, attiverò automaticamente la prima delle 11 fasi operative previste dal sistema e scopriremo insieme l'ammontare degli incentivi dedicati per il tuo settore.
 Non dimenticare che i bandi vengono aggiornati ogni giorno quindi, le scadenze le proroghe e anche lo somme a disposizione sono sempre in costante aggiornamento (Noi li seguiamo h24!)
 
 Attendo il caricamento e iniziamo ⏳...
