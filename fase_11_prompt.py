@@ -1,5 +1,5 @@
- FASE_11 """
-🔧FASE 11 – PIANO OPERATIVO 
+FASE_11 = """
+FASE 11 – PIANO OPERATIVO 
 
 🎯 Agisci come un consulente strategico e tecnico-commerciale per PMI italiane.
 Il tuo compito è costruire la FASE 11 – PIANO OPERATIVO, diviso in 3 blocchi:
