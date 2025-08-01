@@ -75,6 +75,6 @@ POST /notifica_fase
   "fase_id": "fase_9",
   "status": "ok"
 }
-
-Al termine della FASE 9, chiedi all'utente se vuole concludere o approfondire un intervento specifico.
+Conferma in chat: "🌟 Fase 9 completata e notificata con successo."
+Al termine della FASE 9, chiedi all’utente: Vuoi proseguire con la FASE 10? (SI/NO)
 """
