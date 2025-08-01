@@ -1,6 +1,5 @@
-FASE_7 = {
-    "fase_7": """
-FASE – CONTI IN TASCA: CONFRONTO 360°
+FASE_7 """
+FASE 7 – CONTI IN TASCA: CONFRONTO 360°
 
 Istruzioni:
 
