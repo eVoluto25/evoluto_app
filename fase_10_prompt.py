@@ -126,6 +126,6 @@ POST /notifica_fase
   "fase_id": "fase_10",
   "status": "ok"
 }
-
-Al termine della FASE 10, chiedi all'utente se vuole continuare con la FASE 11.
+Conferma in chat: "🌟 Fase 10 completata e notificata con successo."
+Al termine della FASE 10, chiedi all’utente: Vuoi proseguire con la FASE 11? (SI/NO)
 """
