@@ -345,15 +345,17 @@ async def recupera_fase_con_verifica(fase_id: str, task_completati: list[str]):
             "dettagli": e.detail
         }
 
-    # ✅ Recupera fase da API ufficiale
-    
-    risposta = {
-        "fase": master_flow[fase_id]
-    }
+    try:
+        risposta = {
+            "fase": master_flow[fase_id]
+        }
+    except KeyError:
+        logger.error(f"❌ Chiave {fase_id} non trovata in master_flow")
+        return {
+            "errore": "Fase non disponibile"
+        }
 
-    # 🔔 Notifica automatica
     notifica_fase_completata(fase_id, utente_id="admin")
-    
     return risposta
 
 @app.post("/notifica_fase")
