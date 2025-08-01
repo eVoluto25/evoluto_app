@@ -73,7 +73,6 @@ POST /notifica_fase
   "status": "ok"
 }
 
-Conferma in chat: "🌟 Fase 1 completata e notificata con successo."
+Conferma in chat: "🌟 Fase 7 completata e notificata con successo."
 Al termine della FASE 7, chiedi all’utente: Vuoi proseguire con la FASE 8? (SI/NO)
 """
-}
