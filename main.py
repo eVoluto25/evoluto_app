@@ -252,36 +252,38 @@ from prompt_evoluto import master_flow
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
 
+    # ✅ Controllo che la fase esista
     if fase_id not in master_flow:
         raise HTTPException(status_code=404, detail="Fase non trovata")
 
+    # ✅ Caso speciale per la fase 0
     if fase_id == "fase_0":
         return {
             "fase": master_flow[fase_id]
         }
 
-    # ⬇️ Carica checklist per la fase
+    # ✅ Recupero checklist della fase
     task_richiesti = CHECKLIST.get(fase_id, {}).get("checklist", [])
 
-    # ⬇️ Esegui verifica checklist
+    # ✅ Se esistono task da verificare
     if task_richiesti:
         logger.info(f"🧪 Verifica checklist per {fase_id}")
         risultato = await recupera_fase_con_verifica(fase_id, task_richiesti)
 
+        # ❌ Se la checklist è incompleta
         if "errore" in risultato:
             return risultato
 
+        # ✅ Checklist superata: restituisco solo il testo della fase
         return {
-            "fase": risultato["fase"],
-            "istruzioni_html": ISTRUZIONI_HTML
+            "fase": risultato["fase"]
         }
 
-    # ⬇️ Se non ci sono task associati
+    # ✅ Se non ci sono task da verificare: restituisco la fase direttamente
     return {
-        "fase": master_flow[fase_id],
-        "istruzioni_html": ISTRUZIONI_HTML
+        "fase": master_flow[fase_id]
     }
-    
+
 @app.post("/analizza-azienda")
 async def analizza_azienda(input_data: AnalisiAziendaInput):
     logger.info("📡 Entrata nella funzione analizza_azienda (FASE 6)")
