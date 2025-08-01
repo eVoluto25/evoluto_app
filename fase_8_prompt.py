@@ -47,5 +47,6 @@ POST /notifica_fase
   "status": "ok"
 }
 
-Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
+Conferma in chat: "🌟 Fase 8 completata e notificata con successo."
+Al termine della FASE 8, chiedi all’utente: Vuoi proseguire con la FASE 9? (SI/NO)
 """
