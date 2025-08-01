@@ -246,8 +246,6 @@ async def scoring_bandi(input_data: ScoringInput):
         logger.error(f"❌ Errore nella funzione scoring_bandi: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-from prompt_evoluto import master_flow  
-
 @app.get("/get-fase/{fase_id}")
 async def get_fase(fase_id: str):
     logger.info(f"📥 Richiesta ricevuta per fase: {fase_id}")
