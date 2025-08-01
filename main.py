@@ -379,18 +379,15 @@ async def notifica_fase(request: Request):
 
 # 🔔 Funzione per inviare notifica automatica al completamento della fase
 def notifica_fase_completata(fase_id: str, utente_id: str = "default"):
-    url = "https://evoluto.capitaleaziendale.it/notifica_fase"
-    payload = {
-        "fase_id": fase_id,
-        "completata": True,
-        "utente_id": utente_id
-    }
-
     try:
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        print(f"✅ Notifica inviata per la fase {fase_id}")
-        return {"status": "ok"}
+        logger.info(f"🔔 Notifica interna: fase={fase_id} | utente={utente_id}")
+        return {
+            "status": "ok",
+            "messaggio": f"Fase {fase_id} notificata con successo"
+        }
     except Exception as ex:
-        print(f"❌ Errore notifica fase: {str(ex)}")
-        return {"status": "errore", "errore": str(ex)}
+        logger.error(f"❌ Errore interno notifica fase: {str(ex)}")
+        return {
+            "status": "errore",
+            "errore": str(ex)
+        }
