@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from data_center import salva_su_supabase, cerca_analisi_simili
 from pydantic import BaseModel
 from modulo_filtra_bandi import filtra_bandi
