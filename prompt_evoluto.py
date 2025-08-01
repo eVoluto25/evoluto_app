@@ -81,6 +81,7 @@ Usa uno stile chiaro, sintetico e adatto alla visualizzazione in dashboard o rep
 
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine dell'analisi di bilancio procedi con la FASE 2 – chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
@@ -104,6 +105,7 @@ Azioni:
   - NON avanzare giudizi sui bandi o sugli step successivi
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 2, chiedi sempre all’utente se vuole proseguire con la fase successiva (SI/NO).
 """,
 
@@ -128,6 +130,7 @@ Azioni:
 - Salva il valore nel campo obiettivo_preferenziale
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 - Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
 """,
 
@@ -159,6 +162,7 @@ Azioni:
 Avvisa sempre che il sistema eVoluto ha intercettato (scrivi il numero dei bandi) idonei e adatti alle caratteristiche aziendali.
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 4, procedi alla FASE 5 chiedendo all'utente sempre se vuole continuare: SI/NO.
 """,
 
@@ -206,6 +210,7 @@ Campi obbligatori per ogni bando:
 Ogni bando deve avere una probabilità di approvazione unica, anche minima. Nessun duplicato.
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 5, chiedi all'utente se vuole continuare con la FASE 6.
 """,
 
@@ -263,6 +268,7 @@ Il paragrafo deve contenere:
 Il tono deve essere professionale ma comprensibile anche da chi non ha conoscenze finanziarie.
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 6, chiedi all’utente: Vuoi proseguire con la FASE 7? (SI/NO)
 """,
 
@@ -309,6 +315,7 @@ Indicazioni di stile:
 - Non usare termini come “benchmark”, “rating”, “score”
 - Niente frasi generiche, solo confronto reale con numeri chiari
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 7, chiedi all’utente: Vuoi proseguire con la FASE 8? (SI/NO)
 """,
 	
@@ -331,6 +338,7 @@ Indica anche esplicitamente cosa NON è utile attivare oggi, se presente tra le 
 🟢 Mostra almeno 1 bando prioritario effettivamente compatibile diverso da quello dell'esempio nello scenario predittivo: più semplice e meno costoso, con breve motivazione tecnica.
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
 
@@ -383,6 +391,7 @@ Compliance normativa:
 	•	Azienda non adeguata: soggetta a ritardi, sanzioni, mancato accesso a misure future
 
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 8, chiedi all'utente se vuole continuare con la FASE 9.
 """,
 
@@ -501,6 +510,7 @@ domanda_3
 	•	Spiega in che ordine attivare gli interventi
 	•	Indica eventuali combinazioni utili (es. AI + cybersecurity)
 	
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 Al termine della FASE 10, chiedi all'utente se vuole continuare con la FASE 11.
  """,
 
@@ -576,5 +586,7 @@ Il Piano Operativo Finanziato elaborato è terminato.
 Grazie per averci scelto.
 
 eVoluto. Built for you. 
+
+"Al termine di questa fase, genera il file HTML secondo le indicazioni specifiche che riceverai dal sistema Python."
 """
 }
