@@ -54,6 +54,6 @@ Payload:
   "completata": true,
   "utente_id": "admin"
 }
-
 Conferma in chat: "🌟 Fase 2 completata e notificata con successo."
+Al termine della FASE 2, chiedi all’utente: Vuoi proseguire con la FASE 3? (SI/NO)
 """
