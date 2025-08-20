@@ -1,5 +1,5 @@
-FASE_7 = """
-FASE 7 – CONTI IN TASCA: CONFRONTO 360°
+FASE_6 = """
+FASE 6 – CONTI IN TASCA: CONFRONTO 360°
 
 Istruzioni:
 
@@ -41,37 +41,6 @@ Indicazioni di stile:
 - Non usare termini come “benchmark”, “rating”, “score”
 - Niente frasi generiche, solo confronto reale con numeri chiari
 
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python.  
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente.  
-Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
-
-✅ Invio dei task completati:
-
-Al termine, invia questa chiamata API:
-
-POST /verifica_checklist_fase
-
-{
-  "fase_id": "fase_7",
-  "task_completati": [
-    "tabella_confronto_costi_generata",
-    "voci_mancanti_identificate",
-    "punti_forza_rispetto_media_individuati",
-    "riepilogo_economico_compilato",
-    "html_generato"
-  ]
-}
-
-Se ricevi "status": "ok" allora invia:
-
-POST /notifica_fase
-
-{
-  "fase_id": "fase_7",
-  "status": "ok"
-}
-
-Conferma in chat: "🌟 Fase 7 completata e notificata con successo."
-Al termine della FASE 7, chiedi all’utente: Vuoi proseguire con la FASE 8? (SI/NO)
+Conferma in chat: "🌟 Fase 6 completata e notificata con successo."
+Al termine della FASE 6, chiedi all’utente: Vuoi proseguire con la FASE 7? (SI/NO)
 """
