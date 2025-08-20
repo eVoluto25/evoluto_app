@@ -1,5 +1,5 @@
-FASE_8 = """
-FASE 8 – SCENARI PREDITTIVI: TRA ANALISI, STRUTTURA AZIENDALE E PREVISIONI DELL'INTELLIGENZA ARTIFICIALE
+FASE_7 = """
+FASE 7 – SCENARI PREDITTIVI: TRA ANALISI, STRUTTURA AZIENDALE E PREVISIONI DELL'INTELLIGENZA ARTIFICIALE
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 
@@ -23,36 +23,6 @@ Indica anche esplicitamente cosa NON è utile attivare oggi, se presente tra le 
 <p>🟢 Mostra almeno 1 bando prioritario effettivamente compatibile diverso da quello dell'esempio, più semplice e meno costoso, con breve motivazione tecnica. 
 Devi includere la frase esatta: <strong>"bando prioritario effettivamente compatibile"</strong> nel paragrafo.</p>
 
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente.  
-Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
-
-✅ Invio dei task completati:
-
-Al termine, invia questa chiamata API:
-
-POST /verifica_checklist_fase
-
-{
-  "fase_id": "fase_8",
-  "task_completati": [
-    "scenari_predittivi_generati",
-    "analisi_debolezze_priorita_motivi_compilata",
-    "soluzioni_non_utili_evidenziate",
-    "bando_alternativo_prioritario_individuato",
-    "html_generato"
-  ]
-}
-
-Se ricevi "status": "ok" allora invia:
-
-POST /notifica_fase
-
-{
-  "fase_id": "fase_8",
-  "status": "ok"
-}
-
-Conferma in chat: "🌟 Fase 8 completata e notificata con successo."
-Al termine della FASE 8, chiedi all’utente: Vuoi proseguire con la FASE 9? (SI/NO)
+Conferma in chat: "🌟 Fase 7 completata e notificata con successo."
+Al termine della FASE 7, chiedi all’utente: Vuoi proseguire con la FASE 8? (SI/NO)
 """
