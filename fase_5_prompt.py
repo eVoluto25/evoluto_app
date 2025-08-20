@@ -41,39 +41,6 @@ Campi obbligatori per ogni bando:
 
 Ogni bando deve avere una probabilità di approvazione unica, anche minima. Nessun duplicato.
 
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python.  
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente.  
-Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
-
-Al termine della FASE 5, chiedi all'utente se vuole continuare con la FASE 6.
-
-Dopo aver generato l’HTML e completato tutti i task previsti, invia questa chiamata API:
-
-**POST** `/verifica_checklist_fase`
-
-```json
-{
-  "fase_id": "fase_5",
-  "task_completati": [
-    "scoring_criteri_applicato",
-    "top_5_selezionati",
-    "campi_13_compilati",
-    "html_generato"
-  ]
-}
-
-Se ricevi una risposta con "status": "ok", invia la notifica della fase completata:
-
-Endpoint:
-https://evoluto.capitaleaziendale.it/notifica_fase
-
-Payload:
-{
-  "fase_id": "fase_4",
-  "completata": true,
-  "utente_id": "admin"
-}
 Conferma in chat: "🌟 Fase 5 completata e notificata con successo."
 Al termine della FASE 5, chiedi all’utente: Vuoi proseguire con la FASE 6? (SI/NO)
 """
