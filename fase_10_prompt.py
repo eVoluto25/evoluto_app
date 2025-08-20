@@ -96,6 +96,9 @@ Le condizioni effettive saranno soggette a verifica caso per caso.
 	•	Indica eventuali combinazioni utili
 
 Conferma in chat: "🌟 Fase 10 completata con successo."
-Al termine della FASE 10, chiedi all’utente: Vuoi proseguire con la FASE 11? (SI/NO)
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
+ℹ️ Tutti i dati sono stati elaborati dal sistema eVoluto™ a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore.
+Grazie per averci scelto.
+
+eVoluto. Built for you. 
+TERMINATO, NON INVENTARE MAI NULLA: NON PROPORRE, NON DOMANDARE, NON AGGIUNGERE ALTRO. TERMINA LA SESSIONE E FERMATI.
 """
