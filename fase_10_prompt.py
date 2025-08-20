@@ -95,37 +95,7 @@ Le condizioni effettive saranno soggette a verifica caso per caso.
 	•	Spiega l’ordine degli interventi consigliati
 	•	Indica eventuali combinazioni utili
 
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python.  
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente.  
-Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
-
-✅ Invio dei task completati:
-
-POST /verifica_checklist_fase
-
-{
-  "fase_id": "fase_10",
-  "task_completati": [
-    "recupero_dati_azienda",
-    "analisi_ambiti_premianti",
-    "tabella_allineamento_tecnico",
-    "valutazione_sostenibilità",
-    "simulazioni_finanziarie",
-    "tabella_economica",
-    "commento_tecnico_finale",
-    "html_generato"
-  ]
-}
-
-Se ricevi "status": "ok" allora invia:
-
-POST /notifica_fase
-
-{
-  "fase_id": "fase_10",
-  "status": "ok"
-}
-Conferma in chat: "🌟 Fase 10 completata e notificata con successo."
+Conferma in chat: "🌟 Fase 10 completata con successo."
 Al termine della FASE 10, chiedi all’utente: Vuoi proseguire con la FASE 11? (SI/NO)
+NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA  
 """
