@@ -1,5 +1,5 @@
-FASE_10 = """
-FASE 10 – VERIFICA DI ALLINEAMENTO TECNICO-FINANZIARIO 
+FASE_9 = """
+FASE 9 – VERIFICA DI ALLINEAMENTO TECNICO-FINANZIARIO 
 
 OGNI PASSAGGIO E PUNTO DELLA FASE È OBBLIGATORIO.
 Restituisci tutte le informazioni in formato testuale, senza blocchi codice o linguaggi da programmatore.
@@ -95,7 +95,7 @@ Le condizioni effettive saranno soggette a verifica caso per caso.
 	•	Spiega l’ordine degli interventi consigliati
 	•	Indica eventuali combinazioni utili
 
-Conferma in chat: "🌟 Fase 10 completata con successo."
+Conferma in chat: "🌟 Fase 9 completata con successo."
 ℹ️ Tutti i dati sono stati elaborati dal sistema eVoluto™ a fini informativi e non costituiscono consulenza finanziaria. La valutazione finale spetta esclusivamente all’ente erogatore.
 Grazie per averci scelto.
 
