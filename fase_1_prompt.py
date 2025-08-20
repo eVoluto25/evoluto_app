@@ -83,8 +83,6 @@ Usa uno stile chiaro, sintetico e adatto alla visualizzazione in dashboard o rep
 
 NON DEVI FARE ALTRE DOMANDE O INVENTARE PROCESSI CHE NON SONO SCRITTI NEL PROMPT.
 NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python. 
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente. Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
 
 ---
 
