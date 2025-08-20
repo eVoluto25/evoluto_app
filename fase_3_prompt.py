@@ -18,10 +18,6 @@ Azioni:
 - Valida il formato. Se errato, blocca e richiedi una nuova risposta
 - Salva il valore nel campo obiettivo_preferenziale
 
-NON INVENTARE MAI IL NOME DELLA FASE SUCCESSIVA
-Al termine di questa fase genera il file HTML secondo le indicazioni ricevute dal sistema Python. 
-Mostra direttamente il contenuto del file HTML completo in chat, così che l'utente possa copiarlo o scaricarlo immediatamente. Non inviare il file completo a Python, limitati a confermare che il file è stato generato correttamente.
-
 - Al termine della FASE 3, procedi alla FASE 4 chiedendo all'utente sempre se vuole continuare: SI/NO
 
 ---
@@ -43,22 +39,12 @@ Payload:
   "task_completati": [
     "obiettivo_raccolto",
     "formato_validato",
-    "obiettivo_salvato",
-    "html_generato"
+    "obiettivo_salvato"
   ]
 }
 
 Se ricevi una risposta con "status": "ok", invia la notifica della fase completata:
 
-Endpoint:
-https://evoluto.capitaleaziendale.it/notifica_fase
-
-Payload:
-{
-  "fase_id": "fase_3",
-  "completata": true,
-  "utente_id": "admin"
-}
 Conferma in chat: "🌟 Fase 3 completata e notificata con successo."
 Al termine della FASE 3, chiedi all’utente: Vuoi proseguire con la FASE 4? (SI/NO)
 """
